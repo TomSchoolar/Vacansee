@@ -5,4 +5,4 @@ client/.env
 # Django #
 api/api/__pycache__
 api/db.sqlite3
-api/.env 
+api/api/.env 
