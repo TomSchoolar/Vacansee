@@ -88,8 +88,12 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # TODO: switch to postgres db
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'tpdev',
+        'HOST': '134.209.29.204',
+        'PORT': '5432',
+        'USER': 'postgres',
+        'PASSWORD': 'tpPostgres'
     }
 }
 
