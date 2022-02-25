@@ -8,7 +8,7 @@ build-django-job:
   before_script:
     - cd api
   script:
-    - pip install django djangorestframework django-cors-headers django-environ psycopg2"
+    - pip install django djangorestframework django-cors-headers django-environ psycopg2
     - python3 manage.py runserver
     - echo "API server started."
   after_script:
