@@ -5,9 +5,13 @@ stages:
 
 build-django-job:
   stage: build
+  before_script:
+    - cd api
   script:
-    - echo "Starting the api server..."
+    - python3 manage.py runserver
     - echo "API server started."
+  after_script:
+    - cd ..
 
 build-vue-job:
   stage: build
