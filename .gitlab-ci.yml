@@ -7,6 +7,7 @@ install-api-prereqs:
   stage: build
   tags:
     - python
+    - postgres
   before_script:
     - cd api
   script:
