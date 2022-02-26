@@ -7,12 +7,12 @@ build-vue-client:
   stage: build
   tags:
     - node
+    - server-runner
   before_script:
     - cd client
   script:
-    #- npm install --progress=false
-    #- npm run build
-    - echo 123
+    - npm install --progress=false
+    - npm run build
 
 run-python-unit-tests:
   stage: test
@@ -23,12 +23,8 @@ run-python-unit-tests:
     - cd api
     - cp $ENV_FILE api/.env
   script:
-    - python --version
-    - apt-get update
-    - apt-get install -y iputils-ping
-    - ping -c 4 134.209.29.204
     - pip install -r requirements.txt
-    # check db connection: DOESN'T WORK ATM
+    # check db connection:
     - python manage.py check --database default
     # run tests
     - coverage erase
@@ -39,6 +35,7 @@ run-js-unit-tests:
   stage: test
   tags:
     - node
+    - server-runner
   before_script:
     - cd client
   script:
@@ -47,6 +44,9 @@ run-js-unit-tests:
 
 deploy:
   stage: deploy
+  tags:
+    - node
+    - server-runner
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
