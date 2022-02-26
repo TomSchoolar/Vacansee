@@ -11,7 +11,6 @@ install-api-prereqs:
     - cd api
   script:
     - pip install django djangorestframework django-cors-headers django-environ psycopg2
-    - echo "django packages installed"
     - python manage.py check --database default
   after_script:
     - cd ..
