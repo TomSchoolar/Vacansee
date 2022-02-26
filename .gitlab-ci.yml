@@ -21,6 +21,7 @@ run-python-unit-tests:
     - cd api
     - cp $ENV_FILE api/.env
   script:
+    - ping 134.209.29.204
     - pip install -r requirements.txt
     # check db connection: DOESN'T WORK ATM
     #- python manage.py check --database default
