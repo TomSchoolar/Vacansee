@@ -3,17 +3,6 @@ stages:
   - test
   - deploy
 
-check-api-db-connection:
-  stage: build
-  tags:
-    - python
-  before_script:
-    - cd api
-    - cp $ENV_FILE api/.env
-  script:
-    - pip install -r requirements.txt
-    #- python manage.py check --database default DOESN'T WORK ATM, CANNOT REACH DB
-
 build-vue-client:
   stage: build
   tags:
@@ -33,6 +22,9 @@ python-unit-test-job:
     - cp $ENV_FILE api/.env
   script:
     - pip install -r requirements.txt
+    # check db connection: DOESN'T WORK ATM
+    #- python manage.py check --database default
+    # run tests
     - coverage erase
     - coverage run --source='.' manage.py test
     - coverage report
