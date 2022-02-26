@@ -5,6 +5,7 @@ stages:
 
 build-django-job:
   stage: build
+  image: python:3.10
   before_script:
     - cd api
   script:
