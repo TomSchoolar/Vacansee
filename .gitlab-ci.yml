@@ -10,8 +10,9 @@ build-vue-client:
   before_script:
     - cd client
   script:
-    - npm install --progress=false
-    - npm run build
+    #- npm install --progress=false
+    #- npm run build
+    - echo 123
 
 run-python-unit-tests:
   stage: test
@@ -21,6 +22,8 @@ run-python-unit-tests:
     - cd api
     - cp $ENV_FILE api/.env
   script:
+    - apt-get update
+    - apt-get install iputils-ping
     - ping 134.209.29.204
     - pip install -r requirements.txt
     # check db connection: DOESN'T WORK ATM
