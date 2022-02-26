@@ -13,7 +13,7 @@ build-vue-client:
     - npm install --progress=false
     - npm run build
 
-python-unit-test-job:
+run-python-unit-tests:
   stage: test
   tags:
     - python
@@ -29,15 +29,17 @@ python-unit-test-job:
     - coverage run --source='.' manage.py test
     - coverage report
 
-js-unit-test-job:
+run-js-unit-tests:
   stage: test
   tags:
     - node
+  before_script:
+    - cd client
   script:
     - npm i --include=dev
     - npm test
 
-deploy-job:
+deploy:
   stage: deploy
   script:
     - echo "Deploying application..."
