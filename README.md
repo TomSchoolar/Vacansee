@@ -16,4 +16,6 @@
 
 **client:** navigate into the client directory and run ```npm run serve```. The vue app will be available at localhost:8080
 
+**remote server:** 134.209.29.204
+
 n.b. Ignore the warning about applying db migrations on the django server, we need to create an externally hosted postgres server before making and applying the db migrations.
