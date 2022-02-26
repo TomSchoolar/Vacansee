@@ -24,7 +24,7 @@ run-python-unit-tests:
   script:
     - apt-get update
     - apt-get install -y iputils-ping
-    - ping 134.209.29.204
+    - ping bbc.co.uk/news
     - pip install -r requirements.txt
     # check db connection: DOESN'T WORK ATM
     #- python manage.py check --database default
