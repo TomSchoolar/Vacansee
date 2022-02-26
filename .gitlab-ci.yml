@@ -3,7 +3,7 @@ stages:
   - test
   - deploy
 
-install-api-prereqs:
+check-api-db-connection:
   stage: build
   tags:
     - python
@@ -14,7 +14,7 @@ install-api-prereqs:
     - pip install -r requirements.txt
     #- python manage.py check --database default DOESN'T WORK ATM, CANNOT REACH DB
 
-build-vue-job:
+build-vue-client:
   stage: build
   tags:
     - node
@@ -26,15 +26,21 @@ build-vue-job:
 
 python-unit-test-job:
   stage: test
+  tags:
+    - python
   before_script:
     - cd api
+    - cp $ENV_FILE api/.env
   script:
+    - pip install -r requirements.txt
     - coverage erase
     - coverage run --source='.' manage.py test
     - coverage report
 
 js-unit-test-job:
   stage: test
+  tags:
+    - node
   script:
     - echo "Running client unit tests... This will take about 15 seconds"
     - sleep 15
