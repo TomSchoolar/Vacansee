@@ -11,18 +11,18 @@ install-api-prereqs:
     - cd api
     - cp $ENV_FILE api/.env
   script:
-    - pip install django djangorestframework django-cors-headers django-environ psycopg2
-    - python manage.py check --database default
-  after_script:
-    - cd ..
+    - pip install -r requirements.txt
+    #- python manage.py check --database default DOESN'T WORK ATM, CANNOT REACH DB
 
 build-vue-job:
   stage: build
   tags:
     - node
+  before_script:
+    - cd client
   script:
-    - echo "Starting client server"
-    - echo "Client server started"
+    - npm install --progress=false
+    - npm run build
 
 python-unit-test-job:
   stage: test
