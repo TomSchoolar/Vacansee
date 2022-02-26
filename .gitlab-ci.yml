@@ -11,7 +11,7 @@ build-django-job:
     - cd api
   script:
     - pip install django djangorestframework django-cors-headers django-environ psycopg2
-    - python3 manage.py runserver
+    - python3 manage.py runserver --noreload
     - echo "API server started."
   after_script:
     - cd ..
