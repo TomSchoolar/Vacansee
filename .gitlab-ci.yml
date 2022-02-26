@@ -7,11 +7,10 @@ install-api-prereqs:
   stage: build
   tags:
     - python
-  services:
-    - postgres
   before_script:
     - cd api
   script:
+    - psql -V psql
     - pip install django djangorestframework django-cors-headers django-environ psycopg2
     - python manage.py check --database default
   after_script:
