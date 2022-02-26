@@ -10,7 +10,6 @@ install-api-prereqs:
   before_script:
     - cd api
   script:
-    - psql -V psql
     - pip install django djangorestframework django-cors-headers django-environ psycopg2
     - python manage.py check --database default
   after_script:
@@ -18,6 +17,8 @@ install-api-prereqs:
 
 build-vue-job:
   stage: build
+  tags:
+    - node
   script:
     - echo "Starting client server"
     - echo "Client server started"
