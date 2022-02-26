@@ -3,15 +3,16 @@ stages:
   - test
   - deploy
 
-build-django-job:
+make-db-migrations-job:
   stage: build
   tags:
     - python
   before_script:
     - cd api
-  script:
     - pip install django djangorestframework django-cors-headers django-environ psycopg2
-    - python3 manage.py runserver --noreload
+  script:
+    - python3 manage.py makemigrations
+    - python3 manage.py migrate
     - echo "API server started."
   after_script:
     - cd ..
