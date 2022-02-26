@@ -24,7 +24,7 @@ run-python-unit-tests:
   script:
     - apt-get update
     - apt-get install -y iputils-ping
-    - pint -c 4 134.209.29.204
+    - ping -c 4 134.209.29.204
     - ping -c 4 127.0.0.1
     - pip install -r requirements.txt
     # check db connection: DOESN'T WORK ATM
