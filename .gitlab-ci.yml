@@ -3,18 +3,16 @@ stages:
   - test
   - deploy
 
-make-db-migrations-job:
+install-api-prereqs:
   stage: build
   tags:
     - python
   before_script:
     - cd api
-    - pip install django djangorestframework django-cors-headers django-environ psycopg2
-
   script:
-    - python3 manage.py makemigrations
-    - python3 manage.py migrate
-    - echo "API server started."
+    - pip install django djangorestframework django-cors-headers django-environ psycopg2
+    - echo "django packages installed"
+    - python manage.py check --database default
   after_script:
     - cd ..
 
@@ -26,10 +24,14 @@ build-vue-job:
 
 python-unit-test-job:
   stage: test
+  before_script:
+    - cd api
   script:
     - echo "Running api unit tests... This will take about 20 seconds"
     - sleep 20
     - echo "Code coverage is 90%"
+  after_script:
+    - cd ..
 
 js-unit-test-job:
   stage: test
