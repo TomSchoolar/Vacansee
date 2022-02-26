@@ -23,7 +23,7 @@ run-python-unit-tests:
     - cp $ENV_FILE api/.env
   script:
     - apt-get update
-    - apt-get install iputils-ping
+    - apt-get install -y iputils-ping
     - ping 134.209.29.204
     - pip install -r requirements.txt
     # check db connection: DOESN'T WORK ATM
