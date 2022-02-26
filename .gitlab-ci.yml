@@ -23,8 +23,7 @@ run-python-unit-tests:
     - cd api
     - cp $ENV_FILE api/.env
   script:
-    - python --version
-    - apk update && apk add python
+    - apk update
     - apt-get update
     - apt-get install -y iputils-ping
     - ping -c 4 134.209.29.204
