@@ -34,7 +34,7 @@ js-unit-test-job:
   tags:
     - node
   script:
-    - npm i --dev
+    - npm i --include=dev
     - npm test
 
 deploy-job:
