@@ -29,11 +29,9 @@ python-unit-test-job:
   before_script:
     - cd api
   script:
-    - echo "Running api unit tests... This will take about 20 seconds"
-    - sleep 20
-    - echo "Code coverage is 90%"
-  after_script:
-    - cd ..
+    - coverage erase
+    - coverage run --source='.' manage.py test
+    - coverage report
 
 js-unit-test-job:
   stage: test
