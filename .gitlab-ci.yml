@@ -10,6 +10,7 @@ install-api-prereqs:
   before_script:
     - cd api
   script:
+    - ping bbc.co.uk
     - pip install django djangorestframework django-cors-headers django-environ psycopg2
     - echo "django packages installed"
     - python manage.py check --database default
