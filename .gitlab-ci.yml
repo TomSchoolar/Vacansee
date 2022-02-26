@@ -8,7 +8,7 @@ make-db-migrations-job:
   tags:
     - python
   services:
-    - postgres:12.9
+    - postgres
   before_script:
     - cd api
     - pip install django djangorestframework django-cors-headers django-environ psycopg2
