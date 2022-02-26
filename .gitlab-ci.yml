@@ -26,6 +26,9 @@ run-python-unit-tests:
     - pip install -r requirements.txt
     # check db connection:
     - python manage.py check --database default
+    # migrate db
+    - python manage.py makemigrations
+    - python manage.py migrate
     # run tests
     - coverage erase
     - coverage run --source='.' manage.py test
