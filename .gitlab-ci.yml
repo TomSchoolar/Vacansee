@@ -34,9 +34,8 @@ js-unit-test-job:
   tags:
     - node
   script:
-    - echo "Running client unit tests... This will take about 15 seconds"
-    - sleep 15
-    - echo "Code coverage is 75%"
+    - npm i --dev
+    - npm test
 
 deploy-job:
   stage: deploy
