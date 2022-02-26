@@ -10,13 +10,7 @@ make-db-migrations-job:
   before_script:
     - cd api
     - pip install django djangorestframework django-cors-headers django-environ psycopg2
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    # Run ssh-agent (inside the build environment)
-    - eval $(ssh-agent -s)
-    # Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
-    - ssh-add <(echo "$SSH_PRIVATE_KEY")
-    - mkdir -p ~/.ssh
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
   script:
     - python3 manage.py makemigrations
     - python3 manage.py migrate
