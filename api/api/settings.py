@@ -26,12 +26,18 @@ env = environ.Env()
 environ.Env.read_env()
 
 # SECURITY WARNING: keep the secret key used in production secret!
+try:
+    if(env('IS_DEV') == 'TRUE'):
+        DEBUG = True
+    else:
+        DEBUG = False
+except:
+    DEBUG = False
+
+
 SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['134.209.29.204']
+ALLOWED_HOSTS = ['134.209.29.204', 'localhost', '127.0.0.1']
 
 # SECURITY WARNING: do not run with allow all origins in production!
 CORS_ALL_ALL_ORIGINS = True 

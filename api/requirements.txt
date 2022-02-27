@@ -8,3 +8,5 @@ gunicorn==20.1.0
 pytz==2021.3
 sqlparse==0.4.2
 tzdata==2021.5
+# DO NOT ADD psycopg2 or psycopg2-binary TO THIS FILE!
+# install the relevant one for your os and add neither above
