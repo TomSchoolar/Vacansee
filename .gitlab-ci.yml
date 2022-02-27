@@ -31,6 +31,8 @@ run-python-unit-tests:
     - cp $ENV_FILE api/.env
   script:
     - pip install -r requirements.txt
+    # have to install psycopg2 linux package separately
+    - pip install psycopg2-binary
     # check db connection:
     - python manage.py check --database default
      migrate db
@@ -89,4 +91,5 @@ deploy-client:
     - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8080
   script:
     - scp -r client/dist/* root@$SERVER_IP:/code/client
+    - sshr root@$SERVER_IP "cd ../code/client && touch .env && echo $VUE_ENV_FILE > .env"
     - ssh root@$SERVER_IP sudo service nginx reload
