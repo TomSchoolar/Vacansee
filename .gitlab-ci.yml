@@ -38,7 +38,7 @@ run-python-unit-tests:
     # migrate db
     - python manage.py makemigrations
     - python manage.py migrate
-     run tests
+    # run tests
     - coverage erase
     - coverage run --source='.' manage.py test
     - coverage report
