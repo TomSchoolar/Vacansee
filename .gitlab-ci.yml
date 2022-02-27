@@ -69,7 +69,8 @@ deploy-api:
         $CI_PROJECT_DIR/api
         root@$SERVER_IP:/api
     - ssh root@$SERVER_IP
-    - cd ../api
+    - ls
+    - cd api
     - pip install requirements.txt
     - gunicorn --bind 0.0.0.0:8000 api.wsgi
     - exit
