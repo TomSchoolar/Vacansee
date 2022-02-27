@@ -11,9 +11,15 @@ build-vue-client:
   before_script:
     - cd client
   script:
-    #- npm install --progress=false
-    #- npm run build
-    echo 123
+    - npm install --progress=false
+    - npm run build
+  cache:
+    paths:
+      - client/node_modules/
+  artifacts:
+    paths:
+      - client/dist/
+    expire_in: 1 hour
 
 run-python-unit-tests:
   stage: test
@@ -54,6 +60,29 @@ deploy-api:
     - python
     - server-runner
   before_script:
+    - echo 123
+    #- 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    #- eval $(ssh-agent -s)
+    #- mkdir -p ~/.ssh
+    #- chmod 700 ~/.ssh
+    #- echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    #- chmod 600 ~/.ssh/id_rsa
+    #- ssh-add
+    #- ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8000
+  script:
+    - echo 123
+    #- scp -r -o StrictHostKeyChecking=no
+    #    $CI_PROJECT_DIR/api
+    #    root@$SERVER_IP:/code
+    #- ssh root@$SERVER_IP pwd
+    #- ssh root@$SERVER_IP "cd ../code/api && pip install -r requirements.txt && pip install psycopg2-binary && touch api/.env && echo $ENV_FILE > .env && sudo systemctl restart gunicorn"
+
+deploy-client:
+  stage: deploy
+  tags:
+    - node
+    - server-runner
+  before_script:
     - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
     - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
@@ -61,21 +90,6 @@ deploy-api:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-add
-    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8000
+    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8080
   script:
-    - ls
-    - ls $CI_PROJECT_DIR
-    - scp -r -o StrictHostKeyChecking=no
-        $CI_PROJECT_DIR/api
-        root@$SERVER_IP:/code
-    - ssh root@$SERVER_IP pwd
-    - ssh root@$SERVER_IP "cd ../code/api && pip install -r requirements.txt && pip install psycopg2-binary && touch api/.env && echo $ENV_FILE > .env && sudo systemctl restart gunicorn"
-
-deploy-client:
-  stage: deploy
-  tags:
-    - node
-    - server-runner
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - scp -r client/dist/* root@$SERVER_IP:/code/client
