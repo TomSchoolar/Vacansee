@@ -31,7 +31,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['134.209.29.204']
 
 # SECURITY WARNING: do not run with allow all origins in production!
 CORS_ALL_ALL_ORIGINS = True 
@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # TODO: switch to postgres db
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env('DB_NAME'),
         'HOST': env('DB_HOST'),
         'PORT': env('DB_PORT'),
