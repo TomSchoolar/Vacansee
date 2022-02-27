@@ -45,7 +45,31 @@ run-js-unit-tests:
     - npm i --include=dev
     - npm test
 
-deploy:
+deploy-api:
+  stage: deploy
+  tags:
+    - python
+    - server-runner
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-add
+    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8000
+  script:
+    - scp -o StrictHostKeyChecking=no
+        $CI_PROJECT_DIR/api
+        root@$SERVER_IP/api
+    - ssh root@$SERVER_IP
+    - cd ../api
+    - pip install requirements.txt
+    - gunicorn --bind 0.0.0.0:8000 api.wsgi
+    - exit
+
+deploy-client:
   stage: deploy
   tags:
     - node
