@@ -30,17 +30,16 @@ run-python-unit-tests:
     - cd api
     - cp $ENV_FILE api/.env
   script:
-    #- pip install -r requirements.txt
+    - pip install -r requirements.txt
     # check db connection:
-    #- python manage.py check --database default
-    # migrate db
-    #- python manage.py makemigrations
-    #- python manage.py migrate
-    # run tests
-    #- coverage erase
-    #- coverage run --source='.' manage.py test
-    #- coverage report
-    - echo 123
+    - python manage.py check --database default
+     migrate db
+    - python manage.py makemigrations
+    - python manage.py migrate
+     run tests
+    - coverage erase
+    - coverage run --source='.' manage.py test
+    - coverage report
 
 run-js-unit-tests:
   stage: test
@@ -50,9 +49,8 @@ run-js-unit-tests:
   before_script:
     - cd client
   script:
-    #- npm i --include=dev
-    #- npm test
-    - echo 123
+    - npm i --include=dev
+    - npm test
 
 deploy-api:
   stage: deploy
@@ -60,22 +58,20 @@ deploy-api:
     - python
     - server-runner
   before_script:
-    - echo 123
-    #- 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
-    #- eval $(ssh-agent -s)
-    #- mkdir -p ~/.ssh
-    #- chmod 700 ~/.ssh
-    #- echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    #- chmod 600 ~/.ssh/id_rsa
-    #- ssh-add
-    #- ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8000
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-add
+    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8000
   script:
-    - echo 123
-    #- scp -r -o StrictHostKeyChecking=no
-    #    $CI_PROJECT_DIR/api
-    #    root@$SERVER_IP:/code
-    #- ssh root@$SERVER_IP pwd
-    #- ssh root@$SERVER_IP "cd ../code/api && pip install -r requirements.txt && pip install psycopg2-binary && touch api/.env && echo $ENV_FILE > .env && sudo systemctl restart gunicorn"
+    - scp -r -o StrictHostKeyChecking=no
+        $CI_PROJECT_DIR/api
+        root@$SERVER_IP:/code
+    - ssh root@$SERVER_IP pwd
+    - ssh root@$SERVER_IP "cd ../code/api && pip install -r requirements.txt && pip install psycopg2-binary && touch api/.env && echo $ENV_FILE > .env && sudo systemctl restart gunicorn"
 
 deploy-client:
   stage: deploy
