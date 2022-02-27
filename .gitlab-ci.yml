@@ -91,5 +91,5 @@ deploy-client:
     - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8080
   script:
     - scp -r client/dist/* root@$SERVER_IP:/code/client
-    - sshr root@$SERVER_IP "cd ../code/client && touch .env && echo $VUE_ENV_FILE > .env"
+    - ssh root@$SERVER_IP "cd ../code/client && touch .env && echo $VUE_ENV_FILE > .env"
     - ssh root@$SERVER_IP sudo service nginx reload
