@@ -63,6 +63,8 @@ deploy-api:
     - ssh-add
     - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8000
   script:
+    - ls
+    - ls $CI_PROJECT_DIR
     - scp -r -o StrictHostKeyChecking=no
         $CI_PROJECT_DIR/api
         root@$SERVER_IP/api
