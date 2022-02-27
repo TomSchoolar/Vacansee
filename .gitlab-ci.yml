@@ -68,7 +68,8 @@ deploy-api:
     - scp -r -o StrictHostKeyChecking=no
         $CI_PROJECT_DIR/api
         root@$SERVER_IP:/code
-    - ssh root@$SERVER_IP "cd ../code/api; pip install requirements.txt; gunicorn --bind 0.0.0.0:8000 api.wsgi"
+    - ssh root@$SERVER_IP pwd
+    - ssh root@$SERVER_IP cd ../code/api && pip install -r requirements.txt && gunicorn --bind 0.0.0.0:8000 api.wsgi
 
 deploy-client:
   stage: deploy
