@@ -67,7 +67,7 @@ deploy-api:
     - ls $CI_PROJECT_DIR
     - scp -r -o StrictHostKeyChecking=no
         $CI_PROJECT_DIR/api
-        root@$SERVER_IP/api
+        root@$SERVER_IP:/api
     - ssh root@$SERVER_IP
     - cd ../api
     - pip install requirements.txt
