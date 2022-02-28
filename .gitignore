@@ -6,6 +6,6 @@ client/node_modules
 client/.env
 
 # Django #
-api/api/__pycache__
+**/__pycache__
 api/db.sqlite3
 api/api/.env 
