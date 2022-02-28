@@ -81,7 +81,7 @@ deploy-api:
     - cp $ENV_FILE api/.env
     - scp -o StrictHostKeyChecking=no
         $CI_PROJECT_DIR/api/api/.env
-        root@$SERVER_IP:/code/api/.env
+        root@$SERVER_IP:/code/api/api/.env
     # check db connection and make migrations:
     - ssh root@$SERVER_IP "cd /code/api && python3 manage.py check --database default && python3 manage.py makemigrations && python3 manage.py migrate"
     # restart server
