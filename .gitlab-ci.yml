@@ -28,7 +28,7 @@ run-python-unit-tests:
     - server-runner
   before_script:
     - cd api
-    - cp $ENV_FILE api/.env
+    - cp $TEST_ENV_FILE api/.env
   script:
     - pip install -r requirements.txt
     # have to install psycopg2 linux package separately
@@ -91,5 +91,7 @@ deploy-client:
     - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8080
   script:
     - scp -r client/dist/* root@$SERVER_IP:/code/client
-    - ssh root@$SERVER_IP "cd ../code/client && touch .env && echo $VUE_ENV_FILE > .env"
     - ssh root@$SERVER_IP sudo service nginx reload
+    - ssh root@$SERVER_IP cp $ENV_FILE api/.env
+    # check db connection and make migrations:
+    - ssh root@$SERVER_IP "cd /code/api && python manage.py check --database default && python manage.py makemigrations && python manage.py migrate"
