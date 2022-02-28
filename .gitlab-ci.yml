@@ -83,7 +83,7 @@ deploy-api:
         $CI_PROJECT_DIR/api/.env
         root@$SERVER_IP:/code/api/.env
     # check db connection and make migrations:
-    - ssh root@$SERVER_IP "cd /code/api && python manage.py check --database default && python3 manage.py makemigrations && python3 manage.py migrate"
+    - ssh root@$SERVER_IP "cd /code/api && python3 manage.py check --database default && python3 manage.py makemigrations && python3 manage.py migrate"
     # restart server
     - ssh root@$SERVER_IP sudo systemctl restart gunicorn
 
@@ -101,8 +101,8 @@ deploy-client:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-add
+    # open port 80
+    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 80
   script:
-    # copy dist to vm
     - scp -r client/dist/* root@$SERVER_IP:/code/client
-    # restart server
     - ssh root@$SERVER_IP sudo service nginx reload
