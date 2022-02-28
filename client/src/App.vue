@@ -4,6 +4,7 @@
 
 <template>
 	<HomeView />
+    test
 </template>
 
 <style>
