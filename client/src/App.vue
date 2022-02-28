@@ -1,17 +1,9 @@
 <script setup>
     import HomeView from '@/views/HomeView.vue';
-    import { ref, onMounted } from 'vue';
-
-    let str = ref("");
-
-    onMounted(() => {
-        str.value = process.env.VUE_APP_TEST;
-    });
 </script>
 
 <template>
 	<HomeView />
-	<p>{{ str }}</p>
 </template>
 
 <style>
