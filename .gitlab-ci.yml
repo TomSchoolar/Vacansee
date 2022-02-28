@@ -78,9 +78,9 @@ deploy-api:
     - ssh root@$SERVER_IP "cd ../code/api && pip install -r requirements.txt && pip install psycopg2-binary"
     # copy env vars
     - cd api
-    - touch .env && echo $ENV_FILE > .env
+    - cp $ENV_FILE api/.env
     - scp -o StrictHostKeyChecking=no
-        $CI_PROJECT_DIR/api/.env
+        $CI_PROJECT_DIR/api/api/.env
         root@$SERVER_IP:/code/api/.env
     # check db connection and make migrations:
     - ssh root@$SERVER_IP "cd /code/api && python3 manage.py check --database default && python3 manage.py makemigrations && python3 manage.py migrate"
