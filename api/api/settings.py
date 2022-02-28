@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env()
 
-# SECURITY WARNING: keep the secret key used in production secret!
+
 try:
     if(env('IS_DEV') == 'TRUE'):
         DEBUG = True
