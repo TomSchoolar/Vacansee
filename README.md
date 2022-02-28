@@ -8,8 +8,7 @@
 ## Installing Locally
 1. navigate into client and run ```npm i``` to install the required npm packages.
 2. run ```pip install djangorestframework django-cors-headers django-environ``` in any directory.
-3. add a file named .env in the client directory and enter the line ```VUE_APP_TEST=Hello!```, this should now show up when you start the server.
-4. add a file named .env in the api/api directory (the same one as settings.py) and enter the secret key posted on teams.
+3. add a file named .env in the api/api directory (the same one as settings.py) and enter the secret key posted on teams.
 
 ## Running servers
 **api:** navigate into the api directory and run ```python manage.py runserver```. The django app will be available at localhost:8000
@@ -18,4 +17,3 @@
 
 **remote server:** 134.209.29.204
 
-n.b. Ignore the warning about applying db migrations on the django server, we need to create an externally hosted postgres server before making and applying the db migrations.
