@@ -72,8 +72,12 @@ deploy-api:
     - scp -r -o StrictHostKeyChecking=no
         $CI_PROJECT_DIR/api
         root@$SERVER_IP:/code
-    - ssh root@$SERVER_IP pwd
-    - ssh root@$SERVER_IP "cd ../code/api && pip install -r requirements.txt && pip install psycopg2-binary && touch api/.env && echo $ENV_FILE > .env && sudo systemctl restart gunicorn"
+    # copy code and env vars, install packages
+    - ssh root@$SERVER_IP "cd ../code/api && pip install -r requirements.txt && pip install psycopg2-binary && touch api/.env && echo $ENV_FILE > api/.env
+    # check db connection and make migrations:
+    - ssh root@$SERVER_IP "cd /code/api && python manage.py check --database default && python manage.py makemigrations && python manage.py migrate"
+    # restart server
+    - ssh root@$SERVER_IP sudo systemctl restart gunicorn
 
 deploy-client:
   stage: deploy
@@ -91,7 +95,4 @@ deploy-client:
     - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8080
   script:
     - scp -r client/dist/* root@$SERVER_IP:/code/client
-    - ssh root@$SERVER_IP cp $ENV_FILE /code/api/api/.env
     - ssh root@$SERVER_IP sudo service nginx reload
-    # check db connection and make migrations:
-    - ssh root@$SERVER_IP "cd /code/api && python manage.py check --database default && python manage.py makemigrations && python manage.py migrate"
