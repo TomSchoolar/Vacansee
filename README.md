@@ -17,4 +17,3 @@
 
 **remote server:** 134.209.29.204
 
-n.b. Ignore the warning about applying db migrations on the django server, we need to create an externally hosted postgres server before making and applying the db migrations.
