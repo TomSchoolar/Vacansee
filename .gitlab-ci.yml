@@ -8,6 +8,12 @@ build-vue-client:
   tags:
     - node
     - server-runner
+  only:
+    refs:
+      - main
+  except:
+    refs:
+      - branches
   before_script:
     - cd client
   script:
@@ -20,9 +26,6 @@ build-vue-client:
     paths:
       - client/dist/
     expire_in: 1 hour
-  only:
-    refs:
-      - main
 
 run-python-unit-tests:
   stage: test
@@ -65,6 +68,9 @@ deploy-api:
   only:
     refs:
       - main
+  except:
+    refs:
+      - branches
   before_script:
     # add ssh private key to local .ssh
     - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
@@ -101,6 +107,9 @@ deploy-client:
   only:
     refs:
       - main
+  except:
+    refs:
+      - branches
   before_script:
     # add private ssh key to local .ssh
     - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
