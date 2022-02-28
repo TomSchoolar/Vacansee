@@ -25,7 +25,9 @@ A full list of required packages is available at:
 - client/package.json for vue
 - api/requirements.txt for django (excluding the postgres package)
 
-New packages installed for the client should be added to package.json automatically (if you use the -S/--save flag or to dev-dependencies with --save-dev). Packages installed for django have to be manually added to api/requirements.txt using ```pip freeze > requirements.txt``` **IMPORTANT:** If you update requirements.txt, make sure you remove the psycopg2 line as this package only works for Windows and psycopg2-binary must be used for linux. However, if the wrong one is present in the requirements file when it is used to install dependencies, it will crash the intstaller process and therefore the correct version must be installed manually.
+New packages installed for the client should be added to package.json automatically (if you use the -S/--save flag or to dev-dependencies with --save-dev). Packages installed for django have to be manually added to api/requirements.txt using ```pip freeze > requirements.txt``` 
+
+**IMPORTANT:** If you update requirements.txt, make sure you remove the psycopg2 line as this package only works for Windows and psycopg2-binary must be used for linux. However, if the wrong one is present in the requirements file when it is used to install dependencies, it will crash the intstaller process and therefore the correct version must be installed manually.
 
 To install the dependencies for the client, navigate into the client directory and run ```npm i```, for the api navigate into the api directory and run ```pip install -r requirements.txt && pip install psycopg2-binary``` removing the -binary if necessary (i.e. if on Windows).
 
