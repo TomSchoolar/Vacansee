@@ -5,6 +5,7 @@ vetur.config.js
 # Vue #
 client/node_modules
 client/.env
+client/tests/coverage
 
 # Django #
 **/__pycache__
