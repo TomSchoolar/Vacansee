@@ -9,7 +9,7 @@
 
 ### Installing Locally
 1. navigate into client and run ```npm i``` to install the required npm packages.
-2. run ```pip install djangorestframework django-cors-headers django-environ``` in any directory.
+2. run ```pip install -r requirements.txt && pip install psycopg2``` in the top level api directory.
 3. add a file named .env in the api/api directory (the same one as settings.py) and enter the secret key posted on teams.
 
 ### Running Servers Locally
@@ -31,6 +31,13 @@ New packages installed for the client should be added to package.json automatica
 
 To install the dependencies for the client, navigate into the client directory and run ```npm i```, for the api navigate into the api directory and run ```pip install -r requirements.txt && pip install psycopg2-binary``` removing the -binary if necessary (i.e. if on Windows).
 
+
+## Making requests to the api
+
+The client has a package called axios installed to send and receive requests/responses to/from the api. The docs can be found here:
+
+- https://www.npmjs.com/package/axios
+- https://axios-http.com/docs/intro
 
 ## CI/CD
 
