@@ -122,3 +122,14 @@ Below is an outline of the code integration process we discussed:
 5. The pipeline will build, test and deploy the changes if there are no issues with the code
 
 You can then remove the branch locally using ```git fetch --prune```
+
+## Colour Palette
+
+- red: #cc2936
+- blue: #08415c
+- slate grey: 6b818c
+- white: #ffffff
+- jet: #333333
+- black: #000000
+
+https://coolors.co/08415c-cc2936-6b818c-ffffff-333333
