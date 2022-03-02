@@ -9,3 +9,4 @@ client/.env
 **/__pycache__
 api/db.sqlite3
 api/api/.env 
+api/.coverage
