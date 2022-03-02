@@ -85,7 +85,11 @@ in the same directory. To view a more interactive and detailed report, run ```co
 
 To make sure Jest tests are discovered, they should be put in the tests directory and the filenames should be suffixed with .spec.js. It is good practice to put tests in a directory named \_\_tests__ but that requires additional configuration for them to be discovered correctly and I cba with that. If anyone else wants to then please go right ahead. To run the tests, navigate to the client directory and run ```npm test```. There will be a report of test pass/fail results and also a coverage summary. To see this in the gitlab pipeline, go to the relevant pipeline, click on the run-js-unit-tests job and navigate to the bottom of the log.
 
+To explore coverage in more detail, go to the tests/coverage folder and open index.html.
+
 There is an example test file at client/tests/unit/example.spec.js.
+
+n.b. due to a bug with the default babel coverage detection provider, we are having to use the experimental v8 provider since the babel one ignores all new sfcs.
 
 ## Environment Variables
 
