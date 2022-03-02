@@ -71,7 +71,7 @@ In order to be make sure python tests are discoverable, they must be in a file w
             print 'Win'
 ```
 
-Each django app will auto-generate a tests.py file, this will be insignificant to hold all the tests for each app so it is advisable to create a tests folder with multiple test_namehere.py files.
+Each django app will auto-generate a tests.py file, this will be insignificant to hold all the tests for each app so it is advisable to create a tests folder with multiple test_namehere.py files. If creating a tests directory, you also need to create an empty file called \_\_init\_\_.py in order to make django discover the tests files in the directory.
 
 To run the tests, navigate to /api and run ```python manage.py test```. To run tests and get coverage information, run:
 
