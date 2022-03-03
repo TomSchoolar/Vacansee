@@ -14,7 +14,7 @@
 
         <div class='navbar-link-block'>
             <a href='#' class='navbar-link' id='navbar-notif-container'>
-                <faIcon @click='notification' id='navbar-notif' icon='bell'></faIcon>
+                <i @click='notification' id='navbar-notif' class='fas fa-bell'></i>
                 <span id='navbar-notif-alert' v-if='notifs'>{{ numNotifs }}</span>
             </a>
             <span class='navbar-divider'></span>

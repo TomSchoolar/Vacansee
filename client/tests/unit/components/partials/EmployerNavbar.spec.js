@@ -7,9 +7,6 @@ describe('EmployerNavbar.vue Test', () => {
     beforeEach(() => {
         // render navbar
         wrapper = shallowMount(EmployerNavbar, {
-            global: {
-                stubs: ['faIcon']
-            },
             propsData: {
                 page: 'home',
                 numNotifs: 3

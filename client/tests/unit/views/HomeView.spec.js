@@ -7,9 +7,6 @@ describe('HomeView.vue Test', () => {
     beforeEach(() => {
         // render navbar
         wrapper = mount(HomeView, {
-            global: {
-                stubs: ['faIcon']
-            },
             attachTo: document.body
         });
     });
