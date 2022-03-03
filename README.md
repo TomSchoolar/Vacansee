@@ -108,6 +108,8 @@ The remote vm hosts the following:
 - **gunicorn django server:** port 8000
 - **nginx vue server:** port 80
 
+The client is now running at **tp45.co.uk** with ssl enabled.
+
 ## Databases
 
 The remote postgres server contains three main databases, one called tpdev (for local development), one called tptest (for pipeline api testing) and one called tpproduction (for use by the live app). Migrations are carried out on the testing and production databases automatically everytime the api testing and build jobs are called in gitlab but the development database will have to have migrations done manually by one person whenever the models are updated. This is done by running the following in the top level api directory:
