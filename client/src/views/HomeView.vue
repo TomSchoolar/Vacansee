@@ -1,8 +1,8 @@
 <template>
     <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
 
-    <button @click='addNotif'>Add notification</button>
-    <button @click='removeNotif'>Remove Notification</button>
+    <button @click='notifs++'>Add notification</button>
+    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
 
 	<div class="home">
 		<img alt="Vue logo" src="../assets/logo.png" />
@@ -17,15 +17,5 @@
 
     import { ref } from 'vue';
 
-    let notifs = ref(0);
-
-    const addNotif = () => {
-        notifs.value++;
-    }
-
-    const removeNotif = () => {
-        if(notifs.value > 0)
-            notifs.value--;
-    }
-    
+    let notifs = ref(0);    
 </script>
