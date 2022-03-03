@@ -15,7 +15,7 @@
         <div class='navbar-link-block'>
             <a href='#' class='navbar-link' id='navbar-notif-container'>
                 <faIcon @click='notification' id='navbar-notif' icon='bell'></faIcon>
-                <span id='navbar-notif-alert'>{{ numNotifs }}</span>
+                <span id='navbar-notif-alert' v-if='notifs'>{{ numNotifs }}</span>
             </a>
             <span class='navbar-divider'></span>
             <a href='#' @click='logout' class='navbar-link'>Log out</a>
@@ -28,7 +28,6 @@
     
     const props = defineProps(['page', 'numNotifs']);
 
-    let displayNotifs = ref(true);
     let notifs = toRef(props, 'numNotifs');
     
     onMounted(() => {
@@ -37,22 +36,7 @@
         if(pageLink != null) {
             pageLink.classList.add('navbar-active-link');
         }
-
-        updateNotifs(notifs.value);
     });
-
-    const updateNotifs = (current) => {
-        // show/hide notif bubble as required
-        if(current > 0 && displayNotifs.value == false) {
-            document.getElementById('navbar-notif-alert').style.display = 'inline-flex';
-            displayNotifs.value = true;
-        } else if(current < 1 && displayNotifs.value == true) {
-            document.getElementById('navbar-notif-alert').style.display = 'none';
-            displayNotifs.value = false;
-        }
-    }
-
-    watch(notifs, updateNotifs);
 
     const notification = () => {
         alert("notification!");
