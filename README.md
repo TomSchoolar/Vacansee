@@ -120,7 +120,7 @@ The remote postgres server contains three main databases, one called tpdev (for 
 Below is an outline of the code integration process we discussed:
 
 1. Develop each kanban task on a new branch (```git checkout -b [branch name]```) and commit any changes to that branch.
-2. When the feature/task is complete, run tests locally and then push to the branch on gitlab (```git push -u [branch name]```)
+2. When the feature/task is complete, run tests locally and then push to the branch on gitlab (```git push -u origin [branch name]```)
 3. Create a merge request and assign someone if you want, otherwise maybe make a kanban task or ask on teams idk
 4. Someone should review your pr and then merge into main
 5. The pipeline will build, test and deploy the changes if there are no issues with the code
