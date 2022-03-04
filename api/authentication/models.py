@@ -6,10 +6,10 @@ from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class User(models.Model):
-    UserId = models.AutoField(primary_key=True, default=0) 
-    Email = models.CharField(max_length=500, default="Default Email")
+    UserId = models.AutoField(primary_key=True) 
+    Email = models.EmailField(max_length=254, blank=False, unique=True)
     IsEmployer = models.BooleanField(default=False, blank=False)
-    PasswordHash = models.CharField(max_length=500, default="Hash")
-    PasswordSalt = models.CharField(max_length=500, default="Salt")
-    PasswordResetToken = models.CharField(max_length=500, default="Token")
-    PasswordResetExpiration = models.DateField(default=datetime.now)
+    PasswordHash = models.CharField(max_length=500)
+    PasswordSalt = models.CharField(max_length=500)
+    PasswordResetToken = models.CharField(max_length=100)
+    PasswordResetExpiration = models.DateField()
