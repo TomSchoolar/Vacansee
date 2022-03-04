@@ -7,28 +7,28 @@ from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class EmployerDetails(models.Model):
-    UserId = models.ForeignKey('authentication.User', on_delete=models.PROTECT)
-    PhoneNumber = models.CharField(max_length=11, default="00000000000")
-    CompanyName = models.CharField(max_length=30, default="Company Name")
+    UserId = models.OneToOneField('authentication.User', on_delete=models.CASCADE, primary_key=True, blank=False)
+    PhoneNumber = models.CharField(max_length=11, blank=False)
+    CompanyName = models.CharField(max_length=30, blank=False)
 
 class Vacancy(models.Model):
     VacancyId = models.AutoField(primary_key=True)
-    VacancyName = models.CharField(max_length=500, blank=False, default="Name")
-    UserId = models.ForeignKey('authentication.User', on_delete=models.PROTECT, default=0)
-    Salary = models.CharField(max_length=500, blank=False, default="Competitive")
-    Description = models.CharField(max_length=500, default="Description")
-    SkillsRequired = ArrayField(models.CharField(max_length=500), size=3, default=list)
+    VacancyName = models.CharField(max_length=80, blank=False)
+    UserId = models.ForeignKey('authentication.User', on_delete=models.CASCADE, blank=False)
+    Salary = models.CharField(max_length=80, blank=False)
+    Description = models.CharField(max_length=150, blank=False)
+    SkillsRequired = ArrayField(models.CharField(max_length=50), size=3, default=list)
     ExperienceRequired = ArrayField(models.CharField(max_length=500), size=3, default=list)
-    TimeZone = models.IntegerField(blank=False, default=0)
-    Tags = ArrayField(models.CharField(max_length=10), size=10, default=list)
+    TimeZone = models.IntegerField(blank=False)
+    Tags = ArrayField(models.CharField(max_length=20), size=10, default=list)
     IsOpen = models.BooleanField(blank=False, default=True)
-    PhoneNumber = models.CharField(max_length=11, blank=False, default="00000000000")
-    Email = models.CharField(max_length=500, blank=False, default="user@tindeed.com")
+    PhoneNumber = models.CharField(max_length=15, blank=False)
+    Email = models.EmailField(max_length=254, blank=False)
 
 
 
 class Tag(models.Model):
     TagId = models.AutoField(primary_key=True)
-    TagName = models.CharField(max_length=500, blank=False, default="Name")
+    TagName = models.CharField(max_length=20, blank=False)
 
 
