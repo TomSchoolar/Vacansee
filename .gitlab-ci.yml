@@ -21,8 +21,8 @@ build-vue-client:
       - client/node_modules/
   artifacts:
     paths:
-      - client/dist/
-    expire_in: 1 hour
+      - client/
+      - api/
 
 run-python-unit-tests:
   stage: test
@@ -44,7 +44,15 @@ run-python-unit-tests:
     # run tests
     - coverage erase
     - coverage run --source='.' manage.py test
+    - coverage html
+    - coverage xml
     - coverage report
+  coverage: /TOTAL\s+\d+\s+\d+\s+(\d+%)/
+  artifacts:
+    paths:
+      - api/htmlcov/
+    reports:
+      cobertura: api/coverage.xml
 
 run-js-unit-tests:
   stage: test
@@ -56,6 +64,12 @@ run-js-unit-tests:
   script:
     - npm i --include=dev
     - npm test
+  coverage: /All\sfiles.*?\s+(\d+.\d+)/
+  artifacts:
+    paths:
+      - client/tests/coverage/
+    reports:
+      cobertura: client/tests/cobertura-coverage.xml
 
 deploy-api:
   stage: deploy
