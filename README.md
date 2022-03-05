@@ -1,4 +1,5 @@
 # Tindeed
+[![pipeline status](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/pipeline.svg)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-python-unit-tests&key_text=API%20Coverage&key_width=90)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-js-unit-tests&key_text=Client%20Coverage&key_width=100)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main)
 
 ## Language Versions in use
 - @vue/cli: 5.0.1
@@ -90,6 +91,10 @@ To explore coverage in more detail, go to the tests/coverage folder and open ind
 There is an example test file at client/tests/unit/example.spec.js.
 
 n.b. due to a bug with the default babel coverage detection provider, we are having to use the experimental v8 provider since the babel one ignores all new sfcs.
+
+### Test coverage integration with gitlab
+
+Cobertura xml coverage reports files are created by the api and client testing frameworks which are uploaded to gitlab as artifacts, these should allow code coverage to be reviewed in gitlab diffs. The client and api testing jobs in the ci pipeline also report headline coverage statistics which can then be seen in the jobs tab of a pipeline and at the top of this readme.
 
 ## Environment Variables
 
