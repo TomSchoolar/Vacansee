@@ -23,7 +23,7 @@ build-vue-client:
     paths:
       - client/dist/
       - api/
-    expire_in: 1 hour
+    expire_in: 2 hours
 
 run-python-unit-tests:
   stage: test
@@ -46,10 +46,14 @@ run-python-unit-tests:
     - coverage erase
     - coverage run --source='.' manage.py test
     - coverage html
+    - coverage xml
     - coverage report
   artifacts:
     paths:
       - api/htmlcov/
+    reports:
+      cobertura: coverage.xml
+    expire_in: 2 hours
 
 run-js-unit-tests:
   stage: test
@@ -64,6 +68,7 @@ run-js-unit-tests:
   artifacts:
     paths:
       - client/tests/coverage/
+    expire_in: 2 hours
 
 deploy-api:
   stage: deploy
