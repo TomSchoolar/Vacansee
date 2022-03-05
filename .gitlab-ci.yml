@@ -52,7 +52,7 @@ run-python-unit-tests:
     paths:
       - api/htmlcov/
     reports:
-      cobertura: coverage.xml
+      cobertura: api/coverage.xml
     expire_in: 2 hours
 
 run-js-unit-tests:
