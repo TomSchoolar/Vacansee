@@ -12,3 +12,5 @@ client/tests/coverage
 api/db.sqlite3
 api/api/.env 
 api/.coverage
+api/coverage.xml
+api/htmlcov
