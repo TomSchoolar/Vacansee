@@ -21,7 +21,7 @@ build-vue-client:
       - client/node_modules/
   artifacts:
     paths:
-      - client/dist/
+      - client/
       - api/
     expire_in: 2 hours
 
