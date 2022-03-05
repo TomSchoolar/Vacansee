@@ -53,7 +53,6 @@ run-python-unit-tests:
       - api/htmlcov/
     reports:
       cobertura: api/coverage.xml
-    expire_in: 2 hours
 
 run-js-unit-tests:
   stage: test
@@ -65,10 +64,12 @@ run-js-unit-tests:
   script:
     - npm i --include=dev
     - npm test
+  coverage: /All\sfiles.*?\s+(\d+.\d+)/
   artifacts:
     paths:
       - client/tests/coverage/
-    expire_in: 2 hours
+    reports:
+      cobertura: client/tests/cobertura-coverage.xml
 
 deploy-api:
   stage: deploy
