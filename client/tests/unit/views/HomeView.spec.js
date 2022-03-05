@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount, RouterLinkStub } from '@vue/test-utils';
 import EmployerIndex from '@/views/employer/EmployerIndex.vue';
 
 describe('EmployerIndexView.vue Test', () => {
@@ -7,7 +7,12 @@ describe('EmployerIndexView.vue Test', () => {
     beforeEach(() => {
         // render navbar
         wrapper = mount(EmployerIndex, {
-            attachTo: document.body
+            attachTo: document.body,
+            global: {
+                stubs: {
+                    RouterLink: RouterLinkStub
+                }
+            }
         });
     });
 
