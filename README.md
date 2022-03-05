@@ -117,8 +117,8 @@ The remote vm hosts the following:
 
 - **postgres server:** port 5432
 - two gitlab runners: one for node, one for python
-- **gunicorn django server:** port 8000
-- **nginx vue server:** port 80
+- **gunicorn django api server:** **api.tp45.co.uk**
+- **nginx vue client server:** **tp45.co.uk**
 
 The client is now running at **tp45.co.uk** with ssl enabled.
 
