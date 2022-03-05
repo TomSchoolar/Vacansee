@@ -40,7 +40,7 @@ run-python-unit-tests:
     - python manage.py check --database default
     # migrate db
     - python manage.py makemigrations
-    - python manage.py migrate
+    - python manage.py migrate --database=tptest
     # run tests
     - coverage erase
     - coverage run --source='.' manage.py test
@@ -101,7 +101,7 @@ deploy-api:
         $CI_PROJECT_DIR/api/api/.env
         root@$SERVER_IP:/code/api/api/.env
     # check db connection and make migrations:
-    - ssh root@$SERVER_IP "cd /code/api && python3 manage.py check --database default && python3 manage.py makemigrations && python3 manage.py migrate"
+    - ssh root@$SERVER_IP "cd /code/api && python3 manage.py check --database default && python3 manage.py makemigrations && python3 manage.py migrate --database=tpproduction"
     # restart gunicorn and nginx servers
     - ssh root@$SERVER_IP "sudo systemctl restart gunicorn && sudo systemctl restart nginx"
 
