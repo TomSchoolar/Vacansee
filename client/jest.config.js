@@ -8,7 +8,7 @@ module.exports = {
     ],
     collectCoverage: true,
     coverageDirectory: './tests/coverage',
-    collectCoverageFrom: ['./src/**/*.{js,vue}', './src/components/partials/EmployerNavbar.vue'],
+    collectCoverageFrom: ['./src/**/*.{js,vue}'],
     coverageProvider: 'v8',
     coverageReporters: ['text', 'html', 'cobertura']
 }

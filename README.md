@@ -1,4 +1,5 @@
 # Tindeed
+[![pipeline status](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/pipeline.svg)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-python-unit-tests&key_text=API%20Coverage&key_width=90&min_good=90&min_acceptable=80&min_medium=70)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-js-unit-tests&key_text=Client%20Coverage&key_width=100&min_good=90&min_acceptable=80&min_medium=70)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main)
 
 ## Language Versions in use
 - @vue/cli: 5.0.1
@@ -85,7 +86,22 @@ in the same directory. To view a more interactive and detailed report, run ```co
 
 To make sure Jest tests are discovered, they should be put in the tests directory and the filenames should be suffixed with .spec.js. It is good practice to put tests in a directory named \_\_tests__ but that requires additional configuration for them to be discovered correctly and I cba with that. If anyone else wants to then please go right ahead. To run the tests, navigate to the client directory and run ```npm test```. There will be a report of test pass/fail results and also a coverage summary. To see this in the gitlab pipeline, go to the relevant pipeline, click on the run-js-unit-tests job and navigate to the bottom of the log.
 
+To explore coverage in more detail, go to the tests/coverage folder and open index.html.
+
 There is an example test file at client/tests/unit/example.spec.js.
+
+n.b. due to a bug with the default babel coverage detection provider, we are having to use the experimental v8 provider since the babel one ignores all new sfcs.
+
+### Test coverage integration with gitlab
+
+Cobertura xml coverage reports files are created by the api and client testing frameworks which are uploaded to gitlab as artifacts, these should allow code coverage to be reviewed in gitlab diffs. The client and api testing jobs in the ci pipeline also report headline coverage statistics which can then be seen in the jobs tab of a pipeline and at the top of this readme.
+
+Test coverage grading is set as follows:
+
+- **90%+**: good
+- **80%+**: acceptable
+- **70%+**: medium
+- **<70%**: low
 
 ## Environment Variables
 
@@ -104,6 +120,8 @@ The remote vm hosts the following:
 - **gunicorn django server:** port 8000
 - **nginx vue server:** port 80
 
+The client is now running at **tp45.co.uk** with ssl enabled.
+
 ## Databases
 
 The remote postgres server contains three main databases, one called tpdev (for local development), one called tptest (for pipeline api testing) and one called tpproduction (for use by the live app). Migrations are carried out on the testing and production databases automatically everytime the api testing and build jobs are called in gitlab but the development database will have to have migrations done manually by one person whenever the models are updated. This is done by running the following in the top level api directory:
@@ -116,7 +134,7 @@ The remote postgres server contains three main databases, one called tpdev (for 
 Below is an outline of the code integration process we discussed:
 
 1. Develop each kanban task on a new branch (```git checkout -b [branch name]```) and commit any changes to that branch.
-2. When the feature/task is complete, run tests locally and then push to the branch on gitlab (```git push -u [branch name]```)
+2. When the feature/task is complete, run tests locally and then push to the branch on gitlab (```git push -u origin [branch name]```)
 3. Create a merge request and assign someone if you want, otherwise maybe make a kanban task or ask on teams idk
 4. Someone should review your pr and then merge into main
 5. The pipeline will build, test and deploy the changes if there are no issues with the code
