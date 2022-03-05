@@ -1,5 +1,5 @@
 <template>
-    <div id='navbar'>
+    <section id='navbar'>
         <span class='navbar-left-wrapper'>
             <router-link to='/vacancy' id='navbar-title'>TINDEED</router-link>
             
@@ -20,7 +20,7 @@
             <span class='navbar-divider'></span>
             <a href='#' @click='logout' class='navbar-link'>Log out</a>
         </div>
-    </div>
+    </section>
 </template>
 
 <script setup>
