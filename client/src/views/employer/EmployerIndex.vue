@@ -5,7 +5,7 @@
     <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
 
 	<div class="home">
-		<img alt="Vue logo" src="../assets/logo.png" />
+		<img alt="Vue logo" src="../../assets/logo.png" />
 		<HelloWorld msg="Welcome to Your Vue.js App" />
 	</div>
 </template>
