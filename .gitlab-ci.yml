@@ -88,8 +88,6 @@ deploy-api:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-add
-    # open port 8000 on server
-    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 8000
   script:
     - scp -r -o StrictHostKeyChecking=no
         $CI_PROJECT_DIR/api
@@ -104,8 +102,8 @@ deploy-api:
         root@$SERVER_IP:/code/api/api/.env
     # check db connection and make migrations:
     - ssh root@$SERVER_IP "cd /code/api && python3 manage.py check --database default && python3 manage.py makemigrations && python3 manage.py migrate"
-    # restart server
-    - ssh root@$SERVER_IP sudo systemctl restart gunicorn
+    # restart gunicorn and nginx servers
+    - ssh root@$SERVER_IP "sudo systemctl restart gunicorn && sudo systemctl restart nginx"
 
 deploy-client:
   stage: deploy
@@ -124,8 +122,6 @@ deploy-client:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-add
-    # open port 80
-    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP ufw allow 80
   script:
-    - scp -r client/dist/* root@$SERVER_IP:/code/client
+    - scp -o StrictHostKeyChecking=no -r client/dist/* root@$SERVER_IP:/code/client
     - ssh root@$SERVER_IP sudo service nginx reload
