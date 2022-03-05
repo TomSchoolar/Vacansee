@@ -1,5 +1,5 @@
 # Tindeed
-[![pipeline status](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/pipeline.svg)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-python-unit-tests&key_text=API%20Coverage&key_width=90)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-js-unit-tests&key_text=Client%20Coverage&key_width=100)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main)
+[![pipeline status](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/pipeline.svg)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-python-unit-tests&key_text=API%20Coverage&key_width=90&min_good=90&min_acceptable=80&min_medium=70)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-js-unit-tests&key_text=Client%20Coverage&key_width=100&min_good=90&min_acceptable=80&min_medium=70)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main)
 
 ## Language Versions in use
 - @vue/cli: 5.0.1
@@ -95,6 +95,13 @@ n.b. due to a bug with the default babel coverage detection provider, we are hav
 ### Test coverage integration with gitlab
 
 Cobertura xml coverage reports files are created by the api and client testing frameworks which are uploaded to gitlab as artifacts, these should allow code coverage to be reviewed in gitlab diffs. The client and api testing jobs in the ci pipeline also report headline coverage statistics which can then be seen in the jobs tab of a pipeline and at the top of this readme.
+
+Test coverage grading is set as follows:
+
+- **90%+**: good
+- **80%+**: acceptable
+- **70%+**: medium
+- **<70%**: low
 
 ## Environment Variables
 
