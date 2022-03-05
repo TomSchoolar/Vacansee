@@ -1,14 +1,17 @@
-<script setup>
-    import HomeView from '@/views/HomeView.vue';
-</script>
+<script setup></script>
 
 <template>
-	<HomeView />
+    <router-view></router-view>
 </template>
+
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,700;1,400;1,700&display=swap');
     @import url('@/assets/fontawesome/css/all.min.css');
+
+    body {
+        margin: 0;
+    }
 
     #app {
         font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;

@@ -1,14 +1,14 @@
 <template>
     <div id='navbar'>
         <span class='navbar-left-wrapper'>
-            <router-link to='/e/vacancy' id='navbar-title'>TINDEED</router-link>
+            <router-link to='/vacancy' id='navbar-title'>TINDEED</router-link>
             
             <div class='navbar-link-block'>
-                <router-link to='/e/vacancy' class='navbar-link' :class='{"navbar-active-link": (page == "home")}'>Home</router-link>
+                <router-link to='/vacancy' class='navbar-link' :class='{"navbar-active-link": (page == "home")}'>Home</router-link>
                 <span class='navbar-divider'></span>
-                <router-link to='/e/vacancy/new' class='navbar-link' :class='{"navbar-active-link": (page == "newVacancy")}'>New Vacancy</router-link>
+                <router-link to='/favourites' class='navbar-link' :class='{"navbar-active-link": (page == "favourites")}'>Favourites</router-link>
                 <span class='navbar-divider'></span>
-                <router-link to='/e/match' class='navbar-link' :class='{"navbar-active-link": (page == "matches")}'>Matches</router-link>
+                <router-link to='/applications' class='navbar-link' :class='{"navbar-active-link": (page == "applications")}'>Applications</router-link>
             </div>
         </span>
 
@@ -42,7 +42,10 @@
 <style scoped>
     .navbar-active-link {
         font-weight: bold !important;
-        color: #bbbbbb !important;
+    }
+
+    .navbar-active-link {
+        color: #ffffff !important;
     }
 
     .navbar-divider {
@@ -66,7 +69,7 @@
     }
 
     .navbar-link:focus, .navbar-link:hover, .navbar-link:active {
-        color: #cccccc;
+        color: #d5d5d5;
     }
 
     .navbar-link-block {
@@ -84,11 +87,11 @@
         justify-content: space-between;
         align-items: center;
         color: #ffffff;
-        background: #08415c;
+        background: #cc2936;
     }
 
     #navbar-notif-alert {
-        background-color: #cc2936;
+        background-color: #08415c;
         border-radius: 30%;
         height: 14px;
         min-width: 14px;
