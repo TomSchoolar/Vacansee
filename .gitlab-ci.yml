@@ -23,7 +23,6 @@ build-vue-client:
     paths:
       - client/
       - api/
-    expire_in: 2 hours
 
 run-python-unit-tests:
   stage: test
