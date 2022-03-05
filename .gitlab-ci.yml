@@ -48,6 +48,7 @@ run-python-unit-tests:
     - coverage html
     - coverage xml
     - coverage report
+  coverage: /TOTAL\s+\d+\s+\d+\s+(\d+%)/
   artifacts:
     paths:
       - api/htmlcov/
