@@ -1,6 +1,6 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { createRouter, createWebHistory } from 'vue-router';
-import EmployerNavbar from '@/components/partials/EmployerNavbar';
+import EmployeeNavbar from '@/components/partials/EmployeeNavbar';
 import routes from '@/router/routes';
 
 const router = createRouter({
@@ -10,9 +10,10 @@ const router = createRouter({
 
 const mountSettings = {
     propsData: {
-        page: 'home',
+        page: 'favourites',
         numNotifs: 3
     },
+    attachTo: document.body,
     global: {
         plugins: [router],
         stubs: {
@@ -22,12 +23,12 @@ const mountSettings = {
     }
 };
 
-describe('EmployerNavbar.vue Test', () => {
+describe('EmployeeNavbar.vue Test', () => {
     let wrapper;
 
     beforeEach(() => {
         // render navbar
-        wrapper = shallowMount(EmployerNavbar, mountSettings);
+        wrapper = shallowMount(EmployeeNavbar, mountSettings);
     });
 
     it('renders number of notifications when component is created', () => {
@@ -38,8 +39,8 @@ describe('EmployerNavbar.vue Test', () => {
 
     it('highlights the correct navbar link as the active page', () => {
         // check that the home link is highlighted        
-        const homeLink = wrapper.findAll('.navbar-link').at(0);
-        expect(homeLink.classes()).toContain('navbar-active-link');
+        const favouritesLink = wrapper.findAll('.navbar-link').at(1);
+        expect(favouritesLink.classes()).toContain('navbar-active-link');
     });
 
     it('shows the notification bubble if there is notif >= 1', () => {
@@ -49,9 +50,9 @@ describe('EmployerNavbar.vue Test', () => {
 
     it('hides the notification bubble if there is notif < 1', async () => {
         mountSettings.propsData.numNotifs = 0;
-        wrapper = shallowMount(EmployerNavbar, mountSettings);
-
+        wrapper = shallowMount(EmployeeNavbar, mountSettings);
+        
         const notifBubble = wrapper.find('#navbar-notif-alert');
         expect(notifBubble.exists()).toBe(false);
-    })
+    });
 });

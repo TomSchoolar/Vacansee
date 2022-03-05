@@ -1,12 +1,12 @@
 import { mount } from '@vue/test-utils';
-import HomeView from '@/views/HomeView.vue';
+import EmployerIndex from '@/views/employer/EmployerIndex.vue';
 
-describe('HomeView.vue Test', () => {
+describe('EmployerIndexView.vue Test', () => {
     let wrapper;
 
     beforeEach(() => {
         // render navbar
-        wrapper = mount(HomeView, {
+        wrapper = mount(EmployerIndex, {
             attachTo: document.body
         });
     });
