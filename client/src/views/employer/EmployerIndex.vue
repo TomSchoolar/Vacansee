@@ -95,8 +95,8 @@
         </section>
     </main>
 
-    <!-- <button @click='notifs++'>Add notification</button> -->
-    <!-- <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button> -->
+    <button @click='notifs++'>Add notification</button>
+    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
 
 </template>
 
