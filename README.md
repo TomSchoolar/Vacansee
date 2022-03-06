@@ -6,6 +6,7 @@
 - python: 3.10.2
 - django: 4.0.2
 
+
 ## Local Dev Environment
 
 ### Installing Locally
@@ -40,9 +41,15 @@ The client has a package called axios installed to send and receive requests/res
 - https://www.npmjs.com/package/axios
 - https://axios-http.com/docs/intro
 
+
 ## CI/CD
 
 The CI pipeline will automatically test every commit to any branch and build, test and then deploy any commits or merges into the main branch. This is done using two custom gitlab runners on the remote vm (one running a node container and the other a python one according to the version specs above). This is because the shared runners are not able to connect to the database and also because they are shared and therefore slow.
+
+### Artifacts
+
+Build artifacts for the whole repository are available on the jobs tab of the latest pipeline for each branch with a default expiry of somewhere between 1 week - 30 days (I can't remember, rip). Testing and coverage reports are also available for download on the testing jobs in the same tab.
+
 
 ## Testing
 
@@ -103,11 +110,13 @@ Test coverage grading is set as follows:
 - **70%+**: medium
 - **<70%**: low
 
+
 ## Environment Variables
 
 To update environment variables, they must be changed locally and also on gitlab. Go to the repo, settings, 'CI/CD' and then 'Variables'. Add/update/remove the required env var in both the ENV_FILE (for the production server) and also TEST_ENV_FILE (for the application during testing in the ci pipeline). When the environment variables are updated on gitlab, these will be reflected the next time the test/deploy stages are run respectively. 
 
 Absolutely no sensitive/secret data should be stored anywhere in the client code. If it is possible for the code to access it, it is possible for anyone with chrome dev tools to access it as well. All authentication/verification should be done server side on the api.
+
 
 ## Live servers
 
@@ -122,12 +131,14 @@ The remote vm hosts the following:
 
 The client is now running at **tp45.co.uk** with ssl enabled.
 
+
 ## Databases
 
 The remote postgres server contains three main databases, one called tpdev (for local development), one called tptest (for pipeline api testing) and one called tpproduction (for use by the live app). Migrations are carried out on the testing and production databases automatically everytime the api testing and build jobs are called in gitlab but the development database will have to have migrations done manually by one person whenever the models are updated. This is done by running the following in the top level api directory:
 
 - ```python manage.py makemigrations```
 - ```python manage.py migrate```
+
 
 ## Code approval/merge process
 
@@ -140,6 +151,7 @@ Below is an outline of the code integration process we discussed:
 5. The pipeline will build, test and deploy the changes if there are no issues with the code
 
 You can then remove the branch locally using ```git fetch --prune```
+
 
 ## Colour Palette
 
