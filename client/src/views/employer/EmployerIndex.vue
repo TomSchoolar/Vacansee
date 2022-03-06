@@ -53,9 +53,25 @@
 
     let notifs = ref(2);
     let filter = ref('all');
+    let limit = ref(10);
+    let sort = ref('newApps');
+    let page = ref(3);
+    let numPages = ref(5);
 
     watch(filter, (filterValue) => {
         alert(`showing ${ filterValue } adverts`);
+    });
+
+    watch(limit, (newLimit) => {
+        alert(`showing ${ newLimit } articles per page`);
+    });
+
+    watch(sort, (sortParam) => {
+        alert(`sorted by ${ sortParam }`);
+    });
+
+    watch(page, (newPage, oldPage) => {
+        alert(`moved from page ${ oldPage } to page ${ newPage }`);
     });
     
     const closeVacancy = () => {
@@ -79,13 +95,41 @@
             <div class='title-bar'>
                 <h1 class='title'>Listed Vacancies</h1>
                 <div class='title-bar-right'>
-                    <select v-model='filter'>
-                        <option value='all' selected>show all adverts</option>
-                        <option value='active' selected>show active adverts</option>
-                        <option value='closed' selected>show closed adverts</option>
-                    </select>
+                    <div class='select-group'>
+                        <label for='filter' class='select-label select-label-hidden'>filter:</label>
+                        <select v-model='filter' aria-label='filter vacancies' id='filter'>
+                            <option value='all' selected>show all adverts</option>
+                            <option value='active'>show active adverts</option>
+                            <option value='closed'>show closed adverts</option>
+                        </select>
+                    </div>
+
+
+                    <div class='select-group'>
+                        <label for='limit' class='select-label select-label-hidden'>page limit:</label>
+                        <select v-model='limit' aria-label='set page size' id='limit'>
+                            <option value=5>5 per page</option>
+                            <option value=10 selected>10 per page</option>
+                            <option value=20>20 per page</option>
+                            <option value=50>50 per page</option>
+                        </select>
+                    </div>
+
+
+                    <div class='select-group'>
+                        <label for='sort' class='select-label'>sort by:</label>
+                        <select v-model='sort' aria-label='sort vacancies' id='sort'>
+                            <option value='newApps' selected>new applications</option>
+                            <option value='dateDesc'>latest first</option>
+                            <option value='dateAsc'>oldest first</option>
+                            <option value='titleAsc'>title (a-z)</option>
+                            <option value='titleDesc'>title (z-a)</option>
+                        </select>
+                    </div>
+
                 </div>
             </div>
+
             <hr />
 
             <div class='vacancies' v-for='vacancy in vacancies' :key='vacancy.id'>
@@ -102,9 +146,16 @@
                         <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
                         <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.new'>Review Applications</router-link>
                         <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
-                        
                     </div>
                 </div>
+            </div>
+
+            <div class='pagination'>
+                <div class='pag-block pag-start' @click='page=1'><i class="fa-solid fa-angles-left"></i></div>
+                <div class='pag-block' @click='page > 1 ? page-- : page'><i class="fa-solid fa-angle-left"></i></div>
+                <div class='pag-block' @click='page=i' v-for='i in 5' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block' @click='page < numPages ? page++ : page'><i class="fa-solid fa-angle-right"></i></div>
+                <div class='pag-block pag-end' @click='page=numPages'><i class="fa-solid fa-angles-right"></i></div>
             </div>
         </section>
     </main>
@@ -129,6 +180,59 @@
         width: calc(100vw - 80px);
     }
 
+    .pagination {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin: 15px 0 30px 0;
+    }
+
+    .pag-active {
+        background: var(--blue) !important; /* important removes background color hover change */
+        color: white;
+    }
+
+
+    .pag-block {
+        padding: 3px 6px;
+        border: 1px solid var(--jet);
+        border-left-width: 0;
+        min-width: 20px;
+    }
+
+    .pag-end {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    .pag-block:hover, .pag-block:focus, .pag-block:active {
+        cursor: pointer;
+        background: rgba(85, 85, 85, 0.1);
+    }
+
+    .pag-start {
+        border-width: 1px;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+
+    .select-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 10px;
+    }
+
+    .select-label {
+        font-size: 12px;
+        position: relative;
+        left: 2px;
+    }
+
+    .select-label-hidden {
+        color: white;
+    }
+
     .title, div /deep/ .title {
         margin: 0;
         font-size: 32px;
@@ -149,7 +253,7 @@
         align-items: center;
         position: relative;
         right: 5px;
-        top: 2px;
+        /* top: 2px; */
     }
 
     .title-bar-right select {

@@ -1,3 +1,21 @@
+<script setup>
+    import { ref, onMounted, toRef, watch } from 'vue';
+    
+    const props = defineProps(['page', 'numNotifs']);
+
+    let notifs = toRef(props, 'numNotifs');
+
+    const notification = () => {
+        alert("notification!");
+    }
+
+    const logout = () => {
+        alert("logged out!");
+    }
+</script>
+
+
+
 <template>
     <section id='navbar'>
         <span class='navbar-left-wrapper'>
@@ -23,21 +41,7 @@
     </section>
 </template>
 
-<script setup>
-    import { ref, onMounted, toRef, watch } from 'vue';
-    
-    const props = defineProps(['page', 'numNotifs']);
 
-    let notifs = toRef(props, 'numNotifs');
-
-    const notification = () => {
-        alert("notification!");
-    }
-
-    const logout = () => {
-        alert("logged out!");
-    }
-</script>
 
 <style scoped>
     .navbar-active-link {
