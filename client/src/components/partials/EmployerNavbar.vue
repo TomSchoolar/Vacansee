@@ -83,11 +83,11 @@
         justify-content: space-between;
         align-items: center;
         color: #ffffff;
-        background: #08415c;
+        background: var(--blue);
     }
 
     #navbar-notif-alert {
-        background-color: #cc2936;
+        background-color: var(--red);
         border-radius: 30%;
         height: 14px;
         min-width: 14px;

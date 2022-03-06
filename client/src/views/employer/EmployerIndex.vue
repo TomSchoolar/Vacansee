@@ -4,7 +4,7 @@
 
     import relativeTime from 'dayjs/plugin/relativeTime';
     import dayjs from 'dayjs';
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
 
     dayjs.extend(relativeTime);
 
@@ -51,7 +51,12 @@
         vacancy.formattedDate = dayjs(vacancy.listed).format('DD/MM/YYYY');
     });
 
-    let notifs = ref(2); 
+    let notifs = ref(2);
+    let filter = ref('all');
+
+    watch(filter, (filterValue) => {
+        alert(`showing ${ filterValue } adverts`);
+    });
     
     const closeVacancy = () => {
         alert('are you sure you want to close this vacancy?');
@@ -71,7 +76,16 @@
         <EmployerStatBar user='Strat Security Co.' :stats='stats' />
 
         <section class='vacancies-section'>
-            <h1 class='title'>Listed Vacancies</h1>
+            <div class='title-bar'>
+                <h1 class='title'>Listed Vacancies</h1>
+                <div class='title-bar-right'>
+                    <select v-model='filter'>
+                        <option value='all' selected>show all adverts</option>
+                        <option value='active' selected>show active adverts</option>
+                        <option value='closed' selected>show closed adverts</option>
+                    </select>
+                </div>
+            </div>
             <hr />
 
             <div class='vacancies' v-for='vacancy in vacancies' :key='vacancy.id'>
@@ -123,6 +137,26 @@
         font-weight: 400;
     }
 
+    .title-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .title-bar-right {
+        display: flex;
+        align-items: center;
+        position: relative;
+        right: 5px;
+        top: 2px;
+    }
+
+    .title-bar-right select {
+        padding: 4px 6px;
+        font-family: var(--fonts);
+    }
+
     .vacancy {
         height: 50px;
         border: 2px solid #555;
@@ -151,29 +185,29 @@
     }
 
     .vacancy-button-blue {
-        background: #08415c;
+        background: var(--blue);
     }
 
     .vacancy-button-blue:hover, .vacancy-button-blue:focus, .vacancy-button-blue:active {
-        background: #0a567a; /* 8% lighter */
+        background: var(--blue-focus);
         cursor: pointer;
   } 
 
     .vacancy-button-grey {
-        background: #6b818c;
+        background: var(--slate);
     }
 
     .vacancy-button-grey:hover, .vacancy-button-grey:focus, .vacancy-button-grey:active {
-        background: #627680; /* 8% darker */
+        background: var(--slate-focus);
         cursor: pointer;
   } 
 
     .vacancy-button-red {
-        background: #cc2936;
+        background: var(--red);
     }
 
     .vacancy-button-red:hover, .vacancy-button-red:focus, .vacancy-button-red:active {
-        background: #bb2531; /* 8% darker */
+        background: var(--red-focus);
         cursor: pointer;
     } 
 
