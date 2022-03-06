@@ -2,7 +2,11 @@
     import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
 
+    import relativeTime from 'dayjs/plugin/relativeTime';
+    import dayjs from 'dayjs';
     import { ref } from 'vue';
+
+    dayjs.extend(relativeTime);
 
     const stats = {
         newApplications: 19,
@@ -17,9 +21,9 @@
             id: 0,
             title: 'Customer Service Representative',
             new: 13,
-            accepted: 2,
-            rejected: 11,
-            listed: new Date('1st March 2022'),
+            accepted: 2000,
+            rejected: 1100,
+            listed: new Date(2022, 2, 1),
             isOpen: true
         },
         {
@@ -28,7 +32,7 @@
             new: 6,
             accepted: 8,
             rejected: 34,
-            listed: new Date('19th February 2022'),
+            listed: new Date(2022, 1, 19),
             isOpen: true
         },
         {
@@ -37,16 +41,25 @@
             new: 0,
             accepted: 2,
             rejected: 11,
-            listed: new Date('3rd January 2022'),
+            listed: new Date(2022, 0, 3),
             isOpen: false
         }
     ];
 
     vacancies.forEach((vacancy) => {
-        vacancy.listedAgo = dayjs(vacancy.listed).from(dayjs.now())
+        vacancy.listedAgo = dayjs(vacancy.listed).fromNow();
+        vacancy.formattedDate = dayjs(vacancy.listed).format('DD/MM/YYYY');
     });
 
-    let notifs = ref(2);    
+    let notifs = ref(2); 
+    
+    const closeVacancy = () => {
+        alert('are you sure you want to close this vacancy?');
+    }
+
+    const deleteVacancy = () => {
+        alert('are you sure you want to delete this vacancy?');
+    }
 </script>
 
 
@@ -70,11 +83,16 @@
                     </div>
                     <div class='vacancy-right'>
                         <div class='vacancy-decisions'>{{ vacancy.accepted }} Accepted / {{ vacancy.rejected }} Rejected</div>
+                        <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
+                        <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.isOpen'>Close Applications</button>
+                        <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
+                        <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.new'>Review Applications</router-link>
+                        <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
+                        
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 
     <!-- <button @click='notifs++'>Add notification</button> -->
@@ -98,17 +116,17 @@
     }
 
     .title, div /deep/ .title {
-        font-weight: 500;
         margin: 0;
         font-size: 32px;
         position: relative;
         left: 5px;
+        font-weight: 400;
     }
 
     .vacancy {
-        height: 60px;
+        height: 50px;
         border: 2px solid #555;
-        border-radius: 10px;
+        border-radius: 15px;
         margin: 12px 0;
         display: flex;
         align-items: center;
@@ -116,10 +134,74 @@
         padding: 10px 25px;
     }
 
+    .vacancy-button {
+        font-weight: 500; /* required for some reason */
+        border-radius: 15px;
+        color: #fff;
+        border: 2.2px solid #333;
+        width: 150px;
+        height: 32px;
+        margin-left: 15px;
+        font-size: 13px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+    }
+
+    .vacancy-button-blue {
+        background: #08415c;
+    }
+
+    .vacancy-button-blue:hover, .vacancy-button-blue:focus, .vacancy-button-blue:active {
+        background: #0a567a; /* 8% lighter */
+        cursor: pointer;
+  } 
+
+    .vacancy-button-grey {
+        background: #6b818c;
+    }
+
+    .vacancy-button-grey:hover, .vacancy-button-grey:focus, .vacancy-button-grey:active {
+        background: #627680; /* 8% darker */
+        cursor: pointer;
+  } 
+
+    .vacancy-button-red {
+        background: #cc2936;
+    }
+
+    .vacancy-button-red:hover, .vacancy-button-red:focus, .vacancy-button-red:active {
+        background: #bb2531; /* 8% darker */
+        cursor: pointer;
+    } 
+
+    .vacancy-decisions {
+        width: 250px;
+        text-align: center;
+        margin-right: 20px;
+    }
+
     .vacancy-left {
         width: 40%;
         display: flex;
         align-items: center;
+        flex-grow: 1;
+    }
+
+    .vacancy-listed {
+        width: 180px;
+        text-align: center;
+        margin-right: 5px;
+        cursor: default;
+    }
+
+    .vacancy-right {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        justify-content: flex-end;
     }
 
     .vacancy-new {
@@ -129,7 +211,6 @@
     }
 
     .vacancy-title {
-        font-weight: 500;
         font-size: 18px;
         cursor: default;
         overflow: hidden;
@@ -138,6 +219,7 @@
         text-align: left;
         margin-right: 30px;
         width: calc(100% - 230px);
+        font-weight: 500;
     }
 
     .vacancies {

@@ -1,3 +1,17 @@
+<script setup>
+    const props = defineProps(['user', 'stats']);
+    
+    const labels = {
+        newApplications: 'New Applications',
+        activeAdverts: 'Active Adverts',
+        totalApplications: 'Total Applications Received',
+        rejectedApplications: 'Rejected Applications',
+        acceptedApplications: 'Accepted Applications'
+    };
+</script>
+
+
+
 <template>
     <div class='stat-bar'>
         <h1 class='title'>{{ user }}</h1>
@@ -12,17 +26,7 @@
     
 </template>
 
-<script setup>
-    const props = defineProps(['user', 'stats']);
-    
-    const labels = {
-        newApplications: 'New Applications',
-        activeAdverts: 'Active Adverts',
-        totalApplications: 'Total Applications Received',
-        rejectedApplications: 'Rejected Applications',
-        acceptedApplications: 'Accepted Applications'
-    };
-</script>
+
 
 <style scoped>
     .stat {
@@ -42,7 +46,7 @@
         width: 100%;
         display: flex;
         justify-content: space-evenly;
-        margin: 15px 0 50px 0;
+        margin: 15px 0 30px 0;
     }
 
     .stat-title {

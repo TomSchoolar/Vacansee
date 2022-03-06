@@ -65,7 +65,6 @@
     .navbar-link {
         color: #ffffff;
         text-decoration: none;
-        font-weight: 500;
     }
 
     .navbar-link:focus, .navbar-link:hover, .navbar-link:active {
