@@ -155,13 +155,19 @@ You can then remove the branch locally using ```git fetch --prune```
 
 ## Colour palette & CSS colour vars
 
-Most of these colours are also set as CSS colour variables in @/App.vue so are readable in every component. It's quicker just to write white or #fff anyway and the same with black so they have not been added.
+Most of these colours are also set as CSS colour variables in @/App.vue so are readable in every component. It's quicker just to write white or #fff anyway and the same with black so they have not been added. Some colours also have emphasis colours for when they are used to colour a button and you need to change the colour in the hover/focus/active state(s).
 
-- red:          #cc2936     var(--red)
-- blue:         #08415c     var(--blue)
-- slate grey:   #6b818c     var(--slate)
-- white:        #ffffff
-- jet:          #333333     var(--slate)
-- black:        #000000
+| colour name   | hex     |  css var           | 
+| ------------- | ------- | ------------------ |
+| red           | #cc2936 | var(--red)         |
+| _red focus_   | #bb2531 | var(--red-focus)   |
+| blue          | #08415c | var(--blue)        |
+| _blue focus_  | #0a567a | var(--blue-focus)  |
+| slate grey    | #6b818c | var(--slate)       |
+| _slate focus_ | #627680 | var(--slate-focus) |
+| white         | #ffffff |                    |
+| jet           | #333333 | var(--jet)         |
+| black         | #000000 |                    |
 
-https://coolors.co/08415c-cc2936-6b818c-ffffff-333333
+
+palette if you wanna mess around to find new colours or something: https://coolors.co/08415c-cc2936-6b818c-ffffff-333333
