@@ -153,13 +153,15 @@ Below is an outline of the code integration process we discussed:
 You can then remove the branch locally using ```git fetch --prune```
 
 
-## Colour Palette
+## Colour palette & CSS colour vars
 
-- red: #cc2936
-- blue: #08415c
-- slate grey: 6b818c
-- white: #ffffff
-- jet: #333333
-- black: #000000
+Most of these colours are also set as CSS colour variables in @/App.vue so are readable in every component. It's quicker just to write white or #fff anyway and the same with black so they have not been added.
+
+- red:          #cc2936     var(--red)
+- blue:         #08415c     var(--blue)
+- slate grey:   #6b818c     var(--slate)
+- white:        #ffffff
+- jet:          #333333     var(--slate)
+- black:        #000000
 
 https://coolors.co/08415c-cc2936-6b818c-ffffff-333333
