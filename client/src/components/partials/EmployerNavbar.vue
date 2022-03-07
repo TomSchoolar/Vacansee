@@ -1,3 +1,21 @@
+<script setup>
+    import { ref, onMounted, toRef, watch } from 'vue';
+    
+    const props = defineProps(['page', 'numNotifs']);
+
+    let notifs = toRef(props, 'numNotifs');
+
+    const notification = () => {
+        alert("notification!");
+    }
+
+    const logout = () => {
+        alert("logged out!");
+    }
+</script>
+
+
+
 <template>
     <div id='navbar'>
         <span class='navbar-left-wrapper'>
@@ -23,21 +41,7 @@
     </div>
 </template>
 
-<script setup>
-    import { ref, onMounted, toRef, watch } from 'vue';
-    
-    const props = defineProps(['page', 'numNotifs']);
 
-    let notifs = toRef(props, 'numNotifs');
-
-    const notification = () => {
-        alert("notification!");
-    }
-
-    const logout = () => {
-        alert("logged out!");
-    }
-</script>
 
 <style scoped>
     .navbar-active-link {
@@ -62,7 +66,6 @@
     .navbar-link {
         color: #ffffff;
         text-decoration: none;
-        font-weight: 500;
     }
 
     .navbar-link:focus, .navbar-link:hover, .navbar-link:active {
@@ -84,11 +87,11 @@
         justify-content: space-between;
         align-items: center;
         color: #ffffff;
-        background: #08415c;
+        background: var(--blue);
     }
 
     #navbar-notif-alert {
-        background-color: #cc2936;
+        background-color: var(--red);
         border-radius: 30%;
         height: 14px;
         min-width: 14px;

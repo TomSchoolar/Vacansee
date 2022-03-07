@@ -1,5 +1,23 @@
+<script setup>
+    import { ref, onMounted, toRef, watch } from 'vue';
+    
+    const props = defineProps(['page', 'numNotifs']);
+
+    let notifs = toRef(props, 'numNotifs');
+
+    const notification = () => {
+        alert("notification!");
+    }
+
+    const logout = () => {
+        alert("logged out!");
+    }
+</script>
+
+
+
 <template>
-    <div id='navbar'>
+    <section id='navbar'>
         <span class='navbar-left-wrapper'>
             <router-link to='/vacancy' id='navbar-title'>TINDEED</router-link>
             
@@ -20,24 +38,10 @@
             <span class='navbar-divider'></span>
             <a href='#' @click='logout' class='navbar-link'>Log out</a>
         </div>
-    </div>
+    </section>
 </template>
 
-<script setup>
-    import { ref, onMounted, toRef, watch } from 'vue';
-    
-    const props = defineProps(['page', 'numNotifs']);
 
-    let notifs = toRef(props, 'numNotifs');
-
-    const notification = () => {
-        alert("notification!");
-    }
-
-    const logout = () => {
-        alert("logged out!");
-    }
-</script>
 
 <style scoped>
     .navbar-active-link {
@@ -65,7 +69,6 @@
     .navbar-link {
         color: #ffffff;
         text-decoration: none;
-        font-weight: 500;
     }
 
     .navbar-link:focus, .navbar-link:hover, .navbar-link:active {
@@ -87,11 +90,11 @@
         justify-content: space-between;
         align-items: center;
         color: #ffffff;
-        background: #cc2936;
+        background: var(--red);
     }
 
     #navbar-notif-alert {
-        background-color: #08415c;
+        background-color: var(--blue);
         border-radius: 30%;
         height: 14px;
         min-width: 14px;
