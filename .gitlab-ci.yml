@@ -39,13 +39,7 @@ run-python-unit-tests:
     # check db connection:
     - python manage.py check --database default
     # migrate db
-    - python manage.py makemigrations employee employer authentication
-    - python manage.py migrate employee zero 
-    - python manage.py migrate employee 
-    - python manage.py migrate employer zero
-    - python manage.py migrate employer
-    - python manage.py migrate authentication zero
-    - python manage.py migrate authentication
+    - python manage.py migrate
     # seed db
     - python manage.py flush --noinput
     - python manage.py loaddata fixtures.json
