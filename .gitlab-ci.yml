@@ -105,10 +105,10 @@ deploy-api:
     # check db connection and make migrations:
     - ssh root@$SERVER_IP "cd /code/api && 
       python3 manage.py check --database default && 
-      python3 manage.py makemigrations employee employer authentication && 
-      python3 manage.py migrate employee &&
-      python3 manage.py migrate employer && 
-      python3 manage.py migrate authentication"
+      python3 manage.py migrate 
+    # seed db
+    - python manage.py flush --noinput
+    - python manage.py loaddata fixtures.json
     # restart gunicorn and nginx servers
     - ssh root@$SERVER_IP "sudo systemctl restart gunicorn && sudo systemctl restart nginx"
 
