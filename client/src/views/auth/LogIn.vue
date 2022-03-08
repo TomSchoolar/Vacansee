@@ -29,7 +29,7 @@
 	
 	.auth-page-container {
 		width: 100%;
-		max-width: 500px;
+		max-width: 400px;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
@@ -37,13 +37,33 @@
 	}
 
 	.auth-page-container input {
-		color: --var(slate);
-		font-size: 18px;
+		border: 1px solid var(--slate);
+		border-radius: 5px;
+		color: var(--slate);
+		font-size: 16px;
 		line-height: 24px;
+		display: block;
+		padding: 5px 10px;
+		margin: 0 0 10px 0;
+		width: calc(100% - 21px);
+	}
+
+	.auth-page-container button {
+		background: var(--red);
+		border: 0;
+		border-radius: 5px;
+		color: #ffffff;
+		display: block;
+		font-family: var(--fonts);
+		font-size: 16px;
+		font-weight: bold;
+		line-height: 24px;
+		padding: 5px 0;
+		width: 100%;
 	}
 
 	.auth-page-logo {
-		color: --var(blue);
+		color: var(--blue);
 		font-weight: bold;
 		font-size: 36px;
 		line-height: 1;
