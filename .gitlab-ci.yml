@@ -117,7 +117,7 @@ deploy-client:
   tags:
     - node
     - server-runner
-  needs: ['run-js-unit-tests']
+  needs: ['build-vue-client', 'run-js-unit-tests']
   only:
     refs:
       - main
