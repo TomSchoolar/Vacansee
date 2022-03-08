@@ -3,12 +3,10 @@
         "model" : "authentication.User",
         "pk" : 1,
         "fields" : {
-            "IsEmployer" : "f",
+            "IsEmployer" : false,
             "Email" : "txs090@student.bham.ac.uk",
             "PasswordHash" : "cb88794ddb7c4da84477aeb44df527667502eaec50d7e253474c12b952b3ecb2",
-            "PasswordSalt" : "7RiFwFWY",
-            "PasswordResetToken" : "txs",
-            "PasswordResetExpiration" : "2022-03-18"
+            "PasswordSalt" : "7RiFwFWY"
         }
     },
 
@@ -32,12 +30,10 @@
         "model" : "authentication.User",
         "pk" : 2,
         "fields" : {
-            "IsEmployer" : "f",
+            "IsEmployer" : false,
             "Email" : "ajb042@student.bham.ac.uk",
             "PasswordHash" : "268ebab361258d2b6a6943b9ef21d6982d82bb822f40ed1bfbe00bfabb24f72a",
-            "PasswordSalt" : "LO4#uY5m",
-            "PasswordResetToken" : "ajb",
-            "PasswordResetExpiration" : "2022-03-18"
+            "PasswordSalt" : "LO4#uY5m"
         }
     },
 
@@ -61,12 +57,10 @@
         "model" : "authentication.User",
         "pk" : 3,
         "fields" : {
-            "IsEmployer" : "f",
+            "IsEmployer" : false,
             "Email" : "cxd066@student.bham.ac.uk",
             "PasswordHash" : "55fd844fafa52867308d757e2be93121b75146bae399d2ab5bdb8977dd200451",
-            "PasswordSalt" : "WbjbIE2u",
-            "PasswordResetToken" : "cxd",
-            "PasswordResetExpiration" : "2022-03-18"
+            "PasswordSalt" : "WbjbIE2u"
         }
     },
 
@@ -90,12 +84,10 @@
         "model" : "authentication.User",
         "pk" : 4,
         "fields" : {
-            "IsEmployer" : "t",
+            "IsEmployer" : true,
             "Email" : "sxd110@student.bham.ac.uk",
             "PasswordHash" : "4de898300b31ae0d006433487c11d44cb89868e90500dc9458f4bc2be136cf0e",
-            "PasswordSalt" : "!*Y(A?Rv",
-            "PasswordResetToken" : "sxd",
-            "PasswordResetExpiration" : "2022-03-18"
+            "PasswordSalt" : "!*Y(A?Rv"
         }
     },
 
@@ -113,12 +105,10 @@
         "model" : "authentication.User",
         "pk" : 5,
         "fields" : {
-            "IsEmployer" : "t",
+            "IsEmployer" : true,
             "Email" : "yxs909@student.bham.ac.uk",
             "PasswordHash" : "d16325469407ccb7a23643bebb45b17ff5a73d7918d715e699b594b5cef2d71a",
-            "PasswordSalt" : "s)/Pn0O(",
-            "PasswordResetToken" : "yxs",
-            "PasswordResetExpiration" : "2022-03-18"
+            "PasswordSalt" : "s)/Pn0O("
         }
     },
 
@@ -136,12 +126,10 @@
         "model" : "authentication.User",
         "pk" : 6,
         "fields" : {
-            "IsEmployer" : "t",
+            "IsEmployer" : true,
             "Email" : "vrt911@student.bham.ac.uk",
             "PasswordHash" : "0499013f3ff60a0cb919c85f4749b116bec2a7b88de6bed0d4429c614544140d",
-            "PasswordSalt" : "V0u#_UvU",
-            "PasswordResetToken" : "vrt",
-            "PasswordResetExpiration" : "2022-03-18"
+            "PasswordSalt" : "V0u#_UvU"
         }
     },
 
@@ -207,7 +195,7 @@
             "ExperienceRequired" : ["Agile team experience"],
             "TimeZone" : 0,
             "Tags" : [0,1,4],
-            "IsOpen" : "t",
+            "IsOpen" : true,
             "PhoneNumber" : "07745469444",
             "Email" : "example@facebook.com"
         }
@@ -219,13 +207,13 @@
         "fields" : {
             "VacancyName" : "Senior Developer",
             "UserId" : 4,
-            "Salary" : "Competitive",
+            "Salary" : "50000;pa",
             "Description" : "Looking for a experienced developer with knowledge in running a team",
             "SkillsRequired" : ["Python", "Management Skills"],
             "ExperienceRequired" : ["Agile team experience"],
             "TimeZone" : 5,
             "Tags" : [0,1,5],
-            "IsOpen" : "t",
+            "IsOpen" : true,
             "PhoneNumber" : "07945469444",
             "Email" : "example@facebook.com"
         }
@@ -243,7 +231,7 @@
             "ExperienceRequired" : ["Agile team experience"],
             "TimeZone" : 0,
             "Tags" : [5],
-            "IsOpen" : "f",
+            "IsOpen" : false,
             "PhoneNumber" : "07947469444",
             "Email" : "example2@facebook.com"
         }
