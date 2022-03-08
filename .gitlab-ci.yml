@@ -71,13 +71,14 @@ run-js-unit-tests:
     paths:
       - client/tests/coverage/
     reports:
-      cobertura: client/tests/cobertura-coverage.xml
+      cobertura: client/tests/coverage/cobertura-coverage.xml
 
 deploy-api:
   stage: deploy
   tags:
     - python
     - server-runner
+  needs: ['run-python-unit-tests']
   only:
     refs:
       - main
@@ -102,13 +103,12 @@ deploy-api:
     - scp -o StrictHostKeyChecking=no
         $CI_PROJECT_DIR/api/api/.env
         root@$SERVER_IP:/code/api/api/.env
-    # check db connection and make migrations:
+    # check db connection, migrate and seed db:
     - ssh root@$SERVER_IP "cd /code/api && 
       python3 manage.py check --database default && 
-      python3 manage.py migrate 
-    # seed db
-    - python manage.py flush --noinput
-    - python manage.py loaddata fixtures.json
+      python3 manage.py migrate &&
+    - python3 manage.py flush --noinput &&
+    - python3 manage.py loaddata fixtures.json"
     # restart gunicorn and nginx servers
     - ssh root@$SERVER_IP "sudo systemctl restart gunicorn && sudo systemctl restart nginx"
 
@@ -117,6 +117,7 @@ deploy-client:
   tags:
     - node
     - server-runner
+  needs: ['run-js-unit-tests']
   only:
     refs:
       - main
