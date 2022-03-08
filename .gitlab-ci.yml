@@ -38,6 +38,9 @@ run-python-unit-tests:
     - pip install psycopg2-binary
     # check db connection:
     - python manage.py check --database default
+    # seed db
+    - python manage.py flush --noinput
+    - python manage.py loaddata fixtures.json
     # migrate db
     - python manage.py makemigrations employee employer authentication
     - python manage.py migrate employee 
