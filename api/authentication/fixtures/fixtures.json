@@ -1,0 +1,287 @@
+[
+    {
+        "model" : "authentication.User",
+        "pk" : 1,
+        "fields" : {
+            "IsEmployer" : false,
+            "Email" : "txs090@student.bham.ac.uk",
+            "PasswordHash" : "cb88794ddb7c4da84477aeb44df527667502eaec50d7e253474c12b952b3ecb2",
+            "PasswordSalt" : "7RiFwFWY"
+        }
+    },
+
+    {
+        "model" : "employee.Profile",
+        "pk" : 1,
+        "fields" : {
+            "FirstName" : "Thomas",
+            "LastName" : "Schoolar",
+            "Pronouns" : "He/His",
+            "TimeZone" : 0,
+            "TopicSentence" : "I am a Student at the University of Birmingham",
+            "NotableSkills" : ["Python", "Vue", "Django"],
+            "Experience" : ["1 Year Bar support","1 month work experience in coding","agile team experience"],
+            "Qualifications" : ["10 GCSEs","3 A-Levels","1 BSc"],
+            "PhoneNumber" : "07743769344"
+        } 
+    },
+
+    {
+        "model" : "authentication.User",
+        "pk" : 2,
+        "fields" : {
+            "IsEmployer" : false,
+            "Email" : "ajb042@student.bham.ac.uk",
+            "PasswordHash" : "268ebab361258d2b6a6943b9ef21d6982d82bb822f40ed1bfbe00bfabb24f72a",
+            "PasswordSalt" : "LO4#uY5m"
+        }
+    },
+
+    {
+        "model" : "employee.Profile",
+        "pk" : 2,
+        "fields" : {
+            "FirstName" : "Adam",
+            "LastName" : "Bass",
+            "Pronouns" : "He/His",
+            "TimeZone" : 0,
+            "TopicSentence" : "I am a Student studing Computer Science",
+            "NotableSkills" : ["JavaScript", "C#", "Python"],
+            "Experience" : ["1 year at tescos","1 month work experience in design","waterfall development experience"],
+            "Qualifications" : ["CCNA","B-tech","O-Level"],
+            "PhoneNumber" : "07743469344"
+        } 
+    },
+
+    {
+        "model" : "authentication.User",
+        "pk" : 3,
+        "fields" : {
+            "IsEmployer" : false,
+            "Email" : "cxd066@student.bham.ac.uk",
+            "PasswordHash" : "55fd844fafa52867308d757e2be93121b75146bae399d2ab5bdb8977dd200451",
+            "PasswordSalt" : "WbjbIE2u"
+        }
+    },
+
+    {
+        "model" : "employee.Profile",
+        "pk" : 3,
+        "fields" : {
+            "FirstName" : "Cavan",
+            "LastName" : "Day",
+            "Pronouns" : "He/His",
+            "TimeZone" : 0,
+            "TopicSentence" : "Studying Computer Science at UoB",
+            "NotableSkills" : ["HTML", "Vue", "CSS"],
+            "Experience" : ["Personal Tutoring","2 months working in a lab","team management experience"],
+            "Qualifications" : ["5 O-Levels","8 GCSEs","1 BSc"],
+            "PhoneNumber" : "07543769344"
+        } 
+    },
+
+    {
+        "model" : "authentication.User",
+        "pk" : 4,
+        "fields" : {
+            "IsEmployer" : true,
+            "Email" : "sxd110@student.bham.ac.uk",
+            "PasswordHash" : "4de898300b31ae0d006433487c11d44cb89868e90500dc9458f4bc2be136cf0e",
+            "PasswordSalt" : "!*Y(A?Rv"
+        }
+    },
+
+    {
+        "model" : "employer.EmployerDetails",
+        "pk" : 1,
+        "fields" : {
+            "UserId" : 4,
+            "PhoneNumber" : "07743469444",
+            "CompanyName" : "Facebook"
+        }
+    },
+
+    {
+        "model" : "authentication.User",
+        "pk" : 5,
+        "fields" : {
+            "IsEmployer" : true,
+            "Email" : "yxs909@student.bham.ac.uk",
+            "PasswordHash" : "d16325469407ccb7a23643bebb45b17ff5a73d7918d715e699b594b5cef2d71a",
+            "PasswordSalt" : "s)/Pn0O("
+        }
+    },
+
+    {
+        "model" : "employer.EmployerDetails",
+        "pk" : 2,
+        "fields" : {
+            "UserId" : 5,
+            "PhoneNumber" : "07793469444",
+            "CompanyName" : "Google"
+        }
+    },
+
+    {
+        "model" : "authentication.User",
+        "pk" : 6,
+        "fields" : {
+            "IsEmployer" : true,
+            "Email" : "vrt911@student.bham.ac.uk",
+            "PasswordHash" : "0499013f3ff60a0cb919c85f4749b116bec2a7b88de6bed0d4429c614544140d",
+            "PasswordSalt" : "V0u#_UvU"
+        }
+    },
+
+    {
+        "model" : "employer.EmployerDetails",
+        "pk" : 3,
+        "fields" : {
+            "UserId" : 6,
+            "PhoneNumber" : "07893469444",
+            "CompanyName" : "Facebook"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 1,
+        "fields" : {
+            "TagName" : "Development"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 2,
+        "fields" : {
+            "TagName" : "Coding"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 3,
+        "fields" : {
+            "TagName" : "Python"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 4,
+        "fields" : {
+            "TagName" : "Entry-Level"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 5,
+        "fields" : {
+            "TagName" : "Management"
+        }
+    },
+
+    {
+        "model" : "employer.Vacancy",
+        "pk" : 1,
+        "fields" : {
+            "VacancyName" : "Junior Developer",
+            "UserId" : 4,
+            "Salary" : "Competitive",
+            "Description" : "Looking for a young developer with knowledge in Python",
+            "SkillsRequired" : ["Python", "Team-Working", "Django"],
+            "ExperienceRequired" : ["Agile team experience"],
+            "TimeZone" : 0,
+            "Tags" : [0,1,4],
+            "IsOpen" : true,
+            "PhoneNumber" : "07745469444",
+            "Email" : "example@facebook.com"
+        }
+    },
+
+    {
+        "model" : "employer.Vacancy",
+        "pk" : 2,
+        "fields" : {
+            "VacancyName" : "Senior Developer",
+            "UserId" : 4,
+            "Salary" : "50000;pa",
+            "Description" : "Looking for a experienced developer with knowledge in running a team",
+            "SkillsRequired" : ["Python", "Management Skills"],
+            "ExperienceRequired" : ["Agile team experience"],
+            "TimeZone" : 5,
+            "Tags" : [0,1,5],
+            "IsOpen" : true,
+            "PhoneNumber" : "07945469444",
+            "Email" : "example@facebook.com"
+        }
+    },
+
+    {
+        "model" : "employer.Vacancy",
+        "pk" : 3,
+        "fields" : {
+            "VacancyName" : "Cyber Security Anaylst",
+            "UserId" : 5,
+            "Salary" : "Minimum Wage",
+            "Description" : "Looking for a keen learner to be trained from scratch",
+            "SkillsRequired" : ["Team-Working"],
+            "ExperienceRequired" : ["Agile team experience"],
+            "TimeZone" : 0,
+            "Tags" : [5],
+            "IsOpen" : false,
+            "PhoneNumber" : "07947469444",
+            "Email" : "example2@facebook.com"
+        }
+    },
+
+    {
+        "model" : "employee.Favourite",
+        "pk" : 1,
+        "fields" : {
+            "UserId" : 1,
+            "VacancyId" : 1
+        }
+    },
+
+    {
+        "model" : "employee.Favourite",
+        "pk" : 2,
+        "fields" : {
+            "UserId" : 3,
+            "VacancyId" : 1
+        }
+    },
+
+    {
+        "model" : "employee.Application",
+        "pk" : 1,
+        "fields" : {
+            "UserId" : 3,
+            "VacancyId" : 3,
+            "ApplicationStatus" : "MATCHED"
+        }
+    },
+
+    {
+        "model" : "employee.Application",
+        "pk" : 2,
+        "fields" : {
+            "UserId" : 3,
+            "VacancyId" : 1,
+            "ApplicationStatus" : "PENDING"
+        }
+    },
+
+    {
+        "model" : "employee.Application",
+        "pk" : 1,
+        "fields" : {
+            "UserId" : 2,
+            "VacancyId" : 2,
+            "ApplicationStatus" : "REJECTED"
+        }
+    }
+]

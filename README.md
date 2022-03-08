@@ -139,6 +139,9 @@ The remote postgres server contains three main databases, one called tpdev (for 
 - ```python manage.py makemigrations```
 - ```python manage.py migrate```
 
+Changing the data to be seeded can be done by editing the fixtures.json file. The database can be seeded with the command:
+
+- ```python manage.py loaddata fixtures.json```
 
 ## Code approval/merge process
 

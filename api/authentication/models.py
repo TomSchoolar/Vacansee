@@ -11,5 +11,5 @@ class User(models.Model):
     IsEmployer = models.BooleanField(default=False, blank=False)
     PasswordHash = models.CharField(max_length=500)
     PasswordSalt = models.CharField(max_length=500)
-    PasswordResetToken = models.CharField(max_length=100)
-    PasswordResetExpiration = models.DateField()
+    PasswordResetToken = models.CharField(max_length=100, null=True)
+    PasswordResetExpiration = models.DateField(null=True)
