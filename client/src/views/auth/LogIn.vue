@@ -57,7 +57,7 @@
 		margin: 0 0 25px 0;
 	}
 
-    .submit {
+	.auth-page-container button {
 		background: var(--red);
 		border: 0;
 		border-radius: 5px;
