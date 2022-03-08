@@ -7,6 +7,15 @@ const landingRoute = {
 }
 
 
+import LogIn from '@/views/auth/LogIn.vue';
+
+const logInRoute = {
+    path: '/login',
+    name: 'LogIn',
+    component: LogIn
+}
+
+
 import EmployeeIndex from '../views/employee/EmployeeIndex.vue';
 
 const employeeRoutes = [
@@ -40,6 +49,7 @@ const fourOhFour = {
 
 export default [
     landingRoute,
+    logInRoute,
     ...employeeRoutes,
     ...employerRoutes,
     fourOhFour
