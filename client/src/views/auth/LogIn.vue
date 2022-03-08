@@ -2,21 +2,21 @@
 	<div class='auth-page'>
 		<div class='auth-page-container'>
 			<p class='auth-page-logo'>Tindeed</p>
-			<input v-model='cred' placeholder='Email' />
-			<input v-model='cred' placeholder='Password' />
+			<input v-model='email' type='email' placeholder='Email' />
+			<input v-model='password' type='password' placeholder='Password' />
 			<button @click='login'>Log In</button>
 		</div>
 	</div>
 </template>
 
-<script>
-// @ is an alias to /src
-    import ref from 'vue';
+<script setup>
+    import { ref } from 'vue';
 
-	const cred = ref([]);
+	const email = ref('');
+    const password = ref('');
 
 	const login = () => {
-		alert("logged in");
+		alert(`log in req, email: ${ email.value } password: ${ password.value }`);
 	}
 </script>
 
