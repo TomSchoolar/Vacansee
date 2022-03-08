@@ -7,13 +7,17 @@ const landingRoute = {
 }
 
 
+
 import LogIn from '@/views/auth/LogIn.vue';
 
-const logInRoute = {
-    path: '/login',
-    name: 'LogIn',
-    component: LogIn
-}
+const authRoutes = [
+    {
+        path: '/login',
+        name: 'LogIn',
+        component: LogIn
+    }
+];
+
 
 
 import EmployeeIndex from '../views/employee/EmployeeIndex.vue';
@@ -27,6 +31,7 @@ const employeeRoutes = [
 ];
 
 
+
 import EmployerIndex from '../views/employer/EmployerIndex.vue';
 
 const employerRoutes = [
@@ -38,6 +43,7 @@ const employerRoutes = [
 ];
 
 
+
 import Error from '@/views/auth/Error.vue';
 
 const fourOhFour = {
@@ -47,9 +53,10 @@ const fourOhFour = {
 }
 
 
+
 export default [
     landingRoute,
-    logInRoute,
+    ...authRoutes,
     ...employeeRoutes,
     ...employerRoutes,
     fourOhFour

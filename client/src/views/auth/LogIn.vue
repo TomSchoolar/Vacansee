@@ -1,11 +1,11 @@
 <template>
 	<div class='auth-page'>
-		<div class='auth-page-container'>
+		<form @submit.prevent='login' class='auth-page-container'>
 			<p class='auth-page-logo'>Tindeed</p>
-			<input v-model='email' type='email' placeholder='Email' />
-			<input v-model='password' type='password' placeholder='Password' />
-			<button @click='login'>Log In</button>
-		</div>
+			<input v-model='email' type='email' placeholder='Email' required />
+			<input v-model='password' type='password' placeholder='Password' required />
+			<button class='submit'>Log In</button>
+		</form>
 	</div>
 </template>
 
@@ -48,7 +48,16 @@
 		width: calc(100% - 21px);
 	}
 
-	.auth-page-container button {
+	.auth-page-logo {
+		color: var(--blue);
+		font-weight: bold;
+		font-size: 36px;
+		line-height: 1;
+		text-transform: uppercase;
+		margin: 0 0 25px 0;
+	}
+
+    .submit {
 		background: var(--red);
 		border: 0;
 		border-radius: 5px;
@@ -62,12 +71,8 @@
 		width: 100%;
 	}
 
-	.auth-page-logo {
-		color: var(--blue);
-		font-weight: bold;
-		font-size: 36px;
-		line-height: 1;
-		text-transform: uppercase;
-		margin: 0 0 25px 0;
-	}
+    .submit:active, .submit:focus, .submit:hover {
+        background: var(--red-focus);
+        cursor: pointer;
+    }
 </style>
