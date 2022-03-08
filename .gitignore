@@ -14,4 +14,3 @@ api/api/.env
 api/.coverage
 api/coverage.xml
 api/htmlcov
-api/**/migrations
