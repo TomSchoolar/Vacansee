@@ -25,6 +25,10 @@ class Vacancy(models.Model):
     PhoneNumber = models.CharField(max_length=15, blank=False)
     Email = models.EmailField(max_length=254, blank=False)
     Created = models.DateField(auto_now_add=True, blank=False)
+<<<<<<< HEAD
+=======
+
+>>>>>>> e14983f (Populate basic fields in employer index template)
 
 
 class Tag(models.Model):
