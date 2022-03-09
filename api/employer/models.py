@@ -24,7 +24,7 @@ class Vacancy(models.Model):
     IsOpen = models.BooleanField(blank=False, default=True)
     PhoneNumber = models.CharField(max_length=15, blank=False)
     Email = models.EmailField(max_length=254, blank=False)
-
+    Created = models.DateField(auto_now_add=True, blank=False)
 
 
 class Tag(models.Model):
