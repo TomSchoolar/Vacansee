@@ -115,7 +115,7 @@ Test coverage grading is set as follows:
 
 To update environment variables, they must be changed locally and also on gitlab. Go to the repo, settings, 'CI/CD' and then 'Variables'. Add/update/remove the required env var in both the ENV_FILE (for the production server) and also TEST_ENV_FILE (for the application during testing in the ci pipeline). When the environment variables are updated on gitlab, these will be reflected the next time the test/deploy stages are run respectively. 
 
-Absolutely no sensitive/secret data should be stored anywhere in the client code. If it is possible for the code to access it, it is possible for anyone with chrome dev tools to access it as well. All authentication/verification should be done server side on the api.
+Absolutely no sensitive/secret data should be stored anywhere in the client code. If it is possible for the code to access it, it is possible for anyone with chrome dev tools to access it as well. All authentication/verification should be done server side on the api. There is an .env file in the client directory for variables dependent on environment (such as api endpoint). All client env vars must be prepended with ```VUE_APP_``` in order for vue to load them. Like with the api env vars, and new/updated env vars need to be added/changed in CI/CD settings as well as locally and the local .env file mustn't be committed to version control as it will conflict with the env vars from gitlab.
 
 
 ## Live servers
