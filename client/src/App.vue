@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+    document.title = 'Vacansee';
+</script>
 
 <template>
     <router-view></router-view>
