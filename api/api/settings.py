@@ -39,8 +39,11 @@ SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = ['134.209.29.204', 'localhost', '127.0.0.1']
 
-# SECURITY WARNING: do not run with allow all origins in production!
-CORS_ALL_ALL_ORIGINS = True 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+    'http://tp45.co.uk'
+]
 
 
 # Application definition
