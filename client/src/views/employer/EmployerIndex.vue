@@ -31,11 +31,12 @@
     const page = ref(3);
     const numPages = ref(5);
 
+    document.title = 'Home | Vacansee';
 
     // api request
     onMounted(async () => {
 
-        let { data = [] } = await axios({
+        let { data = false } = await axios({
             method: 'get',
             url: '/e/vacancy/',
             baseURL: process.env.VUE_APP_API_ENDPOINT,
@@ -43,9 +44,18 @@
         }).catch((err) => {
             console.log(`oops: ${ err }`);
         });
+        
+        if(!data) {
+            return;
+        }
+
+        let { vacancies: vs = [], stats: statsObj = false } = data;
+
+        if(statsObj)
+            stats.value = statsObj;
 
         // sort newest first
-        data.sort((a, b) => {
+        vs.sort((a, b) => {
             const dateA = dayjs(a.Created);
             const  dateB = b.Created;
 
@@ -56,15 +66,11 @@
             return -1;
         });
         
-        data.forEach((vacancy) => {
+        vs.forEach((vacancy) => {
             vacancy.listedAgo = dayjs(vacancy.Created).fromNow();
         });
 
-        getStats(data);
-
-        console.log(stats);
-
-        vacancies.value = data;
+        vacancies.value = vs;
     });
 
 
