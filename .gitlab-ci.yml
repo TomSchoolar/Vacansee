@@ -13,7 +13,7 @@ build-vue-client:
       - main
   before_script:
     - cd client
-    - cp $PRODUCTION_CLIENT_ENV_FILE client/.env
+    - cp $PRODUCTION_CLIENT_ENV_FILE .env
   script:
     - npm install --progress=false
     - npm run build
