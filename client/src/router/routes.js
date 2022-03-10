@@ -21,12 +21,18 @@ const authRoutes = [
 
 
 import EmployeeIndex from '../views/employee/EmployeeIndex.vue';
+import EmployeeApplications from '../views/employee/EmployeeApplications.vue';
 
 const employeeRoutes = [
   {
     path: '/vacancy',
     name: 'EmployeeIndex',
     component: EmployeeIndex
+  },
+  {
+    path: '/applications',
+    name: 'EmployeeApplications',
+    component: EmployeeApplications
   }
 ];
 
