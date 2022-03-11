@@ -1,38 +1,39 @@
 <script setup>  
-    const props = defineProps(['firstName', 'pronouns', 'location', 'topicSentence', 'skills', 'experience', 'qualifications']);
+    const { application = {} } = defineProps(['application']);
+    const { firstName, pronouns, location, topicSentence, skills, experience, qualifications } = application;
 </script>
 
 <template>
     <div class='card'>
         <div class='info'>
-            <p class='name'>{{ firstName }} <span class='pronouns'>({{ pronouns }})</span></p>
-            <p class='location'>Based in {{ location }}</p>
+            <p class='name'>{{ firstName }} <span v-if='pronouns' class='pronouns'>({{ pronouns }})</span></p>
+            <p class='location' v-if='location'>Based in {{ location }}</p>
         </div>
         <div class='description'>
             <p>{{ topicSentence }}</p>
         </div>
-        <span class='card-section'>Notable Skills:</span>
-        <div class='skills' v-for='skill in skills' v-bind:key='skill'>
+        <span class='card-section' v-if='skills'>Notable Skills:</span>
+        <div class='skills block'>
             <table>
-                <tr>
+                <tr v-for='skill in skills' v-bind:key='skill'>
                     <th>- {{ skill }}</th>
                 </tr>
             </table>
         </div>
-        <span class='card-section'>Experience:</span>
-        <div class='experience' v-for='xp in experience' v-bind:key='xp'>
+        <span class='card-section' v-if='experience'>Experience:</span>
+        <div class='experience block'>
             <table>
-                <tr>
-                    <th>- {{ xp.title }}</th>
-                    <th><span class='date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
+                <tr v-for='xp in experience' v-bind:key='xp'>
+                    <th class='table-title'>- {{ xp.title }}</th>
+                    <th><span class='table-date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
                 </tr>
             </table>
         </div>
-        <span class='card-section'>Qualifcations:</span>
-        <div class='qualifications' v-for='qual in qualifications' v-bind:key='qual'>
+        <span class='card-section' v-if='qualifications'>Qualifications:</span>
+        <div class='qualifications'>
             <table>
-                <tr>
-                    <th>- {{qual}}</th>
+                <tr v-for='qual in qualifications' v-bind:key='qual'>
+                    <th>- {{ qual }}</th>
                 </tr>
             </table>
         </div>
@@ -44,6 +45,10 @@
         font-weight: normal;
         padding-bottom: 0px;
         padding-top: 0px;
+    }
+
+    .block {
+        margin-bottom: 10px;
     }
 
     .card {
@@ -69,12 +74,6 @@
         margin: 0;
         padding-top: 5px;
         padding-bottom: 5px;
-    }
-
-    .experience .date {
-        font-style: italic;
-        color: var(--slate);
-        font-size: 14px;
     }
 
     .info p {
@@ -105,6 +104,17 @@
 
     .skills {
         font-weight: normal;
+    }
+
+    .table-date {
+        font-style: italic;
+        color: var(--slate);
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .table-title {
+        width: 99%;
     }
 
     .tags {
