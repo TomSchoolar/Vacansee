@@ -53,38 +53,77 @@
 
         if(statsObj)
             stats.value = statsObj;
-
-        // sort newest first
-        vs.sort((a, b) => {
-            const dateA = dayjs(a.Created);
-            const  dateB = b.Created;
-
-            if(dateA.isBefore(dateB))
-                return 1;
-            if(dateA.isSame(dateB))
-                return 0;
-            return -1;
-        });
         
         vs.forEach((vacancy) => {
             vacancy.listedAgo = dayjs(vacancy.Created).fromNow();
         });
 
         vacancies.value = vs;
+
+        sortVacancies('newApps');
     });
 
+    const sortVacancies = (sortParam) => {
+        let sortFunc = false;
 
-    const getStats = (data) => {  
-        // get combined stats data for all vacancies      
-        data.forEach((vacancy) => {
-            if(vacancy.IsOpen)
-                stats.value.activeAdverts++;
-            
-            stats.value.totalApplications += vacancy.Applications;
-            stats.value.newApplications += vacancy.NewApplications;
-            stats.value.acceptedApplications += vacancy.AcceptedApplications;
-            stats.value.rejectedApplications += vacancy.RejectedApplications;
-        });
+        switch (sortParam) {
+            case 'newApps':
+                sortFunc = (a, b) => {
+                    if(a.NewApplications > b.NewApplications)
+                        return -1;
+                    if(b.NewApplications < a.NewApplications)
+                        return 1;
+                    return 0;
+                }
+                break;
+
+            case 'dateDesc':
+                sortFunc = (a, b) => {
+                    const dateA = dayjs(a.Created);
+                    const  dateB = b.Created;
+
+                    if(dateA.isBefore(dateB))
+                        return 1;
+                    if(dateA.isSame(dateB))
+                        return 0;
+                    return -1;
+                }
+                break;
+
+            case 'dateAsc':
+                sortFunc = (a, b) => {
+                    const dateA = dayjs(a.Created);
+                    const  dateB = b.Created;
+
+                    if(dateA.isBefore(dateB))
+                        return -1;
+                    if(dateA.isSame(dateB))
+                        return 0;
+                    return 1;
+                }
+                break;
+
+            case 'titleAsc':
+                sortFunc = (a, b) => {
+                    if(a.VacancyName < b.VacancyName)
+                        return -1;
+                    if(b.VacancyName > a.VacancyName)
+                        return 1;
+                    return 0;
+                }
+                break;
+
+            case 'titleDesc':
+                sortFunc = (a, b) => {
+                    if(a.VacancyName > b.VacancyName)
+                        return -1;
+                    if(b.VacancyName < a.VacancyName)
+                        return 1;
+                    return 0;
+                }
+                break;
+        }
+        return vacancies.value.sort(sortFunc);
     }
 
 
@@ -99,9 +138,7 @@
         alert(`showing ${ newLimit } articles per page`);
     });
 
-    watch(sort, (sortParam) => {
-        alert(`sorted by ${ sortParam }`);
-    });
+    watch(sort, sortVacancies);
 
 
     //pagination watcher
@@ -207,7 +244,7 @@
 
 
 <style scoped>
-    hr, div /deep/ hr {
+    hr, div:deep(hr) {
         width: 100%;
         margin: 8px 0 12px 0;
         border: 0;
@@ -272,7 +309,7 @@
         color: white;
     }
 
-    .title, div /deep/ .title {
+    .title, div:deep(.title) {
         margin: 0;
         font-size: 32px;
         position: relative;
