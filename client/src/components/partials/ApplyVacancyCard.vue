@@ -101,10 +101,6 @@
         transition-duration: 0.4s;
     }
 
-    .apply-buttons button:active i {
-        font-size: 14px;
-    }
-
     .apply-buttons i {
         font-size: 20px;
     }
@@ -113,12 +109,24 @@
         background: #66E355;
     }
 
+    .apply:active, .apply:focus, .apply:hover {
+        background: #38d623; /* 20% darker */
+    }
+
     .apply-buttons .favourite {
-        background: #ffbf00
+        background: #ffbf00;
+    }
+
+    .favourite:active, .favourite:focus, .favourite:hover {
+        background: #eaaf00; /* 8% darker */
     }
 
     .apply-buttons .reject {
-        background: #FF8582
+        background: #ff8582
+    }
+
+    .reject:active, .reject:focus, .reject:hover {
+        background: #ff6663; /* 8% darker */
     }
 
     .card {
@@ -153,9 +161,7 @@
     }
 
     .description p {
-        height: 50px;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        margin: 10px 0;
     }
 
     .divider hr {
