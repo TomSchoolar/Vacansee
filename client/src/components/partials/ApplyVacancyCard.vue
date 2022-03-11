@@ -1,6 +1,7 @@
 <script setup>  
     
-    const props = defineProps(['companyName', 'jobTitle', 'location', 'description', 'skills', 'experience', 'tags'])
+    const { vacancy = {} } = defineProps(['vacancy']);
+    const { companyName, jobTitle, location, description, skills, experience, tags } = vacancy;
 
     const favourite = () => {
         alert('favourited!');
@@ -21,37 +22,37 @@
         <div class='company-info'>
             <div class='company-name'>{{ companyName }}<i id='favourite' class='fas fa-star' v-if="favourited === 'True'"></i></div>
             <p class='job-title'>{{ jobTitle }}</p>
-            <p class='location'>Based in {{ location }}</p>
+            <p class='location' v-if='location'>Based in {{ location }}</p>
         </div>
-        <div class='description'>
+        <div class='description' v-if='description'>
             <p>{{ description }}</p>
         </div>
-        <span style='font-weight: bold;'>Necessary Skills:</span>
-        <div class='skills' v-for='skill in skills' v-bind:key='skill'>
+        <span class='card-section' v-if='skills'>Necessary Skills:</span>
+        <div class='skills'>
             <table>
-                <tr>
-                    <th>- {{skill}}</th>
+                <tr v-for='skill in skills' v-bind:key='skill'>
+                    <th>- {{ skill }}</th>
                 </tr>
             </table>
         </div>
-        <span style='font-weight: bold;'>Experience:</span>
+        <span class='card-section' v-if='experience'>Experience:</span>
         <div class='experience' v-for='xp in experience' v-bind:key='xp'>
             <table>
                 <tr>
-                    <th>- {{xp}}</th>
+                    <th>- {{ xp }}</th>
                 </tr>
             </table>
         </div>
-        <span style='font-weight: bold;'>Requirements:</span>
+        <span class='card-section' v-if='tags'>Requirements:</span>
         <table>
         <tr>
             <th class='tags' v-for='tag in tags' v-bind:key='tag.id'>
-                <i :class=tag.icon></i>
+                <i :class='tag.icon'></i>
             </th>
         </tr>
         </table>
-        <div class='divider'><hr /></div>
         <div class='apply-buttons'>
+            <div class='divider'><hr /></div>
             <button type='button' class='reject' @click='reject'><i class='fas fa-multiply'></i></button>
             <button class='favourite' @click='favourite'><i class='fas fa-star'></i></button>
             <button class='apply' @click='apply'><i class='fas fa-check'></i></button>
@@ -64,6 +65,12 @@
         font-weight: normal;
         padding-bottom: 0px;
         padding-top: 0px;
+    }
+
+    .apply-buttons {
+        position: absolute;
+        bottom: 10px;
+        width: calc(100% - 40px);
     }
 
     .apply-buttons button {
@@ -106,8 +113,12 @@
         align-items: center;
         text-align: left;
         justify-content: space-between;
-        padding-left: 20px;
-        padding-right: 20px;
+        padding: 0 20px;
+        position: relative;
+    }
+
+    .card-section {
+        font-weight: 600;
     }
 
     .company-info p {
@@ -120,16 +131,15 @@
         font-size: 24px;
         margin: 0px;
         padding: 10px 0px 0px 0px;
+        
     }
 
     .description p {
-        height: 50px;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        margin: 10px 0;
     }
 
     .divider hr {
-        margin: 5px;
+        margin: 10px 5px;
     }
 
     .job-title {
