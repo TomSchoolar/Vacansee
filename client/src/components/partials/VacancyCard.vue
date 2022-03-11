@@ -96,7 +96,9 @@
     }
 
     .description p {
-        margin: 10px 0;
+        height: 50px;
+        padding-top: 5px;
+        padding-bottom: 5px;
     }
     .job-title {
         font-style: italic;
