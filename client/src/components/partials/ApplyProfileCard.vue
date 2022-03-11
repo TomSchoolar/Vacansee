@@ -1,6 +1,7 @@
-<script setup>  
-    const props = defineProps(['firstName', 'pronouns', 'location', 'topicSentence', 'skills', 'experience', 'qualifications']);
-
+<script setup> 
+    const props = defineProps(['application']);
+    const { firstName, pronouns, location, topicSentence, skills, experience, qualifications } = props.application;
+    
     const favourite = () => {
         alert('favourited!');
     }
@@ -17,30 +18,30 @@
 <template>
     <div class='card'>
         <div class='info'>
-            <p class='name'>{{ firstName }} <span class='pronouns'>({{ pronouns }})</span></p>
-            <p class='location'>Based in {{ location }}</p>
+            <p class='name'>{{ firstName }} <span class='pronouns' v-if='pronouns'>({{ pronouns }})</span></p>
+            <p class='location' v-if='location'>Based in {{ location }}</p>
         </div>
         <div class='description'>
             <p>{{ topicSentence }}</p>
         </div>
-        <span class='card-section'>Notable Skills:</span>
-        <div class='skills' v-for='skill in skills' v-bind:key='skill'>
+        <span v-if='skills' class='card-section'>Notable Skills:</span>
+        <div class='skills block' >
             <table>
-                <tr>
+                <tr v-for='skill in skills' v-bind:key='skill'>
                     <th>- {{ skill }}</th>
                 </tr>
             </table>
         </div>
-        <span class='card-section'>Experience:</span>
-        <div class='experience' v-for='xp in experience' v-bind:key='xp'>
+        <span v-if='experience' class='card-section'>Experience:</span>
+        <div class='experience block'>
             <table>
-                <tr>
-                    <th>- {{ xp.title }}</th>
-                    <th><span class='date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
+                <tr v-for='xp in experience' v-bind:key='xp'>
+                    <th class='table-title'>- {{ xp.title }}</th>
+                    <th><span class='table-date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
                 </tr>
             </table>
         </div>
-        <span class='card-section'>Qualifcations:</span>
+        <span v-if='qualifications' class='card-section'>Qualifications:</span>
         <div class='qualifications' v-for='qual in qualifications' v-bind:key='qual'>
             <table>
                 <tr>
@@ -48,8 +49,8 @@
                 </tr>
             </table>
         </div>
-        <div class='divider'><hr /></div>
         <div class='apply-buttons'>
+            <div class='divider'><hr /></div>
             <button class='reject' @click='reject'><i class='fas fa-multiply'></i></button>
             <button class='favourite' @click='favourite'><i class='fas fa-star'></i></button>
             <button class='apply' @click='apply'><i class='fas fa-check'></i></button>
@@ -64,6 +65,12 @@
         padding-top: 0px;
     }
 
+    .apply-buttons {
+        position: absolute;
+        bottom: 10px;
+        width: calc(100% - 40px);
+    }
+
     .apply-buttons button {
         width: 32%;
         height: 30px;
@@ -75,10 +82,6 @@
         transition-duration: 0.4s;
     }
 
-    .apply-buttons button:active i {
-        font-size: 14px;
-    }
-
     .apply-buttons i {
         font-size: 20px;
     }
@@ -87,12 +90,28 @@
         background: #66E355;
     }
 
+    .apply:active, .apply:focus, .apply:hover {
+        background: #38d623; /* 20% darker */
+    }
+
     .apply-buttons .favourite {
-        background: #ffbf00
+        background: #ffbf00;
+    }
+
+    .favourite:active, .favourite:focus, .favourite:hover {
+        background: #eaaf00; /* 8% darker */
     }
 
     .apply-buttons .reject {
-        background: #FF8582
+        background: #ff8582
+    }
+
+    .reject:active, .reject:focus, .reject:hover {
+        background: #ff6663; /* 8% darker */
+    }
+
+    .block {
+        margin-bottom: 10px;
     }
 
     .card {
@@ -105,9 +124,8 @@
         align-items: center;
         text-align: left;
         justify-content: space-between;
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-top: 5px;
+        padding: 5px 20px;
+        position: relative;
     }
 
     .card-section {
@@ -121,13 +139,7 @@
     }
 
     .divider hr {
-        margin: 5px;
-    }
-
-    .experience .date {
-        font-style: italic;
-        color: var(--slate);
-        font-size: 14px;
+        margin: 10px 5px;
     }
 
     .info p {
@@ -158,6 +170,17 @@
 
     .skills {
         font-weight: normal;
+    }
+
+    .table-date {
+        white-space: nowrap;
+        font-style: italic;
+        color: var(--slate);
+        font-size: 14px;
+    }
+
+    .table-title {
+        width: 99%;
     }
 
     .tags {
