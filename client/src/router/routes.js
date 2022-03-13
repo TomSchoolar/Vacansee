@@ -34,11 +34,19 @@ const employeeRoutes = [
 
 import EmployerIndex from '../views/employer/EmployerIndex.vue';
 
+import EmployerReview from '../views/employer/EmployerReview.vue';
+
 const employerRoutes = [
   {
     path: '/e/vacancy',
     name: 'EmployerIndex',
     component: EmployerIndex
+  },
+
+  {
+    path: '/e/review/:vacancyId',
+    name: 'EmployerReview',
+    component: EmployerReview
   }
 ];
 
