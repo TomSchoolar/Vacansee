@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, toRef, watch } from 'vue';
+    import { toRef } from 'vue';
     
     const props = defineProps(['page', 'numNotifs']);
 
@@ -10,7 +10,9 @@
     }
 
     const logout = () => {
-        alert("logged out!");
+        window.localStorage.removeItem('jwt');
+        window.localStorage.removeItem('session');
+        window.location.href = '/login'
     }
 </script>
 
