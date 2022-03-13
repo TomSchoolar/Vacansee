@@ -10,13 +10,27 @@
 </template>
 
 <script setup>
+    import axios from 'axios';
     import { ref } from 'vue';
 
 	const email = ref('');
     const password = ref('');
 
-	const login = () => {
-		alert(`log in req, email: ${ email.value } password: ${ password.value }`);
+	const login = async () => {
+        const response = await axios({
+            method: 'post',
+            url: '/login/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            data: {
+                email: email.value,
+                password: password.value
+            }
+        }).catch((err) => {
+            console.log(`oops ${ err }`);
+        });
+
+        console.log(response.data);
+
 	}
 </script>
 
