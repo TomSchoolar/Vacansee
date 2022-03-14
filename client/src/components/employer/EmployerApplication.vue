@@ -18,41 +18,49 @@
 
 
 
-<meta name='viewport' content='width=device-width, initial-scale=1'>
+
 <template>
-    <div class='stat-boxes'>
-        <p> {{stats.name}} ({{stats.pronouns}}) <button class='application-button application-button-grey' @click='showApplication' id='show'>Show Application</button> <br /> 
-            {{stats.phoneNumber}}  <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button><br /> 
-            {{stats.email}}  <button class='application-button application-button-red' @click='unmatch'>Unmatch</button> <br /> 
-            {{stats.timeZone}}  <br />
-        </p>
-        
-    </div>
+    <article class='application'>
+        <div class='application-left'>
+            <div class='title'>
+                <span class='name'>
+                    {{ stats.name }}
+                </span> 
+                <span class='pronouns'>
+                    ({{ stats.pronouns }}) 
+                </span>
+            </div>
+            <div class='contact'>
+                <i class="fa-solid fa-phone"></i>
+                {{ stats.phoneNumber }}  
+            </div>
+            <div class='contact'>
+                <i class="fa-solid fa-envelope-open"></i>
+                {{ stats.email }}  
+            </div>
+            <div class='contact'>
+                <i class="fa-solid fa-clock"></i>
+                {{ stats.timeZone }}
+            </div>
+        </div>
 
-
+        <div class='application-right'>
+            <button class='application-button application-button-grey' @click='showApplication' id='show'>Show Application</button>
+            <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
+            <button class='application-button application-button-red' @click='unmatch'>Unmatch</button>
+        </div>
+    </article>
+    <hr class='slim-hr' />
 </template>
 
 
 
 <style scoped>
-
-
-    
-    .application-button {
-        font-weight: 500; /* required for some reason */
-        border-radius: 15px;
-        color: #fff;
-        border: 2.2px solid #333;
-        width: 150px;
-        height: 20px;
-        margin-left: 15px;
-        font-size: 11px;
-        text-decoration: none;
+    .application {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        float: right;
-        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+        justify-content: space-between;
+        padding: 8px 12px;
+        height: 100px;
     }
 
     .application-button-grey {
@@ -62,38 +70,40 @@
     .application-button-grey:hover, .application-button-grey:focus, .application-button-grey:active {
         background: var(--slate-focus);
         cursor: pointer;
-  } 
+    } 
 
     .application-button-red {
         background: var(--red);
     }
-    
 
-    .stat-boxes {
-        text-align:left;
-        width: 100%;
-        display: fixed;
-        margin: 10px;
+    .application-left {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .application-right {
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 4px);
+        justify-content: space-between;
+        padding: 2px 0;
+    }
+
+    .contact {
         font-size: 14px;
     }
-    
-    .button{
-        float: right;
-        width: 30%;
-        background-color:#D3D3D3;
-        border: 2px solid;
-        border-radius: 5px;
-        color: black;
-        cursor: pointer;
-        display: inline-block;
-        font-size: 12px;
-        margin-right: 10px;
-        text-decoration: none;
-        transition-duration: 0.4s;
 
+    .contact i {
+        margin-right: 5px;
     }
 
+    .name {
+        font-size: 18px;
+    }
 
-    
-
+    .slim-hr {
+        margin: 1px 0;
+    }
 </style>

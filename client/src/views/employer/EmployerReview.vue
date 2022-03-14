@@ -2,12 +2,6 @@
     import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
     import EmployerApplication from '@/components/employer/EmployerApplication.vue';
 
-    import relativeTime from 'dayjs/plugin/relativeTime';
-    import dayjs from 'dayjs';
-    import { ref, watch } from 'vue';
-
-    dayjs.extend(relativeTime);
-
     const applicants = [
         {
             id: 0,
@@ -39,31 +33,35 @@
 <template>
     <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
 
-    <div class='split left'>
-    <p> 
-        Matches (2)
-    </p>
-    <hr>
-        <input name='searchbar' type='text' float='right'> 
-        <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button> Download Applications </button>
-    
-    <div class='scroll'>
-        <div class='applicants' v-for='applicant in applicants' :key='applicant.id'>
-        <table>
-            <tr>
-                <th> 
-                    <EmployerApplication :stats='applicant' />
-                </th>
-            </tr>
-        </table>
+    <div class='container'>
+        <div class='col col-left'>
+            <div class='col-header'> 
+                <h3 class='col-title'>Matches ({{ applicants.length }})</h3>
+                <div class='header-right'>
+                    <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button>
+                    <div class='search-group'>
+                        <i class="fas fa-search search-icon"></i>
+                        <input class='search' placeholder='search' type='text'> 
+                    </div>
+                </div>
+            </div>
+
+            <hr class='slim-hr'/>
+
+            <div class='applications'>
+                <EmployerApplication v-for='applicant in applicants' :key='applicant.id' :stats='applicant' />
+            </div>
+        </div>
+
+        <div class='col col-right'>
+            <div class='col-header'> 
+                <h3 class='col-title'>Strat Security Co. - Customer Service Representative</h3>
+            </div>
+
+            <hr />
         </div>
     </div>
-    </div>
 
-    <div class='split right'>
-        <h1> Customer Service Representative </h1>
-        <hr>
-    </div>
 </template>
 
 
@@ -75,20 +73,21 @@
         width: 100%;
     }
 
-    .application-button {
+    .applications {
+        overflow-y: scroll;
+        height: calc(100% - 47px);
+        overflow-x: hidden;
+    }
+
+    .application-button, div:deep(.application-button) {
         font-weight: 500; /* required for some reason */
-        border-radius: 15px;
+        border-radius: 7px;
         color: #fff;
         border: 2.2px solid #333;
-        width: 150px;
-        height: 20px;
-        margin-left: 15px;
-        font-size: 11px;
+        min-width: 150px;
+        font-size: 12px;
         text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        float: left;
+        padding: 2px 4px;
         font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
     }
 
@@ -100,70 +99,64 @@
     .application-button-grey:hover, .application-button-grey:focus, .application-button-grey:active {
         background: var(--slate-focus);
         cursor: pointer;
-  } 
-
-    .scroll {
-        width:100%;
-        height: 85%;
-        overflow:auto;
-        scrollbar-base-color:gold;
-        margin: 2px;
-        overflow-y:scroll;
-    }
-
-    .input{
-        float:right;
-        align:right;
     }
     
-
-    .button{
-        float: right;
-        background-color:#D3D3D3;
-        border: 2px solid;
-        border-radius: 15px;
-        color: black;
-        cursor: pointer;
-        display: inline-block;
-        font-size: 12px;
-        margin: 2px;
-        text-align: center;
-        text-decoration: none;
-        transition-duration: 0.4s;
-
+    .container {
+        display: flex;
     }
 
-    .button:active{
-        background-color:#D3D3D3;
-        font-size: 70%;
+    .col {
+        height: calc(100vh - 100px);
+        margin-top: -30px;
+        padding-top: 30px;
     }
 
-    .button:hover{
-        background-color:#D3D3D3;
-
+    .col-header {
+        display: flex;
+        padding: 0 20px 7px 20px;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: -10px;
     }
 
-    .left {
-        box-sizing: border-box;
-        height: 100%;
-        padding-top: 10px;
-        width: 30%;          
+    .col-left {
+        flex-grow: 0.3;
+        min-width: 550px;
+        border-right: 1px solid #9a9a9a;
     }
 
-    .right {
-        box-sizing: border-box;
-        border-left:3px solid;
-        left: 30%;
-        right: 0;
-        padding-top: 20px;
-        width: 70%;
+    .col-right {
+        flex-grow: 3;
     }
 
-    .split {
-        color: black;
-        height: 100%;
-        position: fixed;
-        top: 70px;
-    
+    .col-title {
+        margin: 0;
+        font-weight: 500;
+        font-size: 21px;
+    }
+
+    .header-right {
+        display: flex;
+    }
+
+    .search {
+        border-radius: 7px;
+        padding: 2px 4px 2px 22px;
+        margin-left: 8px;
+        width: 120px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 6px;
+    }
+
+    .search-group {
+        position: relative;
+    }
+
+    .slim-hr {
+        margin-bottom: 0;
     }
 </style>
