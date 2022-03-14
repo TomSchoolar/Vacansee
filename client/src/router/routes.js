@@ -1,4 +1,4 @@
-import { isLoggedIn, isEmployer, isEmployee } from '@/middleware';
+import { isLoggedIn, isNotLoggedIn, isEmployer, isEmployee } from '@/middleware';
 import Landing from '@/views/Landing.vue';
 
 const landingRoute = {
@@ -15,7 +15,10 @@ const authRoutes = [
     {
         path: '/login',
         name: 'LogIn',
-        component: LogIn
+        component: LogIn,
+        meta: {
+            middleware: [isNotLoggedIn]
+        }
     }
 ];
 

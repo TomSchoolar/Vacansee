@@ -1,5 +1,6 @@
 <script setup>
     import { ref, watch, onMounted } from 'vue';
+    import { parseJwt } from '@/assets/js/jwt';
     import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
     
@@ -8,7 +9,6 @@
     import relativeTime from 'dayjs/plugin/relativeTime';
     
     dayjs.extend(relativeTime);
-
     
     // vars init
     const stats = ref({
