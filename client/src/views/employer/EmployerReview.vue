@@ -1,4 +1,5 @@
 <script setup>
+    import ApplyProfileCard from '@/components/partials/ApplyProfileCard';
     import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
     import EmployerApplication from '@/components/employer/EmployerApplication.vue';
 
@@ -21,6 +22,32 @@
             pronouns: 'he/him'
         }
     ]
+
+    let applicantData = {
+        firstName: 'George',
+        pronouns: 'he/him',
+        location: 'London',
+        topicSentence: 'Good luck convincing people to hire you with one sentence.',
+        skills: ['75 wpm typing speed', 'Microsoft Excel', 'Patience'],
+        experience: [
+            {
+                title: 'fast food restaurant',
+                startDate: '2016',
+                endDate: '2019' 
+            },
+            {
+                title: 'customer service call centre',
+                startDate: '2019',
+                endDate: '2021' 
+            },
+            {
+                title: 'level 1 support tech',
+                startDate: '2021',
+                endDate: '2022' 
+            }
+        ],
+        qualifications: ['9 GCSEs (A*-D)', '3 A-Levels (A-B)']
+    }
 
 
     const download_button = () => {
@@ -58,7 +85,11 @@
                 <h3 class='col-title'>Strat Security Co. - Customer Service Representative</h3>
             </div>
 
-            <hr />
+            <hr class='slim-hr' />
+
+            <main class='card-container'>
+                <ApplyProfileCard class='card' :application='applicantData' />
+            </main>
         </div>
     </div>
 
@@ -99,6 +130,20 @@
     .application-button-grey:hover, .application-button-grey:focus, .application-button-grey:active {
         background: var(--slate-focus);
         cursor: pointer;
+    }
+
+    .card {
+        position: relative;
+        top: -30px;
+    }
+
+    .card-container {
+        height: calc(100% - 48px);
+        width: 100%;
+        background: #f0f8fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     .container {

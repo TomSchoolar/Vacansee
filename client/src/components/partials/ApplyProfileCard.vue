@@ -1,6 +1,6 @@
 <script setup> 
-    const props = defineProps(['application']);
-    const { firstName, pronouns, location, topicSentence, skills, experience, qualifications } = props.application;
+    const { application = {} } = defineProps(['application']);
+    const { firstName, pronouns, location, topicSentence, skills, experience, qualifications } = application;
     
     const favourite = () => {
         alert('favourited!');
@@ -126,6 +126,7 @@
         justify-content: space-between;
         padding: 5px 20px;
         position: relative;
+        background: white;
     }
 
     .card-section {
