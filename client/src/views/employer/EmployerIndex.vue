@@ -1,6 +1,9 @@
 <script setup>
     import { ref, watch, onMounted } from 'vue';
+<<<<<<< HEAD
     import { parseJwt } from '@/assets/js/jwt';
+=======
+>>>>>>> 9c0d83621a32f254423f2265e23b7a08d5f84ef6
     import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
     
@@ -19,6 +22,19 @@
         rejectedApplications: 0
     });
 
+<<<<<<< HEAD
+=======
+    
+    // vars init
+    const stats = ref({
+        activeAdverts: 0,
+        totalApplications: 0,
+        newApplications: 0,
+        acceptedApplications: 0,
+        rejectedApplications: 0
+    });
+
+>>>>>>> 9c0d83621a32f254423f2265e23b7a08d5f84ef6
     const notifs = ref(2);
     const vacancies = ref(null);
 
