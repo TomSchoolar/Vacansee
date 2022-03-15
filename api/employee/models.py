@@ -16,7 +16,7 @@ class Profile(models.Model):
     NotableSkills = ArrayField(models.CharField(max_length=50), size=3, default=list)
     Experience = ArrayField(models.CharField(max_length=80), size=3, default=list)
     Qualifications = ArrayField(models.CharField(max_length=80), size=3, default=list)
-    PhoneNumber = models.CharField(max_length=15, blank=False)
+    PhoneNumber = models.CharField(max_length=30, blank=False)
 
 class Favourite(models.Model):
     FavouriteId = models.AutoField(primary_key=True)
