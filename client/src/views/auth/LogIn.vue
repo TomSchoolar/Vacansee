@@ -10,13 +10,41 @@
 </template>
 
 <script setup>
+    import axios from 'axios';
+    import dayjs from 'dayjs';
     import { ref } from 'vue';
 
 	const email = ref('');
     const password = ref('');
 
-	const login = () => {
-		alert(`log in req, email: ${ email.value } password: ${ password.value }`);
+	const login = async () => {
+        const { data = {} } = await axios({
+            method: 'post',
+            url: '/login/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            data: {
+                email: email.value,
+                password: password.value
+            }
+        }).catch((err) => {
+            if(err.response && err.response.status == 401) {
+                alert('incorrect email or password');
+            } else {            
+                console.log(`oops ${ err }`);
+            }
+        });
+
+        const { userData: session, jwt } = data;
+
+        session.expire = dayjs().add(2, 'hour').toDate();
+
+        window.localStorage.setItem('session', JSON.stringify(session));
+        window.localStorage.setItem('jwt', jwt)
+
+        if(session.IsEmployer)
+            window.location.href = '/e/vacancy'
+        else
+            window.location.href = '/vacancy'
 	}
 </script>
 

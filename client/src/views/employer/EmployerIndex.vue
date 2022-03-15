@@ -1,62 +1,134 @@
 <script setup>
+    import { ref, watch, onMounted } from 'vue';
+    import { parseJwt } from '@/assets/js/jwt';
     import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
-
-    import relativeTime from 'dayjs/plugin/relativeTime';
+    
+    import axios from 'axios';
     import dayjs from 'dayjs';
-    import { ref, watch } from 'vue';
-
+    import relativeTime from 'dayjs/plugin/relativeTime';
+    
     dayjs.extend(relativeTime);
-
-    const stats = {
-        newApplications: 19,
-        activeAdverts: 2,
-        totalApplications: 96,
-        rejectedApplications: 65,
-        acceptedApplications: 12
-    };
-
-    const vacancies = [
-        {
-            id: 0,
-            title: 'Customer Service Representative',
-            new: 13,
-            accepted: 2000,
-            rejected: 1100,
-            listed: new Date(2022, 2, 1),
-            isOpen: true
-        },
-        {
-            id: 1,
-            title: 'Accountant',
-            new: 6,
-            accepted: 8,
-            rejected: 34,
-            listed: new Date(2022, 1, 19),
-            isOpen: true
-        },
-        {
-            id: 2,
-            title: 'This is an unreasonably long job title that doesn\'t fit the template, like seriously who does this',
-            new: 0,
-            accepted: 2,
-            rejected: 11,
-            listed: new Date(2022, 0, 3),
-            isOpen: false
-        }
-    ];
-
-    vacancies.forEach((vacancy) => {
-        vacancy.listedAgo = dayjs(vacancy.listed).fromNow();
-        vacancy.formattedDate = dayjs(vacancy.listed).format('DD/MM/YYYY');
+    
+    // vars init
+    const stats = ref({
+        activeAdverts: 0,
+        totalApplications: 0,
+        newApplications: 0,
+        acceptedApplications: 0,
+        rejectedApplications: 0
     });
 
-    let notifs = ref(2);
-    let filter = ref('all');
-    let limit = ref(10);
-    let sort = ref('newApps');
-    let page = ref(3);
-    let numPages = ref(5);
+    const notifs = ref(2);
+    const vacancies = ref(null);
+
+    // dropdown values
+    const filter = ref('all');
+    const limit = ref(10);
+    const sort = ref('newApps');
+
+    // pagination
+    const page = ref(3);
+    const numPages = ref(5);
+
+    document.title = 'Home | Vacansee';
+
+    // api request
+    onMounted(async () => {
+
+        let { data = false } = await axios({
+            method: 'get',
+            url: '/e/vacancy/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+        }).catch((err) => {
+            console.log(`oops: ${ err }`);
+        });
+        
+        if(!data) {
+            return;
+        }
+
+        let { vacancies: vs = [], stats: statsObj = false } = data;
+
+        if(statsObj)
+            stats.value = statsObj;
+        
+        vs.forEach((vacancy) => {
+            vacancy.listedAgo = dayjs(vacancy.Created).fromNow();
+        });
+
+        vacancies.value = vs;
+
+        sortVacancies('newApps');
+    });
+
+    const sortVacancies = (sortParam) => {
+        let sortFunc = false;
+
+        switch (sortParam) {
+            case 'newApps':
+                sortFunc = (a, b) => {
+                    if(a.NewApplications > b.NewApplications)
+                        return -1;
+                    if(b.NewApplications < a.NewApplications)
+                        return 1;
+                    return 0;
+                }
+                break;
+
+            case 'dateDesc':
+                sortFunc = (a, b) => {
+                    const dateA = dayjs(a.Created);
+                    const  dateB = b.Created;
+
+                    if(dateA.isBefore(dateB))
+                        return 1;
+                    if(dateA.isSame(dateB))
+                        return 0;
+                    return -1;
+                }
+                break;
+
+            case 'dateAsc':
+                sortFunc = (a, b) => {
+                    const dateA = dayjs(a.Created);
+                    const  dateB = b.Created;
+
+                    if(dateA.isBefore(dateB))
+                        return -1;
+                    if(dateA.isSame(dateB))
+                        return 0;
+                    return 1;
+                }
+                break;
+
+            case 'titleAsc':
+                sortFunc = (a, b) => {
+                    if(a.VacancyName < b.VacancyName)
+                        return -1;
+                    if(b.VacancyName > a.VacancyName)
+                        return 1;
+                    return 0;
+                }
+                break;
+
+            case 'titleDesc':
+                sortFunc = (a, b) => {
+                    if(a.VacancyName > b.VacancyName)
+                        return -1;
+                    if(b.VacancyName < a.VacancyName)
+                        return 1;
+                    return 0;
+                }
+                break;
+        }
+        return vacancies.value.sort(sortFunc);
+    }
+
+
+
+    // dropdown watchers
 
     watch(filter, (filterValue) => {
         alert(`showing ${ filterValue } adverts`);
@@ -66,14 +138,18 @@
         alert(`showing ${ newLimit } articles per page`);
     });
 
-    watch(sort, (sortParam) => {
-        alert(`sorted by ${ sortParam }`);
-    });
+    watch(sort, sortVacancies);
+
+
+    //pagination watcher
 
     watch(page, (newPage, oldPage) => {
         alert(`moved from page ${ oldPage } to page ${ newPage }`);
     });
     
+
+    // vacancy button actions
+
     const closeVacancy = () => {
         alert('are you sure you want to close this vacancy?');
     }
@@ -135,16 +211,16 @@
             <div class='vacancies' v-for='vacancy in vacancies' :key='vacancy.id'>
                 <div class='vacancy'>
                     <div class='vacancy-left'>
-                        <h5 class='vacancy-title' :title='vacancy.title'>{{ vacancy.title }}</h5>
-                        <h5 class='vacancy-new' v-if='vacancy.new'>{{ vacancy.new }} New Applications!</h5>
+                        <h5 class='vacancy-title' :title='vacancy.title'>{{ vacancy.VacancyName }}</h5>
+                        <h5 class='vacancy-new' v-if='vacancy.NewApplications'>{{ vacancy.NewApplications }} New Applications!</h5>
                         <p class='vacancy-new' v-else>No New Applications</p>
                     </div>
                     <div class='vacancy-right'>
-                        <div class='vacancy-decisions'>{{ vacancy.accepted }} Accepted / {{ vacancy.rejected }} Rejected</div>
+                        <div class='vacancy-decisions'>{{ vacancy.AcceptedApplications }} Accepted / {{ vacancy.RejectedApplications }} Rejected</div>
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
-                        <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.isOpen'>Close Applications</button>
+                        <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.IsOpen'>Close Applications</button>
                         <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
-                        <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.new'>Review Applications</router-link>
+                        <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
                         <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
                     </div>
                 </div>
@@ -168,7 +244,7 @@
 
 
 <style scoped>
-    hr, div /deep/ hr {
+    hr, div:deep(hr) {
         width: 100%;
         margin: 8px 0 12px 0;
         border: 0;
@@ -233,7 +309,7 @@
         color: white;
     }
 
-    .title, div /deep/ .title {
+    .title, div:deep(.title) {
         margin: 0;
         font-size: 32px;
         position: relative;

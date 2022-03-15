@@ -10,7 +10,9 @@
     }
 
     const logout = () => {
-        alert("logged out!");
+        window.localStorage.removeItem('jwt');
+        window.localStorage.removeItem('session');
+        window.location.href = '/login'
     }
 </script>
 

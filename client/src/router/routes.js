@@ -1,3 +1,4 @@
+import { isLoggedIn, isNotLoggedIn, isEmployer, isEmployee } from '@/middleware';
 import Landing from '@/views/Landing.vue';
 
 const landingRoute = {
@@ -14,7 +15,10 @@ const authRoutes = [
     {
         path: '/login',
         name: 'LogIn',
-        component: LogIn
+        component: LogIn,
+        meta: {
+            middleware: [isNotLoggedIn]
+        }
     }
 ];
 
@@ -27,12 +31,18 @@ const employeeRoutes = [
   {
     path: '/vacancy',
     name: 'EmployeeIndex',
-    component: EmployeeIndex
+    component: EmployeeIndex,
+    meta: {
+        middleware: [isLoggedIn, isEmployee]
+    }
   },
   {
     path: '/applications',
     name: 'EmployeeApplications',
-    component: EmployeeApplications
+    component: EmployeeApplications,
+    meta: {
+        middleware: [isLoggedIn, isEmployee]
+    }
   }
 ];
 
@@ -46,13 +56,18 @@ const employerRoutes = [
   {
     path: '/e/vacancy',
     name: 'EmployerIndex',
-    component: EmployerIndex
+    component: EmployerIndex,
+    meta: {
+        middleware: [isLoggedIn, isEmployer]
+    }
   },
-
   {
     path: '/e/review/:vacancyId',
     name: 'EmployerReview',
-    component: EmployerReview
+    component: EmployerReview,
+    meta: {
+      middleware: [isLoggedIn, isEmployer]
+    }
   }
 ];
 
