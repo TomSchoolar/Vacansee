@@ -30,6 +30,8 @@ run-python-unit-tests:
   tags:
     - python
     - server-runner
+  variables:
+    GIT_STRATEGY: clone
   before_script:
     - cd api
     - cp $TEST_ENV_FILE api/.env
@@ -63,6 +65,8 @@ run-js-unit-tests:
   tags:
     - node
     - server-runner
+  variables:
+    GIT_STRATEGY: clone
   before_script:
     - cd client
   script:
