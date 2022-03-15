@@ -8,6 +8,8 @@ build-vue-client:
   tags:
     - node
     - server-runner
+  variables:
+    GIT_STRATEGY: clone
   only:
     refs:
       - main
