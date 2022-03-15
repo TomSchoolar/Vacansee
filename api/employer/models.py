@@ -8,7 +8,7 @@ from django.contrib.postgres.fields import ArrayField
 # Create your models here.
 class EmployerDetails(models.Model):
     UserId = models.OneToOneField('authentication.User', on_delete=models.CASCADE, primary_key=True, blank=False)
-    PhoneNumber = models.CharField(max_length=11, blank=False)
+    PhoneNumber = models.CharField(max_length=30, blank=False)
     CompanyName = models.CharField(max_length=30, blank=False)
 
 class Vacancy(models.Model):
@@ -22,7 +22,7 @@ class Vacancy(models.Model):
     TimeZone = models.IntegerField(blank=False)
     Tags = ArrayField(models.CharField(max_length=20), size=10, default=list)
     IsOpen = models.BooleanField(blank=False, default=True)
-    PhoneNumber = models.CharField(max_length=15, blank=False)
+    PhoneNumber = models.CharField(max_length=30, blank=False)
     Email = models.EmailField(max_length=254, blank=False)
     Created = models.DateField(auto_now_add=True, blank=False)
 
