@@ -143,6 +143,9 @@
 
     //pagination watcher
 
+
+    //pagination watcher
+
     watch(page, (newPage, oldPage) => {
         alert(`moved from page ${ oldPage } to page ${ newPage }`);
     });
