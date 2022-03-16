@@ -12,11 +12,11 @@
     
     // vars init
     const stats = ref({
-        activeAdverts: 0,
-        totalApplications: 0,
-        newApplications: 0,
-        acceptedApplications: 0,
-        rejectedApplications: 0
+        activeAdverts: '...',
+        totalApplications: '...',
+        newApplications: '...',
+        acceptedApplications: '...',
+        rejectedApplications: '...'
     });
 
     const notifs = ref(2);
@@ -37,7 +37,7 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all', stats: statsOption = false } = options;
+        const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
 
         const uID = jwtGetId(window.localStorage.jwt);
 
@@ -50,7 +50,6 @@
                 uID,
                 sort,
                 count,
-                stats: statsOption,
                 filter,
                 pageNum
             }
@@ -74,11 +73,8 @@
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
             numVacancies: total = 0,
-            stats: statsObj = false
         } = data;
 
-        if(statsOption)
-            stats.value = statsObj;
 
         while((page.value - 1) * limit.value >= total) page.value--;
 
@@ -90,15 +86,41 @@
     }
 
 
-    // api request
+    // vacancy api request
     onMounted(async () => {
-        const result = await getVacancies({ stats: true });
+        const result = await getVacancies({ });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
     });
+
+
+    // stats api request, separate request to speed up page load
+    onMounted(async () => {
+        // get stats
+        const uID = jwtGetId(window.localStorage.jwt);
+
+        const response = await axios({
+            method: 'get',
+            url: '/e/vacancy/stats/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID
+            }
+        }).catch((err) => {
+            console.log(`oops: ${ err }`);
+        });
+
+        if(!response || !response.data) {
+            alert('uh oh, something went wrong :(');
+            return;
+        }
+
+        stats.value = response.data.stats;
+    })
 
 
     // get vacancies in new order
@@ -225,8 +247,9 @@
 
             <hr />
 
-            <div class='vacancies' v-for='vacancy in vacancies' :key='vacancy.id'>
-                <div class='vacancy'>
+            <div class='vacancies'>
+                <h3 class='no-vacancies' v-if='numVacancies == 0'>No vacancies to display</h3>
+                <div class='vacancy' v-for='vacancy in vacancies' :key='vacancy.id'>
                     <div class='vacancy-left'>
                         <h5 class='vacancy-title' :title='vacancy.title'>{{ vacancy.VacancyName }}</h5>
                         <h5 class='vacancy-new' v-if='vacancy.NewApplications'>{{ vacancy.NewApplications }} New Applications!</h5>
@@ -268,6 +291,10 @@
     .container {
         padding: 0 40px;
         width: calc(100vw - 80px);
+    }
+
+    .no-vacancies {
+        color: var(--blue);
     }
 
     .pagination {

@@ -1,5 +1,6 @@
 from math import ceil
 from .models import Vacancy
+from rest_framework import status
 from django.db.models import Count, Q
 from .serializers import VacancySerializer
 from rest_framework.response import Response
@@ -19,7 +20,6 @@ def getIndex(request):
     filter = params['filter']
     count = int(params['count'])
     pageNum = int(params['pageNum'])
-    stats = bool([1 if x == 'true' else 0 for x in [params['stats']]][0])
     sortByApps = False
 
 
@@ -84,20 +84,31 @@ def getIndex(request):
     vacancySerializer = VacancySerializer(vacanciesSet, many=True)
     vacancies = vacancySerializer.data
 
-    if stats:
-        statsObj = indexHelper.getStats(uID)
-    else:
-        statsObj = False
-
     # get number of new, matched and rejected apps for each vacancy
     indexHelper.getVacancyStats(vacancies)
 
     # compile return data and send response
     returnData = {
         'vacancies': vacancies,
-        'stats': statsObj,
         'numPages': pages,
         'numVacancies': numVacancies
     }
 
     return Response(returnData)
+
+
+
+@api_view(['GET'])
+def getIndexStats(request):
+    # get query params: sort, count, stats, pageNum 
+    params = request.query_params
+
+    # destructure params and typecast
+    uID = params['uID']
+
+    try:
+        stats = indexHelper.getStats(uID)
+    except Exception as e:
+        return Response(data={'code': 500, 'message': e.__str__}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+   
+    return Response({ 'stats': stats })
