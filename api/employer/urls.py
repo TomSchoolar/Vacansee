@@ -2,5 +2,5 @@ from . import views
 from django.urls import path
 
 urlpatterns = [
-    path('vacancy/', views.getEmployerIndex)
+    path('vacancy/', views.getIndex)
 ]

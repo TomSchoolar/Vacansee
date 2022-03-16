@@ -12,6 +12,9 @@ class EmployerDetails(models.Model):
     CompanyName = models.CharField(max_length=30, blank=False)
 
 class Vacancy(models.Model):
+    class Meta:
+        ordering = ('VacancyName', 'Created')
+
     VacancyId = models.AutoField(primary_key=True)
     VacancyName = models.CharField(max_length=80, blank=False)
     UserId = models.ForeignKey('authentication.User', on_delete=models.CASCADE, blank=False)

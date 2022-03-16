@@ -1,6 +1,6 @@
 <script setup>
     import { ref, watch, onMounted } from 'vue';
-    import { parseJwt } from '@/assets/js/jwt';
+    import { jwtGetId } from '@/assets/js/jwt';
     import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
     
@@ -24,129 +24,142 @@
 
     // dropdown values
     const filter = ref('all');
-    const limit = ref(10);
+    const limit = ref(5);
     const sort = ref('newApps');
 
     // pagination
-    const page = ref(3);
-    const numPages = ref(5);
+    const page = ref(1);
+    const numPages = ref(1);
+    const numVacancies = ref(0);
 
     document.title = 'Home | Vacansee';
 
-    // api request
-    onMounted(async () => {
 
-        let { data = false } = await axios({
+    // api request function
+    const getVacancies = async (options) => {
+        const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all', stats: statsOption = false } = options;
+
+        const uID = jwtGetId(window.localStorage.jwt);
+
+        const response = await axios({
             method: 'get',
             url: '/e/vacancy/',
             baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
+            params: {
+                uID,
+                sort,
+                count,
+                stats: statsOption,
+                filter,
+                pageNum
+            }
         }).catch((err) => {
             console.log(`oops: ${ err }`);
         });
-        
-        if(!data) {
-            return;
-        }
 
-        let { vacancies: vs = [], stats: statsObj = false } = data;
+        if(!response || !response.data)
+            return false;
 
-        if(statsObj)
-            stats.value = statsObj;
-        
-        vs.forEach((vacancy) => {
+        const { data } = response;
+
+        data.vacancies.forEach((vacancy) => {
             vacancy.listedAgo = dayjs(vacancy.Created).fromNow();
         });
 
-        vacancies.value = vs;
+        if(!data)
+            return false;
 
-        sortVacancies('newApps');
-    });
+        const { 
+            vacancies: newVacancies = vacancies.value, 
+            numPages: pages = 1, 
+            numVacancies: total = 0,
+            stats: statsObj = false
+        } = data;
 
-    const sortVacancies = (sortParam) => {
-        let sortFunc = false;
+        if(statsOption)
+            stats.value = statsObj;
 
-        switch (sortParam) {
-            case 'newApps':
-                sortFunc = (a, b) => {
-                    if(a.NewApplications > b.NewApplications)
-                        return -1;
-                    if(b.NewApplications < a.NewApplications)
-                        return 1;
-                    return 0;
-                }
-                break;
+        while((page.value - 1) * limit.value >= total) page.value--;
 
-            case 'dateDesc':
-                sortFunc = (a, b) => {
-                    const dateA = dayjs(a.Created);
-                    const  dateB = b.Created;
+        numPages.value = pages;
+        numVacancies.value = total;
+        vacancies.value = newVacancies;
 
-                    if(dateA.isBefore(dateB))
-                        return 1;
-                    if(dateA.isSame(dateB))
-                        return 0;
-                    return -1;
-                }
-                break;
-
-            case 'dateAsc':
-                sortFunc = (a, b) => {
-                    const dateA = dayjs(a.Created);
-                    const  dateB = b.Created;
-
-                    if(dateA.isBefore(dateB))
-                        return -1;
-                    if(dateA.isSame(dateB))
-                        return 0;
-                    return 1;
-                }
-                break;
-
-            case 'titleAsc':
-                sortFunc = (a, b) => {
-                    if(a.VacancyName < b.VacancyName)
-                        return -1;
-                    if(b.VacancyName > a.VacancyName)
-                        return 1;
-                    return 0;
-                }
-                break;
-
-            case 'titleDesc':
-                sortFunc = (a, b) => {
-                    if(a.VacancyName > b.VacancyName)
-                        return -1;
-                    if(b.VacancyName < a.VacancyName)
-                        return 1;
-                    return 0;
-                }
-                break;
-        }
-        return vacancies.value.sort(sortFunc);
+        return true;
     }
 
+
+    // api request
+    onMounted(async () => {
+        const result = await getVacancies({ stats: true });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+    });
+
+
+    // get vacancies in new order
+    const sortVacancies = async (sortParam) => {
+        const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
+        
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        sort.value = sortParam;
+    }
+
+
+    // pagination: change page
+    const changePage = async (newPage) => {
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        page.value = newPage;   
+    }
 
 
     // dropdown watchers
 
-    watch(filter, (filterValue) => {
-        alert(`showing ${ filterValue } adverts`);
+    watch(filter, async (filterValue) => {
+        // change which vacancies are display based on isOpen
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        filter.value = filterValue;
     });
 
-    watch(limit, (newLimit) => {
-        alert(`showing ${ newLimit } articles per page`);
+    watch(limit, async (newLimit) => {
+        // change number of vacancies per page
+        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
+
+        if(page.value < 0)
+            page.value = 0;
+
+        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        limit.value = newLimit;
     });
 
     watch(sort, sortVacancies);
 
-
-    //pagination watcher
-
-    watch(page, (newPage, oldPage) => {
-        alert(`moved from page ${ oldPage } to page ${ newPage }`);
-    });
-    
 
     // vacancy button actions
 
@@ -169,7 +182,10 @@
 
         <section class='vacancies-section'>
             <div class='title-bar'>
-                <h1 class='title'>Listed Vacancies</h1>
+                <div class='title-bar-left'>
+                    <h1 class='title'>Listed Vacancies</h1>
+                    <p class='showing' v-if='numVacancies'>Showing {{ (page - 1) * limit + 1 }} to {{ Math.min(page * limit, numVacancies) }} of {{ numVacancies }} </p>
+                </div>
                 <div class='title-bar-right'>
                     <div class='select-group'>
                         <label for='filter' class='select-label select-label-hidden'>filter:</label>
@@ -184,8 +200,8 @@
                     <div class='select-group'>
                         <label for='limit' class='select-label select-label-hidden'>page limit:</label>
                         <select v-model='limit' aria-label='set page size' id='limit'>
-                            <option value=5>5 per page</option>
-                            <option value=10 selected>10 per page</option>
+                            <option value=5 selected>5 per page</option>
+                            <option value=10>10 per page</option>
                             <option value=20>20 per page</option>
                             <option value=50>50 per page</option>
                         </select>
@@ -226,13 +242,10 @@
                 </div>
             </div>
 
-            <div class='pagination'>
-                <div class='pag-block pag-start' @click='page=1'><i class="fa-solid fa-angles-left"></i></div>
-                <div class='pag-block' @click='page > 1 ? page-- : page'><i class="fa-solid fa-angle-left"></i></div>
-                <div class='pag-block' @click='page=i' v-for='i in 5' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
-                <div class='pag-block' @click='page < numPages ? page++ : page'><i class="fa-solid fa-angle-right"></i></div>
-                <div class='pag-block pag-end' @click='page=numPages'><i class="fa-solid fa-angles-right"></i></div>
-            </div>
+            <div class='pagination' v-if='numPages > 1'>
+                <div class='pag-block pag-start' @click='page > 1 ? changePage(page - 1) : page'><i class="fa-solid fa-angle-left"></i></div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            </div>
         </section>
     </main>
 
@@ -309,6 +322,15 @@
         color: white;
     }
 
+    .showing {
+        margin-left: 30px;
+        font-size: 14px;
+        color: var(--slate);
+        font-style: italic;
+        position: relative;
+        top: 4px;
+    }
+
     .title, div:deep(.title) {
         margin: 0;
         font-size: 32px;
@@ -324,12 +346,15 @@
         width: 100%;
     }
 
+    .title-bar-left {
+        display: flex;
+    }
+
     .title-bar-right {
         display: flex;
         align-items: center;
         position: relative;
         right: 5px;
-        /* top: 2px; */
     }
 
     .title-bar-right select {
