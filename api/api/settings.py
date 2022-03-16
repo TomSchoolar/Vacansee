@@ -42,7 +42,10 @@ ALLOWED_HOSTS = ['134.209.29.204', 'localhost', '127.0.0.1']
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     'http://127.0.0.1:8080',
-    'http://tp45.co.uk'
+    'http://tp45.co.uk',
+    'https://tp45.co.uk',
+    'http://www.tp45.co.uk',
+    'https://www.tp45.co.uk'
 ]
 
 
