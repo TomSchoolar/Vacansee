@@ -30,7 +30,7 @@ middleware.isNotLoggedIn = ({ next, router }) => {
 
 middleware.isEmployer = ({ next, router }) => {
     const session = JSON.parse(localStorage.getItem('session'));
-    console.log(session)
+
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === false) {
         return router.push({ name: 'EmployeeIndex' });
     }
@@ -40,7 +40,7 @@ middleware.isEmployer = ({ next, router }) => {
 
 middleware.isEmployee = ({ next, router }) => {
     const session = JSON.parse(localStorage.getItem('session'));
-    console.log(session)
+
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === true) {
         return router.push({ name: 'EmployerIndex' });
     }

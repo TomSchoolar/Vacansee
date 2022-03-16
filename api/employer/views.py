@@ -1,63 +1,114 @@
+from math import ceil
 from .models import Vacancy
-from employee.models import Application
+from rest_framework import status
+from django.db.models import Count, Q
 from .serializers import VacancySerializer
 from rest_framework.response import Response
+from .helpers import getIndex as indexHelper
 from rest_framework.decorators import api_view
-from employee.serializers import ApplicationSerializer
+
 
 
 @api_view(['GET'])
-def getEmployerIndex(request):
-    # get vacancies matching userid
-    vacanciesSet = Vacancy.objects.filter(UserId__exact=4)
+def getIndex(request):
+    # get query params: sort, count, stats, pageNum 
+    params = request.query_params
+
+    # destructure params and typecast
+    uID = params['uID']
+    sort = params['sort']
+    filter = params['filter']
+    count = int(params['count'])
+    pageNum = int(params['pageNum'])
+    sortByApps = False
+
+
+    # parse sort parameter into django sort parameter
+    if sort == 'newApps':
+        sortByApps = True
+    elif sort == 'dateDesc':
+        sortParam = '-Created'
+    elif sort == 'dateAsc':
+        sortParam = 'Created'
+    elif sort == 'titleAsc':
+        sortParam = 'VacancyName'
+    else:
+        # 'titleDesc'
+        sortParam = '-VacancyName'
+
+
+    # parse filter parameter into django filter parameter
+    if filter == 'all':
+        filterParam = [True, False]
+    elif filter == 'active':
+        filterParam = [True]
+    else:
+        # 'closed'
+        filterParam = [False]
+
+
+    # get number of pages
+    numVacancies = Vacancy.objects.filter(
+                UserId__exact = uID,
+                IsOpen__in = filterParam
+            ).count()
+    pages = int(ceil(numVacancies / int(params['count'])))
+
+
+    # deals with a lower number of pages than the current page
+    while (pageNum - 1) * count >= numVacancies and pageNum > 0:
+        pageNum -= 1
+
+    skip = count * (pageNum - 1)
+    limit = count * pageNum
+
+    # get vacancies
+    if sortByApps:
+        # sort by the number of applications referencing vacancy
+        vacanciesSet = Vacancy.objects.filter(
+                UserId__exact = uID,
+                IsOpen__in = filterParam
+            ).annotate(
+                applicationCount = Count('application', filter=Q(application__ApplicationStatus__exact='PENDING'))
+            ).order_by(
+                '-applicationCount'
+            )[skip:limit]
+    else:
+        # sort by regular sort param
+        vacanciesSet = Vacancy.objects.filter(
+            UserId__exact=4,
+            IsOpen__in = filterParam
+        ).order_by(sortParam)[skip:limit]
+
+    
     vacancySerializer = VacancySerializer(vacanciesSet, many=True)
     vacancies = vacancySerializer.data
 
-    stats = {
-        'activeAdverts': 0,
-        'totalApplications': 0,
-        'newApplications': 0,
-        'acceptedApplications': 0,
-        'rejectedApplications': 0,
-    }
+    # get number of new, matched and rejected apps for each vacancy
+    indexHelper.getVacancyStats(vacancies)
 
-    # get the number of new, accepted and rejected applications for each vacancy
-    for vacancy in vacancies:
-        applicationsSet = Application.objects.filter(VacancyId__exact=vacancy['VacancyId'])
-        applicationSerializer = ApplicationSerializer(applicationsSet, many=True)
-        applications = applicationSerializer.data
-
-        if vacancy['IsOpen']:
-            stats['activeAdverts'] += 1
-
-        new = 0
-        accepted = 0
-        rejected = 0
-        total = 0
-
-        for application in applications:
-            status = application['ApplicationStatus']
-            stats['totalApplications'] += 1
-            total += 1
-
-            if status == 'PENDING':
-                stats['newApplications'] += 1
-                new += 1
-            elif status == 'MATCHED':
-                stats['acceptedApplications'] += 1
-                accepted += 1
-            else:
-                stats['acceptedApplications'] += 1
-                rejected += 1
-        
-        vacancy['NewApplications'] = new
-        vacancy['AcceptedApplications'] = accepted
-        vacancy['RejectedApplications'] = rejected
-        vacancy['Applications'] = total
-
+    # compile return data and send response
     returnData = {
         'vacancies': vacancies,
-        'stats': stats
+        'numPages': pages,
+        'numVacancies': numVacancies
     }
 
     return Response(returnData)
+
+
+
+@api_view(['GET'])
+def getIndexStats(request):
+    # get query params: sort, count, stats, pageNum 
+    params = request.query_params
+
+    # destructure params and typecast
+    uID = params['uID']
+
+    try:
+        stats = indexHelper.getStats(uID)
+    except Exception as e:
+        return Response(data={'code': 500, 'message': e.__str__}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+   
+    return Response({ 'stats': stats })
