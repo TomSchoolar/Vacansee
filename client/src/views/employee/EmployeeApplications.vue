@@ -166,7 +166,7 @@
 
 
 <style scoped>
-    hr, div /deep/ hr {
+    hr, div:deep(hr) {
         width: 100%;
         margin: 8px 0 12px 0;
         border: 0;
@@ -231,7 +231,7 @@
         color: white;
     }
 
-    .title, div /deep/ .title {
+    .title, div:deep(.title) {
         margin: 0;
         font-size: 32px;
         position: relative;
