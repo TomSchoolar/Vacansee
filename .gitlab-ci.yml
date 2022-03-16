@@ -109,8 +109,7 @@ deploy-api:
     - ssh root@$SERVER_IP "cd /code/api && 
       python3 manage.py check --database default && 
       python3 manage.py migrate &&
-      python3 manage.py flush --noinput &&
-      python3 manage.py loaddata fixtures.json"
+      python3 manage.py loaddata seed.json"
     # restart gunicorn and nginx servers
     - ssh root@$SERVER_IP "sudo systemctl restart gunicorn && sudo systemctl restart nginx"
 
