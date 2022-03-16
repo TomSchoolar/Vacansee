@@ -141,6 +141,7 @@
         filter.value = filterValue;
     });
 
+
     watch(limit, async (newLimit) => {
         // change number of vacancies per page
         while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
