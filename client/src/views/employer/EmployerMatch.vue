@@ -1,6 +1,7 @@
 <script setup>
     import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
     import EmployerMatches from '@/components/employer/EmployerMatches.vue';
+    import ApplyProfileCard from '@/components/partials/ApplyProfileCard.vue';
 
     import relativeTime from 'dayjs/plugin/relativeTime';
     import dayjs from 'dayjs';
@@ -8,7 +9,32 @@
 
     dayjs.extend(relativeTime);
 
-    
+    let applicantData = {
+        firstName: 'Mary',
+        pronouns: 'she/her',
+        location: 'Birmingham',
+        topicSentence: 'A topic sentence',
+        skills: ['Excel', 'Typing', 'Communication'],
+        experience: [
+            {
+                title: 'job',
+                startDate: '2009',
+                endDate: '2013' 
+            },
+            {
+                title: 'a new job',
+                startDate: '2013',
+                endDate: '2020' 
+            },
+            {
+                title: 'customer service rep',
+                startDate: '2020',
+                endDate: '2022' 
+            }
+        ],
+        qualifications: ['10 GCSEs (A*-D)', '3 A-Levels (A-C)']
+    };
+
     const downloadbtn = () => {
         alert("downloaded!");
     }
@@ -117,6 +143,7 @@
         <h1 style= 'border-bottom: 2px solid; margin:20px;'> Vacancy title </h1>
 
         <p> Profile Card </p>
+        <ApplyProfileCard class='card' :application='applicantData' />
 
     </div>
 
@@ -140,6 +167,12 @@
         height: 100%;
         width: 100%;
         overflow-y: auto;
+    }
+
+    .card {
+        position: relative;
+        margin-left : auto; 
+        margin-right : auto;
     }
 
     .stats{
