@@ -35,15 +35,6 @@
 
 
 <style scoped>
-
-    
-
-    .stat-boxes {
-        text-align:left;
-        width: 100%;
-        display: fixed;
-        margin: 10px;
-    }
     
     .button{
         float: right;
@@ -61,10 +52,7 @@
 
     }
 
-    .unmatch{
-        float:right;
-        background-color: red;
-    }
+    
     .button:active{
         background-color:#D3D3D3;
         font-size: 70%;
@@ -73,6 +61,18 @@
     .button:hover{
         background-color:#D3D3D3;
 
+    }
+
+    .stat-boxes {
+        text-align:left;
+        width: 100%;
+        display: fixed;
+        margin: 10px;
+    }
+
+    .unmatch{
+        float:right;
+        background-color: red;
     }
 
 
