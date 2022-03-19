@@ -59,7 +59,7 @@ def getIndex(request):
     while (pageNum - 1) * count >= numVacancies and pageNum > 0:
         pageNum -= 1
 
-    skip = count * (pageNum - 1)
+    skip = max(count * (pageNum - 1), 0)
     limit = count * pageNum
 
     # get vacancies
