@@ -214,7 +214,7 @@
             "ExperienceRequired" : ["Agile team experience"],
             "TimeZone" : 5,
             "Tags" : [0,1,5],
-            "IsOpen" : true,
+            "IsOpen" : false,
             "PhoneNumber" : "07945469444",
             "Email" : "example@facebook.com",
             "Created": "2022-01-03"
