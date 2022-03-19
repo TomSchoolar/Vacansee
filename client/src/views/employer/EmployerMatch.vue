@@ -8,6 +8,7 @@
     import { ref, watch } from 'vue';
 
     dayjs.extend(relativeTime);
+   
 
     let applicantData = {
         firstName: 'Mary',
@@ -35,13 +36,7 @@
         qualifications: ['10 GCSEs (A*-D)', '3 A-Levels (A-C)']
     };
 
-    const downloadbtn = () => {
-        alert("downloaded!");
-    }
-
-    const vacbtn = () => {
-        alert("value");
-    }
+   
     const vacancies = [
             {title: 'Customer Service Rep.',
             closed: false,
@@ -77,6 +72,14 @@
     function getMatches(vac){
         alert('show matches for '+ vac.title);
     };
+
+    const downloadbtn = () => {
+        alert("downloaded!");
+    }
+
+    const vacbtn = () => {
+        alert("value");
+    }
         
 </script>
 
@@ -154,6 +157,16 @@
 
 <style scoped>
 
+    input{
+        font-size: 12px;
+        float: right;
+        margin-top:2px;
+        border-radius: 25px;
+        padding: 2px;
+        padding-left: 5px;
+        margin-right: 5px;
+    }
+
     select{
         border: 2px solid;
         float:right;
@@ -167,38 +180,6 @@
         height: 100%;
         width: 100%;
         overflow-y: auto;
-    }
-
-    .card {
-        position: relative;
-        margin-left : auto; 
-        margin-right : auto;
-    }
-
-    .stats{
-        border: 2px solid; 
-        background-color: white; 
-        border-radius: 25px; 
-        margin-left:30%; 
-        margin-right:30%; 
-        margin-top: 40%; 
-    }
-    .scroll {
-        width:100%;
-        height: 85%;
-        overflow:auto;
-        scrollbar-base-color:gold;
-        margin: 2px;
-        overflow-y:scroll;
-    }
-    input{
-        font-size: 12px;
-        float: right;
-        margin-top:2px;
-        border-radius: 25px;
-        padding: 2px;
-        padding-left: 5px;
-        margin-right: 5px;
     }
 
     .button{
@@ -217,6 +198,45 @@
 
     }
 
+    .button:active{
+        background-color:#D3D3D3;
+        font-size: 70%;
+    }
+
+    .button:hover{
+        background-color:#D3D3D3;
+
+    }
+
+    .card {
+        position: relative;
+        margin-left : auto; 
+        margin-right : auto;
+    }
+
+    .scroll {
+        width:100%;
+        height: 85%;
+        overflow:auto;
+        scrollbar-base-color:gold;
+        margin: 2px;
+        overflow-y:scroll;
+    }
+
+    .select-group {
+        align: right;
+        flex-direction: column;
+    }
+
+     .stats{
+        border: 2px solid; 
+        background-color: white; 
+        border-radius: 25px; 
+        margin-left:30%; 
+        margin-right:30%; 
+        margin-top: 40%; 
+    }
+
     .vacancies{
         float: center;
         font-size: 18px;
@@ -227,15 +247,8 @@
 
     }
 
-    .button:active{
-        background-color:#D3D3D3;
-        font-size: 70%;
-    }
 
-    .button:hover{
-        background-color:#D3D3D3;
 
-    }
 
     .left {
         box-sizing: border-box;
@@ -271,9 +284,6 @@
     
     }
 
-    .select-group {
-        align: right;
-        flex-direction: column;
-    }
+    
 
 </style>
