@@ -8,9 +8,10 @@
     import { ref, watch } from 'vue';
 
     dayjs.extend(relativeTime);
-   
 
-    let applicantData = {
+    document.title = 'Matches | Vacansee';
+   
+    const applicantData = {
         firstName: 'Mary',
         pronouns: 'she/her',
         location: 'Birmingham',
@@ -36,18 +37,25 @@
         qualifications: ['10 GCSEs (A*-D)', '3 A-Levels (A-C)']
     };
 
-   
     const vacancies = [
-            {title: 'Customer Service Rep.',
-            closed: false,
+            {
+                title: 'Customer Service Rep.',
+                closed: false,
             },
-            {title: 'Accountant',
-            closed: true ,},
-            {title: 'Personal Assistant',
-            closed: false,},
+            {
+                title: 'Accountant',
+                closed: true ,},
+            {
+                title: 'Personal Assistant',
+                closed: false,
+                numMatches: 6
+            },
     ];
     
-    var matches = [ {
+    const numVacancies = 1;
+    const numMatches = 1;
+
+    const matches = [ {
                 name: 'Mary Rodriguez',
                 pronouns: '(she/her)',
                 number: '07747945173',
@@ -56,13 +64,6 @@
                 },
                 {
                 name: 'Brian Johnson',
-                pronouns: '(she/her)',
-                number: '07747945173',
-                email: 'name@email.com',
-                timezone: '(UTC +0) London',
-                },
-                {
-                name: 'Mary Rodriguez',
                 pronouns: '(she/her)',
                 number: '07747945173',
                 email: 'name@email.com',
@@ -80,132 +81,98 @@
     const vacbtn = () => {
         alert("value");
     }
-        
 </script>
 
-
-
 <template>
-    <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
-    
-    <div class= 'split left'>
-        <p style='text-align:left; padding-left: 10px;'> 
-        Vacancies ({{vacancies.length}})
-        <input name='searchbar' type='text' placeholder='Search..'> 
-        <button type='button' class='button downloadbtn' id= 'downloadbtn' @click= downloadbtn> Download Full Match Report </button>
-        <select v-model='sort' aria-label='sort matches' id='sort'>
-                <option selected hidden>sort by</option>
-                <option value='dateDesc'>latest first</option>
-                <option value='dateAsc'>oldest first</option>
-                <option value='titleAsc'>title (a-z)</option>
-                <option value='titleDesc'>title (z-a)</option>
-            </select>
-    </p>
-    <div class='scroll'>
-        <div class='vacancies' v-for='vac in vacancies' :key='vac.title'>
-        <table>
-            <tr>
-                <th> <b style = 'float:left; margin: 6px;' v-if='vac.closed'>(closed)</b> <button type='button' class='button vacancies' id= 'vacbtn' @click= getMatches(vac)> {{vac.title}} </button> </th>
-            </tr>
-        </table>
-        </div>
-    </div>
-    </div>
-
-    <div class='split middle'>
-    <p id='mid' style='text-align:left; padding-left: 10px;'> 
-        Matches ({{matches.length}})
-    </p>
-    <p style='text-align:left; padding-left: 10px;'> 
-        <input name='searchbar' type='text' placeholder='Search..'> 
-        <button type='button' class='button downloadbtn' id= 'downloadbtn' @click= downloadbtn> Download All </button>
-        <select v-model='sort' aria-label='sort matches' id='sort'>
-                <option selected hidden>sort by</option>
-                <option value='dateDesc'>latest first</option>
-                <option value='dateAsc'>oldest first</option>
-                <option value='titleAsc'>title (a-z)</option>
-                <option value='titleDesc'>title (z-a)</option>
-            </select>
-    </p>
-    <div  class='scroll'>
-        
-        <div class='matches' v-for='match in matches'>
-        <table>
-            <div id='displayMatches'>
-            <tr >
-                <th> <EmployerMatches :stats='match' /> </th>
-            </tr>
-            </div>
-        </table>
-        </div>
-    </div>
-        
-    </div>
-
-    <div class='split right'>
-        <h1 style= 'border-bottom: 2px solid; margin:20px;'> Vacancy title </h1>
-
-        <p> Profile Card </p>
-        <ApplyProfileCard class='card' :application='applicantData' />
-
-    </div>
-
-
+    <EmployerNavbar page='matches' :numNotifs='notifs'></EmployerNavbar>
+    <main class='container'>
+        <section class='match-title'>
+            <h1 class='title'>Strat Security Co. - Matches</h1>
+        </section>
+        <section class ='match-section'>
+            <section class= 'match-left'>
+                <div class='match-left-header'> 
+                    <div class='left-header-left'>
+                        <p> Vacancies ({{vacancies.length}}) </p>
+                        <input name='searchbar' type='text' placeholder='Search..' />
+                    </div>
+                    <div class='left-header-right'>
+                        <button type='button' class='button vacdownloadbtn' id='downloadbtn' @click= downloadbtn> Download Full Match Report </button>
+                        <div class='select-group'>
+                            <div class='select-label'> <label for='sort'>sort by:</label></div>
+                            <select v-model='sort' aria-label='sort vacancies' id='sort'>
+                                <option value='dateDesc' selected>latest first</option>
+                                <option value='dateAsc'>oldest first</option>
+                                <option value='titleAsc'>title (a-z)</option>
+                                <option value='titleDesc'>title (z-a)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class='match-left-body'>
+                    <h3 class='no-vacancies' v-if='numVacancies == 0'>No vacancies to display</h3>
+                    <div class='vacancy' v-for='vac in vacancies' :key='vac.title'>
+                        <button type='button' class='vacancybtn' @click=getMatches(vac)> <span style='font-weight: bold;' v-if='vac.closed'>(closed) </span> {{vac.title}} <span style='float:right' v-if='vac.numMatches'> {{vac.numMatches}} matches</span></button>
+                    </div>
+                </div>
+            </section>
+            <section class='match-middle'>
+                <div class='match-middle-header'>
+                    <div class='middle-header-left'>
+                        <p> Matches ({{matches.length}})</p>
+                        <input name='searchbar' type='text' placeholder='Search..' /> 
+                    </div>
+                    <div class='middle-header-right'>
+                        <button type='button' class='button matchdownloadbtn' id='downloadbtn' @click= downloadbtn> Download All </button>
+                        <div class='select-group'>
+                            <div class='select-label'> <label for='sort'>sort by:</label></div>
+                            <select v-model='sort' aria-label='sort matches' id='sort'>
+                                <option value='dateDesc' selected>latest first</option>
+                                <option value='dateAsc'>oldest first</option>
+                                <option value='titleAsc'>title (a-z)</option>
+                                <option value='titleDesc'>title (z-a)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class='match-middle-body'>
+                    <h3 class='no-matches' v-if='numMatches == 0'>No matches to display</h3>
+                    <div class='match' v-for='match in matches' v-bind:key='match'>
+                        <EmployerMatches :stats='match' />
+                    </div>
+                </div>
+            </section>
+            <section class='match-right'>
+                <ApplyProfileCard class='card' :application='applicantData' />
+            </section>
+        </section>
+    </main>
 </template>
 
-
-
 <style scoped>
-
     input{
         font-size: 12px;
         float: right;
-        margin-top:2px;
         border-radius: 25px;
-        padding: 2px;
         padding-left: 5px;
-        margin-right: 5px;
     }
 
-    select{
-        border: 2px solid;
-        float:right;
-        font-size:12px;
-        margin: 1px;
-        padding: 3px;
-    }
-
-    table {
-        border: 2px solid;
-        height: 100%;
+    .button {
         width: 100%;
-        overflow-y: auto;
-    }
-
-    .button{
-        float: right;
-        background-color:#D3D3D3;
-        border: 2px solid;
-        border-radius: 15px;
-        color: black;
+        background-color: var(--slate);
+        border: 2px solid black;
+        border-radius: 5px;
+        color: white;
         cursor: pointer;
-        display: inline-block;
-        font-size: 12px;
-        margin: 2px;
-        text-align: center;
-        text-decoration: none;
         transition-duration: 0.4s;
-
     }
 
-    .button:active{
-        background-color:#D3D3D3;
-        font-size: 70%;
+    .button:active {
+        background-color: var(--slate-focus);
     }
 
-    .button:hover{
-        background-color:#D3D3D3;
-
+    .button:hover {
+        background-color: var(--slate-focus);
     }
 
     .card {
@@ -213,22 +180,159 @@
         margin-left : auto; 
         margin-right : auto;
     }
+    
+    .container {
+        padding: 0 40px;
+        width: calc(100vw - 80px);
+        overflow: hidden;
+    }
 
-    .scroll {
-        width:100%;
-        height: 85%;
-        overflow:auto;
-        scrollbar-base-color:gold;
-        margin: 2px;
-        overflow-y:scroll;
+    .left-header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .left-header-left p {
+        margin: 0px;
+        font-size: 28px;
+        font-weight: 400;
+    }
+
+    .left-header-right {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .match {
+        border-bottom: 1px solid black;
+    }
+
+    .match-left {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        border: 1px solid black;
+        overflow: hidden;
+    }
+
+    .match-left-body {
+        scrollbar-base-color: var(--slate);  
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 auto;
+    }
+
+    .match-left-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        border-bottom: 1px solid black;
+        flex: 0 0 auto;
+    }
+
+    .match-middle {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 2;
+        border-top: 1px solid black;
+        border-right: 1px solid black;
+        border-bottom: 1px solid black;
+        overflow: hidden;
+    }
+
+    .match-middle-body {
+        scrollbar-base-color: var(--slate);  
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 auto;
+    }
+
+    .match-middle-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        border-bottom: 1px solid black;
+        flex: 0 0 auto;
+    }
+
+    .match-right {
+        display: flex;
+        flex-grow: 3;
+        flex-direction: row;
+        align-items: center;
+        align-content: center;
+        border-top: 1px solid black;
+    }
+
+    .match-section {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        overflow: hidden;
+        height: calc(85vh - 20px);
+    }
+
+    .match-title {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .matchdownloadbtn {
+        font-size: 18px;
+    }
+
+    .middle-header-left {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .middle-header-left p {
+        margin: 0px;
+        font-size: 28px;
+        font-weight: 400;
+    }
+
+    .middle-header-right {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .no-matches {
+        color: var(--blue);
+    }
+
+    .no-vacancies {
+        color: var(--blue);
+    }
+
+    .select-label {
+        font-size: 12px;
     }
 
     .select-group {
-        align: right;
+        display: flex;
         flex-direction: column;
+        align-items: flex-start;
+        margin-left: auto;
     }
 
-     .stats{
+    .stats{
         border: 2px solid; 
         background-color: white; 
         border-radius: 25px; 
@@ -237,53 +341,47 @@
         margin-top: 40%; 
     }
 
-    .vacancies{
-        float: center;
-        font-size: 18px;
+    .title, div:deep(.title) {
+        margin: 0;
+        font-size: 32px;
+        position: relative;
+        left: 5px;
+        font-weight: 400;
+    }
+
+    .vacancy{
         background-color: white;
+        border: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        margin: 3px;
+    }
+
+    .vacancybtn {
+        font-size: 24px;
         border: none;
-        margin: 10px;
-        text-align: center;
-
-    }
-
-
-
-
-    .left {
-        box-sizing: border-box;
-        height: 100%;
-        padding-top: 10px;
-        width: 30%;          
-    }
-
-    .middle {
-        box-sizing: border-box;
-        height: 100%;
-        padding-top: 10px;
-        width: 30%;
-        left: 30%;
-        right: 40%;
-    }
-
-    .right {
-        box-sizing: border-box;
-        background-color: #f0f8fa;
-        border-left:3px solid;
-        left: 60%;
-        right: 0;
-        padding-top: 20px;
-        width: 40%;
-    }
-
-    .split {
+        background-color: white;
+        transition-duration: 0.4s;
         color: black;
-        height: 100%;
-        position: fixed;
-        top: 70px;
-    
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
     }
 
-    
+    .vacancybtn:hover {
+        background-color: #d3d3d3;
+    }
 
+    .vacancybtn:active{
+        background-color:#D3D3D3;
+
+    }
+
+    .vacdownloadbtn {
+        font-size: 18px;
+    }
+
+    #sort {
+        width: 100%;
+    }
 </style>
