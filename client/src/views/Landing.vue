@@ -1,11 +1,3 @@
-<script setup>
-    import ApplyVacancyCard from '@/components/partials/ApplyVacancyCard.vue';
-    import VacancyCard from '@/components/partials/VacancyCard.vue';
-
-    import ApplyProfileCard from '@/components/partials/ApplyProfileCard.vue';
-    import ProfileCard from '@/components/partials/ProfileCard.vue';
-</script>
-
 <template>
     <main class='container'>
         <section class='landing-page'>
