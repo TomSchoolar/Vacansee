@@ -12,70 +12,102 @@
     const show = () => {
         alert('showing application');
     };
-
-    
 </script>
-
-
 
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <template>
-    <div class='stat-boxes'>
-        <p> {{stats.name}} {{stats.pronouns}} <button class='button' @click='show' id='show'>Show Application</button> <br /> 
-            {{stats.number}}  <button class='button' @click='download'>Download Application</button><br /> 
-            {{stats.email}}  <button class='button unmatch' @click='unmatch'>Unmatch</button> <br /> 
-            {{stats.timezone}}  <br />
-        </p>
-        
+    <div class='stat-container'>
+        <div class='stat-left'>
+            <div class='name-pronouns'>
+                <p class='name'> {{stats.name}} </p>
+                <p class='pronouns'> {{stats.pronouns}} </p>
+            </div>
+            <p> {{stats.number}} </p>
+            <p> {{stats.email}} </p>
+            <p> {{stats.timezone}} </p>
+        </div>
+        <div class='stat-right'>
+            <button class='button' @click='show' id='show'>Show Application</button>
+            <button class='button' @click='download'>Download Application</button>
+            <button class='button unmatch' @click='unmatch'>Unmatch</button>
+        </div>
     </div>
-
-
 </template>
 
-
-
 <style scoped>
-    
     .button{
-        float: right;
-        width: 30%;
-        background-color:#D3D3D3;
-        border: 2px solid;
+        width: 100%;
+        height: 100%;
+        background-color: var(--slate);
+        border: 2px solid black;
         border-radius: 5px;
-        color: black;
+        color: white;
         cursor: pointer;
-        display: inline-block;
-        font-size: 12px;
-        margin-right: 10px;
+        font-size: 16px;
+        margin: 5px;
         text-decoration: none;
         transition-duration: 0.4s;
-
     }
 
-    
     .button:active{
-        background-color:#D3D3D3;
+        background-color: var(--slate-focus);
         font-size: 70%;
     }
 
     .button:hover{
-        background-color:#D3D3D3;
-
+        background-color: var(--slate-focus);
     }
 
-    .stat-boxes {
-        text-align:left;
-        width: 100%;
-        display: fixed;
+    .name {
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .name-pronouns {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .pronouns {
+        font-style: italic;
+        color: var(--slate);
+    }
+
+    .stat-container {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .stat-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex: 3;
+        margin: 10px;
+    }
+
+    .stat-left p {
+        margin: 3px;
+    }
+
+    .stat-right {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        align-items: center;
+        align-content: center;
+        justify-content: space-around;
         margin: 10px;
     }
 
     .unmatch{
-        float:right;
-        background-color: red;
+        background-color: var(--red);
     }
 
-
-    
-
+    .unmatch:hover{
+        background-color: var(--red-focus);
+    }
 </style>
