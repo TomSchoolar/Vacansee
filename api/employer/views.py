@@ -15,12 +15,15 @@ def getIndex(request):
     params = request.query_params
 
     # destructure params and typecast
-    uID = params['uID']
-    sort = params['sort']
-    filter = params['filter']
-    count = int(params['count'])
-    pageNum = int(params['pageNum'])
-    sortByApps = False
+    try:
+        uID = params['uID']
+        sort = params['sort']
+        filter = params['filter']
+        count = int(params['count'])
+        pageNum = int(params['pageNum'])
+        sortByApps = False
+    except:
+        return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
 
     # parse sort parameter into django sort parameter
@@ -103,8 +106,11 @@ def getIndexStats(request):
     # get query params: sort, count, stats, pageNum 
     params = request.query_params
 
-    # destructure params and typecast
-    uID = params['uID']
+    try:
+        # destructure params and typecast
+        uID = params['uID']
+    except:
+        return Response(data={'code': 400, 'message': 'Incomplete request'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         stats = indexHelper.getStats(uID)
