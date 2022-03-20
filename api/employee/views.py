@@ -10,7 +10,6 @@ from employer.models import EmployerDetails, Vacancy
 from employee.serializers import ApplicationSerializer, FavouriteSerializer
 
 
-# Create your views here.
 
 @api_view(['GET'])
 def getIndex(request):
@@ -102,7 +101,6 @@ def getIndex(request):
 
 
 
-
 @api_view(['POST'])
 def postFavourite(request):
     if request.method == 'POST':
@@ -122,8 +120,6 @@ def postApplication(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 
