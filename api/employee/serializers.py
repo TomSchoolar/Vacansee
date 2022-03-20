@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Application, Profile
+from .models import Application, Favourite, Profile
+
 
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,3 +18,9 @@ class SummaryProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['UserId', 'FirstName', 'LastName', 'Pronouns', 'TimeZone', 'PhoneNumber']
+
+        
+class FavouriteSerializer(serializers.FavouriteSerializer):
+    class Meta:
+        model = Favourite
+        fields = '__all__'

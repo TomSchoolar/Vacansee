@@ -1,17 +1,42 @@
 <script setup>  
-    import { ref, onMounted } from 'vue';
-    import { getJwt } from '@/assets/js/jwt';
+    import { ref } from 'vue';
+    import { jwtGetId } from '@/assets/js/jwt';
 
     const { tags = [], vacancy = {} } = defineProps(['vacancy', 'tags']);
-
-
+    const { vID, companyName, jobTitle, favourited, location, description, skills, experience, tags } = vacancy;
 
     const favourite = () => {
-        
+        const uID = jwtGetId(window.localStorage.jwt);
+
+        const response = axios({
+            method: 'post',
+            url: '/vacancy/favourite/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID,
+                vID
+            }
+        }).catch((err) => {
+            console.log(`oops: ${ err }`);
+        });
     }
     
     const apply = () => {
-        alert('applied!');
+        const uID = jwtGetId(window.localStorage.jwt);
+
+        const response = axios({
+            method: 'post',
+            url: '/vacancy/apply/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID,
+                vID
+            }
+        }).catch((err) => {
+            console.log(`oops: ${ err }`);
+        });
     }
 
     const reject = () => {
