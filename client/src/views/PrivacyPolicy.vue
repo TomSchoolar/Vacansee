@@ -109,7 +109,7 @@
             <p class='paragraph'>
                 For further information, visit <a href='https://allaboutcookies.org'>allaboutcookies.org</a>.
             </p>
-            <h2 class='heading' id='how-do-we-use=cookies'>How do we use cookies?</h2>
+            <h2 class='heading' id='how-do-we-use-cookies'>How do we use cookies?</h2>
             <p class='paragraph'>
                 Tindeed uses cookies in a range of ways to improve your experience on our website, including:
             </p>
@@ -122,7 +122,7 @@
             <p class='paragraph'>
                 There are a number of different types of cookies. However, our website uses functionality cookies. Tindeed uses these cookies so that we recognise you on our website and remember your previously selected preferences. These could include what language you prefer and location you are in.
             </p>
-            <h2 class='heading' id='how-to-manage-cookies'>How to manage cookies</h2>
+            <h2 class='heading' id='how-to-manage-your-cookies'>How to manage cookies</h2>
             <p class='paragraph'>
                 You can set your browser not to accept cookies, and the above website tells you how to remove cookies from your browser. However, in a few cases, some of our website features may not function as a result.
             </p>
