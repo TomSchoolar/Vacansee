@@ -1,54 +1,46 @@
 <script setup>
+    import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
-    import MatchCard from '@/components/employer/review/MatchCard.vue';
+    
 
-    const applicants = [
-        {
-            id: 0,
-            name: 'Mary Rodriguez',
-            phoneNumber: '07747945173',
-            email: 'mary.r92@gmail.com',
-            timeZone: '(UTC+0) London, Dublin, Lisbon',
-            pronouns: 'she/her'
-        },
+    const url = window.location.pathname;
+    const vacancyId = url.substring(url.lastIndexOf('/') + 1);
 
-        {
-            id: 1,
-            name: 'Michael Brent',
-            phoneNumber: '07747945173',
-            email: 'michael.b92@gmail.com',
-            timeZone: '(UTC+0) London, Dublin, Lisbon',
-            pronouns: 'he/him'
-        }
-    ]
+    const applicants = ref([]);
+    const matches = ref([]);
+    
 
-    let applicantData = {
-        firstName: 'George',
-        pronouns: 'he/him',
-        location: 'London',
-        topicSentence: 'Good luck convincing people to hire you with one sentence.',
-        skills: ['75 wpm typing speed', 'Microsoft Excel', 'Patience'],
-        experience: [
-            {
-                title: 'fast food restaurant',
-                startDate: '2016',
-                endDate: '2019' 
+    onMounted(async () => {
+
+        const jwt = getJwt();
+
+        if(!jwt)
+            return;
+
+        const response = await axios({
+            url: `/e/review/${ vacancyId }/`,
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'get',
+            headers: {
+                Authorization: `Bearer: ${ jwt }`
             },
-            {
-                title: 'customer service call centre',
-                startDate: '2019',
-                endDate: '2021' 
-            },
-            {
-                title: 'level 1 support tech',
-                startDate: '2021',
-                endDate: '2022' 
-            }
-        ],
-        qualifications: ['9 GCSEs (A*-D)', '3 A-Levels (A-B)']
-    }
+            responseType: 'json',
+            timeout: 4000
+        }).catch((err) => {
+            let { message = err.message, status = err.status } = err.response.data;
+            console.error(`oops: ${ status }: ${ message }`);
+        });
 
+        if(!response)
+            return;
+
+        const { matches: apiMatches = [], new: newApps = [] } = response.data;
+
+        applicants.value = newApps;
+        matches.value = apiMatches;
+
+    });
 
     const download_button = () => {
         alert('downloading all applications');
@@ -76,7 +68,11 @@
             <hr class='slim-hr'/>
 
             <div class='applications'>
+<<<<<<< HEAD
                 <MatchCard v-for='applicant in applicants' :key='applicant.id' :stats='applicant' />
+=======
+                <EmployerApplication v-for='applicant in matches' :key='applicant.id' :stats='applicant' />
+>>>>>>> 66013ed (.)
             </div>
         </div>
 

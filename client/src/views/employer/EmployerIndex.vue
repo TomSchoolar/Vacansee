@@ -39,7 +39,10 @@
     const getVacancies = async (options) => {
         const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
 
-        const uID = jwtGetId(window.localStorage.jwt);
+        const uID = jwtGetId();
+
+        if(!uID)
+            return;
 
         const response = await axios({
             method: 'get',
@@ -100,7 +103,10 @@
     // stats api request, separate request to speed up page load
     onMounted(async () => {
         // get stats
-        const uID = jwtGetId(window.localStorage.jwt);
+        const uID = jwtGetId();
+
+        if(!uID)
+            return;
 
         const response = await axios({
             method: 'get',
@@ -260,8 +266,8 @@
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
                         <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.IsOpen'>Close Applications</button>
                         <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
-                        <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
-                        <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
+                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
+                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
                     </div>
                 </div>
             </div>

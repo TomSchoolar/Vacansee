@@ -1,11 +1,13 @@
+import regex as re
+import jwt as jwtLib
 from math import ceil
 from .models import Vacancy
 from rest_framework import status
 from django.db.models import Count, Q
 from .serializers import VacancySerializer
 from rest_framework.response import Response
-from .helpers import getIndex as indexHelper
 from rest_framework.decorators import api_view
+from employer.helpers import getIndex as indexHelper, getReview as reviewHelper
 
 
 
@@ -118,3 +120,36 @@ def getIndexStats(request):
         return Response(data={'code': 500, 'message': e.__str__}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
    
     return Response({ 'stats': stats })
+
+
+@api_view(['GET'])
+def getReview(request, vacancyId):
+    # get jwt
+    
+    try:
+        jwt = reviewHelper.extractJwt(request)
+    except jwtLib.ExpiredSignatureError:
+        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except (AttributeError, jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError):
+        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        vacancy = reviewHelper.checkUserOwnsVacancy(vacancyId, jwt)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    if not vacancy:
+        return Response({ 'status': 401, 'message': 'You do not have access to that vacancy' }, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        applications = reviewHelper.getApplications(vacancyId)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error getting applications' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+    return Response(applications)
