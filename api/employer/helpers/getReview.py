@@ -61,7 +61,7 @@ def getApplications(vacancyId):
     newSet = Application.objects.filter(
         VacancyId__exact = vacancyId,
         ApplicationStatus__exact = 'PENDING'
-    )
+    )[:1]
 
     newSerializer = ApplicationSerializer(newSet, many = True)
     new = newSerializer.data
