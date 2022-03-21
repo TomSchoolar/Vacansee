@@ -68,11 +68,7 @@
             <hr class='slim-hr'/>
 
             <div class='applications'>
-<<<<<<< HEAD
                 <MatchCard v-for='applicant in applicants' :key='applicant.id' :stats='applicant' />
-=======
-                <EmployerApplication v-for='applicant in matches' :key='applicant.id' :stats='applicant' />
->>>>>>> 66013ed (.)
             </div>
         </div>
 
