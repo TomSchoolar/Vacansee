@@ -122,6 +122,7 @@ def getIndexStats(request):
     return Response({ 'stats': stats })
 
 
+
 @api_view(['GET'])
 def getReview(request, vacancyId):
     # get jwt
@@ -130,10 +131,11 @@ def getReview(request, vacancyId):
         jwt = reviewHelper.extractJwt(request)
     except jwtLib.ExpiredSignatureError:
         return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (AttributeError, jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError):
+    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
         return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
+        err.
         return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
