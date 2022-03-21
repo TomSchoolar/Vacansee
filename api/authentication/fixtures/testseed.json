@@ -1,0 +1,916 @@
+[
+    {
+        "model": "authentication.User",
+        "pk": 1,
+        "fields": {
+            "IsEmployer": false,
+            "Email": "txs090@student.bham.ac.uk",
+            "PasswordHash": "password",
+            "PasswordSalt": "7RiFwFWY"
+        }
+    },
+    {
+        "model": "authentication.User",
+        "pk": 2,
+        "fields": {
+            "IsEmployer": false,
+            "Email": "ajb042@student.bham.ac.uk",
+            "PasswordHash": "password",
+            "PasswordSalt": "LO4#uY5m"
+        }
+    },
+    {
+        "model": "authentication.User",
+        "pk": 3,
+        "fields": {
+            "IsEmployer": false,
+            "Email": "cxd066@student.bham.ac.uk",
+            "PasswordHash": "password",
+            "PasswordSalt": "WbjbIE2u"
+        }
+    },
+    {
+        "model": "authentication.User",
+        "pk": 1000,
+        "fields": {
+            "IsEmployer": false,
+            "Email": "davisjennifer@yahoo.com",
+            "PasswordHash": "password",
+            "PasswordSalt": "BgWwPVBqhoESqAidulKt"
+        }
+    },
+    {
+        "model": "authentication.User",
+        "pk": 1001,
+        "fields": {
+            "IsEmployer": false,
+            "Email": "kelly41@hotmail.com",
+            "PasswordHash": "password",
+            "PasswordSalt": "mouVrNtTlCkOZYAzIxUw"
+        }
+    },
+    {
+        "model": "authentication.User",
+        "pk": 4,
+        "fields": {
+            "IsEmployer": true,
+            "Email": "sxd110@student.bham.ac.uk",
+            "PasswordHash": "password",
+            "PasswordSalt": "!*Y(A?Rv"
+        }
+    },
+    {
+        "model": "authentication.User",
+        "pk": 5,
+        "fields": {
+            "IsEmployer": true,
+            "Email": "yxs909@student.bham.ac.uk",
+            "PasswordHash": "password",
+            "PasswordSalt": "s)/Pn0O("
+        }
+    },
+    {
+        "model": "authentication.User",
+        "pk": 6,
+        "fields": {
+            "IsEmployer": true,
+            "Email": "vrt911@student.bham.ac.uk",
+            "PasswordHash": "password",
+            "PasswordSalt": "V0u#_UvU"
+        }
+    },
+    {
+        "model": "employee.Profile",
+        "pk": 1,
+        "fields": {
+            "FirstName": "Thomas",
+            "LastName": "Schoolar",
+            "Pronouns": "He/His",
+            "TimeZone": 0,
+            "TopicSentence": "I am a Student at the University of Birmingham",
+            "NotableSkills": [
+                "Python",
+                "Vue",
+                "Django"
+            ],
+            "Experience": [
+                "1 Year Bar support",
+                "1 month work experience in coding",
+                "agile team experience"
+            ],
+            "Qualifications": [
+                "10 GCSEs",
+                "3 A-Levels",
+                "1 BSc"
+            ],
+            "PhoneNumber": "07743769344"
+        }
+    },
+    {
+        "model": "employee.Profile",
+        "pk": 2,
+        "fields": {
+            "FirstName": "Adam",
+            "LastName": "Bass",
+            "Pronouns": "He/His",
+            "TimeZone": 0,
+            "TopicSentence": "I am a Student studing Computer Science",
+            "NotableSkills": [
+                "JavaScript",
+                "C#",
+                "Python"
+            ],
+            "Experience": [
+                "1 year at tescos",
+                "1 month work experience in design",
+                "waterfall development experience"
+            ],
+            "Qualifications": [
+                "CCNA",
+                "B-tech",
+                "O-Level"
+            ],
+            "PhoneNumber": "07743469344"
+        }
+    },
+    {
+        "model": "employee.Profile",
+        "pk": 3,
+        "fields": {
+            "FirstName": "Cavan",
+            "LastName": "Day",
+            "Pronouns": "He/His",
+            "TimeZone": 0,
+            "TopicSentence": "Studying Computer Science at UoB",
+            "NotableSkills": [
+                "HTML",
+                "Vue",
+                "CSS"
+            ],
+            "Experience": [
+                "Personal Tutoring",
+                "2 months working in a lab",
+                "team management experience"
+            ],
+            "Qualifications": [
+                "5 O-Levels",
+                "8 GCSEs",
+                "1 BSc"
+            ],
+            "PhoneNumber": "07543769344"
+        }
+    },
+    {
+        "model": "employee.Profile",
+        "pk": 1000,
+        "fields": {
+            "UserId": 1000,
+            "FirstName": "William",
+            "LastName": "Rice",
+            "Pronouns": "She/Her",
+            "TimeZone": 6,
+            "TopicSentence": "News yet stand project fast order vote sport notice let process name professor than.",
+            "NotableSkills": [
+                "cultivate world-class interfaces",
+                "cultivate plug-and-play e-tailers"
+            ],
+            "Experience": [
+                "Per growth.",
+                "Plan."
+            ],
+            "Qualifications": [
+                "BA"
+            ],
+            "PhoneNumber": "(671)028-8857"
+        }
+    },
+    {
+        "model": "employee.Profile",
+        "pk": 1001,
+        "fields": {
+            "UserId": 1001,
+            "FirstName": "Matthew",
+            "LastName": "Sanchez",
+            "Pronouns": "They/Them",
+            "TimeZone": -6,
+            "TopicSentence": "Test idea group happy heavy price whom type.",
+            "NotableSkills": [
+                "aggregate integrated deliverables"
+            ],
+            "Experience": [
+                "Finally big.",
+                "Soldier."
+            ],
+            "Qualifications": [
+                "11 GCSEs"
+            ],
+            "PhoneNumber": "+1-131-459-2259x5161"
+        }
+    },
+    {
+        "model": "employer.EmployerDetails",
+        "pk": 1,
+        "fields": {
+            "UserId": 4,
+            "PhoneNumber": "07743469444",
+            "CompanyName": "Facebook"
+        }
+    },
+    {
+        "model": "employer.EmployerDetails",
+        "pk": 2,
+        "fields": {
+            "UserId": 5,
+            "PhoneNumber": "07793469444",
+            "CompanyName": "Google"
+        }
+    },
+    {
+        "model": "employer.EmployerDetails",
+        "pk": 3,
+        "fields": {
+            "UserId": 6,
+            "PhoneNumber": "07893469444",
+            "CompanyName": "Facebook"
+        }
+    },
+    {
+        "model": "employer.Vacancy",
+        "pk": 1,
+        "fields": {
+            "VacancyName": "Junior Developer",
+            "UserId": 4,
+            "Salary": "Competitive",
+            "Description": "Looking for a young developer with knowledge in Python",
+            "SkillsRequired": [
+                "Python",
+                "Team-Working",
+                "Django"
+            ],
+            "ExperienceRequired": [
+                "Agile team experience"
+            ],
+            "TimeZone": 0,
+            "Tags": [
+                0,
+                1,
+                4
+            ],
+            "IsOpen": true,
+            "PhoneNumber": "07745469444",
+            "Email": "example@facebook.com",
+            "Created": "2022-03-01"
+        }
+    },
+    {
+        "model": "employer.Vacancy",
+        "pk": 2,
+        "fields": {
+            "VacancyName": "Senior Developer",
+            "UserId": 4,
+            "Salary": "50000;pa",
+            "Description": "Looking for a experienced developer with knowledge in running a team",
+            "SkillsRequired": [
+                "Python",
+                "Management Skills"
+            ],
+            "ExperienceRequired": [
+                "Agile team experience"
+            ],
+            "TimeZone": 5,
+            "Tags": [
+                0,
+                1,
+                5
+            ],
+            "IsOpen": false,
+            "PhoneNumber": "07945469444",
+            "Email": "example@facebook.com",
+            "Created": "2022-01-03"
+        }
+    },
+    {
+        "model": "employer.Vacancy",
+        "pk": 3,
+        "fields": {
+            "VacancyName": "Cyber Security Anaylst",
+            "UserId": 5,
+            "Salary": "Minimum Wage",
+            "Description": "Looking for a keen learner to be trained from scratch",
+            "SkillsRequired": [
+                "Team-Working"
+            ],
+            "ExperienceRequired": [
+                "Agile team experience"
+            ],
+            "TimeZone": 0,
+            "Tags": [
+                5
+            ],
+            "IsOpen": false,
+            "PhoneNumber": "07947469444",
+            "Email": "example2@facebook.com",
+            "Created": "2022-02-19"
+        }
+    },
+    {
+        "model": "employer.Vacancy",
+        "pk": 1000,
+        "fields": {
+            "VacancyName": "Architect",
+            "UserId": 4,
+            "Salary": "Competitive",
+            "Description": "Fund money paper beyond authority stop produce seek base media style teach study company really the worry sister require growth never TV reflect resp",
+            "SkillsRequired": [
+                "transform one-to-one markets"
+            ],
+            "ExperienceRequired": [
+                "Produce almost argue."
+            ],
+            "TimeZone": 10,
+            "Tags": [
+                3,
+                4,
+                2,
+                5
+            ],
+            "IsOpen": true,
+            "PhoneNumber": "(537)138-3972x05004",
+            "Email": "rachaelluna@hotmail.com",
+            "Created": "2022-03-09"
+        }
+    },
+    {
+        "model": "employer.Vacancy",
+        "pk": 1001,
+        "fields": {
+            "VacancyName": "Structural engineer",
+            "UserId": 4,
+            "Salary": "NMW",
+            "Description": "Inside plan particularly movie interest improve defense power standard decision especially two order ago tough movie even all impact recently difficu",
+            "SkillsRequired": [
+                "leverage granular experiences",
+                "generate efficient web services"
+            ],
+            "ExperienceRequired": [
+                "Whom none.",
+                "Various trouble learn."
+            ],
+            "TimeZone": -10,
+            "Tags": [
+                1,
+                3,
+                4
+            ],
+            "IsOpen": true,
+            "PhoneNumber": "+1-653-003-5114x00698",
+            "Email": "gwise@hotmail.com",
+            "Created": "2022-02-22"
+        }
+    },
+    {
+        "model": "employer.Vacancy",
+        "pk": 1002,
+        "fields": {
+            "VacancyName": "Magazine features editor",
+            "UserId": 5,
+            "Salary": "Competitive",
+            "Description": "Fire they environmental but like each film up scene approach price long little role top effect born policy by where interview lawyer money kind huge ",
+            "SkillsRequired": [
+                "visualize one-to-one convergence",
+                "whiteboard B2B bandwidth"
+            ],
+            "ExperienceRequired": [
+                "Wind."
+            ],
+            "TimeZone": 4,
+            "Tags": [
+                4,
+                3,
+                1,
+                2
+            ],
+            "IsOpen": true,
+            "PhoneNumber": "351.145.3584",
+            "Email": "jnguyen@hotmail.com",
+            "Created": "2022-01-14"
+        }
+    },
+    {
+        "model": "employer.Vacancy",
+        "pk": 1003,
+        "fields": {
+            "VacancyName": "Site engineer",
+            "UserId": 5,
+            "Salary": "Competitive",
+            "Description": "Night throughout last common every simply fire design next when task step four green audience capital direction daughter music avoid sometimes give r",
+            "SkillsRequired": [
+                "e-enable sticky systems",
+                "deploy end-to-end synergies"
+            ],
+            "ExperienceRequired": [
+                "Generation treat.",
+                "Believe structure nor traditional."
+            ],
+            "TimeZone": 2,
+            "Tags": [
+                5,
+                3,
+                1
+            ],
+            "IsOpen": false,
+            "PhoneNumber": "0709688972",
+            "Email": "maynardanthony@gmail.com",
+            "Created": "2022-01-10"
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 2,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1000,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1001,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 1
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1002,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1003,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1000
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1004,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1000
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1005,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 1000
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1006,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1001
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1007,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1001
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1008,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1001
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1009,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1002
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1010,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1002
+        }
+    },
+    {
+        "model": "employee.Favourite",
+        "pk": 1011,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1002
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 3,
+            "ApplicationStatus": "MATCHED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 2,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 2,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1000,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1,
+            "ApplicationStatus": "MATCHED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1001,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1002,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 1,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1003,
+        "fields": {
+            "UserId": 1001,
+            "VacancyId": 1,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1004,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1005,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 2,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1006,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 2,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1007,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 2,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1008,
+        "fields": {
+            "UserId": 1001,
+            "VacancyId": 2,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1009,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 2,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1010,
+        "fields": {
+            "UserId": 1001,
+            "VacancyId": 3,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1011,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 3,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1012,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 3,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1013,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 3,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1014,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 3,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1015,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1000,
+            "ApplicationStatus": "MATCHED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1016,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 1000,
+            "ApplicationStatus": "MATCHED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1017,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1000,
+            "ApplicationStatus": "MATCHED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1018,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1000,
+            "ApplicationStatus": "MATCHED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1019,
+        "fields": {
+            "UserId": 1001,
+            "VacancyId": 1000,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1020,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1001,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1021,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1001,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1022,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 1001,
+            "ApplicationStatus": "MATCHED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1023,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1001,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1024,
+        "fields": {
+            "UserId": 1001,
+            "VacancyId": 1001,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1025,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1002,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1026,
+        "fields": {
+            "UserId": 1001,
+            "VacancyId": 1002,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1027,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 1002,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1028,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1002,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1029,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1002,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1030,
+        "fields": {
+            "UserId": 1,
+            "VacancyId": 1003,
+            "ApplicationStatus": "REJECTED"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1031,
+        "fields": {
+            "UserId": 2,
+            "VacancyId": 1003,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1032,
+        "fields": {
+            "UserId": 1000,
+            "VacancyId": 1003,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1033,
+        "fields": {
+            "UserId": 1001,
+            "VacancyId": 1003,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employee.Application",
+        "pk": 1034,
+        "fields": {
+            "UserId": 3,
+            "VacancyId": 1003,
+            "ApplicationStatus": "PENDING"
+        }
+    },
+    {
+        "model": "employer.Tag",
+        "pk": 1,
+        "fields": {
+            "TagName": "Development"
+        }
+    },
+    {
+        "model": "employer.Tag",
+        "pk": 2,
+        "fields": {
+            "TagName": "Coding"
+        }
+    },
+    {
+        "model": "employer.Tag",
+        "pk": 3,
+        "fields": {
+            "TagName": "Python"
+        }
+    },
+    {
+        "model": "employer.Tag",
+        "pk": 4,
+        "fields": {
+            "TagName": "Entry-Level"
+        }
+    },
+    {
+        "model": "employer.Tag",
+        "pk": 5,
+        "fields": {
+            "TagName": "Management"
+        }
+    }
+]
