@@ -1,9 +1,9 @@
 <script setup>
-    import ApplyVacancyCard from '@/components/partials/ApplyVacancyCard.vue';
-    import VacancyCard from '@/components/partials/VacancyCard.vue';
+    import ApplyVacancyCard from '@/components/employee/ApplyVacancyCard.vue';
+    import VacancyCard from '@/components/employee/VacancyCard.vue';
 
-    import ApplyProfileCard from '@/components/partials/ApplyProfileCard.vue';
-    import ProfileCard from '@/components/partials/ProfileCard.vue';
+    import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard.vue';
+    import ProfileCard from '@/components/employer/match/ProfileCard.vue';
 
     let vacancyData = {
         companyName: 'Sarah\'s Flower Co.',

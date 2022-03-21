@@ -1,6 +1,6 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { createRouter, createWebHistory } from 'vue-router';
-import EmployerNavbar from '@/components/partials/EmployerNavbar';
+import EmployerNavbar from '@/components/employee/EmployerNavbar';
 import routes from '@/router/routes';
 
 const router = createRouter({

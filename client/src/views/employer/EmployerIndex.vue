@@ -1,7 +1,7 @@
 <script setup>
     import { ref, watch, onMounted } from 'vue';
     import { jwtGetId } from '@/assets/js/jwt';
-    import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
+    import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
     
     import axios from 'axios';

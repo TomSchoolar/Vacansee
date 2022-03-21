@@ -19,6 +19,7 @@
         --red: #cc2936;
         --red-focus: #bb2531; /* 8% darker */
 
+        --background-blue: #f0f8fa;
         --blue: #08415c;
         --blue-focus: #0a567a; /* 8% lighter */
 

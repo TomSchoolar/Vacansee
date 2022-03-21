@@ -63,6 +63,18 @@
         height: 100px;
     }
 
+    .application-button {
+        font-weight: 500; /* required for some reason */
+        border-radius: 7px;
+        color: #fff;
+        border: 2.2px solid #333;
+        min-width: 150px;
+        font-size: 12px;
+        text-decoration: none;
+        padding: 2px 4px;
+        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+    }
+
     .application-button-grey {
         background: var(--slate);
     }
@@ -75,6 +87,11 @@
     .application-button-red {
         background: var(--red);
     }
+
+    .application-button-red:hover, .application-button-red:focus, .application-button-red:active {
+        background: var(--red-focus);
+        cursor: pointer;
+    } 
 
     .application-left {
         display: flex;
