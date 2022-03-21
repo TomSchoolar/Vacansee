@@ -14,6 +14,7 @@
     const notifs = ref(2);
     const matches = ref([]);
     const applicants = ref([]);
+    const currentProfile = ref({});
     const currentApplication = ref({});
     
     
@@ -51,8 +52,12 @@
         applicants.value = newApps;
         matches.value = apiMatches;
 
-        if(newApps.length > 0)
-            currentApplication.value = newApps[0]
+        if(newApps.length > 0){
+            let { application = {}, profile = {}} = newApps[0];
+            currentApplication.value = application;
+            currentProfile.value = profile;
+        }
+
         
     });
 
@@ -82,7 +87,7 @@
             <hr class='slim-hr'/>
 
             <div class='applications'>
-                <MatchCard v-for='applicant in applicants' :key='applicant.id' :stats='applicant' />
+                <MatchCard v-for='match in matches' :key='match.id' :stats='match' />
             </div>
         </div>
 
@@ -94,7 +99,7 @@
             <hr class='slim-hr' />
 
             <main class='card-container'>
-                <ApplyProfileCard class='card' :application='currentApplication' />
+                <ApplyProfileCard class='card' :application='currentApplication' :profile='currentProfile' />
             </main>
         </div>
     </div>

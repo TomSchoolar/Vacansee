@@ -1,17 +1,7 @@
 <script setup> 
-    import { reactive, toRefs } from 'vue';
+    import { watchEffect, watch, toRefs, computed } from 'vue';
 
-    let { application: { profile = {} } } = defineProps(['application']);
-
-    let { 
-        FirstName: firstName, 
-        Pronouns: pronouns, 
-        Location: location, 
-        TopicSentence: topicSentence, 
-        NotableSkills: skills, 
-        Experience: experience, 
-        Qualifications: qualifications
-    } = profile;
+    let { profile } = defineProps(['application', 'profile']);
     
     const favourite = () => {
         alert('favourited!');
@@ -29,34 +19,34 @@
 <template>
     <div class='card'>
         <div class='info'>
-            <p class='name'>{{ firstName }} <span class='pronouns' v-if='pronouns'>({{ pronouns }})</span></p>
-            <p class='location' v-if='location'>Based in {{ location }}</p>
+            <p class='name'>{{ profile.FirstName }} <span class='pronouns' v-if='profile.Pronouns'>({{ profile.Pronouns }})</span></p>
+            <p class='location' v-if='profile.Location'>Based in {{ profile.Location }}</p>
         </div>
         <div class='description'>
-            <p>{{ topicSentence }}</p>
+            <p>{{ profile.TopicSentence }}</p>
         </div>
-        <span v-if='skills' class='card-section'>Notable Skills:</span>
+        <span v-if='profile.NotableSkills' class='card-section'>Notable Skills:</span>
         <div class='skills block' >
             <table>
-                <tr v-for='skill in skills' v-bind:key='skill'>
+                <tr v-for='skill in profile.NotableSkills' v-bind:key='skill'>
                     <th>- {{ skill }}</th>
                 </tr>
             </table>
         </div>
-        <span v-if='experience' class='card-section'>Experience:</span>
+        <span v-if='profile.Experience' class='card-section'>Experience:</span>
         <div class='experience block'>
             <table>
-                <tr v-for='xp in experience' v-bind:key='xp'>
+                <tr v-for='xp in profile.Experience' v-bind:key='xp'>
                     <th class='table-title'>- {{ xp }}</th>
                     <th><span class='table-date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
                 </tr>
             </table>
         </div>
-        <span v-if='qualifications' class='card-section'>Qualifications:</span>
-        <div class='qualifications' v-for='qual in qualifications' v-bind:key='qual'>
+        <span v-if='profile.Qualifications' class='card-section'>Qualifications:</span>
+        <div class='qualifications' v-for='qual in profile.Qualifications' v-bind:key='qual'>
             <table>
                 <tr>
-                    <th>- {{qual}}</th>
+                    <th>- {{ qual }}</th>
                 </tr>
             </table>
         </div>
