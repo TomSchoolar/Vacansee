@@ -1,8 +1,12 @@
 <script setup>
+    import axios from 'axios';
     import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
     
+    import { ref, onMounted } from 'vue';
+    import { getJwt } from '@/assets/js/jwt';
+
 
     const url = window.location.pathname;
     const vacancyId = url.substring(url.lastIndexOf('/') + 1);
