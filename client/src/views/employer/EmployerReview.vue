@@ -1,7 +1,7 @@
 <script setup>
-    import ApplyProfileCard from '@/components/partials/ApplyProfileCard';
-    import EmployerNavbar from '@/components/partials/EmployerNavbar.vue';
-    import EmployerApplication from '@/components/employer/EmployerApplication.vue';
+    import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
+    import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
+    import MatchCard from '@/components/employer/review/MatchCard.vue';
 
     const applicants = [
         {
@@ -58,7 +58,7 @@
 
 
 <template>
-    <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
+    <EmployerNavbar :numNotifs='notifs'></EmployerNavbar>
 
     <div class='container'>
         <div class='col col-left'>
@@ -76,7 +76,7 @@
             <hr class='slim-hr'/>
 
             <div class='applications'>
-                <EmployerApplication v-for='applicant in applicants' :key='applicant.id' :stats='applicant' />
+                <MatchCard v-for='applicant in applicants' :key='applicant.id' :stats='applicant' />
             </div>
         </div>
 
@@ -110,7 +110,7 @@
         overflow-x: hidden;
     }
 
-    .application-button, div:deep(.application-button) {
+    .application-button {
         font-weight: 500; /* required for some reason */
         border-radius: 7px;
         color: #fff;
@@ -121,7 +121,6 @@
         padding: 2px 4px;
         font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
     }
-
 
     .application-button-grey {
         background: var(--slate);
@@ -140,7 +139,7 @@
     .card-container {
         height: calc(100% - 48px);
         width: 100%;
-        background: #f0f8fa;
+        background: var(--background-blue);
         display: flex;
         justify-content: center;
         align-items: center;
