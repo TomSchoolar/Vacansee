@@ -48,12 +48,13 @@ def getApplications(vacancyId):
         ApplicationStatus__exact = 'MATCHED'
     )
 
-    matchesSerializer = ApplicationSerializer(matchesSet, many = True)
-    matches = matchesSerializer.data
-    
-    # pair matches with user profile
-    richMatches = populateApplications(matches, SummaryProfileSerializer)
+    newSet = Application.objects.filter(VacancyId__exact = vacancyId, ApplicationStatus__exact = 'PENDING')
+    new = ApplicationSerializer(newSet, many = True).data
+    populatedNew = pairApplications(new, ProfileSerializer)
 
+    matchesSet = Application.objects.filter(VacancyId__exact = vacancyId, ApplicationStatus__exact = 'ACCEPTED')
+    matches = ApplicationSerializer(matchesSet, many = True).data
+    populatedMatches = pairApplications(matches, SummaryProfileSerializer)
 
     newSet = Application.objects.filter(
         VacancyId__exact = vacancyId,
@@ -64,24 +65,24 @@ def getApplications(vacancyId):
     new = newSerializer.data
 
     # pair new applications with user profile
-    richNew = populateApplications(new, ProfileSerializer)
+    populatedNew = pairApplications(new, ProfileSerializer)
 
-    return { 'matches': richMatches, 'new': richNew }
+    return { 'matches': populatedMatches, 'new': populatedNew }
 
 
 
-def populateApplications(matches, serializer):
+def pairApplications(applications, serializer):
     # pair matches with user profile
 
-    pairedMatches = []
+    pairedApplications = []
 
-    for match in matches:
-        profileSet = Profile.objects.get(UserId__exact = match['UserId'])
+    for app in applications:
+        profileSet = Profile.objects.get(UserId__exact = app['UserId'])
         profile = serializer(profileSet).data
 
-        pairedMatches.append({
-            'application': match,
+        pairedApplications.append({
+            'application': app,
             'profile': profile
         })
     
-    return pairedMatches
+    return pairedApplications
