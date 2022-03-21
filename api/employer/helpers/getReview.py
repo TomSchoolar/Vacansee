@@ -1,9 +1,11 @@
 import environ
 import regex as re
 import jwt as jwtLib
-from employer.models import Vacancy 
+from employer.models import Vacancy
+from authentication.models import User
 from employee.models import Application, Profile
 from employer.serializers import VacancySerializer
+from authentication.serializers import UserEmailSerializer
 from employee.serializers import ApplicationSerializer, ProfileSerializer, SummaryProfileSerializer
 
 
@@ -52,7 +54,7 @@ def getApplications(vacancyId):
     new = ApplicationSerializer(newSet, many = True).data
     populatedNew = pairApplications(new, ProfileSerializer)
 
-    matchesSet = Application.objects.filter(VacancyId__exact = vacancyId, ApplicationStatus__exact = 'ACCEPTED')
+    matchesSet = Application.objects.filter(VacancyId__exact = vacancyId, ApplicationStatus__exact = 'MATCHED')
     matches = ApplicationSerializer(matchesSet, many = True).data
     populatedMatches = pairApplications(matches, SummaryProfileSerializer)
 
@@ -80,9 +82,11 @@ def pairApplications(applications, serializer):
         profileSet = Profile.objects.get(UserId__exact = app['UserId'])
         profile = serializer(profileSet).data
 
-        pairedApplications.append({
-            'application': app,
-            'profile': profile
-        })
-    
+        if serializer == SummaryProfileSerializer:
+            userSet = User.objects.get(pk = app['UserId'])
+            user = UserEmailSerializer(userSet).data
+            profile['Email'] = user['Email']
+
+        pairedApplications.append({ 'application': app, 'profile': profile })
+
     return pairedApplications

@@ -11,8 +11,11 @@
     const url = window.location.pathname;
     const vacancyId = url.substring(url.lastIndexOf('/') + 1);
 
-    const applicants = ref([]);
+    const notifs = ref(2);
     const matches = ref([]);
+    const applicants = ref([]);
+    const currentApplication = ref({});
+    
     
 
     onMounted(async () => {
@@ -34,6 +37,10 @@
         }).catch((err) => {
             let { message = err.message, status = err.status } = err.response.data;
             console.error(`oops: ${ status }: ${ message }`);
+
+            if(status === 401) {
+                alert('Your auth token has likely expired, please login again');
+            }
         });
 
         if(!response)
@@ -44,6 +51,9 @@
         applicants.value = newApps;
         matches.value = apiMatches;
 
+        if(newApps.length > 0)
+            currentApplication.value = newApps[0]
+        
     });
 
     const download_button = () => {
@@ -59,7 +69,7 @@
     <div class='container'>
         <div class='col col-left'>
             <div class='col-header'> 
-                <h3 class='col-title'>Matches ({{ applicants.length }})</h3>
+                <h3 class='col-title'>Matches ({{ matches.length }})</h3>
                 <div class='header-right'>
                     <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button>
                     <div class='search-group'>
@@ -84,7 +94,7 @@
             <hr class='slim-hr' />
 
             <main class='card-container'>
-                <ApplyProfileCard class='card' :application='applicantData' />
+                <ApplyProfileCard class='card' :application='currentApplication' />
             </main>
         </div>
     </div>
