@@ -82,6 +82,13 @@ const employerRoutes = [
 ];
 
 
+import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
+
+const privacyPolicyRoute = {
+    path: '/privacy',
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicy
+}
 
 import Error from '@/views/auth/Error.vue';
 
@@ -98,5 +105,6 @@ export default [
     ...authRoutes,
     ...employeeRoutes,
     ...employerRoutes,
+    privacyPolicyRoute,
     fourOhFour
 ]

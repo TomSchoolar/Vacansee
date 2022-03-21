@@ -4,6 +4,8 @@
 			<p class='auth-page-logo'>Tindeed</p>
 			<input v-model='email' type='email' placeholder='Email' required />
 			<input v-model='password' type='password' placeholder='Password' required />
+			<input type='checkbox' id='privacy' name='privacy' required />
+			<label for='privacy'>By checking, you are agreeing to Tindeed's <router-link to='/privacy' class='privacy-policy'>Privacy Policy</router-link>.</label>
 			<button class='submit'>Log In</button>
 		</form>
 	</div>
@@ -49,6 +51,13 @@
 </script>
 
 <style>
+	label {
+		font-size: 12px;
+		text-align: left;
+		margin: 0 0 10px 5px;
+		display: inline-block;
+	}
+
 	.auth-page {
 		width: 100vw;
 		height: 100vh;
@@ -64,7 +73,7 @@
 		position: absolute;
 	}
 
-	.auth-page-container input {
+	.auth-page-container input:not(#privacy) {
 		border: 1px solid var(--slate);
 		border-radius: 5px;
 		color: var(--slate);
@@ -97,6 +106,16 @@
 		line-height: 24px;
 		padding: 5px 0;
 		width: 100%;
+	}
+
+	.privacy-policy {
+		color: var(--red);
+		text-decoration: none;
+		display: inline;
+	}
+
+	.privacy-policy:hover {
+		color: var(--red-focus);
 	}
 
     .submit:active, .submit:focus, .submit:hover {
