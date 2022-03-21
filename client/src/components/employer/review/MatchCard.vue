@@ -17,9 +17,8 @@
 </script>
 
 
-
-
 <template>
+    {{ stats }}
     <article class='application'>
         <div class='application-left'>
             <div class='title'>
@@ -52,7 +51,6 @@
     </article>
     <hr class='slim-hr' />
 </template>
-
 
 
 <style scoped>
