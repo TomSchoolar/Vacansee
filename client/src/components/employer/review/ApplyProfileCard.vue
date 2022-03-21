@@ -1,6 +1,17 @@
 <script setup> 
-    const { application = {} } = defineProps(['application']);
-    const { firstName, pronouns, location, topicSentence, skills, experience, qualifications } = application;
+    import { reactive, toRefs } from 'vue';
+
+    let { application: { profile = {} } } = defineProps(['application']);
+
+    let { 
+        FirstName: firstName, 
+        Pronouns: pronouns, 
+        Location: location, 
+        TopicSentence: topicSentence, 
+        NotableSkills: skills, 
+        Experience: experience, 
+        Qualifications: qualifications
+    } = profile;
     
     const favourite = () => {
         alert('favourited!');
@@ -36,7 +47,7 @@
         <div class='experience block'>
             <table>
                 <tr v-for='xp in experience' v-bind:key='xp'>
-                    <th class='table-title'>- {{ xp.title }}</th>
+                    <th class='table-title'>- {{ xp }}</th>
                     <th><span class='table-date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
                 </tr>
             </table>
