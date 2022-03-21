@@ -52,6 +52,8 @@ import EmployerIndex from '../views/employer/EmployerIndex.vue';
 
 import EmployerReview from '../views/employer/EmployerReview.vue';
 
+import EmployerMatch from '../views/employer/EmployerMatch.vue';
+
 const employerRoutes = [
   {
     path: '/e/vacancy',
@@ -68,10 +70,25 @@ const employerRoutes = [
     meta: {
       middleware: [isLoggedIn, isEmployer]
     }
+  },
+  {
+    path: '/e/match',
+    name: 'EmployerMatch',
+    component: EmployerMatch,
+    meta: {
+      middleware: [isLoggedIn, isEmployer]
+    }
   }
 ];
 
 
+import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
+
+const privacyPolicyRoute = {
+    path: '/privacy',
+    name: 'PrivacyPolicy',
+    component: PrivacyPolicy
+}
 
 import Error from '@/views/auth/Error.vue';
 
@@ -88,5 +105,6 @@ export default [
     ...authRoutes,
     ...employeeRoutes,
     ...employerRoutes,
+    privacyPolicyRoute,
     fourOhFour
 ]
