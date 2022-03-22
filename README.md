@@ -66,11 +66,14 @@ Tests are detected and run according to the Vue/Jest and Django/unittest docs. T
 
 In order to be make sure python tests are discoverable, they must be in a file with the filename beginning with the word test and the test functions must also begin with the word test. e.g.
 
-``` 
+```python 
 /api/test_demo.py:
     from django.test import TestCase
 
     class FooTest(TestCase):
+
+        # set the fixtures you want the temporary test db (not tptest) to use while running the tests in this class
+        fixtures = ['authentication/fixutures/fixtures.json'] 
 
         def this_wont_run(self):
             print 'Fail'
@@ -136,7 +139,7 @@ The client is now running at **tp45.co.uk** with ssl enabled.
 
 ## Databases
 
-The remote postgres server contains three main databases, one called tpdev (for local development), one called tptest (for pipeline api testing) and one called tpproduction (for use by the live app). Migrations are carried out on the testing and production databases automatically everytime the api testing and build jobs are called in gitlab but the development database will have to have migrations done manually by one person whenever the models are updated. This is done by running the following in the top level api directory:
+The remote postgres server contains three main databases, one called tpdev (for local development), one called tptest (for use when writing tests to populate with whichever fixtures your tests use) and one called tpproduction (for use by the live app). Note that the tptest database is not actually used by django while testing, the tests set up their own temporary, test database. Migrations are carried out on the testing and production databases automatically everytime the api testing and build jobs are called in gitlab but the development database will have to have migrations done manually by one person whenever the models are updated. This is done by running the following in the top level api directory:
 
 - ```python manage.py makemigrations```
 - ```python manage.py migrate```

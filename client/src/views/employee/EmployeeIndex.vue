@@ -1,6 +1,6 @@
 
 <script setup>
-    import EmployeeNavbar from '@/components/partials/EmployeeNavbar.vue';
+    import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     
     import relativeTime from 'dayjs/plugin/relativeTime';
     import dayjs from 'dayjs';
@@ -52,7 +52,7 @@
 
     <div class='split left'>
         <h1 style='text-align: left;  margin-top:0; border-bottom: 1px solid;'> Vacancies </h1>
-        <p style='padding: 5px; solid;'>
+        <p style='padding: 5px; solid;'></p>
         <input name='searchbar' type='text' placeholder='Search..'> 
         
         <div class='select-group'>
@@ -115,6 +115,7 @@
 
             </table>
         </div>
+
         <button type='button' class='button arrowbtn' id= 'next' @click=next>
         <i class="fa-solid fa-circle-arrow-right"></i>
         </button>
@@ -122,8 +123,7 @@
             <i class="fa-solid fa-circle-arrow-left"></i>
         </button>
         
-        </p>
-        </div>
+    </div>
 
 <div class='split right'>
     <button type='button' class='button applybtn' id= 'applybtn' @click= applybtn>Apply Now!</button>

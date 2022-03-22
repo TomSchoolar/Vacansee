@@ -1,5 +1,5 @@
 <script setup>
-    import EmployeeNavbar from '@/components/partials/EmployeeNavbar.vue';
+    import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import EmployeeStatBar from '@/components/employee/EmployeeStatBar.vue';
 
     import relativeTime from 'dayjs/plugin/relativeTime';
