@@ -39,12 +39,8 @@ run-python-unit-tests:
     - pip install psycopg2-binary
     # check db connection:
     - python manage.py check --database default
-    # empty db
-    - python manage.py flush --noinput
     # migrate db
     - python manage.py migrate
-    # seed db
-    - python manage.py loaddata fixtures.json
     # run tests
     - coverage erase
     - coverage run --source='.' manage.py test
@@ -108,8 +104,7 @@ deploy-api:
     # check db connection, migrate and seed db:
     - ssh root@$SERVER_IP "cd /code/api && 
       python3 manage.py check --database default && 
-      python3 manage.py migrate &&
-      python3 manage.py loaddata fixtures.json"
+      python3 manage.py migrate"
     # restart gunicorn and nginx servers
     - ssh root@$SERVER_IP "sudo systemctl restart gunicorn && sudo systemctl restart nginx"
 
