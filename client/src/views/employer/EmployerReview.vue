@@ -16,10 +16,12 @@
     const notifs = ref(2);
     const jwtRef = ref(jwt);
     const matches = ref([]);
+    const vacancy = ref({});
     const currentProfile = ref({});
     const currentApplication = ref({});    
 
     onMounted(async () => {
+        // get current card and matches
         if(!jwt)
             return;
 
@@ -48,9 +50,10 @@
         if(!response)
             return;
 
-        const { matches: apiMatches = [], new: newApp = {} } = response.data;
+        const { matches: apiMatches = [], new: newApp = {}, vacancy: apiVacancy = {} } = response.data;
 
         matches.value = apiMatches;
+        vacancy.value = apiVacancy;
 
         if(newApp){
             let { application = {}, profile = {}} = newApp;
@@ -103,7 +106,11 @@
 
         <div class='col col-right'>
             <div class='col-header'> 
-                <h3 class='col-title'>Strat Security Co. - Customer Service Representative</h3>
+                <h3 class='col-title'>
+                    {{ vacancy.CompanyName }}
+                    <span v-if='vacancy.CompanyName && vacancy.VacancyName'> - </span>
+                    {{ vacancy.VacancyName }}
+                </h3>
             </div>
 
             <hr class='slim-hr' />

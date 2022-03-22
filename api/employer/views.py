@@ -1,13 +1,13 @@
 import regex as re
 import jwt as jwtLib
 from math import ceil
-from .models import Vacancy
 from datetime import datetime
 from rest_framework import status
 from django.db.models import Count, Q
 from employee.models import Application
 from .serializers import VacancySerializer
 from rest_framework.response import Response
+from .models import EmployerDetails, Vacancy
 from rest_framework.decorators import api_view
 from employer.helpers import getIndex as indexHelper, getReview as reviewHelper
 from employee.serializers import ApplicationSerializer, SummaryProfileSerializer
@@ -142,12 +142,20 @@ def getReview(request, vacancyId):
 
     try:
         vacancy = reviewHelper.checkUserOwnsVacancy(vacancyId, jwt)
+
+        if not vacancy:
+            return Response({ 'status': 401, 'message': 'You do not have access to that vacancy' }, status=status.HTTP_401_UNAUTHORIZED)
+
+        # get employer name
+        employerDetails = EmployerDetails.objects.get(UserId__exact=jwt['id'])
+        employer = employerDetails.CompanyName
+
+
+        vacancy = { 'VacancyId': vacancy['VacancyId'], 'VacancyName': vacancy['VacancyName'], 'CompanyName': employer }
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Server error' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    if not vacancy:
-        return Response({ 'status': 401, 'message': 'You do not have access to that vacancy' }, status=status.HTTP_401_UNAUTHORIZED)
 
     try:
         applications = reviewHelper.getApplications(vacancyId)
@@ -155,7 +163,8 @@ def getReview(request, vacancyId):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting applications' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    
+    applications['vacancy'] = vacancy
+
     return Response(applications)
 
 
