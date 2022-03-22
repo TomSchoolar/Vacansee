@@ -39,3 +39,4 @@ class Application(models.Model):
         choices=ApplicationStatusValues.choices,
         default=ApplicationStatusValues.PENDING
     )
+    LastUpdated = models.DateTimeField(auto_now_add=True, blank=False)

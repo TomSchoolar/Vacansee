@@ -37,7 +37,7 @@ def postLogin(request):
     encodedJWT = jwt.encode(
         { 
             'id': userData['UserId'],
-            'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=10),
+            'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=60),
             'iat': datetime.now(tz=timezone.utc)
         },
         env('JWT_SECRET'),

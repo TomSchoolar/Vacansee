@@ -57,7 +57,14 @@
                 pageNum
             }
         }).catch((err) => {
-            console.log(`oops: ${ err }`);
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+                alert('Error: Server may not be running');
+            }
+
         });
 
         if(!response || !response.data)
@@ -94,7 +101,6 @@
         const result = await getVacancies({ });
 
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
     });
@@ -117,11 +123,15 @@
                 uID
             }
         }).catch((err) => {
-            console.log(`oops: ${ err }`);
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+            }
         });
 
         if(!response || !response.data) {
-            alert('uh oh, something went wrong :(');
             return;
         }
 
