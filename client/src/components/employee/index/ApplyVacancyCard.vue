@@ -1,46 +1,30 @@
 <script setup>  
     import { ref } from 'vue';
     import { jwtGetId } from '@/assets/js/jwt';
+    import axios from 'axios';
 
     const { tags = [], vacancy = {} } = defineProps(['vacancy', 'tags']);
     const { vID, companyName, jobTitle, favourited, location, description, skills, experience, tags } = vacancy;
 
-    const favourite = () => {
+    const favourite = async (options) => {
         const uID = jwtGetId(window.localStorage.jwt);
 
-        const response = axios({
-            method: 'post',
-            url: '/vacancy/favourite/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
-            responseType: 'json',
-            params: {
-                uID,
-                vID
-            }
-        }).catch((err) => {
-            console.log(`oops: ${ err }`);
-        });
+        const article = { "UserId": uID, "VacancyId": vID };
+        axios.post("http://localhost:8000/vacancy/fav/", article);
     }
-    
-    const apply = () => {
+
+    const apply = async (options) => {
         const uID = jwtGetId(window.localStorage.jwt);
 
-        const response = axios({
-            method: 'post',
-            url: '/vacancy/apply/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
-            responseType: 'json',
-            params: {
-                uID,
-                vID
-            }
-        }).catch((err) => {
-            console.log(`oops: ${ err }`);
-        });
+        const article = { "UserId": uID, "VacancyId": vID, "ApplicationStatus":"PENDING" };
+        axios.post("http://localhost:8000/vacancy/apply/", article);
     }
 
-    const reject = () => {
-        alert('rejected!');
+    const reject = async (options) => {
+        const uID = jwtGetId(window.localStorage.jwt);
+
+        const article = { "UserId": uID, "VacancyId": vID };
+        axios.post("http://localhost:8000/vacancy/reject/", article);
     }
 
 

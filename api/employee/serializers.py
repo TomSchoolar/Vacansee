@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Application, Favourite, Profile
+from .models import Application, Favourite, Profile, Reject
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
@@ -23,4 +23,10 @@ class SummaryProfileSerializer(serializers.ModelSerializer):
 class FavouriteSerializer(serializers.FavouriteSerializer):
     class Meta:
         model = Favourite
+        fields = '__all__'
+
+
+class RejectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reject
         fields = '__all__'
