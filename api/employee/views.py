@@ -110,7 +110,7 @@ def postApplication(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 def postFavourite(request):
     if request.method == 'POST':
         serializer = FavouriteSerializer(data=request.data)
