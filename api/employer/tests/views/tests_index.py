@@ -1,3 +1,4 @@
+from math import ceil
 from django.test import TestCase
 from django.core import management
 from employer.models import Vacancy
@@ -12,7 +13,7 @@ class indexGetTestCase(TestCase):
 
     def test_validRequestSortNewApplications(self):
         # User: Sabah
-        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'newApps', 'filter': 'all', 'pageNum': 1, 'count': '5' })
+        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'newApps', 'filter': 'all', 'pageNum': 1, 'count': '10' })
         
         vacancySet = Vacancy.objects.filter(
                 UserId__exact = 4
@@ -27,8 +28,8 @@ class indexGetTestCase(TestCase):
 
         expectedData = {
             'vacancies': vacancies,
-            'numPages': 1,
-            'numVacancies': 4
+            'numPages': ceil(len(vacancies) / 10),
+            'numVacancies': len(vacancies)
         }
 
         self.assertDictEqual(expectedData, response.data)
@@ -36,7 +37,7 @@ class indexGetTestCase(TestCase):
 
     def test_incorrectlyLargePageNumSortDateDesc(self):
         # User: Sabah
-        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'dateDesc', 'filter': 'all', 'pageNum': 2, 'count': '5' })
+        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'dateDesc', 'filter': 'all', 'pageNum': 3, 'count': '10' })
         
         vacancySet = Vacancy.objects.filter(
                 UserId__exact = 4
@@ -49,8 +50,8 @@ class indexGetTestCase(TestCase):
 
         expectedData = {
             'vacancies': vacancies,
-            'numPages': 1,
-            'numVacancies': 4
+            'numPages': ceil(len(vacancies) / 10),
+            'numVacancies': len(vacancies)
         }
 
         self.assertDictEqual(expectedData, response.data)
@@ -59,7 +60,7 @@ class indexGetTestCase(TestCase):
 
     def test_onlyOpenAdvertsSortTitleAsc(self):
         # User: Sabah
-        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'titleAsc', 'filter': 'active', 'pageNum': 1, 'count': '5' })
+        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'titleAsc', 'filter': 'active', 'pageNum': 1, 'count': '10' })
         
         vacancySet = Vacancy.objects.filter(
                 UserId__exact = 4,
@@ -73,8 +74,8 @@ class indexGetTestCase(TestCase):
 
         expectedData = {
             'vacancies': vacancies,
-            'numPages': 1,
-            'numVacancies': 3
+            'numPages': ceil(len(vacancies) / 10),
+            'numVacancies': len(vacancies)
         }
 
         self.assertDictEqual(expectedData, response.data)
@@ -82,7 +83,7 @@ class indexGetTestCase(TestCase):
 
     def test_noVacanciesIncorrectlyLargePageNum(self):
         # User: Victoria
-        response = self.client.get('/e/vacancy/', { 'uID': 6, 'sort': 'newApps', 'filter': 'all', 'pageNum': 2, 'count': '5' })
+        response = self.client.get('/e/vacancy/', { 'uID': 6, 'sort': 'newApps', 'filter': 'all', 'pageNum': 2, 'count': '10' })
         
         expectedData = {
             'vacancies': [],
@@ -110,10 +111,10 @@ class indexGetStatsTestCase(TestCase):
         response = self.client.get('/e/vacancy/stats/', { 'uID': 4 })
 
         expectedStats = { 
-            'activeAdverts': 3, 
-            'totalApplications': 22, 
-            'newApplications': 8, 
-            'acceptedApplications': 6, 
+            'activeAdverts': 6, 
+            'totalApplications': 28, 
+            'newApplications': 15, 
+            'acceptedApplications': 5, 
             'rejectedApplications': 8, 
         } 
 
