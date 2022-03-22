@@ -6,6 +6,7 @@
     import ProfileCard from '@/components/partials/ProfileCard.vue';
 
     let vacancyData = {
+        vID: 1,
         companyName: 'Sarah\'s Flower Co.',
         jobTitle: 'Customer Service Representative',
         favourited: true,

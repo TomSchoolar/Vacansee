@@ -39,3 +39,8 @@ class Application(models.Model):
         choices=ApplicationStatusValues.choices,
         default=ApplicationStatusValues.PENDING
     )
+
+class Reject(models.Model):
+    RejectId = models.AutoField(primary_key=True)
+    UserId = models.ForeignKey('authentication.User', blank=False, on_delete=models.CASCADE)
+    VacancyId = models.ForeignKey('employer.Vacancy', blank=False, on_delete=models.CASCADE)
