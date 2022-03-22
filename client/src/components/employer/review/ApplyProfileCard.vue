@@ -1,14 +1,64 @@
 <script setup> 
-    import { watchEffect, watch, toRefs, computed } from 'vue';
+    import axios from 'axios';
 
-    let { profile } = defineProps(['application', 'profile']);
-    
-    const favourite = () => {
-        alert('favourited!');
+    const emit = defineEmits(['match'])
+
+    const { application, jwt, profile, vacancyId } = defineProps(['application', 'jwt', 'profile', 'vacancyId']);
+
+    const updateStatus = async (newStatus, applicationId) => {
+        const response = await axios({
+            url: `/e/review/${ vacancyId }/updatestatus/${ applicationId }/`,
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'put',
+            timeout: 4000,
+            headers: {
+                Authorization: `Bearer: ${ jwt }`
+            },
+            data: {
+                setStatus: newStatus
+            },
+            responseType: 'json'
+        }).catch((err) => {
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+
+                if(status === 401) {
+                    alert('Your auth token has likely expired, please login again');
+                }
+
+                if(message === 'server error getting next application') {
+                    alert('Error getting the next application')
+                    return {};
+                }
+            } catch {
+                console.error(`uh oh: ${ err }`);
+            }
+        });
+
+        if(!response) {
+            return false;
+        }
+
+        const { data = {} } = response;
+
+        return data;
     }
 
-    const apply = () => {
-        alert('applied!');
+
+    const accept = async (applicationId) => {
+        const response = await updateStatus('accept', applicationId);
+
+        if(!response)
+            return;
+
+        const { application = {}, nextApplication = {}, nextProfile = {} } = response;
+
+        emit('match', application, nextApplication, nextProfile);
+    }
+
+    const defer = () => {
+        alert('deferred!');
     }
 
     const reject = () => {
@@ -53,8 +103,8 @@
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
             <button class='reject' @click='reject'><i class='fas fa-multiply'></i></button>
-            <button class='favourite' @click='favourite'><i class='fas fa-star'></i></button>
-            <button class='apply' @click='apply'><i class='fas fa-check'></i></button>
+            <button class='favourite' @click='defer'><i class='fas fa-star'></i></button>
+            <button class='apply' @click='accept(application.ApplicationId)'><i class='fas fa-check'></i></button>
         </div>
     </div>
 </template>

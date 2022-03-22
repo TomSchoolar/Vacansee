@@ -42,6 +42,22 @@ def checkUserOwnsVacancy(vacancyId, jwt):
 
 
 
+def getNewApplication(vacancyId):
+    newSet = Application.objects.filter(
+        VacancyId__exact = vacancyId, 
+        ApplicationStatus__exact = 'PENDING'
+    ).order_by(
+        '-LastUpdated'
+    )[:1]
+
+    if len(newSet):
+        new = ApplicationSerializer(newSet, many = True).data
+        populatedNew = pairApplications(new, ProfileSerializer)
+        return populatedNew[0]
+    return False
+
+
+
 def getApplications(vacancyId):
     # get the matches and pending applications for review page
 
@@ -50,26 +66,15 @@ def getApplications(vacancyId):
         ApplicationStatus__exact = 'MATCHED'
     )
 
-    newSet = Application.objects.filter(VacancyId__exact = vacancyId, ApplicationStatus__exact = 'PENDING')
-    new = ApplicationSerializer(newSet, many = True).data
-    populatedNew = pairApplications(new, ProfileSerializer)
-
     matchesSet = Application.objects.filter(VacancyId__exact = vacancyId, ApplicationStatus__exact = 'MATCHED')
     matches = ApplicationSerializer(matchesSet, many = True).data
     populatedMatches = pairApplications(matches, SummaryProfileSerializer)
 
-    newSet = Application.objects.filter(
-        VacancyId__exact = vacancyId,
-        ApplicationStatus__exact = 'PENDING'
-    )[:1]
+    populatedNew = getNewApplication(vacancyId)
 
-    newSerializer = ApplicationSerializer(newSet, many = True)
-    new = newSerializer.data
-
-    # pair new applications with user profile
-    populatedNew = pairApplications(new, ProfileSerializer)
-
-    return { 'matches': populatedMatches, 'new': populatedNew }
+    if populatedNew:
+        return { 'matches': populatedMatches, 'new': populatedNew }
+    return { 'matches': populatedMatches }
 
 
 

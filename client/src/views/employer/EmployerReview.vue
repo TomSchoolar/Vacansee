@@ -11,18 +11,14 @@
     const url = window.location.pathname;
     const vacancyId = url.substring(url.lastIndexOf('/') + 1);
 
+    const jwt = getJwt();
     const notifs = ref(2);
+    const jwtRef = ref(jwt);
     const matches = ref([]);
-    const applicants = ref([]);
     const currentProfile = ref({});
-    const currentApplication = ref({});
-    
-    
+    const currentApplication = ref({});    
 
     onMounted(async () => {
-
-        const jwt = getJwt();
-
         if(!jwt)
             return;
 
@@ -36,30 +32,39 @@
             responseType: 'json',
             timeout: 4000
         }).catch((err) => {
-            let { message = err.message, status = err.status } = err.response.data;
-            console.error(`oops: ${ status }: ${ message }`);
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
 
-            if(status === 401) {
-                alert('Your auth token has likely expired, please login again');
+                if(status === 401) {
+                    alert('Your auth token has likely expired, please login again');
+                }
+            } catch {
+                console.error(`uh oh: ${ err }`);
             }
         });
 
         if(!response)
             return;
 
-        const { matches: apiMatches = [], new: newApps = [] } = response.data;
+        const { matches: apiMatches = [], new: newApp = {} } = response.data;
 
-        applicants.value = newApps;
         matches.value = apiMatches;
 
-        if(newApps.length > 0){
-            let { application = {}, profile = {}} = newApps[0];
+        if(newApp){
+            let { application = {}, profile = {}} = newApp;
             currentApplication.value = application;
             currentProfile.value = profile;
         }
-
-        
     });
+
+
+    const onMatch = (application, nextApplication, nextProfile) => {
+        console.log(application, nextApplication, nextProfile)
+        matches.value.push(application);
+        currentProfile.value = nextProfile;
+        currentApplication.value = nextApplication;
+    }
 
     const download_button = () => {
         alert('downloading all applications');
@@ -99,7 +104,14 @@
             <hr class='slim-hr' />
 
             <main class='card-container'>
-                <ApplyProfileCard class='card' :application='currentApplication' :profile='currentProfile' />
+                <ApplyProfileCard 
+                    class='card' 
+                    :application='currentApplication' 
+                    :profile='currentProfile' 
+                    :vacancyId='vacancyId' 
+                    :jwt='jwtRef'
+                    @match='onMatch' 
+                />
             </main>
         </div>
     </div>
