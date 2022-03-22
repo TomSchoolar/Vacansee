@@ -98,9 +98,9 @@ class Fake():
                 'Pronouns': choice(pronouns),
                 'TimeZone': choice(range(-11,12,1)),
                 'TopicSentence': self.fake.sentence(nb_words=12, variable_nb_words=True),
-                'NotableSkills': [self.fake.bs() for x in range(choice(range(1,3)))],
-                'Experience': [self.fake.sentence(nb_words=3, variable_nb_words=True) for x in range(choice(range(1,3)))],
-                'Qualifications': [choice(quals) for x in range(choice(range(1,3)))],
+                'NotableSkills': [self.fake.bs() for x in range(choice(range(1,4)))],
+                'Experience': [self.fake.sentence(nb_words=3, variable_nb_words=True) for x in range(choice(range(1,4)))],
+                'Qualifications': [choice(quals) for x in range(choice(range(1,4)))],
                 'PhoneNumber': self.fake.phone_number()
             }
         }
@@ -269,7 +269,7 @@ def generateData():
 
     
 
-    for x in range(2):  # full: 25, test: 2
+    for x in range(25):  # full: 25, test: 2
         # add employees
         user = f.User()
         employees.append(user)
@@ -287,18 +287,18 @@ def generateData():
     #         employerDetails.append(details)
 
     for employer in employers:
-        vacs = [f.Vacancy(employer) for x in range(choice(range(3,7)))] # full: 8,20  test: 3,7
+        vacs = [f.Vacancy(employer) for x in range(choice(range(8,20)))] # full: 8,20  test: 3,7
         vacancies += [el for el in vacs if el != None]
 
     for vacancy in vacancies:
-        applicants = sample(employees, choice(range(3,6)))   # full: 8,20  test: 3,6
+        applicants = sample(employees, choice(range(8,20)))   # full: 8,20  test: 3,6
         for applicant in applicants:
             app = f.Application(applicant, vacancy)
 
             if app != None:
                 applications.append(app)
         
-        favouriters = sample(employees, choice(range(2,5)))   # full: 3,11  test: 2,5
+        favouriters = sample(employees, choice(range(3,11)))   # full: 3,11  test: 2,5
         
         for favouriter in favouriters:
             fav = f.Favourite(favouriter, vacancy)
@@ -316,7 +316,7 @@ def generateData():
 if __name__ == '__main__':
     f = Fake()
 
-    outpath = './api/authentication/fixtures/testseed.json'  # fullseed or testseed
+    outpath = './api/authentication/fixtures/fullseed.json'  # fullseed or testseed
 
     data = generateData()
 

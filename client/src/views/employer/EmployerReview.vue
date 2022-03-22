@@ -1,5 +1,6 @@
 <script setup>
     import axios from 'axios';
+    import EmptyCard from '@/components/employer/review/EmptyCard.vue';
     import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
@@ -60,8 +61,12 @@
 
 
     const onMatch = (application, nextApplication, nextProfile) => {
-        console.log(application, nextApplication, nextProfile)
         matches.value.push(application);
+        currentProfile.value = nextProfile;
+        currentApplication.value = nextApplication;
+    }
+
+    const updateCard = (nextApplication, nextProfile) => {
         currentProfile.value = nextProfile;
         currentApplication.value = nextApplication;
     }
@@ -105,13 +110,18 @@
 
             <main class='card-container'>
                 <ApplyProfileCard 
+                    v-if='Object.keys(currentApplication).length !== 0'
                     class='card' 
                     :application='currentApplication' 
                     :profile='currentProfile' 
                     :vacancyId='vacancyId' 
                     :jwt='jwtRef'
-                    @match='onMatch' 
+                    @match='onMatch'
+                    @defer='updateCard'
+                    @reject='updateCard'
                 />
+
+                <EmptyCard v-else />
             </main>
         </div>
     </div>

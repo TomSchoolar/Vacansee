@@ -1,7 +1,7 @@
 <script setup> 
     import axios from 'axios';
 
-    const emit = defineEmits(['match'])
+    const emit = defineEmits(['match', 'defer', 'reject'])
 
     const { application, jwt, profile, vacancyId } = defineProps(['application', 'jwt', 'profile', 'vacancyId']);
 
@@ -57,12 +57,26 @@
         emit('match', application, nextApplication, nextProfile);
     }
 
-    const defer = () => {
-        alert('deferred!');
+    const defer = async (applicationId) => {
+        const response = await updateStatus('defer', applicationId);
+
+        if(!response)
+            return;
+
+        const { nextApplication = {}, nextProfile = {} } = response;
+
+        emit('defer', nextApplication, nextProfile);
     }
 
-    const reject = () => {
-        alert('rejected!');
+    const reject = async (applicationId) => {
+        const response = await updateStatus('defer', applicationId);
+
+        if(!response)
+            return;
+
+        const { nextApplication = {}, nextProfile = {} } = response;
+
+        emit('reject', nextApplication, nextProfile);
     }
 </script>
 
@@ -102,9 +116,9 @@
         </div>
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
-            <button class='reject' @click='reject'><i class='fas fa-multiply'></i></button>
-            <button class='favourite' @click='defer'><i class='fas fa-star'></i></button>
-            <button class='apply' @click='accept(application.ApplicationId)'><i class='fas fa-check'></i></button>
+            <button title='reject applicant' class='reject' @click='reject(application.ApplicationId)'><i class='fas fa-multiply'></i></button>
+            <button title='defer decision' class='favourite' @click='defer(application.ApplicationId)'><i class="fa-solid fa-arrow-rotate-left"></i></button>
+            <button title='match with applicant' class='apply' @click='accept(application.ApplicationId)'><i class='fas fa-check'></i></button>
         </div>
     </div>
 </template>

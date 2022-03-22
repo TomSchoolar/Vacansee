@@ -47,7 +47,7 @@ def getNewApplication(vacancyId):
         VacancyId__exact = vacancyId, 
         ApplicationStatus__exact = 'PENDING'
     ).order_by(
-        '-LastUpdated'
+        'LastUpdated'
     )[:1]
 
     if len(newSet):
