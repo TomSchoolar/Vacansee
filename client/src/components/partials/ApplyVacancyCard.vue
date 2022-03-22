@@ -10,21 +10,21 @@
         const uID = jwtGetId(window.localStorage.jwt);
 
         const article = { "UserId": uID, "VacancyId": vID };
-        axios.post("http://localhost:8000/vacancy/fav/", article);
+        axios.post(process.env.VUE_APP_API_ENDPOINT + "/vacancy/fav/", article);
     }
 
     const apply = async (options) => {
         const uID = jwtGetId(window.localStorage.jwt);
 
         const article = { "UserId": uID, "VacancyId": vID, "ApplicationStatus":"PENDING" };
-        axios.post("http://localhost:8000/vacancy/apply/", article);
+        axios.post(process.env.VUE_APP_API_ENDPOINT + "/vacancy/apply/", article);
     }
 
     const reject = async (options) => {
         const uID = jwtGetId(window.localStorage.jwt);
 
         const article = { "UserId": uID, "VacancyId": vID };
-        axios.post("http://localhost:8000/vacancy/reject/", article);
+        axios.post(process.env.VUE_APP_API_ENDPOINT + "/vacancy/reject/", article);
     }
 
     let tagsLim = ref(6);
