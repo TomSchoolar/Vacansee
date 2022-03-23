@@ -1,59 +1,124 @@
 <script setup> 
-    const { application = {} } = defineProps(['application']);
-    const { firstName, pronouns, location, topicSentence, skills, experience, qualifications } = application;
-    
-    const favourite = () => {
-        alert('favourited!');
+    import axios from 'axios';
+
+    const emit = defineEmits(['match', 'defer', 'reject'])
+
+    const { application, jwt, profile, vacancyId } = defineProps(['application', 'jwt', 'profile', 'vacancyId']);
+
+    const updateStatus = async (newStatus, applicationId) => {
+        const response = await axios({
+            url: `/e/review/${ vacancyId }/updatestatus/${ applicationId }/`,
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'put',
+            timeout: 4000,
+            headers: {
+                Authorization: `Bearer: ${ jwt }`
+            },
+            data: {
+                setStatus: newStatus
+            },
+            responseType: 'json'
+        }).catch((err) => {
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+
+                if(status === 401) {
+                    alert('Your auth token has likely expired, please login again');
+                }
+
+                if(message === 'server error getting next application') {
+                    alert('Error getting the next application')
+                    return {};
+                }
+            } catch {
+                console.error(`uh oh: ${ err }`);
+            }
+        });
+
+        if(!response) {
+            return false;
+        }
+
+        const { data = {} } = response;
+
+        return data;
     }
 
-    const apply = () => {
-        alert('applied!');
+
+    const accept = async (applicationId) => {
+        const response = await updateStatus('accept', applicationId);
+
+        if(!response)
+            return;
+
+        const { application = {}, nextApplication = {}, nextProfile = {} } = response;
+
+        emit('match', application, nextApplication, nextProfile);
     }
 
-    const reject = () => {
-        alert('rejected!');
+    const defer = async (applicationId) => {
+        const response = await updateStatus('defer', applicationId);
+
+        if(!response)
+            return;
+
+        const { nextApplication = {}, nextProfile = {} } = response;
+
+        emit('defer', nextApplication, nextProfile);
+    }
+
+    const reject = async (applicationId) => {
+        const response = await updateStatus('reject', applicationId);
+
+        if(!response)
+            return;
+
+        const { nextApplication = {}, nextProfile = {} } = response;
+
+        emit('reject', nextApplication, nextProfile);
     }
 </script>
 
 <template>
     <div class='card'>
         <div class='info'>
-            <p class='name'>{{ firstName }} <span class='pronouns' v-if='pronouns'>({{ pronouns }})</span></p>
-            <p class='location' v-if='location'>Based in {{ location }}</p>
+            <p class='name'>{{ profile.FirstName }} <span class='pronouns' v-if='profile.Pronouns'>({{ profile.Pronouns }})</span></p>
+            <p class='location' v-if='profile.Location'>Based in {{ profile.Location }}</p>
         </div>
         <div class='description'>
-            <p>{{ topicSentence }}</p>
+            <p>{{ profile.TopicSentence }}</p>
         </div>
-        <span v-if='skills' class='card-section'>Notable Skills:</span>
+        <span v-if='profile.NotableSkills' class='card-section'>Notable Skills:</span>
         <div class='skills block' >
             <table>
-                <tr v-for='skill in skills' v-bind:key='skill'>
+                <tr v-for='skill in profile.NotableSkills' v-bind:key='skill'>
                     <th>- {{ skill }}</th>
                 </tr>
             </table>
         </div>
-        <span v-if='experience' class='card-section'>Experience:</span>
+        <span v-if='profile.Experience' class='card-section'>Experience:</span>
         <div class='experience block'>
             <table>
-                <tr v-for='xp in experience' v-bind:key='xp'>
-                    <th class='table-title'>- {{ xp.title }}</th>
+                <tr v-for='xp in profile.Experience' v-bind:key='xp'>
+                    <th class='table-title'>- {{ xp }}</th>
                     <th><span class='table-date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
                 </tr>
             </table>
         </div>
-        <span v-if='qualifications' class='card-section'>Qualifications:</span>
-        <div class='qualifications' v-for='qual in qualifications' v-bind:key='qual'>
+        <span v-if='profile.Qualifications' class='card-section'>Qualifications:</span>
+        <div class='qualifications' v-for='qual in profile.Qualifications' v-bind:key='qual'>
             <table>
                 <tr>
-                    <th>- {{qual}}</th>
+                    <th>- {{ qual }}</th>
                 </tr>
             </table>
         </div>
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
-            <button class='reject' @click='reject'><i class='fas fa-multiply'></i></button>
-            <button class='favourite' @click='favourite'><i class='fas fa-star'></i></button>
-            <button class='apply' @click='apply'><i class='fas fa-check'></i></button>
+            <button title='reject applicant' class='reject' @click='reject(application.ApplicationId)'><i class='fas fa-multiply'></i></button>
+            <button title='defer decision' class='favourite' @click='defer(application.ApplicationId)'><i class="fa-solid fa-arrow-rotate-left"></i></button>
+            <button title='match with applicant' class='apply' @click='accept(application.ApplicationId)'><i class='fas fa-check'></i></button>
         </div>
     </div>
 </template>

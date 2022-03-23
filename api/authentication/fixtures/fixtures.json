@@ -16,7 +16,7 @@
         "fields" : {
             "FirstName" : "Thomas",
             "LastName" : "Schoolar",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "I am a Student at the University of Birmingham",
             "NotableSkills" : ["Python", "Vue", "Django"],
@@ -43,7 +43,7 @@
         "fields" : {
             "FirstName" : "Adam",
             "LastName" : "Bass",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "I am a Student studing Computer Science",
             "NotableSkills" : ["JavaScript", "C#", "Python"],
@@ -70,7 +70,7 @@
         "fields" : {
             "FirstName" : "Cavan",
             "LastName" : "Day",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "Studying Computer Science at UoB",
             "NotableSkills" : ["HTML", "Vue", "CSS"],
@@ -264,7 +264,8 @@
         "fields" : {
             "UserId" : 3,
             "VacancyId" : 3,
-            "ApplicationStatus" : "MATCHED"
+            "ApplicationStatus" : "MATCHED",
+            "LastUpdated": "2022-01-03T09:14:15+0000"
         }
     },
 
@@ -274,17 +275,19 @@
         "fields" : {
             "UserId" : 3,
             "VacancyId" : 1,
-            "ApplicationStatus" : "PENDING"
+            "ApplicationStatus" : "PENDING",
+            "LastUpdated": "2022-01-03T12:14:26+0000"
         }
     },
 
     {
         "model" : "employee.Application",
-        "pk" : 1,
+        "pk" : 3,
         "fields" : {
             "UserId" : 2,
             "VacancyId" : 2,
-            "ApplicationStatus" : "REJECTED"
+            "ApplicationStatus" : "REJECTED",
+            "LastUpdated": "2022-01-03T18:14:36+0000"
         }
     }
 ]

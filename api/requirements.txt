@@ -7,6 +7,7 @@ djangorestframework==3.13.1
 gunicorn==20.1.0
 PyJWT==2.3.0
 pytz==2021.3
+regex==2022.3.15
 sqlparse==0.4.2
 tzdata==2021.5
 # DO NOT ADD psycopg2 or psycopg2-binary TO THIS FILE!

@@ -14,7 +14,7 @@ class Profile(models.Model):
     TimeZone = models.IntegerField(blank=False)
     TopicSentence = models.CharField(max_length=200, default="")
     NotableSkills = ArrayField(models.CharField(max_length=50), size=3, default=list)
-    Experience = ArrayField(models.CharField(max_length=80), size=3, default=list)
+    Experience = ArrayField(models.CharField(max_length=200), size=3, default=list)
     Qualifications = ArrayField(models.CharField(max_length=80), size=3, default=list)
     PhoneNumber = models.CharField(max_length=30, blank=False)
 
@@ -39,3 +39,4 @@ class Application(models.Model):
         choices=ApplicationStatusValues.choices,
         default=ApplicationStatusValues.PENDING
     )
+    LastUpdated = models.DateTimeField(auto_now_add=True, blank=False)

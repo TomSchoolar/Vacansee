@@ -1,12 +1,12 @@
 import jwt
 import environ
-from datetime import datetime, timezone, timedelta
 from copy import copy
 from .models import User
 from rest_framework import status
 from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from datetime import datetime, timezone, timedelta
 
 env = environ.Env()
 
@@ -37,7 +37,7 @@ def postLogin(request):
     encodedJWT = jwt.encode(
         { 
             'id': userData['UserId'],
-            'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=10),
+            'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=60),
             'iat': datetime.now(tz=timezone.utc)
         },
         env('JWT_SECRET'),
