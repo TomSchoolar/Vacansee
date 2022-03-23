@@ -134,8 +134,8 @@ class getReviewTests(TestCase):
 class putReviewValidTests(TransactionTestCase):
     
     userId = 4 # Sabah
-    vacancyId = 2 # Senior Developer (Facebook)
-    applicationId = 1005 # Tom to Senior Developer
+    vacancyId = 1 # Junior Developer (Facebook)
+    applicationId = 1002 # Brandon to Junior Developer
     jwt = createJwt(userId)
     reset_sequences = True
 

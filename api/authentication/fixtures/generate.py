@@ -279,6 +279,14 @@ def generateData():
         if profile != None:
             profiles.append(profile)
 
+    # do not switch around
+    emptyEmployer = [emp for emp in employers if emp['pk'] == 7]
+    employers = [emp for emp in employers if emp['pk'] != 7]    
+
+    # do not switch around
+    emptyEmployerDetails = [emp for emp in employerDetails if emp['fields']['UserId'] == 7]
+    employerDetails = [emp for emp in employerDetails if emp['fields']['UserId'] != 7]
+
     # for x in range(25):
     #     user = f.User(True)
     #     employers.append(user)
@@ -306,7 +314,7 @@ def generateData():
             if fav != None:
                 favourites.append(fav)
 
-    compiledData = employees + employers + profiles + employerDetails + vacancies + favourites + applications + tags
+    compiledData = employees + employers + profiles + employerDetails + vacancies + favourites + applications + tags + emptyEmployer + emptyEmployerDetails
 
     prettierData = json.dumps(compiledData, indent=4)
 
