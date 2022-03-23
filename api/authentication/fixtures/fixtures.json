@@ -16,7 +16,7 @@
         "fields" : {
             "FirstName" : "Thomas",
             "LastName" : "Schoolar",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "I am a Student at the University of Birmingham",
             "NotableSkills" : ["Python", "Vue", "Django"],
@@ -43,7 +43,7 @@
         "fields" : {
             "FirstName" : "Adam",
             "LastName" : "Bass",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "I am a Student studing Computer Science",
             "NotableSkills" : ["JavaScript", "C#", "Python"],
@@ -70,7 +70,7 @@
         "fields" : {
             "FirstName" : "Cavan",
             "LastName" : "Day",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "Studying Computer Science at UoB",
             "NotableSkills" : ["HTML", "Vue", "CSS"],

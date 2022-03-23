@@ -1,5 +1,6 @@
 <script setup>
-    const props = defineProps(['stats']);
+    const { stats } = defineProps(['stats']);
+    const { application = {}, profile = {} } = stats;
 
     const downloadApplication = () => {
         alert('download application');
@@ -17,30 +18,28 @@
 </script>
 
 
-
-
 <template>
     <article class='application'>
         <div class='application-left'>
             <div class='title'>
                 <span class='name'>
-                    {{ stats.name }}
+                    {{ profile.FirstName }} {{ profile.LastName }}
                 </span> 
-                <span class='pronouns'>
-                    ({{ stats.pronouns }}) 
+                <span class='pronouns' v-if='profile.Pronouns'>
+                    ({{ profile.Pronouns }}) 
                 </span>
             </div>
             <div class='contact'>
                 <i class="fa-solid fa-phone"></i>
-                {{ stats.phoneNumber }}  
+                {{ profile.PhoneNumber }}  
             </div>
             <div class='contact'>
                 <i class="fa-solid fa-envelope-open"></i>
-                {{ stats.email }}  
+                {{ profile.Email }}  
             </div>
             <div class='contact'>
                 <i class="fa-solid fa-clock"></i>
-                {{ stats.timeZone }}
+                {{ profile.TimeZone }}
             </div>
         </div>
 
@@ -52,7 +51,6 @@
     </article>
     <hr class='slim-hr' />
 </template>
-
 
 
 <style scoped>
