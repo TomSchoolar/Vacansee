@@ -9,7 +9,7 @@ from .serializers import VacancySerializer
 from rest_framework.response import Response
 from .models import EmployerDetails, Vacancy
 from rest_framework.decorators import api_view
-from employer.helpers import getIndex as indexHelper, getReview as reviewHelper
+from employer.helpers import getIndex as indexHelper, getReview as reviewHelper, getMatch as matchHelper
 from employee.serializers import ApplicationSerializer, SummaryProfileSerializer
 
 
@@ -251,6 +251,94 @@ def putReviewApplication(request, vacancyId, applicationId):
         return Response({ 'application': richApp, 'nextApplication': nextApplication['application'], 'nextProfile': nextApplication['profile'] })
     return Response({ 'application': richApp })
 
+@api_view(['GET'])
+def getMatchVacancies(request):
+    params = request.query_params
 
+    try:
+        uID = params['uID']
+        sort = params['sort']
+        sortByNum = False
+    except:
+        return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
+    if sort == 'matchesDesc':
+        sortByNum = True
+        sortParam = '-Created' #delete
+    elif sort == 'dateDesc':
+        sortParam = '-Created'
+    elif sort == 'dateAsc':
+        sortParam = 'Created'
+    elif sort == 'titleAsc':
+        sortParam = 'VacancyName'
+    else:
+        sortParam = '-VacancyName'
+
+    numVacancies = Vacancy.objects.filter(
+        UserId__exact = uID,
+    ).count()
+
+    #add if-else for sortByNum
+    vacanciesSet = Vacancy.objects.filter(
+        UserId__exact = uID,
+    ).order_by(sortParam)
+
+    vacancySerializer = VacancySerializer(vacanciesSet, many=True)
+    vacancies = vacancySerializer.data
+
+    returnData = {
+        'vacancies': vacancies,
+        'numVacancies': numVacancies
+    }
+
+    return Response(returnData)
+
+@api_view(['GET'])
+def getMatches(request):
+    params = request.query_params
+
+    try:
+        uID = params['uID']
+        vID = params['vID']
+        sort = params['sort']
+    except:
+        return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # add sorting
+
+    #matches = matchHelper.getMatches(vID)
+    matches = reviewHelper.getApplications(vID)
+
+    numMatches = Application.objects.filter(
+        VacancyId__exact = vID,
+        ApplicationStatus__exact = 'MATCHED'
+    ).count()
+
+    returnData = {
+        'matches': matches['matches'],
+        #'applications': matches['applications']
+        'numMatches': numMatches
+    }
+
+    return Response(returnData)
         
+@api_view(['GET'])
+def getCard(request):
+    params = request.query_params
+
+    try:
+        uID = params['uID']
+    except:
+        return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # add sorting
+
+    #matches = matchHelper.getMatches(vID)
+    #matches = reviewHelper.getApplications(vID)
+    details = matchHelper.getDetails(uID)
+
+    returnData = {
+        'details': details
+    }
+
+    return Response(returnData)
