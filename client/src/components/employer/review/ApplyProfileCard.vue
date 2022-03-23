@@ -69,7 +69,7 @@
     }
 
     const reject = async (applicationId) => {
-        const response = await updateStatus('defer', applicationId);
+        const response = await updateStatus('reject', applicationId);
 
         if(!response)
             return;
