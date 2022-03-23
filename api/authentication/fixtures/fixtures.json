@@ -238,53 +238,5 @@
             "Email" : "example2@facebook.com",
             "Created": "2022-02-19"
         }
-    },
-
-    {
-        "model" : "employee.Favourite",
-        "pk" : 1,
-        "fields" : {
-            "UserId" : 1,
-            "VacancyId" : 1
-        }
-    },
-
-    {
-        "model" : "employee.Favourite",
-        "pk" : 2,
-        "fields" : {
-            "UserId" : 3,
-            "VacancyId" : 1
-        }
-    },
-
-    {
-        "model" : "employee.Application",
-        "pk" : 1,
-        "fields" : {
-            "UserId" : 3,
-            "VacancyId" : 3,
-            "ApplicationStatus" : "MATCHED"
-        }
-    },
-
-    {
-        "model" : "employee.Application",
-        "pk" : 2,
-        "fields" : {
-            "UserId" : 3,
-            "VacancyId" : 1,
-            "ApplicationStatus" : "PENDING"
-        }
-    },
-
-    {
-        "model" : "employee.Application",
-        "pk" : 1,
-        "fields" : {
-            "UserId" : 2,
-            "VacancyId" : 2,
-            "ApplicationStatus" : "REJECTED"
-        }
     }
 ]
