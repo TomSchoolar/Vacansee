@@ -46,13 +46,13 @@ def getIndex(request):
 
 
     # parse filter parameter into django filter parameter
-    if filter == 'all':
-        filterParam = [True, False]
+    if filter == 'closed':
+        filterParam = [False]
     elif filter == 'active':
         filterParam = [True]
     else:
-        # 'closed'
-        filterParam = [False]
+        # 'all'
+        filterParam = [True, False]
 
 
     # get number of pages
@@ -92,13 +92,25 @@ def getIndex(request):
     vacancySerializer = VacancySerializer(vacanciesSet, many=True)
     vacancies = vacancySerializer.data
 
-    # get number of new, matched and rejected apps for each vacancy
-    indexHelper.getVacancyStats(vacancies)
+    try:
+        # get company name
+        employerDetails = EmployerDetails.objects.get(UserId__exact = uID)
+        companyName = employerDetails.CompanyName
+
+        # get number of new, matched and rejected apps for each vacancy
+        indexHelper.getVacancyStats(vacancies)
+    except EmployerDetails.DoesNotExist:
+        return Response(data={'code': 500, 'message': 'error getting company name or stats'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'code': 500, 'message': 'Server error getting company name and stats'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     # compile return data and send response
     returnData = {
-        'vacancies': vacancies,
         'numPages': pages,
+        'vacancies': vacancies,
+        'companyName': companyName,
         'numVacancies': numVacancies
     }
 

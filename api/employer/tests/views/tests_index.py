@@ -31,7 +31,8 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies)
+            'numVacancies': len(vacancies),
+            'companyName': 'Facebook'
         }
 
         self.assertDictEqual(expectedData, response.data)
@@ -53,7 +54,8 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies)
+            'numVacancies': len(vacancies),
+            'companyName': 'Facebook'
         }
 
         self.assertDictEqual(expectedData, response.data)
@@ -77,7 +79,8 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies)
+            'numVacancies': len(vacancies),
+            'companyName': 'Facebook'
         }
 
         self.assertDictEqual(expectedData, response.data)
@@ -100,7 +103,8 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies)
+            'numVacancies': len(vacancies),
+            'companyName': 'Facebook'
         }
 
         self.assertDictEqual(expectedData, response.data)
@@ -113,7 +117,8 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': [],
             'numPages': 0,
-            'numVacancies': 0
+            'numVacancies': 0,
+            'companyName': 'Facebook'
         }
 
         self.assertDictEqual(expectedData, response.data)

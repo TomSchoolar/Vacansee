@@ -1,12 +1,12 @@
 <script setup>
-    import { ref, watch, onMounted } from 'vue';
-    import { jwtGetId } from '@/assets/js/jwt';
-    import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
-    import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
-    
     import axios from 'axios';
     import dayjs from 'dayjs';
     import relativeTime from 'dayjs/plugin/relativeTime';
+    import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
+    import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
+
+    import { jwtGetId } from '@/assets/js/jwt';
+    import { ref, watch, onMounted } from 'vue';
     
     dayjs.extend(relativeTime);
     
@@ -23,13 +23,14 @@
     const vacancies = ref(null);
 
     // dropdown values
-    const filter = ref('all');
     const limit = ref(5);
+    const filter = ref('all');
     const sort = ref('newApps');
 
     // pagination
     const page = ref(1);
     const numPages = ref(1);
+    const companyName = ref('');
     const numVacancies = ref(0);
 
     document.title = 'Home | Vacansee';
@@ -80,15 +81,17 @@
             return false;
 
         const { 
-            vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
+            companyName: name = '',
             numVacancies: total = 0,
+            vacancies: newVacancies = vacancies.value, 
         } = data;
 
 
         while((page.value - 1) * limit.value >= total) page.value--;
 
         numPages.value = pages;
+        companyName.value = name;
         numVacancies.value = total;
         vacancies.value = newVacancies;
 
@@ -109,6 +112,7 @@
     // stats api request, separate request to speed up page load
     onMounted(async () => {
         // get stats
+
         const uID = jwtGetId();
 
         if(!uID)
@@ -217,7 +221,7 @@
     <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
 
     <main class='container'>
-        <EmployerStatBar user='Strat Security Co.' :stats='stats' />
+        <EmployerStatBar :user='companyName' :stats='stats' />
 
         <section class='vacancies-section'>
             <div class='title-bar'>

@@ -1,4 +1,3 @@
-from venv import create
 import environ
 import jwt as jwtLib
 from authentication.models import User
