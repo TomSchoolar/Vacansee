@@ -1,12 +1,12 @@
 import jwt
 import environ
-from datetime import datetime, timezone, timedelta
 from copy import copy
 from .models import User
 from rest_framework import status
 from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from datetime import datetime, timezone, timedelta
 
 env = environ.Env()
 

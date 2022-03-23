@@ -5,7 +5,6 @@ from employer.models import Vacancy
 from authentication.models import User
 from employee.models import Application, Profile
 from employer.serializers import VacancySerializer
-from authentication.serializers import UserEmailSerializer
 from employee.serializers import ApplicationSerializer, ProfileSerializer, SummaryProfileSerializer
 
 
@@ -36,8 +35,6 @@ def checkUserOwnsVacancy(vacancyId, jwt):
     vacancySerializer = VacancySerializer(vacancySet)
     vacancy = vacancySerializer.data
 
-    if not vacancy:
-        return False
     return vacancy
 
 
@@ -88,9 +85,8 @@ def pairApplications(applications, serializer):
         profile = serializer(profileSet).data
 
         if serializer == SummaryProfileSerializer:
-            userSet = User.objects.get(pk = app['UserId'])
-            user = UserEmailSerializer(userSet).data
-            profile['Email'] = user['Email']
+            user = User.objects.get(pk = app['UserId'])
+            profile['Email'] = user.Email
 
         pairedApplications.append({ 'application': app, 'profile': profile })
 

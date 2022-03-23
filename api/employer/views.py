@@ -28,7 +28,7 @@ def getIndex(request):
         pageNum = int(params['pageNum'])
         sortByApps = False
     except:
-        return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
 
     # parse sort parameter into django sort parameter
@@ -143,15 +143,14 @@ def getReview(request, vacancyId):
     try:
         vacancy = reviewHelper.checkUserOwnsVacancy(vacancyId, jwt)
 
-        if not vacancy:
-            return Response({ 'status': 401, 'message': 'You do not have access to that vacancy' }, status=status.HTTP_401_UNAUTHORIZED)
-
         # get employer name
         employerDetails = EmployerDetails.objects.get(UserId__exact=jwt['id'])
         employer = employerDetails.CompanyName
 
 
         vacancy = { 'VacancyId': vacancy['VacancyId'], 'VacancyName': vacancy['VacancyName'], 'CompanyName': employer }
+    except Vacancy.DoesNotExist:
+        return Response({ 'status': 401, 'message': 'You do not have access to that vacancy' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Server error' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -185,24 +184,23 @@ def putReviewApplication(request, vacancyId, applicationId):
     
     # check user owns vacancy
     try:
-        vacancy = reviewHelper.checkUserOwnsVacancy(vacancyId, jwt)
+        reviewHelper.checkUserOwnsVacancy(vacancyId, jwt)
+    except Vacancy.DoesNotExist:
+        return Response({ 'status': 401, 'message': 'You do not have access to that vacancy' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Server error' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-    if not vacancy:
-        return Response({ 'status': 401, 'message': 'You do not have access to that vacancy' }, status=status.HTTP_401_UNAUTHORIZED)
-    
+        
 
     # destructure params and typecast
     try:
         # new status = { defer, accept, reject }
         newStatus = request.data['setStatus']
     except:
-        return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
     
     if newStatus not in ['defer', 'accept', 'reject']:
-        return Response(data={'code': 400, 'message': 'invalid newStatus, must be one of "defer", "accept" or "reject"'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={'status': 400, 'message': 'invalid setStatus, must be one of "defer", "accept" or "reject"'}, status=status.HTTP_400_BAD_REQUEST)
 
     time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S+0000')
 
@@ -215,7 +213,7 @@ def putReviewApplication(request, vacancyId, applicationId):
 
 
     try:
-        application = Application.objects.get(pk=applicationId)
+        application = Application.objects.get(pk=applicationId, VacancyId__exact = vacancyId)
 
         application.ApplicationStatus = updateValue
         application.LastUpdated = time
@@ -224,17 +222,17 @@ def putReviewApplication(request, vacancyId, applicationId):
         applicationSerializer = ApplicationSerializer(application)
         richApp = reviewHelper.pairApplications([applicationSerializer.data], SummaryProfileSerializer)[0]
     except Application.DoesNotExist:
-        return Response(data={'code': 401, 'message': 'invalid application id'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data={'status': 401, 'message': 'invalid application id'}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response(data={'code': 500, 'message': 'server error getting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'status': 500, 'message': 'server error getting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
     try:
         nextApplication = reviewHelper.getNewApplication(vacancyId)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response(data={'code': 500, 'message': 'server error getting next application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'status': 500, 'message': 'server error getting next application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
     if nextApplication:

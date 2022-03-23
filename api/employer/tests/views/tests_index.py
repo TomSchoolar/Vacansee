@@ -7,9 +7,11 @@ from employer.serializers import VacancySerializer
 from employer.helpers.getIndex import getVacancyStats
 
 
-class indexGetTestCase(TestCase):
+class indexTestCase(TestCase):
 
     fixtures = ['authentication/fixtures/testseed.json']
+
+    # GET INDEX TESTS
 
     def test_validRequestSortNewApplications(self):
         # User: Sabah
@@ -80,6 +82,29 @@ class indexGetTestCase(TestCase):
 
         self.assertDictEqual(expectedData, response.data)
 
+    
+    def test_onlyClosedSortTitleDesc(self):
+        # User: Sabah
+        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'titleDesc', 'filter': 'closed', 'pageNum': 1, 'count': '10' })
+        
+        vacancySet = Vacancy.objects.filter(
+                UserId__exact = 4,
+                IsOpen__exact = False
+            ).order_by( 
+                '-VacancyName' 
+            )
+        vacancies = VacancySerializer(vacancySet, many=True).data
+
+        getVacancyStats(vacancies)
+
+        expectedData = {
+            'vacancies': vacancies,
+            'numPages': ceil(len(vacancies) / 10),
+            'numVacancies': len(vacancies)
+        }
+
+        self.assertDictEqual(expectedData, response.data)
+
 
     def test_noVacanciesIncorrectlyLargePageNum(self):
         # User: Victoria
@@ -101,10 +126,7 @@ class indexGetTestCase(TestCase):
         self.assertEquals(response.status_code, 400)
 
 
-
-class indexGetStatsTestCase(TestCase):
-
-    fixtures = ['authentication/fixtures/testseed']
+    # GET STATS TESTS
 
     def test_validId(self):
         # Sabah
