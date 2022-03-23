@@ -144,6 +144,27 @@
     },
 
     {
+        "model" : "authentication.User",
+        "pk" : 7,
+        "fields" : {
+            "IsEmployer" : true,
+            "Email" : "empty@student.bham.ac.uk",
+            "PasswordHash" : "password",
+            "PasswordSalt" : "kjahasdflkjas"
+        }
+    },
+
+    {
+        "model" : "employer.EmployerDetails",
+        "pk" : 4,
+        "fields" : {
+            "UserId" : 7,
+            "PhoneNumber" : "07832159444",
+            "CompanyName" : "Discord"
+        }
+    },
+
+    {
         "model" : "employer.Tag",
         "pk" : 1,
         "fields" : {
@@ -226,7 +247,7 @@
         "pk" : 3,
         "fields" : {
             "VacancyName" : "Cyber Security Anaylst",
-            "UserId" : 5,
+            "UserId" : 6,
             "Salary" : "Minimum Wage",
             "Description" : "Looking for a keen learner to be trained from scratch",
             "SkillsRequired" : ["Team-Working"],
