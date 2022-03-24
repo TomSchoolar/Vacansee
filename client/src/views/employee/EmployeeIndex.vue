@@ -1,10 +1,28 @@
-
 <script setup>
+    import { ref, watch, onMounted } from 'vue';
+    import { jwtGetId } from '@/assets/js/jwt';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import VacancyCard from '@/components/employee/VacancyCard.vue';
     
-    import relativeTime from 'dayjs/plugin/relativeTime';
+    import axios from 'axios';
     import dayjs from 'dayjs';
-    import { ref, watch } from 'vue';
+    import relativeTime from 'dayjs/plugin/relativeTime';
+
+    dayjs.extend(relativeTime);
+
+    // vars init
+    const notifs = ref(2);
+    const vacancies = ref(null);
+
+    // dropdown values
+    const filter = ref('all');
+    const limit = ref(10);
+    const sort = ref('newApps');
+
+    // pagination
+    const page = ref(1);
+    const numPages = ref(1);
+    const numVacancies = ref(0);
 
     const tags = [
         {
@@ -13,34 +31,122 @@
         },
     ]
 
-    dayjs.extend(relativeTime);
-    let notifs = ref(2);
-    let filter = ref('all');
-    let limit = ref(10);
-    let sort = ref('newApps');
+    document.title = 'Home | Vacansee';
 
-    watch(filter, (filterValue) => {
-        alert(`showing ${ filterValue } adverts`);
+    // api request function
+    const getVacancies = async (options) => {
+        const { count = 10, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
+
+        const uID = jwtGetId(window.localStorage.jwt);
+
+        const response = await axios({
+            method: 'get',
+            url: '/vacancy/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID,
+                sort,
+                count,
+                filter,
+                pageNum
+            }
+        }).catch((err) => {
+            console.log(`oops: ${ err }`);
+        });
+
+        if(!response || !response.data)
+            return false;
+
+        const { data } = response;
+
+        if(!data)
+            return false;
+
+        const { 
+            vacancies: newVacancies = vacancies.value, 
+            numPages: pages = 1, 
+            numVacancies: total = 0,
+        } = data;
+
+
+        while((page.value - 1) * limit.value >= total) page.value--;
+
+        numPages.value = pages;
+        numVacancies.value = total;
+        vacancies.value = newVacancies;
+
+        return true;
+    }
+
+    // vacancy api request
+    onMounted(async () => {
+        const result = await getVacancies({ });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
     });
 
-    watch(limit, (newLimit) => {
-        alert(`showing ${ newLimit } articles per page`);
+    // get vacancies in new order
+    const sortVacancies = async (sortParam) => {
+        const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
+        
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        sort.value = sortParam;
+    }
+
+    // pagination: change page
+    const changePage = async (newPage) => {
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        page.value = newPage;   
+    }
+
+    // dropdown watchers
+    watch(filter, async (filterValue) => {
+        // change which vacancies are display based on isOpen
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        filter.value = filterValue;
     });
 
-    watch(sort, (sortParam) => {
-        alert(`sorted by ${ sortParam }`);
+    watch(limit, async (newLimit) => {
+        // change number of vacancies per page
+        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
+
+        if(page.value < 0)
+            page.value = 0;
+
+        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        limit.value = newLimit;
     });
+
+    watch(sort, sortVacancies);
 
     const applybtn = () => {
         alert("applied!");
-    }
-    
-    const next = () => {
-        alert("next page");
-    }
-
-    const prev = () => {
-        alert("previous page");
     }
 
     
@@ -97,29 +203,15 @@
             <br />
 
             <!-- table below in place of vacancy cards -->
-            <table style = 'padding: 5px; height: 55%; width: 100%; border: 1px solid; text-align: center; border-radius: 15px;'>
-                <tr> 
-                    <th> Card 1 </th>
-                    <th> Card 2 </th>
-                    <th> Card 3 </th>
-                    <th> Card 4 </th>
-                    <th> Card 5 </th>
-                </tr>
-                <tr> 
-                    <th> Card 1 </th>
-                    <th> Card 2 </th>
-                    <th> Card 3 </th>
-                    <th> Card 4 </th>
-                    <th> Card 5 </th>
-                </tr>
-
-            </table>
+            <div style = 'padding: 5px; height: 55%; width: 100%; border: 1px solid; text-align: center; border-radius: 15px; display: flex; justify-content: space-between'>
+                <VacancyCard -v-for='vacancy in vacancies' :vacancy='vacancy' />
+            </div>
         </div>
 
-        <button type='button' class='button arrowbtn' id= 'next' @click=next>
+        <button type='button' class='button arrowbtn' id= 'next' @click='page < numPages ? changePage(page + 1) : page'>
         <i class="fa-solid fa-circle-arrow-right"></i>
         </button>
-        <button type='button' class='button arrowbtn' id= 'prev' @click=prev>
+        <button type='button' class='button arrowbtn' id= 'prev' @click='page > 1 ? changePage(page - 1) : page'>
             <i class="fa-solid fa-circle-arrow-left"></i>
         </button>
         
