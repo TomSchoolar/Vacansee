@@ -63,7 +63,7 @@ def getIndex(request):
     try:
         # get vacancies
         vacanciesSet = Vacancy.objects.filter(
-            IsOpen__exact = True
+            IsOpen__in = filterParam
         ).order_by(sortParam)[skip:limit]
 
         vacancySerializer = VacancySerializer(vacanciesSet, many=True)

@@ -32,7 +32,7 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = 10, pageNum = 1, sort = 'dateDesc', filter = 'open' } = options;
+        const { count = 10, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
 
         const uID = jwtGetId(window.localStorage.jwt);
 
