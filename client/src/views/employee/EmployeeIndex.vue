@@ -5,19 +5,16 @@
     import VacancyCard from '@/components/employee/VacancyCard.vue';
     
     import axios from 'axios';
-    import dayjs from 'dayjs';
-    import relativeTime from 'dayjs/plugin/relativeTime';
 
-    dayjs.extend(relativeTime);
 
     // vars init
     const notifs = ref(2);
     const vacancies = ref(null);
 
     // dropdown values
-    const filter = ref('all');
+    const filter = ref('active');
     const limit = ref(10);
-    const sort = ref('newApps');
+    const sort = ref('dateDesc');
 
     // pagination
     const page = ref(1);
@@ -35,7 +32,7 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = 10, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
+        const { count = 10, pageNum = 1, sort = 'dateDesc', filter = 'open' } = options;
 
         const uID = jwtGetId(window.localStorage.jwt);
 
@@ -75,6 +72,8 @@
         numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
+
+        console.log(vacancies.value)
 
         return true;
     }
@@ -145,7 +144,7 @@
 
     watch(sort, sortVacancies);
 
-    const applybtn = () => {
+    const apply = () => {
         alert("applied!");
     }
 
@@ -163,8 +162,8 @@
         
         <div class='select-group'>
             <select v-model='filter' aria-label='filter vacancies' id='filter'>
-                <option value='all' selected>show all adverts</option>
-                <option value='active'>show active adverts</option>
+                <option value='active' selected>show active adverts</option>
+                <option value='all'>show all adverts</option>
                 <option value='closed'>show closed adverts</option>
             </select>
         </div>
@@ -182,8 +181,7 @@
 
         <div class='select-group'>
             <select v-model='sort' aria-label='sort vacancies' id='sort'>
-                <option value='newApps' selected>new applications</option>
-                <option value='dateDesc'>latest first</option>
+                <option value='dateDesc' selected>latest first</option>
                 <option value='dateAsc'>oldest first</option>
                 <option value='titleAsc'>title (a-z)</option>
                 <option value='titleDesc'>title (z-a)</option>
@@ -191,7 +189,7 @@
         </div>
 
 
-        <div class='tags' t-for='tag in tags' :key='tags.id'>
+        <div class='tags' v-for='tag in tags' :key='tag.id'>
             <table style='padding: 5px; width: 100%; border: 2px solid;text-align: left; border-radius: 15px; margin-top: 50px;'>
                 <tr> 
                     <th style='border-right: 2px solid; width: 10%; padding-right: 10px; font-size: 18px;'> Selected Tags </th>
@@ -204,21 +202,21 @@
 
             <!-- table below in place of vacancy cards -->
             <div style = 'padding: 5px; height: 55%; width: 100%; border: 1px solid; text-align: center; border-radius: 15px; display: flex; justify-content: space-between'>
-                <VacancyCard -v-for='vacancy in vacancies' :vacancy='vacancy' />
+                <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' />
             </div>
         </div>
 
-        <button type='button' class='button arrowbtn' id= 'next' @click='page < numPages ? changePage(page + 1) : page'>
+        <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
         <i class="fa-solid fa-circle-arrow-right"></i>
         </button>
-        <button type='button' class='button arrowbtn' id= 'prev' @click='page > 1 ? changePage(page - 1) : page'>
+        <button type='button' class='button arrow-btn' @click='page > 1 ? changePage(page - 1) : page'>
             <i class="fa-solid fa-circle-arrow-left"></i>
         </button>
         
     </div>
 
 <div class='split right'>
-    <button type='button' class='button applybtn' id= 'applybtn' @click= applybtn>Apply Now!</button>
+    <button type='button' class='button apply-btn' @click= apply>Apply Now!</button>
     <p>Employee info partial.</p>
 </div>
     
@@ -227,7 +225,7 @@
 
 <style scoped>
 
-    input{
+    input {
         border:2px solid;
         border-radius:25px;
         float:left;
@@ -236,13 +234,27 @@
         padding:5px;
     }
 
-    select{
+    select {
         border: 2px solid;
         float:right;
         font-size:12px;
         margin: 1px;
         padding: 3px;
     }
+
+    .arrow-btn {
+        background-color: white;
+        border:none;
+        float: right;
+        font-size: 20px;
+        padding: 2px;
+    }
+
+    .apply-btn {
+        background-color: white;
+        border-radius: 10px;
+    }
+
     .button {
         border: 2px solid;
         border-radius: 15px;
@@ -260,29 +272,15 @@
         transition-duration: 0.4s;
     }
 
-    .button:active{
+    .button:active {
         background-color:#D3D3D3;
         font-size: 50%;
     }
 
-    .button:hover{
+    .button:hover {
         background-color:#D3D3D3;
 
     }
-
-    .arrowbtn{
-        background-color: white;
-        border:none;
-        float: right;
-        font-size: 20px;
-        padding: 2px;
-    }
-    .applybtn{
-        background-color: white;
-        border-radius: 10px;
-    }
-
-    
 
     .left {
         box-sizing: border-box;
@@ -310,15 +308,12 @@
     }
 
     .select-group {
-        align: right;
         flex-direction: column;
     }
 
-
-    .tag{
+    .tag {
         font-size: 250%;
         margin: 10px;
     }
-
 </style>
 
