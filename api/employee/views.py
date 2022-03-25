@@ -1,3 +1,4 @@
+from doctest import DocFileSuite
 import jwt as jwtLib
 from math import ceil
 from rest_framework import status
@@ -138,6 +139,18 @@ def getApplications(request):
         # dateAsc
         sortParam = 'LastUpdated'
 
+
+    if filter == 'matched':
+        filterParam = ['MATCHED']
+    elif filter == 'pending':
+        filterParam = ['PENDING']
+    elif filter == 'rejected':
+        filterParam = ['REJECTED']
+    else:
+        'all'
+        filterParam = ['MATCHED', 'PENDING', 'REJECTED']
+
+
     skip = max(count * (pageNum - 1), 0)
     limit = count * pageNum
     
@@ -151,7 +164,8 @@ def getApplications(request):
             pageNum -= 1
 
         applicationSet = Application.objects.filter(
-            UserId__exact = jwt['id']
+            UserId__exact = jwt['id'],
+            ApplicationStatus__in = filterParam
         ).order_by(
             sortParam
         )[skip:limit]
@@ -180,7 +194,6 @@ def getApplications(request):
 
 
     return Response({ 'applications': pairedApplications, 'numPages': numPages })
-
 
 
 
@@ -215,3 +228,45 @@ def getApplicationStats(request):
 
     
     return Response(stats)
+
+
+
+@api_view(['GET'])
+def getApplicationDetails(request, applicationId):
+    try:
+        # test jwt
+        jwt = jwtHelper.extractJwt(request)
+    except jwtLib.ExpiredSignatureError:
+        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
+        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        applicationSet = Application.objects.get(pk = applicationId, UserId__exact = jwt['id'])
+        application = ApplicationSerializer(applicationSet).data
+
+        if application['ApplicationStatus'] != 'MATCHED':
+            return Response({ 'status': 400, 'message': 'You have not matched with that vacancy.' })
+    except Application.DoesNotExist:
+        return Response({ 'status': 401, 'message': 'You do not have access to that application' })
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error getting application from the server' })
+
+    try:
+        vacancySet = Vacancy.objects.get(pk = application['VacancyId'])
+        vacancy = VacancySerializer(vacancySet).data
+
+        employerDetails = EmployerDetails.objects.get(UserId__exact = vacancySet.UserId)
+        companyName = employerDetails.CompanyName
+
+    except Application.DoesNotExist:
+        return Response({ 'status': 500, 'message': 'Couldn\'t find vacancy details' })
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error getting vacancy from the server' })
+
+    return Response({ **application, **vacancy, 'CompanyName': companyName })
