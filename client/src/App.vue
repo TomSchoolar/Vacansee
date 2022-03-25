@@ -23,6 +23,9 @@
         --blue: #08415c;
         --blue-focus: #0a567a; /* 8% lighter */
 
+        --green: #009e0f;
+        --green-focus: #00910d; /* 8% darker */
+
         /* grey */
         --slate: #6b818c;
         --slate-focus: #627680; /* 8% darker */
