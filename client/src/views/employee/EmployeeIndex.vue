@@ -1,20 +1,22 @@
 <script setup>
-    import { ref, watch, onMounted } from 'vue';
-    import { jwtGetId } from '@/assets/js/jwt';
-    import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
-    
     import axios from 'axios';
+    import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import VacancyCard from '@/components/employee/index/VacancyCard.vue';
+    import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
+
+    import { jwtGetId } from '@/assets/js/jwt';
+    import { ref, watch, onMounted } from 'vue';
 
 
     // vars init
-    const notifs = ref(2);
-    const vacancies = ref(null);
     const tagsLim = 6;
     const extraTags = '';
+    const notifs = ref(2);
+    const vacancies = ref([]);
 
     // dropdown values
+        const limit = ref(3);
     const filter = ref('active');
-    const limit = ref(3);
     const sort = ref('dateDesc');
 
     // pagination
@@ -25,7 +27,27 @@
     const tags = [
         {
             id: 0,
-            icon: 'book'
+            icon: 'fa-solid fa-book'
+        },
+        {
+            id: 1,
+            icon: 'fa-solid fa-code'
+        },
+        {
+            id: 2,
+            icon: 'fa-solid fa-python'
+        },
+        {
+            id: 3,
+            icon: 'fa-solid fa-school'
+        },
+        {
+            id: 4,
+            icon: 'fa-solid fa-briefcase'
+        },
+        {
+            id: 5,
+            icon: 'fa-solid fa-database'
         },
     ]
 
@@ -156,131 +178,78 @@
 <template>
     <EmployeeNavbar page='home' :numNotifs='notifs'></EmployeeNavbar>
 
-    <div class='split left'>
-        <h1 style='text-align: left;  margin-top:0; border-bottom: 1px solid;'> Vacancies </h1>
-        <p style='padding: 5px; solid;'></p>
-        <input name='searchbar' type='text' placeholder='Search..'> 
-        
-        <div class='select-group'>
-            <select v-model='filter' aria-label='filter vacancies' id='filter'>
-                <option value='active' selected>show active adverts</option>
-                <option value='all'>show all adverts</option>
-                <option value='closed'>show closed adverts</option>
-            </select>
-        </div>
+    <div class='container'>
+        <div class='left'>
+            <h1 class='title'>Vacancies</h1>
+            <div class='search-group'>
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input name='searchbar' class='search' type='text' placeholder='Search..'> 
+            </div>
+
+            
+            <div class='select-group'>
+                <select v-model='filter' aria-label='filter vacancies' id='filter'>
+                    <option value='active' selected>show active adverts</option>
+                    <option value='all'>show all adverts</option>
+                    <option value='closed'>show closed adverts</option>
+                </select>
+            </div>
 
 
-        <div class='select-group'>
-            <select v-model='limit' aria-label='set page size' id='limit'>
-                <option value=3 selected>3 per page</option>
-                <option value=6>6 per page</option>
-                <option value=9>9 per page</option>
-                <option value=12>12 per page</option>
-            </select>
-        </div>
+            <div class='select-group'>
+                <select v-model='limit' aria-label='set page size' id='limit'>
+                    <option value=3 selected>3 per page</option>
+                    <option value=6>6 per page</option>
+                    <option value=9>9 per page</option>
+                    <option value=12>12 per page</option>
+                </select>
+            </div>
 
 
-        <div class='select-group'>
-            <select v-model='sort' aria-label='sort vacancies' id='sort'>
-                <option value='dateDesc' selected>latest first</option>
-                <option value='dateAsc'>oldest first</option>
-                <option value='titleAsc'>title (a-z)</option>
-                <option value='titleDesc'>title (z-a)</option>
-            </select>
-        </div>
+            <div class='select-group'>
+                <select v-model='sort' aria-label='sort vacancies' id='sort'>
+                    <option value='dateDesc' selected>latest first</option>
+                    <option value='dateAsc'>oldest first</option>
+                    <option value='titleAsc'>title (a-z)</option>
+                    <option value='titleDesc'>title (z-a)</option>
+                </select>
+            </div>
 
 
-        <div class='tags' v-for='tag in tags' :key='tag.id'>
-            <table style='padding: 5px; width: 100%; border: 2px solid;text-align: left; border-radius: 15px; margin-top: 50px;'>
-                <tr> 
-                    <th style='border-right: 2px solid; width: 10%; padding-right: 10px; font-size: 18px;'> Selected Tags </th>
-                    <th> <i class='fa-solid fa-book tag'></i> </th>
-                    <th>  </th>
-                </tr>
+            <div class='filter-tags-row'>
+                    <th class='filter-tags-header'> Selected Tags </th>
+                    <div class='filter-tag'>
+                        <i class='fa-solid fa-book tag'></i> 
+                    </div>
+            </div>
 
-            </table>
-            <br />
 
             <!-- table below in place of vacancy cards -->
-            <div style = 'padding: 5px; height: 55%; width: 100%; border: 1px solid; text-align: center; border-radius: 15px; display: flex; justify-content: space-between; flex-wrap: wrap'>
-                <div v-for='vacancy in vacancies' :key='vacancy.VacancyId' class='card'>
-                    <div class='card-main-container'>
-                        <div class='company-info'>
-                            <div class='company-name'>{{ vacancy.CompanyName }}<!-- <i id='favourite' class='fas fa-star' title='favourited' v-if="favourited"></i>--></div>
-                            <p class='job-title'>{{ vacancy.VacancyName }}</p>
-                            <p class='location' v-if='vacancy.Location'>Based in {{ vacancy.Location }}</p>
-                        </div>
-                        <div class='description'>
-                            <p>{{ vacancy.Description }}</p>
-                        </div>
-                        <span v-if='vacancy.SkillsRequired' class='card-section'>Necessary Skills:</span>
-                        <div class='skills'>
-                            <table>
-                                <tr v-for='skill in vacancy.SkillsRequired' v-bind:key='skill'>
-                                    <th>- {{ skill }}</th>
-                                </tr>
-                            </table>
-                        </div>
-                        <span v-if='vacancy.ExperienceRequired' class='card-section'>Experience:</span>
-                        <div class='experience'>
-                            <table>
-                                <tr v-for='xp in vacancy.ExperienceRequired' v-bind:key='xp'>
-                                    <th>- {{ xp }}</th>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-tag-container">
-                        <span v-if='vacancy.Tags' class='card-section'>Requirements:</span>
-                        <table style='margin: 5px 0 10px 0'>
-                            <tr>
-                                <th class='card-tags' v-for='tag in vacancy.Tags.slice(0,tagsLim)' v-bind:key='tag'>
-                                    <i v-if='tag == 1' class='fa-solid fa-database'></i>
-                                    <i v-else-if='tag == 2' class='fa-solid fa-code'></i>
-                                    <i v-else-if='tag == 3' class='fa-brands fa-python'></i>
-                                    <i v-else-if='tag == 4' class='fa-solid fa-school'></i>
-                                    <i v-else class='fa-solid fa-briefcase'></i>
-                                </th>
-                                <!--
-                                <th v-if='tags.length > 6' class='card-tags tags-overflow' :title='extraTags'>
-                                    <div class='tags-num' ref='extra-tags'>+{{ tags.length - (tagsLim - 1) }}</div>
-                                    <i class='fa-solid fa-tags'></i>
-                                </th>
-                                -->
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+            <div class='vacancy-container'>
+                <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' />
             </div>
+                    
+
+            <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
+            <i class="fa-solid fa-circle-arrow-right"></i>
+            </button>
+            <button type='button' class='button arrow-btn' @click='page > 1 ? changePage(page - 1) : page'>
+                <i class="fa-solid fa-circle-arrow-left"></i>
+            </button>
+            
         </div>
 
-        <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
-        <i class="fa-solid fa-circle-arrow-right"></i>
-        </button>
-        <button type='button' class='button arrow-btn' @click='page > 1 ? changePage(page - 1) : page'>
-            <i class="fa-solid fa-circle-arrow-left"></i>
-        </button>
-        
+        <div class='right'>
+            <button type='button' class='button apply-btn' @click= apply>Apply Now!</button>
+            <p>Employee info partial.</p>
+        </div>
     </div>
-
-<div class='split right'>
-    <button type='button' class='button apply-btn' @click= apply>Apply Now!</button>
-    <p>Employee info partial.</p>
-</div>
+    
     
 </template>
 
 
 <style scoped>
-    input {
-        border:2px solid;
-        border-radius:25px;
-        float:left;
-        font-size:12px;
-        margin: 1px;
-        padding:5px;
-    }
-
     select {
         border: 2px solid;
         float:right;
@@ -332,126 +301,92 @@
 
     .button:hover {
         background-color:#D3D3D3;
-
     }
 
-    .card {
-        font-size: 16px;
-        font-weight: normal;
-        height: 500px;
-        width: calc((100% / 3) - 56px);
-        border: 2px solid #555;
-        border-radius: 15px;
-        margin: 12px 6px;
-        align-items: center;
-        text-align: left;
+    .container {
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 0 20px;
+        justify-content: center;
+        margin-bottom: 30px;
     }
 
-    .card > * {
-        width: 100%;
-    }
-
-    .card-section {
-        font-weight: 600;
-    }
-
-    .company-info p {
-        margin: 0px;
-        padding: 5px 0px 0px 0px;
-    }
-
-    .company-name { 
-        font-weight: bold;
-        font-size: 24px;
-        margin: 0px;
-        padding: 10px 0px 0px 0px;
-    }
-
-    .description p {
-        font-size: 16px;
-        margin: 10px 0;
-    }
-    .job-title {
-        font-size: 18px;
-        font-style: italic;
-    }
-
-    .location {
-        font-style: italic;
-    }
-
-    .skills {
-        font-weight: normal;
-    }
-
-    .card-tags {
-        font-size: 20px;
-        padding: 0 20px 0 0;
-    }
-
-    .card-tags i {
+    .filter-tag {
         font-size: 32px;
     }
 
-    .tags-num {
-        position: absolute;
-        background: var(--red);
-        color: white;
-        font-size: 12px;
-        border-radius: 30%;
-        bottom: 5px;
-        right: 5px;
-        padding: 2px 3px;
-
+    .filter-tags-header {
+        width: 70px;
+        text-overflow: wrap;
+        border-right: 1.5px solid black;
+        padding-right: 10px;
+        margin-right: 15px;
     }
 
-    .tags-overflow {
+    .filter-tags-row {
+        display: flex;
+        align-items: center;
+        border: 1px solid black;
+        width: calc(100% - 40px);
         position: relative;
-    }
-
-    #favourite {
-        float: right;
-        padding: 15px;
-        font-size: 45px;
-        color: var(--red);
+        top: 5px;
+        margin-bottom: 5px;
+        padding: 7px 20px;
+        border-radius: 15px;
     }
 
     .left {
-        box-sizing: border-box;
         height: 100%;
-        padding-left: 50px;
-        padding-right: 50px;
-        padding-top: 10px;
-        width: 70%;    
-        position: absolute !important;      
+        padding: 10px 50px 0 50px;
+        width: 70%;       
     }
 
     .right {
-        border-left:3px solid;
-        left:70%;
-        right: 0;
+        border-left: 3px solid;
         padding-top: 100px;
         width: 30%;
     }
 
-    .split {
+    .search {
+        border-radius: 8px;
+        float: left;
+        font-size: 12px;
+        margin: 1px;
+        padding: 5px 5px 5px 25px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 7px;
+        top: 6px;
         color: black;
-        height: 100%;
-        position: fixed;
-        top: 10;
-    
+        font-size: 17px;
+    }
+
+    .search-group {
+        position: relative;
     }
 
     .select-group {
         flex-direction: column;
     }
 
-    .tag {
-        font-size: 250%;
-        margin: 10px;
+    .tags-header {
+        border-right: 2px solid; 
+        width: 10%; 
+        padding-right: 10px; 
+        font-size: 18px;
+    }
+
+    .title {
+        text-align: left;  
+        margin-top:0; 
+        border-bottom: 1px solid;
+    }
+
+    .vacancy-container {
+        width: 100%; 
+        text-align: center; 
+        display: flex; 
+        justify-content: space-between; 
+        flex-wrap: wrap;
     }
 </style>
