@@ -2,7 +2,7 @@
     import axios from 'axios';
     import dayjs from 'dayjs';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
-    import EmployeeStatBar from '@/components/employee/EmployeeStatBar.vue';
+    import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
 
     import { getJwt } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
@@ -10,8 +10,8 @@
 
    // vars init
     const stats = ref({
-        totalApplications: '...',
-        pendingApplications: '...',
+        total: '...',
+        new: '...',
         matches: '...',
     });
 
@@ -23,7 +23,6 @@
     const filter = ref('all');
     const applications = ref([]);
     const sort = ref('dateDesc');
-
 
 
     document.title = 'Applications | Tindeed'
@@ -65,16 +64,17 @@
         if(!response || !response.data)
             return false;
 
-        const { data: newApps = {} } = response;
+        const { applications: newApps = [], numPages: ps = 1 } = response.data;
 
         if(!newApps)
             return false;
 
+        numPages.value = ps;
         applications.value = newApps;
 
         applications.value.forEach((application) => {
             application.formattedDate = dayjs(application.LastUpdated).format("DD/MM/YYYY")
-        })
+        });
 
         return true;
     }
@@ -88,6 +88,44 @@
             return;
         }
     });
+
+
+    // get stats
+    onMounted(async () => {
+        const jwt = getJwt();
+
+        if(!jwt)
+            return;
+
+        const response = await axios({
+            method: 'get',
+            url: '/applications/stats/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            headers: {
+                authorization: `Bearer: ${ jwt }`
+            }
+        }).catch((err) => {
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+            }
+        });
+
+        if(!response || !response.data)
+            return false;
+
+        const { data: newStats = {} } = response;
+
+        if(!newStats)
+            return false;
+
+        stats.value = newStats;
+
+        return true;
+    })
 
 
 
@@ -160,10 +198,6 @@
     const deleteVacancy = () => {
         alert('are you sure you want to delete this application?');
     }
-
-    watch(page, (newPage, oldPage) => {
-        alert(`moved from page ${ oldPage } to page ${ newPage }`);
-    });
     
     const cancelApplication = () => {
         alert('are you sure you want to cancel this application?');
@@ -240,11 +274,9 @@
             </div>
 
             <div class='pagination'>
-                <div class='pag-block pag-start' @click='page=1'><i class="fa-solid fa-angles-left"></i></div>
-                <div class='pag-block' @click='page > 1 ? page-- : page'><i class="fa-solid fa-angle-left"></i></div>
-                <div class='pag-block' @click='page=i' v-for='i in 5' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
-                <div class='pag-block' @click='page < numPages ? page++ : page'><i class="fa-solid fa-angle-right"></i></div>
-                <div class='pag-block pag-end' @click='page=numPages'><i class="fa-solid fa-angles-right"></i></div>
+                <div class='pag-block pag-start' @click='page > 1 ? changePage(--page) : page'><i class="fa-solid fa-angle-left"></i></div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block pag-end' @click='page < numPages ? changePage(++page) : page'><i class="fa-solid fa-angle-right"></i></div>
             </div>
         </section>
     </main>

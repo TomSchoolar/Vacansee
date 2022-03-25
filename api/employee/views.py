@@ -140,8 +140,16 @@ def getApplications(request):
 
     skip = max(count * (pageNum - 1), 0)
     limit = count * pageNum
+    
 
     try:
+        numApps = Application.objects.filter(UserId__exact = jwt['id']).count()
+        numPages = ceil(numApps / count)
+
+        # deals with a lower number of pages than the current page
+        while (pageNum - 1) * count >= numApps and pageNum > 1:
+            pageNum -= 1
+
         applicationSet = Application.objects.filter(
             UserId__exact = jwt['id']
         ).order_by(
@@ -171,6 +179,39 @@ def getApplications(request):
 
 
 
-    return Response(pairedApplications)
+    return Response({ 'applications': pairedApplications, 'numPages': numPages })
 
 
+
+
+
+@api_view(['GET'])
+def getApplicationStats(request):
+    try:
+        jwt = jwtHelper.extractJwt(request)
+    except jwtLib.ExpiredSignatureError:
+        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
+        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+    try:
+        numApps = Application.objects.filter(UserId__exact = jwt['id']).count()
+        numPending = Application.objects.filter(UserId__exact = jwt['id'], ApplicationStatus__exact = 'PENDING').count()
+        numMatches = Application.objects.filter(UserId__exact = jwt['id'], ApplicationStatus__exact = 'MATCHED').count()
+
+        stats = {
+            'total': numApps,
+            'new': numPending,
+            'matches': numMatches
+        }
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error retrieving application stats from the database' })
+
+    
+    return Response(stats)

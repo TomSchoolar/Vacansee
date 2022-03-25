@@ -2,8 +2,8 @@
     const props = defineProps(['stats']);
     
     const labels = {
-        totalApplications: 'Total Applications',
-        pendingApplications: 'Applications Pending',
+        total: 'Total Applications',
+        new: 'Applications Pending',
         matches: 'Matches'
     };
 </script>
