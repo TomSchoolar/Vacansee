@@ -1,13 +1,15 @@
 <script setup>  
-    import { ref } from 'vue';
+    import { ref, onMounted } from 'vue';
+    import { getJwt } from '@/assets/js/jwt';
 
-    const { vacancy = {} } = defineProps(['vacancy']);
-    const { companyName, jobTitle, favourited, location, description, skills, experience, tags } = vacancy;
+    const { tags = [], vacancy = {} } = defineProps(['vacancy', 'tags']);
+
+
 
     const favourite = () => {
-        alert('favourited!');
+        
     }
-
+    
     const apply = () => {
         alert('applied!');
     }
@@ -15,6 +17,7 @@
     const reject = () => {
         alert('rejected!');
     }
+
 
     let tagsLim = ref(6);
     let extraTags = ref('');
@@ -28,47 +31,43 @@
 
         extraTags.value += tags[tags.length - 1].title;
     }
-
 </script>
 
 <template>
     <div class='card'>
         <div class='company-info'>
-            <div class='company-name'>{{ companyName }}<i id='favourite' class='fas fa-star' title='favourited' v-if='favourited'></i></div>
-            <p class='job-title'>{{ jobTitle }}</p>
-            <p class='location' v-if='location'>Based in {{ location }}</p>
+            <div class='company-name'>{{ vacancy.CompanyName }}<i id='favourite' class='fas fa-star' title='favourited' v-if='vacancy.Favourited'></i></div>
+            <p class='job-title'>{{ vacancy.VacancyName }}</p>
+            <p class='location' v-if='vacancy.Location'>Based in {{ vacancy.Location }}</p>
         </div>
-        <div class='description' v-if='description'>
-            <p>{{ description }}</p>
+        <div class='description' v-if='vacancy.Description'>
+            <p>{{ vacancy.Description }}</p>
         </div>
-        <span class='card-section' v-if='skills'>Necessary Skills:</span>
+        <span class='card-section' v-if='vacancy.SkillsRequired'>Necessary Skills:</span>
         <div class='skills'>
             <table>
-                <tr v-for='skill in skills' v-bind:key='skill'>
+                <tr v-for='skill in vacancy.SkillsRequired' v-bind:key='skill'>
                     <th>- {{ skill }}</th>
                 </tr>
             </table>
         </div>
-        <span class='card-section' v-if='experience'>Experience:</span>
-        <div class='experience' v-for='xp in experience' v-bind:key='xp'>
+        <span class='card-section' v-if='vacancy.ExperienceRequired'>Experience:</span>
+        <div class='experience' v-for='xp in vacancy.ExperienceRequired' v-bind:key='xp'>
             <table>
                 <tr>
                     <th>- {{ xp }}</th>
                 </tr>
             </table>
         </div>
-        <span class='card-section' v-if='tags'>Requirements:</span>
-        <table>
-        <tr>
-            <th class='tags' v-for='tag in tags.slice(0, tagsLim)' v-bind:key='tag.id'>
-                <i :class='tag.icon' :title='tag.title'></i>
-            </th>
-            <th v-if='tags.length > 6' class='tags tags-overflow' :title='extraTags'>
+        <span class='card-section' v-if='vacancy.Tags'>Requirements:</span>
+        <div v-if='vacancy.Tags'>
+            <i class='tag' v-for='tag in vacancy.Tags.slice(0, tagsLim)' v-bind:key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
+            <th v-if='tags.length > 6' class='tag tags-overflow' :title='extraTags'>
                 <div class='tags-num' ref='extra-tags'>+{{ tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
             </th>
-        </tr>
-        </table>
+        </div>
+        <div class='spacing-block'></div>
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
             <button type='button' class='reject' @click='reject'><i class='fas fa-multiply'></i></button>
@@ -138,8 +137,11 @@
         margin: 12px 0;
         align-items: center;
         text-align: left;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         justify-content: space-between;
-        padding: 0 20px;
+        padding: 0 20px 30px 20px;
         position: relative;
     }
 
@@ -180,9 +182,14 @@
         font-weight: normal;
     }
 
-    .tags {
-        font-size: 250%;
-        padding: 0 10px 0 15px;
+    .spacing-block {
+        width: 1px;
+        height: 25px;
+    }
+
+    .tag {
+        font-size: 32px;
+        margin-right: 18px;
     }
 
     .tags-num {

@@ -24,6 +24,8 @@
     const numPages = ref(1);
     const numVacancies = ref(0);
 
+    const currentVacancy = ref({});
+
     const tags = [
         {
             id: 0,
@@ -35,7 +37,7 @@
         },
         {
             id: 2,
-            icon: 'fa-solid fa-python'
+            icon: 'fa-brands fa-python'
         },
         {
             id: 3,
@@ -95,9 +97,7 @@
         numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
-
-        console.log(vacancies.value);
-
+        currentVacancy.value = vacancies.value[0];
         return true;
     }
 
@@ -171,8 +171,6 @@
         alert("applied!");
     }
 
-    
-
 </script>
 
 <template>
@@ -226,7 +224,7 @@
 
             <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>
-                <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' />
+                <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
             </div>
                     
 
@@ -241,7 +239,7 @@
 
         <div class='right'>
             <button type='button' class='button apply-btn' @click= apply>Apply Now!</button>
-            <p>Employee info partial.</p>
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' />
         </div>
     </div>
     
@@ -275,6 +273,7 @@
     .apply-btn {
         background-color: white;
         border-radius: 10px;
+        margin-bottom: 40px !important;
     }
 
     .button {
@@ -341,8 +340,11 @@
 
     .right {
         border-left: 3px solid;
-        padding-top: 100px;
+        padding-top: 20px;
         width: 30%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .search {

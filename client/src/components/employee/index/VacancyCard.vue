@@ -1,37 +1,10 @@
 <script setup>  
     import { ref } from 'vue';
 
-    const { vacancy = {} } = defineProps(['vacancy']);
+    const { vacancy = {}, tags = [] } = defineProps(['vacancy', 'tags']);
 
     let tagsLim = ref(6);
     let extraTags = ref('');
-
-    const tags = [
-        {
-            id: 0,
-            icon: 'fa-solid fa-book'
-        },
-        {
-            id: 1,
-            icon: 'fa-solid fa-code'
-        },
-        {
-            id: 2,
-            icon: 'fa-brands fa-python'
-        },
-        {
-            id: 3,
-            icon: 'fa-solid fa-school'
-        },
-        {
-            id: 4,
-            icon: 'fa-solid fa-briefcase'
-        },
-        {
-            id: 5,
-            icon: 'fa-solid fa-database'
-        },
-    ]
 
     if(tags.length > 6) {
         tagsLim.value = 5;
@@ -72,18 +45,14 @@
                 </tr>
             </table>
         </div>
-        <span v-if='tags' class='card-section'>Requirements:</span>
-        <table>
-            <tr>
-                <th class='tags' v-for='tag in tags.slice(0,tagsLim)' v-bind:key='tag.id'>
-                    <i :class='tag.icon' :title='tag.title'></i>
-                </th>
-                <th v-if='tags.length > 6' class='tags tags-overflow' :title='extraTags'>
-                    <div class='tags-num' ref='extra-tags'>+{{ tags.length - tagsLim }}</div>
-                    <i class='fa-solid fa-tags'></i>
-                </th>
-            </tr>
-        </table>
+        <span v-if='vacancy.Tags' class='card-section'>Requirements:</span>
+        <div class='tags-row'>
+            <i class='tag' v-for='tag in vacancy.Tags.slice(0,tagsLim)' v-bind:key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
+            <div v-if='vacancy.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
+                <div class='tags-num' ref='extra-tags'>+{{ vacancy.Tags.length - tagsLim }}</div>
+                <i class='fa-solid fa-tags'></i>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -148,13 +117,9 @@
         font-weight: normal;
     }
 
-    .tags i {
-        font-size: 32px;
-    }
-
     .tag {
-        font-size: 25px;
-        margin: 10px;
+        font-size: 32px;
+        margin-right: 18px !important;
     }
 
     .tags-num {
@@ -166,6 +131,10 @@
         bottom: 5px;
         right: 5px;
         padding: 2px 3px;
+    }
+
+    .tags-row {
+        display: flex;
     }
 
     .tags-overflow {
