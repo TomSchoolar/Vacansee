@@ -2,6 +2,7 @@
     import axios from 'axios';
     import dayjs from 'dayjs';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import MatchModal from '@/components/employee/applications/MatchModal.vue';
     import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
 
     import { getJwt } from '@/assets/js/jwt';
@@ -21,8 +22,10 @@
     const notifs = ref(2);
     const numPages = ref(1);
     const filter = ref('all');
+    const modalStats = ref({});
     const applications = ref([]);
     const sort = ref('dateDesc');
+    const displayModal = ref(false);
 
 
     document.title = 'Applications | Tindeed'
@@ -156,6 +159,42 @@
 
 
 
+    const showMatch = async (matchId) => {
+        const jwt = getJwt();
+
+        if(!jwt)
+            return;
+
+        const response = await axios({
+            url: `/applications/${ matchId }/`,
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'get',
+            responseType: 'json',
+            timeout: 3000,
+            headers: {
+                authorization: `Bearer: ${ jwt }`
+            }
+        }).catch((err) => {
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+            }
+        });
+
+        const { data: newStats = false } = response;
+
+        if(!stats)
+            return;
+        console.log(newStats)
+        modalStats.value = newStats;
+        displayModal.value = true;
+
+    }
+
+
+
     watch(filter, async (filterValue) => {
         // change which applications are display based on isOpen
         const result = await getApplications({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
@@ -190,14 +229,6 @@
 
     
     // application button actions
-
-    const closeVacancy = () => {
-        alert('are you sure you want to close this application?');
-    }
-
-    const deleteVacancy = () => {
-        alert('are you sure you want to delete this application?');
-    }
     
     const cancelApplication = () => {
         alert('are you sure you want to cancel this application?');
@@ -255,20 +286,22 @@
 
             <hr />
 
+            <MatchModal :display='displayModal' :stats='modalStats' @close='displayModal = false' />
+
             <div class='applications' v-for='application in applications' :key='application.id'>
                 <div class='application'>
-                    <div class='application-left'>
-                        <h5 class='application-title' :title='application.VacancyName'>{{ application.VacancyName }}</h5>
-                        <h5 class='application-company'>{{ application.CompanyName }}</h5>
-                        <h5 class='application-status' v-if='application.ApplicationStatus == "MATCHED"'>Matched!</h5>
-                        <h5 class='application-status' v-else-if='application.ApplicationStatus == "REJECTED"'>Rejected</h5>
-                        <h5 class='application-status' v-else>Application sent!</h5>
+                    <div class='left'>
+                        <h5 class='title'>{{ application.VacancyName }}</h5>
+                        <h5 class='company'>{{ application.CompanyName }}</h5>
+                        <h5 class='status' v-if='application.ApplicationStatus == "MATCHED"'>Matched!</h5>
+                        <h5 class='status' v-else-if='application.ApplicationStatus == "REJECTED"'>Rejected</h5>
+                        <h5 class='status' v-else>Application sent!</h5>
                     </div>
-                    <div class='application-right'>
-                        <div class='application-applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
-                        <button class='application-button application-button-grey' @click='deleteApplication' v-if='application.isReviewed && !application.isAccepted'>Delete Application</button>
-                        <button class='application-button application-button-red' @click='cancelApplication' v-else>Cancel Application</button>
-                        <router-link :to='`/applications/${ application.id }`' class='application-button application-button-blue' v-if='application.isAccepted'>Match Details</router-link>
+                    <div class='right'>
+                        <div class='applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
+                        <button class='button button-grey' @click='deleteApplication' v-if='application.ApplicationStatus == "REJECTED"'>Delete Application</button>
+                        <button class='button button-red' @click='cancelApplication' v-else>Cancel Application</button>
+                        <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
                     </div>
                 </div>
             </div>
@@ -301,8 +334,6 @@
         width: calc(100vw - 80px);
     }
 
-
-
     .application {
         height: 50px;
         border: 2px solid #555;
@@ -314,84 +345,84 @@
         padding: 10px 25px;
     } 
 
-    .application-applied {
+    .applied {
         width: 200px;
         text-align: center;
         margin-right: 20px;
     }
 
-    .application-button {
+    .button {
         font-weight: 500; /* required for some reason */
-        border-radius: 15px;
+        border-radius: 12px;
         color: #fff;
         border: 2.2px solid #333;
         width: 150px;
-        height: 32px;
         margin-left: 15px;
         font-size: 13px;
         text-decoration: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+        font-family: var(--font);
+        padding: 2px 6px;
     }
 
-    .application-button-blue {
-        background: var(--blue);
+    .button-green {
+        background: var(--green);
     }
 
-    .application-button-blue:hover, .application-button-blue:focus, .application-button-blue:active {
-        background: var(--blue-focus);
+    .button-green:hover, .button-green:focus, .button-green:active {
+        background: var(--green-focus);
         cursor: pointer;
     } 
 
-    .application-button-grey {
+    .button-grey {
         background: var(--slate);
     }
 
-    .application-button-grey:hover, .application-button-grey:focus, .application-button-grey:active {
+    .button-grey:hover, .button-grey:focus, .button-grey:active {
         background: var(--slate-focus);
         cursor: pointer;
     } 
 
-    .application-button-red {
+    .button-red {
         background: var(--red);
     }
 
-    .application-button-red:hover, .application-button-red:focus, .application-button-red:active {
+    .button-red:hover, .button-red:focus, .button-red:active {
         background: var(--red-focus);
         cursor: pointer;
     }
 
-    .application-company {
+    .company {
         font-size: 16px;
         width: 300px;
         text-align: center;
         font-weight: 500;
     }
 
-    .application-left {
+    .left {
         width: 60%;
         display: flex;
         align-items: center;
         flex-shrink: 1;
     }
 
-    .application-right {
+    .right {
         display: flex;
         align-items: center;
         flex-grow: 1;
         justify-content: flex-end;
     }
 
-    .application-status {
+    .status {
         font-size: 16px;
         width: 300px;
         text-align: center;
     }
 
-    .application-title {
-        font-size: 18px;
+    .title {
+        font-size: 18px !important;
         cursor: default;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -402,14 +433,14 @@
         font-weight: 500;
     }
 
-    .application-updated {
+    .updated {
         width: 180px;
         text-align: center;
         margin-right: 5px;
         cursor: default;
     }
 
-        .pagination {
+    .pagination {
         display: flex;
         width: 100%;
         justify-content: center;
