@@ -21,7 +21,7 @@
 <template>
     <div id='navbar'>
         <span class='navbar-left-wrapper'>
-            <router-link to='/e/vacancy' id='navbar-title'>TINDEED</router-link>
+            <router-link to='/e/vacancy' id='navbar-title'>VACANSEE</router-link>
             
             <div class='navbar-link-block'>
                 <router-link to='/e/vacancy' class='navbar-link' :class='{"navbar-active-link": (page == "home")}'>Home</router-link>

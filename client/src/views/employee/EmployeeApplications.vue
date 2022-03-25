@@ -25,7 +25,7 @@
     const sort = ref('dateDesc');
 
 
-    document.title = 'Applications | Tindeed'
+    document.title = 'Applications | Vacansee'
 
     // api request function
     const getApplications = async (options) => {

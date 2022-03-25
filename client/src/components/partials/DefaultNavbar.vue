@@ -1,7 +1,7 @@
 <template>
     <section id='navbar'>
         <span class='navbar-left-wrapper'>
-            <router-link to='/login' id='navbar-title'>TINDEED</router-link>
+            <router-link to='/login' id='navbar-title'>VACANSEE</router-link>
         </span>
     </section>
 </template>
