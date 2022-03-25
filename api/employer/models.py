@@ -28,6 +28,7 @@ class Vacancy(models.Model):
     PhoneNumber = models.CharField(max_length=30, blank=False)
     Email = models.EmailField(max_length=254, blank=False)
     Created = models.DateField(auto_now_add=True, blank=False)
+    Location = models.CharField(max_length=30, default="")
 
 
 class Tag(models.Model):
