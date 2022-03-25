@@ -264,6 +264,9 @@ def getApplicationDetails(request, applicationId):
     try:
         applicationSet = Application.objects.get(pk = applicationId, UserId__exact = jwt['id'])
         application = ApplicationSerializer(applicationSet).data
+
+        if application['ApplicationStatus'] != 'MATCHED':
+            return Response({ 'status': 400, 'message': 'You have not matched with that vacancy.' })
     except Application.DoesNotExist:
         return Response({ 'status': 401, 'message': 'You do not have access to that application' })
     except Exception as err:
