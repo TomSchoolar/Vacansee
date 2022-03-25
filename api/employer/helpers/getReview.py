@@ -11,21 +11,6 @@ from employee.serializers import ApplicationSerializer, ProfileSerializer, Summa
 env = environ.Env()
 
 
-def extractJwt(request):
-    # get jwt from request
-
-    authToken = request.META.get('HTTP_AUTHORIZATION')
-    authTokenRegex = re.compile(r'^Bearer: (.+\..+\..+)')
-
-    jwtRegex = authTokenRegex.match(authToken)
-    jwt = jwtRegex.group(1)
-
-    jwt = jwtLib.decode(jwt, env('JWT_SECRET'), algorithms=['HS256'])
-
-    return jwt
-
-
-
 def checkUserOwnsVacancy(vacancyId, jwt):
     # check the user that made the request owns the vacancy that they are requesting the data for
 

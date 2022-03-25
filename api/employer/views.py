@@ -1,4 +1,3 @@
-import regex as re
 import jwt as jwtLib
 from math import ceil
 from datetime import datetime
@@ -8,6 +7,7 @@ from employee.models import Application
 from .serializers import VacancySerializer
 from rest_framework.response import Response
 from .models import EmployerDetails, Vacancy
+from authentication import jwt as jwtHelper
 from rest_framework.decorators import api_view
 from employer.helpers import getIndex as indexHelper, getReview as reviewHelper, getMatch as matchHelper
 from employee.serializers import ApplicationSerializer, SummaryProfileSerializer
@@ -64,7 +64,7 @@ def getIndex(request):
 
 
     # deals with a lower number of pages than the current page
-    while (pageNum - 1) * count >= numVacancies and pageNum > 0:
+    while (pageNum - 1) * count >= numVacancies and pageNum > 1:
         pageNum -= 1
 
     skip = max(count * (pageNum - 1), 0)
@@ -143,7 +143,7 @@ def getReview(request, vacancyId):
     # get jwt
     
     try:
-        jwt = reviewHelper.extractJwt(request)
+        jwt = jwtHelper.extractJwt(request)
     except jwtLib.ExpiredSignatureError:
         return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
@@ -184,7 +184,7 @@ def getReview(request, vacancyId):
 def putReviewApplication(request, vacancyId, applicationId):
     # get jwt
     try:
-        jwt = reviewHelper.extractJwt(request)
+        jwt = jwtHelper.extractJwt(request)
     except jwtLib.ExpiredSignatureError:
         return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
@@ -251,6 +251,8 @@ def putReviewApplication(request, vacancyId, applicationId):
         return Response({ 'application': richApp, 'nextApplication': nextApplication['application'], 'nextProfile': nextApplication['profile'] })
     return Response({ 'application': richApp })
 
+
+
 @api_view(['GET'])
 def getMatchVacancies(request):
     params = request.query_params
@@ -293,6 +295,8 @@ def getMatchVacancies(request):
 
     return Response(returnData)
 
+
+
 @api_view(['GET'])
 def getMatches(request):
     params = request.query_params
@@ -321,7 +325,9 @@ def getMatches(request):
     }
 
     return Response(returnData)
-        
+
+
+
 @api_view(['GET'])
 def getCard(request):
     params = request.query_params
