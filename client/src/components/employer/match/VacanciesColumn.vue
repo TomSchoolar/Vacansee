@@ -1,13 +1,87 @@
 <script setup>
-    import { ref } from 'vue';
+    import { onMounted, ref, watch } from 'vue';
+    import { jwtGetId } from '@/assets/js/jwt';
+    import axios from 'axios';
 
-    let { numVacancies = 0, vacancies = [] } = defineProps(['numVacancies', 'vacancies']);
+    //let { numVacancies = 0, vacancies = [] } = defineProps(['numVacancies', 'vacancies']);
 
-    const sortVacancies = ref('matchesDesc');
+    //const sortVacancies = ref('matchesDesc');
 
     const getMatches = (vacancy) => {
         alert('show matches for '+ vacancy.title);
     };
+
+    const vacancies = ref([]);
+    const sort = ref('matchesDesc');
+
+    const numVacancies = ref(0);
+
+    // api request function
+    const getVacancies = async (options) => {
+        const { sort = 'matchesDesc' } = options;
+
+        const uID = jwtGetId(window.localStorage.jwt);
+
+        const response = await axios({
+            method: 'get',
+            url: '/e/match/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID,
+                sort
+            }
+        }).catch((err) => {
+            console.log(`oops ${ err }`);
+        });
+
+        if(!response || !response.data)
+            return false;
+
+        const { data } = response;
+
+        if(!data)
+            return false;
+
+        const {
+            vacancies: newVacancies = vacancies.value,
+            numVacancies: total = 0,
+        } = data;
+
+        numVacancies.value = total;
+        vacancies.value = newVacancies;
+
+        return true;
+    }
+
+    onMounted(async () => {
+        const result = await getVacancies({ });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+    });
+
+    // sort vac
+    const sortVacancies = async (sortParam) => {
+        const result = await getVacancies({ sort: sortParam });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        sort.value = sortParam;
+    }
+
+    watch(sort, sortVacancies);
+
+    /*const selectVacancy = (vacancy) => {
+        $emit('select-vacancy', vacancy);
+    }*/
+
+
 </script>
 
 <template>
@@ -30,7 +104,7 @@
                         <label for='vacancy-sort'>sort by:</label>
                     </div>
 
-                    <select v-model='sortVacancies' aria-label='sort vacancies' id='vacancy-sort' class='sort'>
+                    <select v-model='sort' aria-label='sort vacancies' id='vacancy-sort' class='sort'>
                         <option value='matchesDesc' selected>number of matches</option>
                         <option value='dateDesc' >latest first</option>
                         <option value='dateAsc'>oldest first</option>
@@ -44,10 +118,10 @@
         <div class='vacancies'>
             <h3 class='no-vacancies' v-if='numVacancies == 0'>No vacancies to display</h3>
             
-            <div class='vacancy' v-else v-for='vacancy in vacancies' :key='vacancy.title'>
+            <div class='vacancy' v-else v-for='vacancy in vacancies' :key='vacancy.VacancyName' @click='$emit("selectVacancy", vacancy)'>
                 <span class='vacancy-title'>
-                    <span class='vacancy-closed' v-if='vacancy.closed'>(closed) </span> 
-                    {{ vacancy.title }} 
+                    <span class='vacancy-closed' v-if='!vacancy.IsOpen'>(closed) </span> 
+                    {{ vacancy.VacancyName }} 
                 </span>
 
                 <span class='vacancy-matches' v-if='vacancy.numMatches'> {{ vacancy.numMatches }} matches</span>
@@ -72,7 +146,7 @@
         min-width: 480px;
         flex-grow: 1;
         border-right: 1px solid var(--jet);
-        height: calc(100vh - 155.5px);
+        height: calc(100vh - 157px);
     }
 
     .download-button {
@@ -112,7 +186,7 @@
     }
 
     .vacancies {
-        height: calc(100% - 110.8px);
+        height: calc(100% - 121px);
         overflow-y: scroll;
     }
 
