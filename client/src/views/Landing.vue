@@ -2,10 +2,10 @@
     <main class='container'>
         <section class='landing-page'>
             <h1>Landing Page</h1>
+            <div class='login'>
+                <router-link :to='`/login`' class='login-button'>Login</router-link>
+            </div>
         </section>
-        <div class='login'>
-            <router-link :to='`/login`' class='login-button'>Login</router-link>
-        </div>
     </main>
 </template>
 
@@ -25,4 +25,5 @@
         color: white;
         text-decoration: none;
     }
+
 </style>

@@ -16,7 +16,7 @@
         "fields" : {
             "FirstName" : "Thomas",
             "LastName" : "Schoolar",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "I am a Student at the University of Birmingham",
             "NotableSkills" : ["Python", "Vue", "Django"],
@@ -43,7 +43,7 @@
         "fields" : {
             "FirstName" : "Adam",
             "LastName" : "Bass",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "I am a Student studing Computer Science",
             "NotableSkills" : ["JavaScript", "C#", "Python"],
@@ -70,7 +70,7 @@
         "fields" : {
             "FirstName" : "Cavan",
             "LastName" : "Day",
-            "Pronouns" : "He/His",
+            "Pronouns" : "He/Him",
             "TimeZone" : 0,
             "TopicSentence" : "Studying Computer Science at UoB",
             "NotableSkills" : ["HTML", "Vue", "CSS"],
@@ -140,6 +140,27 @@
             "UserId" : 6,
             "PhoneNumber" : "07893469444",
             "CompanyName" : "Facebook"
+        }
+    },
+
+    {
+        "model" : "authentication.User",
+        "pk" : 7,
+        "fields" : {
+            "IsEmployer" : true,
+            "Email" : "empty@student.bham.ac.uk",
+            "PasswordHash" : "password",
+            "PasswordSalt" : "kjahasdflkjas"
+        }
+    },
+
+    {
+        "model" : "employer.EmployerDetails",
+        "pk" : 4,
+        "fields" : {
+            "UserId" : 7,
+            "PhoneNumber" : "07832159444",
+            "CompanyName" : "Discord"
         }
     },
 
@@ -226,7 +247,7 @@
         "pk" : 3,
         "fields" : {
             "VacancyName" : "Cyber Security Anaylst",
-            "UserId" : 5,
+            "UserId" : 6,
             "Salary" : "Minimum Wage",
             "Description" : "Looking for a keen learner to be trained from scratch",
             "SkillsRequired" : ["Team-Working"],
@@ -237,54 +258,6 @@
             "PhoneNumber" : "07947469444",
             "Email" : "example2@facebook.com",
             "Created": "2022-02-19"
-        }
-    },
-
-    {
-        "model" : "employee.Favourite",
-        "pk" : 1,
-        "fields" : {
-            "UserId" : 1,
-            "VacancyId" : 1
-        }
-    },
-
-    {
-        "model" : "employee.Favourite",
-        "pk" : 2,
-        "fields" : {
-            "UserId" : 3,
-            "VacancyId" : 1
-        }
-    },
-
-    {
-        "model" : "employee.Application",
-        "pk" : 1,
-        "fields" : {
-            "UserId" : 3,
-            "VacancyId" : 3,
-            "ApplicationStatus" : "MATCHED"
-        }
-    },
-
-    {
-        "model" : "employee.Application",
-        "pk" : 2,
-        "fields" : {
-            "UserId" : 3,
-            "VacancyId" : 1,
-            "ApplicationStatus" : "PENDING"
-        }
-    },
-
-    {
-        "model" : "employee.Application",
-        "pk" : 1,
-        "fields" : {
-            "UserId" : 2,
-            "VacancyId" : 2,
-            "ApplicationStatus" : "REJECTED"
         }
     }
 ]

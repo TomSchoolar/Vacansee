@@ -98,9 +98,9 @@ class Fake():
                 'Pronouns': choice(pronouns),
                 'TimeZone': choice(range(-11,12,1)),
                 'TopicSentence': self.fake.sentence(nb_words=12, variable_nb_words=True),
-                'NotableSkills': [self.fake.bs() for x in range(choice(range(1,3)))],
-                'Experience': [self.fake.sentence(nb_words=3, variable_nb_words=True) for x in range(choice(range(1,3)))],
-                'Qualifications': [choice(quals) for x in range(choice(range(1,3)))],
+                'NotableSkills': [self.fake.bs() for x in range(choice(range(1,4)))],
+                'Experience': [self.fake.sentence(nb_words=3, variable_nb_words=True) for x in range(choice(range(1,4)))],
+                'Qualifications': [choice(quals) for x in range(choice(range(1,4)))],
                 'PhoneNumber': self.fake.phone_number()
             }
         }
@@ -192,7 +192,8 @@ class Fake():
             'fields': {
                 'UserId': user['pk'],
                 'VacancyId': vacancy['pk'],
-                'ApplicationStatus': choice(options)
+                'ApplicationStatus': choice(options),
+                'LastUpdated': self.fake.date_time_this_year().strftime('%Y-%m-%dT%H:%M:%S+0000')
             }
         }
 
@@ -224,6 +225,8 @@ def readFixtures():
                 continue
             employees.append(x)
         
+        
+        
         if model == 'employee.Profile':
             profiles.append(x)
             continue
@@ -242,7 +245,7 @@ def readFixtures():
             
         if model == 'employee.Application':
             applications.append(x)
-
+    
     return [
         employees,
         employers,
@@ -266,9 +269,8 @@ def generateData():
     applications = fixtures[6]
     tags = f.tags
 
-    
 
-    for x in range(2):
+    for x in range(25):  # full: 25, test: 2
         # add employees
         user = f.User()
         employees.append(user)
@@ -276,6 +278,14 @@ def generateData():
 
         if profile != None:
             profiles.append(profile)
+
+    # do not switch around
+    emptyEmployer = [emp for emp in employers if emp['pk'] == 7]
+    employers = [emp for emp in employers if emp['pk'] != 7]    
+
+    # do not switch around
+    emptyEmployerDetails = [emp for emp in employerDetails if emp['fields']['UserId'] == 7]
+    employerDetails = [emp for emp in employerDetails if emp['fields']['UserId'] != 7]
 
     # for x in range(25):
     #     user = f.User(True)
@@ -286,25 +296,25 @@ def generateData():
     #         employerDetails.append(details)
 
     for employer in employers:
-        vacs = [f.Vacancy(employer) for x in range(choice(range(1,3)))]
+        vacs = [f.Vacancy(employer) for x in range(choice(range(3,7)))] # full: 8,20  test: 3,7
         vacancies += [el for el in vacs if el != None]
 
     for vacancy in vacancies:
-        applicants = sample(employees, choice(range(5,6)))
+        applicants = sample(employees, choice(range(3,6)))   # full: 8,20  test: 3,6
         for applicant in applicants:
             app = f.Application(applicant, vacancy)
 
             if app != None:
                 applications.append(app)
         
-        favouriters = sample(employees, choice(range(3,4)))
+        favouriters = sample(employees, choice(range(2,5)))   # full: 3,11  test: 2,5
         
         for favouriter in favouriters:
             fav = f.Favourite(favouriter, vacancy)
             if fav != None:
                 favourites.append(fav)
 
-    compiledData = employees + employers + profiles + employerDetails + vacancies + favourites + applications + tags
+    compiledData = employees + employers + profiles + employerDetails + vacancies + favourites + applications + tags + emptyEmployer + emptyEmployerDetails
 
     prettierData = json.dumps(compiledData, indent=4)
 
@@ -315,7 +325,7 @@ def generateData():
 if __name__ == '__main__':
     f = Fake()
 
-    outpath = './api/authentication/fixtures/testseed.json'
+    outpath = './api/authentication/fixtures/testseed.json'  # fullseed or testseed
 
     data = generateData()
 

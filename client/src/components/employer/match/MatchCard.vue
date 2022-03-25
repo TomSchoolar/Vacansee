@@ -2,6 +2,13 @@
     const { stats } = defineProps(['stats']);
     const { application = {}, profile = {} } = stats;
 
+    import axios from 'axios';
+    import { onMounted, ref } from 'vue';
+
+    const emits = defineEmits(["showApplication"])
+
+    const details = {};
+
     const downloadApplication = () => {
         alert('download application');
     };
@@ -10,11 +17,47 @@
         alert('unmatch');
     };
 
-    const showApplication = () => {
-        alert('showing application');
+    const getDetails = async (options) => {
+        const { uID = application.UserId } = options;
+
+        const response = await axios({
+            method: 'get',
+            url: '/e/match/card',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID
+            }
+        }).catch((err) => {
+            console.log(`oops ${ err }`);
+        });
+
+        if(!response || !response.data)
+            return false;
+
+        const { data } = response;
+
+        if(!data)
+            return false;
+
+        const {
+            details: newDetails = details.value
+        } = data;
+
+        details.value = newDetails;
+
+        return true;
     };
 
-    
+    onMounted(async () => {
+        const result = getDetails({ uID: application.UserId });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        };
+    });
+
 </script>
 
 
@@ -44,7 +87,7 @@
         </div>
 
         <div class='application-right'>
-            <button class='application-button application-button-grey' @click='showApplication' id='show'>Show Application</button>
+            <button class='application-button application-button-grey' @click='$emit("showApplication",details)' id='show'>Show Application</button>
             <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
             <button class='application-button application-button-red' @click='unmatch'>Unmatch</button>
         </div>

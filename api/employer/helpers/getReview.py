@@ -1,28 +1,14 @@
 import environ
 import regex as re
 import jwt as jwtLib
-from employer.models import Vacancy 
+from employer.models import Vacancy
+from authentication.models import User
 from employee.models import Application, Profile
 from employer.serializers import VacancySerializer
 from employee.serializers import ApplicationSerializer, ProfileSerializer, SummaryProfileSerializer
 
 
 env = environ.Env()
-
-
-def extractJwt(request):
-    # get jwt from request
-
-    authToken = request.META.get('HTTP_AUTHORIZATION')
-    authTokenRegex = re.compile(r'^Bearer: (.+\..+\..+)')
-
-    jwtRegex = authTokenRegex.match(authToken)
-    jwt = jwtRegex.group(1)
-
-    jwt = jwtLib.decode(jwt, env('JWT_SECRET'), algorithms=['HS256'])
-
-    return jwt
-
 
 
 def checkUserOwnsVacancy(vacancyId, jwt):
@@ -34,9 +20,23 @@ def checkUserOwnsVacancy(vacancyId, jwt):
     vacancySerializer = VacancySerializer(vacancySet)
     vacancy = vacancySerializer.data
 
-    if not vacancy:
-        return False
     return vacancy
+
+
+
+def getNewApplication(vacancyId):
+    newSet = Application.objects.filter(
+        VacancyId__exact = vacancyId, 
+        ApplicationStatus__exact = 'PENDING'
+    ).order_by(
+        'LastUpdated'
+    )[:1]
+
+    if len(newSet):
+        new = ApplicationSerializer(newSet, many = True).data
+        populatedNew = pairApplications(new, ProfileSerializer)
+        return populatedNew[0]
+    return False
 
 
 
@@ -48,40 +48,31 @@ def getApplications(vacancyId):
         ApplicationStatus__exact = 'MATCHED'
     )
 
-    matchesSerializer = ApplicationSerializer(matchesSet, many = True)
-    matches = matchesSerializer.data
-    
-    # pair matches with user profile
-    richMatches = populateApplications(matches, SummaryProfileSerializer)
+    matchesSet = Application.objects.filter(VacancyId__exact = vacancyId, ApplicationStatus__exact = 'MATCHED')
+    matches = ApplicationSerializer(matchesSet, many = True).data
+    populatedMatches = pairApplications(matches, SummaryProfileSerializer)
 
+    populatedNew = getNewApplication(vacancyId)
 
-    newSet = Application.objects.filter(
-        VacancyId__exact = vacancyId,
-        ApplicationStatus__exact = 'PENDING'
-    )
-
-    newSerializer = ApplicationSerializer(newSet, many = True)
-    new = newSerializer.data
-
-    # pair new applications with user profile
-    richNew = populateApplications(new, ProfileSerializer)
-
-    return { 'matches': richMatches, 'new': richNew }
+    if populatedNew:
+        return { 'matches': populatedMatches, 'new': populatedNew }
+    return { 'matches': populatedMatches }
 
 
 
-def populateApplications(matches, serializer):
+def pairApplications(applications, serializer):
     # pair matches with user profile
 
-    pairedMatches = []
+    pairedApplications = []
 
-    for match in matches:
-        profileSet = Profile.objects.get(UserId__exact = match['UserId'])
+    for app in applications:
+        profileSet = Profile.objects.get(UserId__exact = app['UserId'])
         profile = serializer(profileSet).data
 
-        pairedMatches.append({
-            'application': match,
-            'profile': profile
-        })
-    
-    return pairedMatches
+        if serializer == SummaryProfileSerializer:
+            user = User.objects.get(pk = app['UserId'])
+            profile['Email'] = user.Email
+
+        pairedApplications.append({ 'application': app, 'profile': profile })
+
+    return pairedApplications

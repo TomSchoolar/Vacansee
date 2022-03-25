@@ -1,11 +1,11 @@
 <template>
 	<div class='auth-page'>
 		<form @submit.prevent='login' class='auth-page-container'>
-			<p class='auth-page-logo'>Tindeed</p>
+			<p class='auth-page-logo'>Vacansee</p>
 			<input v-model='email' type='email' placeholder='Email' required />
 			<input v-model='password' type='password' placeholder='Password' required />
 			<input type='checkbox' id='privacy' name='privacy' required />
-			<label for='privacy'>By checking, you are agreeing to Tindeed's <router-link to='/privacy' class='privacy-policy'>Privacy Policy</router-link>.</label>
+			<label for='privacy'>By checking, you are agreeing to Vacansee's <router-link to='/privacy' class='privacy-policy'>Privacy Policy</router-link>.</label>
 			<button class='submit'>Log In</button>
 		</form>
 	</div>

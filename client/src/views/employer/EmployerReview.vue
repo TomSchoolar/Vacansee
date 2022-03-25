@@ -1,54 +1,78 @@
 <script setup>
+    import axios from 'axios';
+    import EmptyCard from '@/components/employer/review/EmptyCard.vue';
+    import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
-    import MatchCard from '@/components/employer/review/MatchCard.vue';
+    
+    import { ref, onMounted } from 'vue';
+    import { getJwt } from '@/assets/js/jwt';
 
-    const applicants = [
-        {
-            id: 0,
-            name: 'Mary Rodriguez',
-            phoneNumber: '07747945173',
-            email: 'mary.r92@gmail.com',
-            timeZone: '(UTC+0) London, Dublin, Lisbon',
-            pronouns: 'she/her'
-        },
 
-        {
-            id: 1,
-            name: 'Michael Brent',
-            phoneNumber: '07747945173',
-            email: 'michael.b92@gmail.com',
-            timeZone: '(UTC+0) London, Dublin, Lisbon',
-            pronouns: 'he/him'
-        }
-    ]
+    const url = window.location.pathname;
+    const vacancyId = url.substring(url.lastIndexOf('/') + 1);
 
-    let applicantData = {
-        firstName: 'George',
-        pronouns: 'he/him',
-        location: 'London',
-        topicSentence: 'Good luck convincing people to hire you with one sentence.',
-        skills: ['75 wpm typing speed', 'Microsoft Excel', 'Patience'],
-        experience: [
-            {
-                title: 'fast food restaurant',
-                startDate: '2016',
-                endDate: '2019' 
+    const jwt = getJwt();
+    const notifs = ref(2);
+    const jwtRef = ref(jwt);
+    const matches = ref([]);
+    const vacancy = ref({});
+    const currentProfile = ref({});
+    const currentApplication = ref({});    
+
+    onMounted(async () => {
+        // get current card and matches
+        if(!jwt)
+            return;
+
+        const response = await axios({
+            url: `/e/review/${ vacancyId }/`,
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'get',
+            headers: {
+                Authorization: `Bearer: ${ jwt }`
             },
-            {
-                title: 'customer service call centre',
-                startDate: '2019',
-                endDate: '2021' 
-            },
-            {
-                title: 'level 1 support tech',
-                startDate: '2021',
-                endDate: '2022' 
+            responseType: 'json',
+            timeout: 4000
+        }).catch((err) => {
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+
+                if(status === 401) {
+                    alert('Your auth token has likely expired, please login again');
+                }
+            } catch {
+                console.error(`uh oh: ${ err }`);
             }
-        ],
-        qualifications: ['9 GCSEs (A*-D)', '3 A-Levels (A-B)']
+        });
+
+        if(!response)
+            return;
+
+        const { matches: apiMatches = [], new: newApp = {}, vacancy: apiVacancy = {} } = response.data;
+
+        matches.value = apiMatches;
+        vacancy.value = apiVacancy;
+
+        if(newApp){
+            let { application = {}, profile = {}} = newApp;
+            currentApplication.value = application;
+            currentProfile.value = profile;
+        }
+    });
+
+
+    const onMatch = (application, nextApplication, nextProfile) => {
+        matches.value.push(application);
+        currentProfile.value = nextProfile;
+        currentApplication.value = nextApplication;
     }
 
+    const updateCard = (nextApplication, nextProfile) => {
+        currentProfile.value = nextProfile;
+        currentApplication.value = nextApplication;
+    }
 
     const download_button = () => {
         alert('downloading all applications');
@@ -63,7 +87,7 @@
     <div class='container'>
         <div class='col col-left'>
             <div class='col-header'> 
-                <h3 class='col-title'>Matches ({{ applicants.length }})</h3>
+                <h3 class='col-title'>Matches ({{ matches.length }})</h3>
                 <div class='header-right'>
                     <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button>
                     <div class='search-group'>
@@ -76,19 +100,35 @@
             <hr class='slim-hr'/>
 
             <div class='applications'>
-                <MatchCard v-for='applicant in applicants' :key='applicant.id' :stats='applicant' />
+                <MatchCard v-for='match in matches' :key='match.id' :stats='match' />
             </div>
         </div>
 
         <div class='col col-right'>
             <div class='col-header'> 
-                <h3 class='col-title'>Strat Security Co. - Customer Service Representative</h3>
+                <h3 class='col-title'>
+                    {{ vacancy.CompanyName }}
+                    <span v-if='vacancy.CompanyName && vacancy.VacancyName'> - </span>
+                    {{ vacancy.VacancyName }}
+                </h3>
             </div>
 
             <hr class='slim-hr' />
 
             <main class='card-container'>
-                <ApplyProfileCard class='card' :application='applicantData' />
+                <ApplyProfileCard 
+                    v-if='Object.keys(currentApplication).length !== 0'
+                    class='card' 
+                    :application='currentApplication' 
+                    :profile='currentProfile' 
+                    :vacancyId='vacancyId' 
+                    :jwt='jwtRef'
+                    @match='onMatch'
+                    @defer='updateCard'
+                    @reject='updateCard'
+                />
+
+                <EmptyCard v-else />
             </main>
         </div>
     </div>

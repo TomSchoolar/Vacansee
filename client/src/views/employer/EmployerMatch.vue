@@ -8,68 +8,21 @@
     import { ref } from 'vue';
 
     document.title = 'Matches | Vacansee';
-   
-    const applicantData = {
-        firstName: 'Mary',
-        pronouns: 'she/her',
-        location: 'Birmingham',
-        topicSentence: 'A topic sentence',
-        skills: ['Excel', 'Typing', 'Communication'],
-        experience: [
-            {
-                title: 'job',
-                startDate: '2009',
-                endDate: '2013' 
-            },
-            {
-                title: 'a new job',
-                startDate: '2013',
-                endDate: '2020' 
-            },
-            {
-                title: 'customer service rep',
-                startDate: '2020',
-                endDate: '2022' 
-            }
-        ],
-        qualifications: ['10 GCSEs (A*-D)', '3 A-Levels (A-C)']
-    };
 
-    const vacancies = [
-        {
-            title: 'Customer Service Rep.',
-            closed: false,
-        },
-        {
-            title: 'Accountant',
-            closed: true ,},
-        {
-            title: 'Personal Assistant',
-            closed: false,
-            numMatches: 6
-        },
-    ];
+    const updateCard = (nextProfile) => {
+        console.log(`Current Profile: ${ currentProfile.FirstName }`);
+        currentProfile.value = nextProfile.value;
+    }
     
-    const numMatches = 1;
     const notifs = ref(2);
-    const numVacancies = 1;
+    const selectedVacancy = ref();
 
-    const matches = [ 
-        {
-            name: 'Mary Rodriguez',
-            pronouns: 'she/her',
-            phoneNumber: '07747945173',
-            email: 'name@email.com',
-            timeZone: '(UTC +0) London, Lisbon, Dublin'
-        },
-        {
-            name: 'Brian Johnson',
-            pronouns: 'she/her',
-            phoneNumber: '07747945173',
-            email: 'name@email.com',
-            timeZone: '(UTC +0) London, Lisbon, Dublin'
-        }
-    ];
+    const currentProfile = ref();
+
+    const updateVacancyId = (vacancy) => {
+        selectedVacancy.value = vacancy.VacancyId;
+        console.log(`Selected Vacancy: ${ selectedVacancy.value }`);
+    };
 </script>
 
 <template>
@@ -80,12 +33,14 @@
     </header>
 
     <main class='container'>
-        <VacanciesColumn :vacancies='vacancies' :numVacancies='numVacancies' />
+        <VacanciesColumn @selectVacancy='updateVacancyId' />
 
-        <MatchesColumn :matches='matches' :numMatches='numMatches' />
+        <MatchesColumn  :selectedVacancy=selectedVacancy @show-application='updateCard'/>
 
         <section class='profile-column'>
-            <ProfileCard class='card' :application='applicantData' />
+            <div class='card' v-for='profile in currentProfile' :key='profile'>
+                <ProfileCard class='card' :profile='profile' />
+            </div>
         </section>
     </main>
 </template>

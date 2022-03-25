@@ -2,7 +2,7 @@
     import { ref } from 'vue';
 
     const { vacancy = {} } = defineProps(['vacancy']);
-    const { companyName, favourited, jobTitle, location, description, skills, experience, tags } = vacancy;
+    const { companyName, favourited, jobTitle, location, description, skills, experience, tags = [] } = vacancy;
 
     let tagsLim = ref(6);
     let extraTags = ref('');

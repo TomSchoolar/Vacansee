@@ -49,10 +49,8 @@ const employeeRoutes = [
 
 
 import EmployerIndex from '../views/employer/EmployerIndex.vue';
-
-import EmployerReview from '../views/employer/EmployerReview.vue';
-
 import EmployerMatch from '../views/employer/EmployerMatch.vue';
+import EmployerReview from '../views/employer/EmployerReview.vue';
 
 const employerRoutes = [
   {

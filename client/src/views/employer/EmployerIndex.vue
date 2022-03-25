@@ -1,12 +1,12 @@
 <script setup>
-    import { ref, watch, onMounted } from 'vue';
-    import { jwtGetId } from '@/assets/js/jwt';
-    import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
-    import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
-    
     import axios from 'axios';
     import dayjs from 'dayjs';
     import relativeTime from 'dayjs/plugin/relativeTime';
+    import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
+    import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
+
+    import { jwtGetId } from '@/assets/js/jwt';
+    import { ref, watch, onMounted } from 'vue';
     
     dayjs.extend(relativeTime);
     
@@ -23,13 +23,14 @@
     const vacancies = ref(null);
 
     // dropdown values
-    const filter = ref('all');
     const limit = ref(5);
+    const filter = ref('all');
     const sort = ref('newApps');
 
     // pagination
     const page = ref(1);
     const numPages = ref(1);
+    const companyName = ref('');
     const numVacancies = ref(0);
 
     document.title = 'Home | Vacansee';
@@ -39,7 +40,10 @@
     const getVacancies = async (options) => {
         const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
 
-        const uID = jwtGetId(window.localStorage.jwt);
+        const uID = jwtGetId();
+
+        if(!uID)
+            return;
 
         const response = await axios({
             method: 'get',
@@ -54,7 +58,14 @@
                 pageNum
             }
         }).catch((err) => {
-            console.log(`oops: ${ err }`);
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+                alert('Error: Server may not be running');
+            }
+
         });
 
         if(!response || !response.data)
@@ -70,15 +81,17 @@
             return false;
 
         const { 
-            vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
+            companyName: name = '',
             numVacancies: total = 0,
+            vacancies: newVacancies = vacancies.value, 
         } = data;
 
 
         while((page.value - 1) * limit.value >= total) page.value--;
 
         numPages.value = pages;
+        companyName.value = name;
         numVacancies.value = total;
         vacancies.value = newVacancies;
 
@@ -91,7 +104,6 @@
         const result = await getVacancies({ });
 
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
     });
@@ -100,7 +112,11 @@
     // stats api request, separate request to speed up page load
     onMounted(async () => {
         // get stats
-        const uID = jwtGetId(window.localStorage.jwt);
+
+        const uID = jwtGetId();
+
+        if(!uID)
+            return;
 
         const response = await axios({
             method: 'get',
@@ -111,11 +127,15 @@
                 uID
             }
         }).catch((err) => {
-            console.log(`oops: ${ err }`);
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+            }
         });
 
         if(!response || !response.data) {
-            alert('uh oh, something went wrong :(');
             return;
         }
 
@@ -201,7 +221,7 @@
     <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
 
     <main class='container'>
-        <EmployerStatBar user='Strat Security Co.' :stats='stats' />
+        <EmployerStatBar :user='companyName' :stats='stats' />
 
         <section class='vacancies-section'>
             <div class='title-bar'>
@@ -260,8 +280,8 @@
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
                         <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.IsOpen'>Close Applications</button>
                         <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
-                        <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
-                        <router-link :to='`/e/review/${ vacancy.id }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
+                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
+                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
                     </div>
                 </div>
             </div>
