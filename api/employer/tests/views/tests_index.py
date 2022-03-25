@@ -111,14 +111,14 @@ class indexTestCase(TestCase):
 
 
     def test_noVacanciesIncorrectlyLargePageNum(self):
-        # User: Victoria
-        response = self.client.get('/e/vacancy/', { 'uID': 6, 'sort': 'newApps', 'filter': 'all', 'pageNum': 2, 'count': '10' })
+        # User: empty
+        response = self.client.get('/e/vacancy/', { 'uID': 7, 'sort': 'newApps', 'filter': 'all', 'pageNum': 2, 'count': '10' })
         
         expectedData = {
             'vacancies': [],
             'numPages': 0,
             'numVacancies': 0,
-            'companyName': 'Facebook'
+            'companyName': 'Discord'
         }
 
         self.assertDictEqual(expectedData, response.data)
@@ -138,11 +138,11 @@ class indexTestCase(TestCase):
         response = self.client.get('/e/vacancy/stats/', { 'uID': 4 })
 
         expectedStats = { 
-            'activeAdverts': 6, 
+            'activeAdverts': 3, 
             'totalApplications': 28, 
-            'newApplications': 15, 
-            'acceptedApplications': 5, 
-            'rejectedApplications': 8, 
+            'newApplications': 16, 
+            'acceptedApplications': 2, 
+            'rejectedApplications': 10, 
         } 
 
         self.assertDictEqual(expectedStats, response.data['stats'])
@@ -163,8 +163,8 @@ class indexTestCase(TestCase):
 
 
     def test_noAdverts(self):
-        # Victoria
-        response = self.client.get('/e/vacancy/stats/', { 'uID': 6 })
+        # empty
+        response = self.client.get('/e/vacancy/stats/', { 'uID': 7 })
 
         expectedStats = { 
             'activeAdverts': 0, 
