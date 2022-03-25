@@ -1,29 +1,103 @@
 <script setup>  
     import { ref } from 'vue';
-    import { jwtGetId } from '@/assets/js/jwt';
+    import { getJwt } from '@/assets/js/jwt';
     import axios from 'axios';
 
     const { tags = [], vacancy = {} } = defineProps(['vacancy', 'tags']);
+    const emit = defineEmits(['newVacancy']);
 
-    const favourite = async (options) => {
-        const uID = jwtGetId(window.localStorage.jwt);
+    const favourite = async (vID) => {
+        const jwt = getJwt();
 
-        const article = { "UserId": uID, "VacancyId": vID };
-        axios.post(process.env.VUE_APP_API_ENDPOINT + "/vacancy/fav/", article);
+        const response = await axios({
+            url: '/vacancy/fav/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'post',
+            timeout: 3000,
+            responseType: 'json',
+            data: { 
+                VacancyId: vID 
+            },
+            headers: { 
+                authorization: `Bearer: ${ jwt }`
+            }
+        }).catch((err) => {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+
+                if(status === 401) {
+                    alert('Your auth token has likely expired, please login again');
+                }
+        });
+
+        const { data = false } = response;
+
+        if(data)
+            emit('newVacancy', data);
     }
 
-    const apply = async (options) => {
-        const uID = jwtGetId(window.localStorage.jwt);
+    const apply = async (vID) => {
+        const jwt = getJwt();
 
-        const article = { "UserId": uID, "VacancyId": vID, "ApplicationStatus":"PENDING" };
-        axios.post(process.env.VUE_APP_API_ENDPOINT + "/vacancy/apply/", article);
+        const response = await axios({
+            url: '/vacancy/apply/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'post',
+            timeout: 3000,
+            responseType: 'json',
+            data: { 
+                VacancyId: vID 
+            },
+            headers: { 
+                authorization: `Bearer: ${ jwt }`
+            }
+        }).catch((err) => {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+
+                if(status === 401) {
+                    alert('Your auth token has likely expired, please login again');
+                }
+        });
+
+        const { data = false } = response;
+        console.log(response);
+        console.log(data);
+        if(data)
+            emit('newVacancy', data);
+
     }
 
-    const reject = async (options) => {
-        const uID = jwtGetId(window.localStorage.jwt);
+    const reject = async (vID) => {
+        const jwt = getJwt();
 
-        const article = { "UserId": uID, "VacancyId": vID };
-        axios.post(process.env.VUE_APP_API_ENDPOINT + "/vacancy/reject/", article);
+        const response = await axios({
+            url: '/vacancy/reject/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'post',
+            timeout: 3000,
+            responseType: 'json',
+            data: { 
+                VacancyId: vID 
+            },
+            headers: { 
+                authorization: `Bearer: ${ jwt }`
+            }
+        }).catch((err) => {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+
+                if(status === 401) {
+                    alert('Your auth token has likely expired, please login again');
+                }
+        });
+
+        const { data = false } = response;
+
+        if(data)
+            emit('newVacancy', data);
+
+
     }
 
 
@@ -78,9 +152,9 @@
         <div class='spacing-block'></div>
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
-            <button type='button' class='reject' @click='reject'><i class='fas fa-multiply'></i></button>
-            <button class='favourite' @click='favourite'><i class='fas fa-star'></i></button>
-            <button class='apply' @click='apply'><i class='fas fa-check'></i></button>
+            <button type='button' class='reject' @click='reject(vacancy.VacancyId)'><i class='fas fa-multiply'></i></button>
+            <button class='favourite' @click='favourite(vacancy.VacancyId)'><i class='fas fa-star'></i></button>
+            <button class='apply' @click='apply(vacancy.VacancyId)'><i class='fas fa-check'></i></button>
         </div>
     </div>
 </template>

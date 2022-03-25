@@ -147,8 +147,16 @@ def postApplication(request):
     
     try:
         
-        newVacancySet = Vacancy.objects.filter(IsOpen__exact = True)[0]
-        newVacancy = VacancySerializer(newVacancySet).data
+        newVacancySet = Vacancy.objects.filter(IsOpen__exact = True)
+        newVacancy = False
+
+        for vac in newVacancySet:
+            if vac.VacancyId != vacancy.VacancyId:
+                newVacancy = VacancySerializer(vac).data
+                break
+
+        employerDetails = EmployerDetails.objects.get(UserId__exact = newVacancy['UserId'])
+        newVacancy['CompanyName'] = employerDetails.CompanyName
         
     except Exception as err:
         print(f'uh oh: { err }')
@@ -202,9 +210,16 @@ def postFavourite(request):
 
     
     try:
-        
-        newVacancySet = Vacancy.objects.filter(IsOpen__exact = True)[0]
-        newVacancy = VacancySerializer(newVacancySet).data
+        newVacancySet = Vacancy.objects.filter(IsOpen__exact = True)
+        newVacancy = False
+
+        for vac in newVacancySet:
+            if vac.VacancyId != vacancy.VacancyId:
+                newVacancy = VacancySerializer(vac).data
+                break
+
+        employerDetails = EmployerDetails.objects.get(UserId__exact = newVacancy['UserId'])
+        newVacancy['CompanyName'] = employerDetails.CompanyName
         
     except Exception as err:
         print(f'uh oh: { err }')
@@ -258,9 +273,16 @@ def postReject(request):
 
     
     try:
-        
-        newVacancySet = Vacancy.objects.filter(IsOpen__exact = True)[0]
-        newVacancy = VacancySerializer(newVacancySet).data
+        newVacancySet = Vacancy.objects.filter(IsOpen__exact = True)
+        newVacancy = False
+
+        for vac in newVacancySet:
+            if vac.VacancyId != vacancy.VacancyId:
+                newVacancy = VacancySerializer(vac).data
+                break
+
+        employerDetails = EmployerDetails.objects.get(UserId__exact = newVacancy['UserId'])
+        newVacancy['CompanyName'] = employerDetails.CompanyName
         
     except Exception as err:
         print(f'uh oh: { err }')

@@ -239,7 +239,7 @@
 
         <div class='right'>
             <button type='button' class='button apply-btn' @click= apply>Apply Now!</button>
-            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' />
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' @newVacancy='(newVacancy) => { currentVacancy = newVacancy }' />
         </div>
     </div>
     
