@@ -172,12 +172,13 @@
     }
 
     .matches {
-        height: calc(100% - 110.8px);
+        height: calc(100% - 121px);
         overflow-y: scroll;
     }
 
     .matches-column {
         min-width: 480px;
+
         flex-grow: 2;
         border-right: 1px solid var(--jet);
     }

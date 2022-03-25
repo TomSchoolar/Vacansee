@@ -146,7 +146,7 @@
         min-width: 480px;
         flex-grow: 1;
         border-right: 1px solid var(--jet);
-        height: calc(100vh - 155.5px);
+        height: calc(100vh - 157px);
     }
 
     .download-button {
@@ -186,7 +186,7 @@
     }
 
     .vacancies {
-        height: calc(100% - 110.8px);
+        height: calc(100% - 121px);
         overflow-y: scroll;
     }
 
