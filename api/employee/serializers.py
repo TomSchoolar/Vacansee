@@ -20,7 +20,7 @@ class SummaryProfileSerializer(serializers.ModelSerializer):
         fields = ['UserId', 'FirstName', 'LastName', 'Pronouns', 'TimeZone', 'PhoneNumber']
 
         
-class FavouriteSerializer(serializers.FavouriteSerializer):
+class FavouriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = '__all__'

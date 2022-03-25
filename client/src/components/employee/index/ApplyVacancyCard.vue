@@ -4,7 +4,6 @@
     import axios from 'axios';
 
     const { tags = [], vacancy = {} } = defineProps(['vacancy', 'tags']);
-    const { vID, companyName, jobTitle, favourited, location, description, skills, experience, tags } = vacancy;
 
     const favourite = async (options) => {
         const uID = jwtGetId(window.localStorage.jwt);
