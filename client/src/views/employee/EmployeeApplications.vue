@@ -178,6 +178,10 @@
             try {
                 let { message = err.message, status = err.status } = err.response.data;
                 console.error(`oops: ${ status }: ${ message }`);
+
+                if(status === 401) {
+                    alert('Your auth token has likely expired, please login again');
+                }
             } catch {
                 console.error(`uh oh: ${ err }`);
             }
@@ -187,7 +191,7 @@
 
         if(!stats)
             return;
-        console.log(newStats)
+
         modalStats.value = newStats;
         displayModal.value = true;
 
@@ -210,11 +214,6 @@
 
     watch(limit, async (newLimit) => {
         // change number of applications per page
-        while((page.value - 1) * limit.value >= numApps.value) page.value--;
-
-        if(page.value < 0)
-            page.value = 0;
-
         const result = await getApplications({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
         if(!result) {

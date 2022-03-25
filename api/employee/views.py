@@ -168,6 +168,18 @@ def getApplications(request):
         # dateAsc
         sortParam = 'LastUpdated'
 
+
+    if filter == 'matched':
+        filterParam = ['MATCHED']
+    elif filter == 'pending':
+        filterParam = ['PENDING']
+    elif filter == 'rejected':
+        filterParam = ['REJECTED']
+    else:
+        'all'
+        filterParam = ['MATCHED', 'PENDING', 'REJECTED']
+
+
     skip = max(count * (pageNum - 1), 0)
     limit = count * pageNum
     
@@ -181,7 +193,8 @@ def getApplications(request):
             pageNum -= 1
 
         applicationSet = Application.objects.filter(
-            UserId__exact = jwt['id']
+            UserId__exact = jwt['id'],
+            ApplicationStatus__in = filterParam
         ).order_by(
             sortParam
         )[skip:limit]
@@ -210,7 +223,6 @@ def getApplications(request):
 
 
     return Response({ 'applications': pairedApplications, 'numPages': numPages })
-
 
 
 
