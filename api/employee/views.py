@@ -162,7 +162,7 @@ def postApplication(request):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return Response(newVacancy)
+    return Response(newVacancy, status=status.HTTP_201_CREATED)
 
 
 
@@ -225,7 +225,7 @@ def postFavourite(request):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return Response(newVacancy)
+    return Response(newVacancy, status=status.HTTP_201_CREATED)
 
 
 
@@ -288,7 +288,7 @@ def postReject(request):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return Response(newVacancy)
+    return Response(newVacancy, status=status.HTTP_201_CREATED)
 
 
 
