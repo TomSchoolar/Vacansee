@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Application, Favourite, Reject
+from .models import Application, Favourite, Profile, Reject
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
