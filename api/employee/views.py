@@ -8,8 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from employer.serializers import VacancySerializer
 from employer.models import EmployerDetails, Vacancy
-from employee.serializers import ApplicationSerializer, FavouriteSerializer, RejectSerializer
-
+from .serializers import ApplicationSerializer, FavouriteSerializer, RejectSerializer
 
 
 @api_view(['GET'])
