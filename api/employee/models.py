@@ -18,10 +18,12 @@ class Profile(models.Model):
     Qualifications = ArrayField(models.CharField(max_length=80), size=3, default=list)
     PhoneNumber = models.CharField(max_length=30, blank=False)
 
+
 class Favourite(models.Model):
     FavouriteId = models.AutoField(primary_key=True)
     UserId = models.ForeignKey('authentication.User', on_delete=models.CASCADE, blank=False)
     VacancyId = models.ForeignKey('employer.Vacancy', on_delete=models.CASCADE, blank=False)
+
 
 class Application(models.Model):
 
@@ -40,3 +42,9 @@ class Application(models.Model):
         default=ApplicationStatusValues.PENDING
     )
     LastUpdated = models.DateTimeField(auto_now_add=True, blank=False)
+
+
+class Reject(models.Model):
+    RejectId = models.AutoField(primary_key=True)
+    UserId = models.ForeignKey('authentication.User', blank=False, on_delete=models.CASCADE)
+    VacancyId = models.ForeignKey('employer.Vacancy', blank=False, on_delete=models.CASCADE)
