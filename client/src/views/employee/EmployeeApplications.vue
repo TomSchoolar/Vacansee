@@ -2,71 +2,158 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import EmployeeStatBar from '@/components/employee/EmployeeStatBar.vue';
 
+    import axios from 'axios';
     import relativeTime from 'dayjs/plugin/relativeTime';
+    import { jwtGetId } from '@/assets/js/jwt';
     import dayjs from 'dayjs';
     import { ref, watch } from 'vue';
 
     dayjs.extend(relativeTime);
 
-    const stats = {
-        totalApplications: 3,
-        pendingApplications: 1,
-        matches: 1
-    };
-
-    const vacancies = [
-        {
-            id: 0,
-            title: 'Customer Service Representative',
-            company: 'Sarah\'s Flower Co.',
-            applied: new Date(2022, 2, 19),
-            updated: new Date(2022, 2, 19),
-            isReviewed: false,
-            isAccepted: false
-        },
-        {
-            id: 1,
-            title: 'Accountant',
-            company: 'Sarah\'s Flower Co.',
-            applied: new Date(2022, 2, 2),
-            updated: new Date(2022, 2, 5),
-            isReviewed: true,
-            isAccepted: true
-        },
-        {
-            id: 2,
-            title: 'Policy Expert on Antidisestablishmentarianism',
-            company: 'Sarah\'s Flower Co.',
-            applied: new Date(2022, 1, 19),
-            updated: new Date(2022, 1, 19),
-            isReviewed: true,
-            isAccepted: false
-        },
-    ];
-
-    vacancies.forEach((vacancy) => {
-        vacancy.appliedDate = dayjs(vacancy.applied).format('DD/MM/YYYY');
-        vacancy.updatedDate = dayjs(vacancy.updated).format('DD/MM/YYYY');
+   // vars init
+    const stats = ref({
+        totalApplications: '...',
+        pendingApplications: '...',
+        matches: '...',
     });
 
-    let notifs = ref(2);
+    const vacancies = ref (null);
+
+    
     let filter = ref('all');
     let limit = ref(10);
-    let sort = ref('newApps');
+    let sort = ref('dateDesc');
+
     let page = ref(1);
     let numPages = ref(5);
 
-    watch(filter, (filterValue) => {
-        alert(`showing ${ filterValue } adverts`);
+    document.title = 'Applications | VacanSee'
+
+    // api request function
+    const getVacancies = async (options) => {
+        const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
+
+        const uID = jwtGetId();
+
+        if(!uID)
+            return;
+
+        const response = await axios({
+            method: 'get',
+            url: '/e/vacancy/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID,
+                sort,
+                count,
+                filter,
+                pageNum
+            }
+        }).catch((err) => {
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+                alert('Error: Server may not be running');
+            }
+
+        });
+
+        if(!response || !response.data)
+            return false;
+
+        const { data } = response;
+
+
+        if(!data)
+            return false;
+
+        return true;
+    }
+
+
+    // vacancy api request
+    onMounted(async () => {
+        const result = await getApplications({ });
+
+        if(!result) {
+            return;
+        }
     });
 
-    watch(limit, (newLimit) => {
-        alert(`showing ${ newLimit } articles per page`);
+
+
+    // get vacancies in new order
+    const sortApps = async (sortParam) => {
+        const result = await getApplications({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
+        
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        sort.value = sortParam;
+    }
+
+
+    // change page
+    const changePage = async (newPage) => {
+        const result = await getApplications({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        page.value = newPage;   
+    }
+
+
+
+    watch(filter, async (filterValue) => {
+        // change which vacancies are display based on isOpen
+        const result = await getApplications({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        filter.value = filterValue;
     });
 
-    watch(sort, (sortParam) => {
-        alert(`sorted by ${ sortParam }`);
+
+    watch(limit, async (newLimit) => {
+        // change number of vacancies per page
+        while((page.value - 1) * limit.value >= numApps.value) page.value--;
+
+        if(page.value < 0)
+            page.value = 0;
+
+        const result = await getApplications({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        limit.value = newLimit;
     });
+
+    watch(sort, sortApps);
+
+    
+    // vacancy button actions
+
+    const closeVacancy = () => {
+        alert('are you sure you want to close this vacancy?');
+    }
+
+    const deleteVacancy = () => {
+        alert('are you sure you want to delete this vacancy?');
+    }
 
     watch(page, (newPage, oldPage) => {
         alert(`moved from page ${ oldPage } to page ${ newPage }`);
@@ -94,9 +181,10 @@
                     <div class='select-group'>
                         <label for='filter' class='select-label select-label-hidden'>filter:</label>
                         <select v-model='filter' aria-label='filter vacancies' id='filter'>
-                            <option value='all' selected>show all adverts</option>
-                            <option value='active'>show active adverts</option>
-                            <option value='closed'>show closed adverts</option>
+                            <option value='all' selected>show all applications</option>
+                            <option value='matched'>show matched applications</option>
+                            <option value='pending'>show pending applications</option>
+                            <option value='rejected'>show rejected applications</option>
                         </select>
                     </div>
 
@@ -115,11 +203,8 @@
                     <div class='select-group'>
                         <label for='sort' class='select-label'>sort by:</label>
                         <select v-model='sort' aria-label='sort vacancies' id='sort'>
-                            <option value='newApps' selected>new applications</option>
                             <option value='dateDesc'>latest first</option>
                             <option value='dateAsc'>oldest first</option>
-                            <option value='titleAsc'>title (a-z)</option>
-                            <option value='titleDesc'>title (z-a)</option>
                         </select>
                     </div>
 
@@ -130,7 +215,7 @@
 
             <hr />
 
-            <div class='vacancies' v-for='vacancy in vacancies' :key='vacancy.id'>
+            <div class='vacancies' v-for='vacancy in applications' :key='application.id'>
                 <div class='vacancy'>
                     <div class='vacancy-left'>
                         <h5 class='vacancy-title' :title='vacancy.title'>{{ vacancy.title }}</h5>
