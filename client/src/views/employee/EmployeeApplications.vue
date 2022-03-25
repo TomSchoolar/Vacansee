@@ -1,14 +1,12 @@
 <script setup>
+    import axios from 'axios';
+    import dayjs from 'dayjs';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import EmployeeStatBar from '@/components/employee/EmployeeStatBar.vue';
 
-    import axios from 'axios';
-    import relativeTime from 'dayjs/plugin/relativeTime';
-    import { jwtGetId } from '@/assets/js/jwt';
-    import dayjs from 'dayjs';
-    import { ref, watch } from 'vue';
+    import { getJwt } from '@/assets/js/jwt';
+    import { ref, watch, onMounted } from 'vue';
 
-    dayjs.extend(relativeTime);
 
    // vars init
     const stats = ref({
@@ -17,34 +15,37 @@
         matches: '...',
     });
 
-    const vacancies = ref (null);
 
-    
-    let filter = ref('all');
-    let limit = ref(10);
-    let sort = ref('dateDesc');
+    const page = ref(1);
+    const limit = ref(5);
+    const notifs = ref(2);
+    const numPages = ref(1);
+    const filter = ref('all');
+    const applications = ref([]);
+    const sort = ref('dateDesc');
 
-    let page = ref(1);
-    let numPages = ref(5);
 
-    document.title = 'Applications | VacanSee'
+
+    document.title = 'Applications | Tindeed'
 
     // api request function
-    const getVacancies = async (options) => {
-        const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
+    const getApplications = async (options) => {
+        const { count = 5, pageNum = 1, sort = 'dateDesc', filter = 'all' } = options;
 
-        const uID = jwtGetId();
+        const jwt = getJwt();
 
-        if(!uID)
+        if(!jwt)
             return;
 
         const response = await axios({
             method: 'get',
-            url: '/e/vacancy/',
+            url: '/applications/',
             baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
+            headers: {
+                authorization: `Bearer: ${ jwt }`
+            },
             params: {
-                uID,
                 sort,
                 count,
                 filter,
@@ -64,17 +65,22 @@
         if(!response || !response.data)
             return false;
 
-        const { data } = response;
+        const { data: newApps = {} } = response;
 
-
-        if(!data)
+        if(!newApps)
             return false;
+
+        applications.value = newApps;
+
+        applications.value.forEach((application) => {
+            application.formattedDate = dayjs(application.LastUpdated).format("DD/MM/YYYY")
+        })
 
         return true;
     }
 
 
-    // vacancy api request
+    // application api request
     onMounted(async () => {
         const result = await getApplications({ });
 
@@ -85,7 +91,7 @@
 
 
 
-    // get vacancies in new order
+    // get applications in new order
     const sortApps = async (sortParam) => {
         const result = await getApplications({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
         
@@ -113,7 +119,7 @@
 
 
     watch(filter, async (filterValue) => {
-        // change which vacancies are display based on isOpen
+        // change which applications are display based on isOpen
         const result = await getApplications({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
 
         if(!result) {
@@ -126,7 +132,7 @@
 
 
     watch(limit, async (newLimit) => {
-        // change number of vacancies per page
+        // change number of applications per page
         while((page.value - 1) * limit.value >= numApps.value) page.value--;
 
         if(page.value < 0)
@@ -145,14 +151,14 @@
     watch(sort, sortApps);
 
     
-    // vacancy button actions
+    // application button actions
 
     const closeVacancy = () => {
-        alert('are you sure you want to close this vacancy?');
+        alert('are you sure you want to close this application?');
     }
 
     const deleteVacancy = () => {
-        alert('are you sure you want to delete this vacancy?');
+        alert('are you sure you want to delete this application?');
     }
 
     watch(page, (newPage, oldPage) => {
@@ -174,13 +180,13 @@
     <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>
 
     <main class='container'>
-        <section class='vacancies-section'>
+        <section class='applications-section'>
             <div class='title-bar'>
                 <h1 class='title'>Applications</h1>
                 <div class='title-bar-right'>
                     <div class='select-group'>
                         <label for='filter' class='select-label select-label-hidden'>filter:</label>
-                        <select v-model='filter' aria-label='filter vacancies' id='filter'>
+                        <select v-model='filter' aria-label='filter applications' id='filter'>
                             <option value='all' selected>show all applications</option>
                             <option value='matched'>show matched applications</option>
                             <option value='pending'>show pending applications</option>
@@ -192,8 +198,8 @@
                     <div class='select-group'>
                         <label for='limit' class='select-label select-label-hidden'>page limit:</label>
                         <select v-model='limit' aria-label='set page size' id='limit'>
-                            <option value=5>5 per page</option>
-                            <option value=10 selected>10 per page</option>
+                            <option value=5 selected>5 per page</option>
+                            <option value=10>10 per page</option>
                             <option value=20>20 per page</option>
                             <option value=50>50 per page</option>
                         </select>
@@ -202,7 +208,7 @@
 
                     <div class='select-group'>
                         <label for='sort' class='select-label'>sort by:</label>
-                        <select v-model='sort' aria-label='sort vacancies' id='sort'>
+                        <select v-model='sort' aria-label='sort applications' id='sort'>
                             <option value='dateDesc'>latest first</option>
                             <option value='dateAsc'>oldest first</option>
                         </select>
@@ -215,20 +221,20 @@
 
             <hr />
 
-            <div class='vacancies' v-for='vacancy in applications' :key='application.id'>
-                <div class='vacancy'>
-                    <div class='vacancy-left'>
-                        <h5 class='vacancy-title' :title='vacancy.title'>{{ vacancy.title }}</h5>
-                        <h5 class='vacancy-company'>{{ vacancy.company }}</h5>
-                        <h5 class='vacancy-status' v-if='vacancy.isAccepted'>Matched!</h5>
-                        <h5 class='vacancy-status' v-else-if='vacancy.isReviewed && !vacancy.isAccepted'>Rejected</h5>
-                        <h5 class='vacancy-status' v-else>Application sent!</h5>
+            <div class='applications' v-for='application in applications' :key='application.id'>
+                <div class='application'>
+                    <div class='application-left'>
+                        <h5 class='application-title' :title='application.VacancyName'>{{ application.VacancyName }}</h5>
+                        <h5 class='application-company'>{{ application.CompanyName }}</h5>
+                        <h5 class='application-status' v-if='application.ApplicationStatus == "MATCHED"'>Matched!</h5>
+                        <h5 class='application-status' v-else-if='application.ApplicationStatus == "REJECTED"'>Rejected</h5>
+                        <h5 class='application-status' v-else>Application sent!</h5>
                     </div>
-                    <div class='vacancy-right'>
-                        <div class='vacancy-applied' :title='vacancy.updated'>Applied {{ vacancy.appliedDate }}<br />Updated {{ vacancy.updatedDate }}</div>
-                        <button class='vacancy-button vacancy-button-grey' @click='deleteApplication' v-if='vacancy.isReviewed && !vacancy.isAccepted'>Delete Application</button>
-                        <button class='vacancy-button vacancy-button-red' @click='cancelApplication' v-else>Cancel Application</button>
-                        <router-link :to='`/applications/${ vacancy.id }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.isAccepted'>Match Details</router-link>
+                    <div class='application-right'>
+                        <div class='application-applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
+                        <button class='application-button application-button-grey' @click='deleteApplication' v-if='application.isReviewed && !application.isAccepted'>Delete Application</button>
+                        <button class='application-button application-button-red' @click='cancelApplication' v-else>Cancel Application</button>
+                        <router-link :to='`/applications/${ application.id }`' class='application-button application-button-blue' v-if='application.isAccepted'>Match Details</router-link>
                     </div>
                 </div>
             </div>
@@ -263,7 +269,115 @@
         width: calc(100vw - 80px);
     }
 
-    .pagination {
+
+
+    .application {
+        height: 50px;
+        border: 2px solid #555;
+        border-radius: 15px;
+        margin: 12px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 25px;
+    } 
+
+    .application-applied {
+        width: 200px;
+        text-align: center;
+        margin-right: 20px;
+    }
+
+    .application-button {
+        font-weight: 500; /* required for some reason */
+        border-radius: 15px;
+        color: #fff;
+        border: 2.2px solid #333;
+        width: 150px;
+        height: 32px;
+        margin-left: 15px;
+        font-size: 13px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+    }
+
+    .application-button-blue {
+        background: var(--blue);
+    }
+
+    .application-button-blue:hover, .application-button-blue:focus, .application-button-blue:active {
+        background: var(--blue-focus);
+        cursor: pointer;
+    } 
+
+    .application-button-grey {
+        background: var(--slate);
+    }
+
+    .application-button-grey:hover, .application-button-grey:focus, .application-button-grey:active {
+        background: var(--slate-focus);
+        cursor: pointer;
+    } 
+
+    .application-button-red {
+        background: var(--red);
+    }
+
+    .application-button-red:hover, .application-button-red:focus, .application-button-red:active {
+        background: var(--red-focus);
+        cursor: pointer;
+    }
+
+    .application-company {
+        font-size: 16px;
+        width: 300px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .application-left {
+        width: 60%;
+        display: flex;
+        align-items: center;
+        flex-shrink: 1;
+    }
+
+    .application-right {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .application-status {
+        font-size: 16px;
+        width: 300px;
+        text-align: center;
+    }
+
+    .application-title {
+        font-size: 18px;
+        cursor: default;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: left;
+        margin-right: 30px;
+        width: calc(100% - 230px);
+        font-weight: 500;
+    }
+
+    .application-updated {
+        width: 180px;
+        text-align: center;
+        margin-right: 5px;
+        cursor: default;
+    }
+
+        .pagination {
         display: flex;
         width: 100%;
         justify-content: center;
@@ -344,118 +458,13 @@
         font-family: var(--fonts);
     }
 
-    .vacancy {
-        height: 50px;
-        border: 2px solid #555;
-        border-radius: 15px;
-        margin: 12px 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 25px;
-    } 
-
-    .vacancy-applied {
-        width: 200px;
-        text-align: center;
-        margin-right: 20px;
-    }
-
-    .vacancy-button {
-        font-weight: 500; /* required for some reason */
-        border-radius: 15px;
-        color: #fff;
-        border: 2.2px solid #333;
-        width: 150px;
-        height: 32px;
-        margin-left: 15px;
-        font-size: 13px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
-    }
-
-    .vacancy-button-blue {
-        background: var(--blue);
-    }
-
-    .vacancy-button-blue:hover, .vacancy-button-blue:focus, .vacancy-button-blue:active {
-        background: var(--blue-focus);
-        cursor: pointer;
-    } 
-
-    .vacancy-button-grey {
-        background: var(--slate);
-    }
-
-    .vacancy-button-grey:hover, .vacancy-button-grey:focus, .vacancy-button-grey:active {
-        background: var(--slate-focus);
-        cursor: pointer;
-    } 
-
-    .vacancy-button-red {
-        background: var(--red);
-    }
-
-    .vacancy-button-red:hover, .vacancy-button-red:focus, .vacancy-button-red:active {
-        background: var(--red-focus);
-        cursor: pointer;
-    }
-
-    .vacancy-company {
-        font-size: 16px;
-        width: 300px;
-        text-align: center;
-    }
-
-    .vacancy-left {
-        width: 60%;
-        display: flex;
-        align-items: center;
-        flex-shrink: 1;
-    }
-
-    .vacancy-right {
-        display: flex;
-        align-items: center;
-        flex-grow: 1;
-        justify-content: flex-end;
-    }
-
-    .vacancy-status {
-        font-size: 16px;
-        width: 300px;
-        text-align: center;
-    }
-
-    .vacancy-title {
-        font-size: 18px;
-        cursor: default;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        text-align: left;
-        margin-right: 30px;
-        width: calc(100% - 230px);
-        font-weight: 500;
-    }
-
-    .vacancy-updated {
-        width: 180px;
-        text-align: center;
-        margin-right: 5px;
-        cursor: default;
-    }
-
-    .vacancies {
+    .applications {
         width: calc(100% - 10px);;
         padding: 0 5px;
         display: block;
     }
 
-    .vacancies-section {
+    .applications-section {
         display: flex;
         flex-direction: column;
         align-items: flex-start;

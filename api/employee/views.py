@@ -1,10 +1,14 @@
+import jwt as jwtLib
 from math import ceil
 from rest_framework import status
-from django.db.models import Count, Q
+from employee.models import Application
+from authentication import jwt as jwtHelper
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from employer.serializers import VacancySerializer
 from employer.models import EmployerDetails, Vacancy
+from employee.serializers import ApplicationSerializer
+
 
 
 # Create your views here.
@@ -96,3 +100,77 @@ def getIndex(request):
     }
 
     return Response(returnData)
+
+
+
+
+
+@api_view(['GET'])
+def getApplications(request):
+    try:
+        jwt = jwtHelper.extractJwt(request)
+    except jwtLib.ExpiredSignatureError:
+        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
+        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    # destructure params and typecast
+    try:
+        params = request.query_params
+
+        sort = params['sort']
+        filter = params['filter']
+        count = int(params['count'])
+        pageNum = int(params['pageNum'])
+
+    except:
+        return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    # parse sort parameter into django sort parameter
+    if sort == 'dateDesc':
+        sortParam = '-LastUpdated'
+    else:
+        # dateAsc
+        sortParam = 'LastUpdated'
+
+    skip = max(count * (pageNum - 1), 0)
+    limit = count * pageNum
+
+    try:
+        applicationSet = Application.objects.filter(
+            UserId__exact = jwt['id']
+        ).order_by(
+            sortParam
+        )[skip:limit]
+
+        applications = ApplicationSerializer(applicationSet, many=True).data
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error retrieving applications from the database' })
+
+    pairedApplications = []
+    
+    try:
+        for application in applications:
+            vacancy = Vacancy.objects.get(pk = application['VacancyId'])
+            employerDetails = EmployerDetails.objects.get(UserId__exact = vacancy.UserId)
+
+            pair = { **application, 'VacancyId': vacancy.VacancyId, 'VacancyName': vacancy.VacancyName, 'CompanyName': employerDetails.CompanyName }
+            pairedApplications.append(pair)
+
+    except Vacancy.DoesNotExist:
+        return Response({ 'status': 500, 'message': 'Error retrieving vacancy details from the database, possible database corruption' })
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error retrieving vacancy details from the database' })
+
+
+
+    return Response(pairedApplications)
+
+
