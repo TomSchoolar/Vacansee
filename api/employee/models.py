@@ -17,6 +17,7 @@ class Profile(models.Model):
     Experience = ArrayField(models.CharField(max_length=200), size=3, default=list)
     Qualifications = ArrayField(models.CharField(max_length=80), size=3, default=list)
     PhoneNumber = models.CharField(max_length=30, blank=False)
+    Location = models.CharField(max_length=30, default="")
 
 
 class Favourite(models.Model):
