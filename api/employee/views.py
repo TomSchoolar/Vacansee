@@ -1,4 +1,6 @@
+from concurrent.futures.process import _ExceptionWithTraceback
 from doctest import DocFileSuite
+import pkgutil
 import jwt as jwtLib
 from math import ceil
 from rest_framework import status
@@ -289,6 +291,28 @@ def postReject(request):
         return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
+
+@api_view(['DELETE'])
+def deleteApplication(request, applicationId):
+    try:
+        jwt = jwtHelper.extractJwt(request)
+    except jwtLib.ExpiredSignatureError:
+        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
+        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        application = Application.objects.get(pk=applicationId)
+    except Application.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        application.delete()
+        return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 
