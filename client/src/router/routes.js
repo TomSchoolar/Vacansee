@@ -26,6 +26,7 @@ const authRoutes = [
 
 import EmployeeIndex from '../views/employee/EmployeeIndex.vue';
 import EmployeeApplications from '../views/employee/EmployeeApplications.vue';
+import EmployeeFavourites from '../views/employee/EmployeeFavourites.vue';
 
 const employeeRoutes = [
   {
@@ -40,6 +41,14 @@ const employeeRoutes = [
     path: '/applications',
     name: 'EmployeeApplications',
     component: EmployeeApplications,
+    meta: {
+        middleware: [isLoggedIn, isEmployee]
+    }
+  },
+  {
+    path: '/favourites',
+    name: 'EmployeeFavourites',
+    component: EmployeeFavourites,
     meta: {
         middleware: [isLoggedIn, isEmployee]
     }

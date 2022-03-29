@@ -292,7 +292,8 @@
 
     #favourite {
         float: right;
-        padding: 15px;
+        padding-top: 15px;
+        padding-left: 220px;
         font-size: 45px;
         color: var(--red)
     }
