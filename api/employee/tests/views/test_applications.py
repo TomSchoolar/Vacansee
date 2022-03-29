@@ -30,9 +30,9 @@ def createJwt(uid, expire='later'):
     return encodedJWT
 
 
-class decisionTestCase(TestCase):
+class applicationTestCase(TestCase):
 
-    fixtures = ['/authentication/fixtures/testseed.json']
+    fixtures = ['authentication/fixtures/testseed.json']
     jwt = createJwt(2)
 
     def test_delete(self):
