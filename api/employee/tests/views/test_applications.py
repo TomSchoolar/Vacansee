@@ -53,7 +53,7 @@ class applicationTestCase(TestCase):
         for item in NewSet:
             print(item)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
         print(len(OriginalSet))
         print(len(NewSet))
