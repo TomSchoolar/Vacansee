@@ -1,6 +1,3 @@
-from concurrent.futures.process import _ExceptionWithTraceback
-from doctest import DocFileSuite
-import pkgutil
 import jwt as jwtLib
 from math import ceil
 from rest_framework import status
@@ -307,12 +304,17 @@ def deleteApplication(request, applicationId):
     try:
         application = Application.objects.get(pk=applicationId)
     except Application.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'status':404, 'message':'Application not found' }, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'DELETE':
-        application.delete()
-        return Response(status=status.HTTP_200_OK)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    ApplicationSet = Application.objects.filter(
+        UserId__exact=int(jwt['id'])
+    )
+
+    for app in ApplicationSet:
+        if(app == application):
+            application.delete()
+            return Response(status=status.HTTP_200_OK)
+    return Response({'status':400, 'message':'Application not owned by user' }, status=status.HTTP_400_BAD_REQUEST)
 
 
 
