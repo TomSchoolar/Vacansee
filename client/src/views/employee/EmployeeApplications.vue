@@ -228,10 +228,6 @@
 
     
     // application button actions
-    
-    const cancelApplication = async (applicationId) => {
-        alert('nothing should be pointing here');
-    }
 
     const deleteApplication = async (applicationId) => {
         const jwt = getJwt();
