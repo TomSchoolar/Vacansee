@@ -33,7 +33,7 @@ def createJwt(uid, expire='later'):
 class applicationTestCase(TestCase):
 
     fixtures = ['authentication/fixtures/testseed.json']
-    jwt = createJwt(2)
+    jwt = createJwt(1019)
 
     def test_delete(self):
 
