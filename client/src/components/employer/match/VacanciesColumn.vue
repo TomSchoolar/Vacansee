@@ -20,7 +20,7 @@
     const getVacancies = async (options) => {
         const { sort = 'matchesDesc' } = options;
 
-        const uID = jwtGetId(window.localStorage.jwt);
+        const uID = jwtGetId(window.localStorage.accessToken);
 
         const response = await axios({
             method: 'get',

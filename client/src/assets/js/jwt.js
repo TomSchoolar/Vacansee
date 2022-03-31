@@ -1,17 +1,17 @@
 const functions = {};
 
 
-functions.getJwt = () => {
-    let jwt = window.localStorage.getItem('jwt');
+functions.getAccessToken = () => {
+    let jwt = window.localStorage.getItem('accessToken');
     if(jwt)
         return jwt;
     return false;
 }
 
 
-functions.parseJwt = () => {
+functions.parseToken = () => {
     // return json version of jwt
-    let token = functions.getJwt();
+    let token = functions.getAccessToken();
 
     if(!token)
         return false;
@@ -28,11 +28,11 @@ functions.parseJwt = () => {
 
 functions.jwtGetId = () => {
     // return uid from jwt
-    let token = functions.getJwt();
+    let token = functions.getAccessToken();
     if(!token)
         return false;
 
-    jwt = functions.parseJwt(token)
+    jwt = functions.parseToken(token)
     return jwt.id;
 }
 
