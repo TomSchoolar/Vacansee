@@ -22,7 +22,8 @@
             "NotableSkills" : ["Python", "Vue", "Django"],
             "Experience" : ["1 Year Bar support","1 month work experience in coding","agile team experience"],
             "Qualifications" : ["10 GCSEs","3 A-Levels","1 BSc"],
-            "PhoneNumber" : "07743769344"
+            "PhoneNumber" : "07743769344",
+            "Location": "Birmingham"
         } 
     },
 
@@ -49,7 +50,8 @@
             "NotableSkills" : ["JavaScript", "C#", "Python"],
             "Experience" : ["1 year at tescos","1 month work experience in design","waterfall development experience"],
             "Qualifications" : ["CCNA","B-tech","O-Level"],
-            "PhoneNumber" : "07743469344"
+            "PhoneNumber" : "07743469344",
+            "Location": "Wakefield"
         } 
     },
 
@@ -76,7 +78,8 @@
             "NotableSkills" : ["HTML", "Vue", "CSS"],
             "Experience" : ["Personal Tutoring","2 months working in a lab","team management experience"],
             "Qualifications" : ["5 O-Levels","8 GCSEs","1 BSc"],
-            "PhoneNumber" : "07543769344"
+            "PhoneNumber" : "07543769344",
+            "Location": "London"
         } 
     },
 
@@ -219,7 +222,8 @@
             "IsOpen" : true,
             "PhoneNumber" : "07745469444",
             "Email" : "example@facebook.com",
-            "Created": "2022-03-01"
+            "Created": "2022-03-01",
+            "Location": "London"
         }
     },
 
@@ -238,7 +242,8 @@
             "IsOpen" : false,
             "PhoneNumber" : "07945469444",
             "Email" : "example@facebook.com",
-            "Created": "2022-01-03"
+            "Created": "2022-01-03",
+            "Location": "Birmingham"
         }
     },
 
@@ -257,7 +262,8 @@
             "IsOpen" : false,
             "PhoneNumber" : "07947469444",
             "Email" : "example2@facebook.com",
-            "Created": "2022-02-19"
+            "Created": "2022-02-19",
+            "Location": "Manchester"
         }
     }
 ]
