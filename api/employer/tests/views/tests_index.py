@@ -138,10 +138,10 @@ class indexTestCase(TestCase):
         response = self.client.get('/e/vacancy/stats/', { 'uID': 4 })
 
         expectedStats = { 
-            'activeAdverts': 3, 
-            'totalApplications': 28, 
-            'newApplications': 16, 
-            'acceptedApplications': 2, 
+            'activeAdverts': 5, 
+            'totalApplications': 25, 
+            'newApplications': 12, 
+            'acceptedApplications': 3, 
             'rejectedApplications': 10, 
         } 
 
