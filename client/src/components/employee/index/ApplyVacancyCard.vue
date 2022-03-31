@@ -1,13 +1,13 @@
 <script setup>  
     import { ref } from 'vue';
-    import { getJwt } from '@/assets/js/jwt';
+    import { getAccessToken } from '@/assets/js/jwt';
     import axios from 'axios';
 
     const { tags = [], vacancy = {} } = defineProps(['vacancy', 'tags']);
     const emit = defineEmits(['newVacancy']);
 
     const favourite = async (vID) => {
-        const jwt = getJwt();
+        const jwt = getAccessToken();
 
         const response = await axios({
             url: '/vacancy/fav/',
@@ -37,7 +37,7 @@
     }
 
     const apply = async (vID) => {
-        const jwt = getJwt();
+        const jwt = getAccessToken();
 
         const response = await axios({
             url: '/vacancy/apply/',
@@ -69,7 +69,7 @@
     }
 
     const reject = async (vID) => {
-        const jwt = getJwt();
+        const jwt = getAccessToken();
 
         const response = await axios({
             url: '/vacancy/reject/',

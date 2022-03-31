@@ -5,7 +5,7 @@
     import MatchModal from '@/components/employee/applications/MatchModal.vue';
     import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
 
-    import { getJwt } from '@/assets/js/jwt';
+    import { getAccessToken } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
 
 
@@ -34,7 +34,7 @@
     const getApplications = async (options) => {
         const { count = 5, pageNum = 1, sort = 'dateDesc', filter = 'all' } = options;
 
-        const jwt = getJwt();
+        const jwt = getAccessToken();
 
         if(!jwt)
             return;
@@ -95,7 +95,7 @@
 
     // get stats
     onMounted(async () => {
-        const jwt = getJwt();
+        const jwt = getAccessToken();
 
         if(!jwt)
             return;
@@ -160,7 +160,7 @@
 
 
     const showMatch = async (matchId) => {
-        const jwt = getJwt();
+        const jwt = getAccessToken();
 
         if(!jwt)
             return;

@@ -26,7 +26,7 @@
     const getMatches = async (options) => {
         const { sort = 'dateDesc', vID = selected.value  } = options;
 
-        const uID = jwtGetId(window.localStorage.jwt);
+        const uID = jwtGetId(window.localStorage.accessToken);
 
         const response = await axios({
             method: 'get',

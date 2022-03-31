@@ -1,7 +1,7 @@
 const middleware = {}
 
 middleware.isLoggedIn = ({ next, router }) => {
-    if(!localStorage.getItem('jwt') || !localStorage.getItem('session')) {
+    if(!localStorage.getItem('session') || !localStorage.getItem('accessToken') || !localStorage.getItem('refreshToken')) {
         return router.push({ name: 'LogIn' });
     }
 
@@ -9,20 +9,29 @@ middleware.isLoggedIn = ({ next, router }) => {
 }
 
 middleware.isNotLoggedIn = ({ next, router }) => {
-    if(localStorage.getItem('jwt') && localStorage.getItem('session')) {
+    if(localStorage.getItem('accessToken') && localStorage.getItem('session') && localStorage.getItem('refreshToken')) {
         // if logged in, redirect to respective home page
         const { IsEmployer = false } = localStorage.getItem('session');
         if(IsEmployer)
             return router.push({ name: 'EmployerIndex' });
         return router.push({ name: 'EmployeeIndex' });
 
-    } else if(localStorage.getItem('jwt')) {
+    }
+    
+    if(localStorage.getItem('accessToken')) {
         // not logged in but jwt remains - corrupted
-        localStorage.removeItem('jwt');
+        localStorage.removeItem('accessToken');
 
-    } else if(localStorage.getItem('session')) {
+    }
+    
+    if(localStorage.getItem('session')) {
         // not logged in but session remains - corrupted
         localStorage.removeItem('session');
+    }
+
+    if(localStorage.getItem('refreshToken')) {
+        // not logged in but refresh token remains - corrupted
+        localStorage.removeItem('refreshToken')
     }
 
     return next();

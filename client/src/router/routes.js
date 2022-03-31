@@ -22,12 +22,12 @@ const authRoutes = [
         }
     },
     {
-      path: '/reset',
-      name: 'Reset',
-      component: Reset,
-      meta: {
-        middleware: [isNotLoggedIn]
-      }
+        path: '/reset',
+        name: 'Reset',
+        component: Reset,
+        meta: {
+            middleware: [isNotLoggedIn]
+        }
     }
 ];
 
@@ -38,30 +38,30 @@ import EmployeeApplications from '../views/employee/EmployeeApplications.vue';
 import EmployeeFavourites from '../views/employee/EmployeeFavourites.vue';
 
 const employeeRoutes = [
-  {
-    path: '/vacancy',
-    name: 'EmployeeIndex',
-    component: EmployeeIndex,
-    meta: {
-        middleware: [isLoggedIn, isEmployee]
+    {
+        path: '/vacancy',
+        name: 'EmployeeIndex',
+        component: EmployeeIndex,
+        meta: {
+            middleware: [isLoggedIn, isEmployee]
+        }
+    },
+    {
+        path: '/applications',
+        name: 'EmployeeApplications',
+        component: EmployeeApplications,
+        meta: {
+            middleware: [isLoggedIn, isEmployee]
+        }
+    },
+    {
+        path: '/favourites',
+        name: 'EmployeeFavourites',
+        component: EmployeeFavourites,
+        meta: {
+            middleware: [isLoggedIn, isEmployee]
+        }
     }
-  },
-  {
-    path: '/applications',
-    name: 'EmployeeApplications',
-    component: EmployeeApplications,
-    meta: {
-        middleware: [isLoggedIn, isEmployee]
-    }
-  },
-  {
-    path: '/favourites',
-    name: 'EmployeeFavourites',
-    component: EmployeeFavourites,
-    meta: {
-        middleware: [isLoggedIn, isEmployee]
-    }
-  }
 ];
 
 
@@ -71,30 +71,30 @@ import EmployerMatch from '../views/employer/EmployerMatch.vue';
 import EmployerReview from '../views/employer/EmployerReview.vue';
 
 const employerRoutes = [
-  {
-    path: '/e/vacancy',
-    name: 'EmployerIndex',
-    component: EmployerIndex,
-    meta: {
-        middleware: [isLoggedIn, isEmployer]
+    {
+        path: '/e/vacancy',
+        name: 'EmployerIndex',
+        component: EmployerIndex,
+        meta: {
+            middleware: [isLoggedIn, isEmployer]
+        }
+    },
+    {
+        path: '/e/review/:vacancyId',
+        name: 'EmployerReview',
+        component: EmployerReview,
+        meta: {
+          middleware: [isLoggedIn, isEmployer]
+        }
+    },
+    {
+        path: '/e/match',
+        name: 'EmployerMatch',
+        component: EmployerMatch,
+        meta: {
+          middleware: [isLoggedIn, isEmployer]
+        }
     }
-  },
-  {
-    path: '/e/review/:vacancyId',
-    name: 'EmployerReview',
-    component: EmployerReview,
-    meta: {
-      middleware: [isLoggedIn, isEmployer]
-    }
-  },
-  {
-    path: '/e/match',
-    name: 'EmployerMatch',
-    component: EmployerMatch,
-    meta: {
-      middleware: [isLoggedIn, isEmployer]
-    }
-  }
 ];
 
 

@@ -26,6 +26,7 @@
             method: 'post',
             url: '/login/',
             baseURL: process.env.VUE_APP_API_ENDPOINT,
+            withCredentials: true,
             data: {
                 email: email.value,
                 password: password.value
@@ -38,12 +39,19 @@
             }
         });
 
-        const { userData: session, jwt } = data;
+        const { userData: session, accessToken = false, refreshToken = false } = data;
+
+        if(!session || !accessToken || !refreshToken) {
+            alert('uh oh, we encountered an error while logging you in, please try again later')
+            console.error('uh oh, error logging in')
+            return;
+        }
 
         session.expire = dayjs().add(2, 'hour').toDate();
 
-        window.localStorage.setItem('session', JSON.stringify(session));
-        window.localStorage.setItem('jwt', jwt)
+        window.localStorage.setItem('session', JSON.stringify(session))
+        window.localStorage.setItem('accessToken', accessToken)
+        window.localStorage.setItem('refreshToken', refreshToken)
 
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'
