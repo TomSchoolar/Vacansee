@@ -1,3 +1,4 @@
+from os import stat
 import jwt as jwtLib
 from math import ceil
 from rest_framework import status
@@ -302,19 +303,18 @@ def deleteApplication(request, applicationId):
         return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
-        application = Application.objects.get(pk=applicationId)
+        application = Application.objects.get(
+            pk=applicationId,
+            UserId__exact = jwt['id']
+        )
+
+        application.delete()
+        return Response(status=status.HTTP_200_OK)
     except Application.DoesNotExist:
-        return Response({'status':404, 'message':'Application not found' }, status=status.HTTP_404_NOT_FOUND)
-
-    ApplicationSet = Application.objects.filter(
-        UserId__exact=int(jwt['id'])
-    )
-
-    for app in ApplicationSet:
-        if(app == application):
-            application.delete()
-            return Response(status=status.HTTP_200_OK)
-    return Response({'status':400, 'message':'Application not owned by user' }, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'status': 401, 'message':'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: {err}')
+        return Response({'status':500, 'message':'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
