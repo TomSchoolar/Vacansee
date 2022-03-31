@@ -3,7 +3,9 @@
 		<form @submit.prevent='login' class='auth-page-container'>
 			<p class='auth-page-logo'>Vacansee</p>
 			<input v-model='email' type='email' placeholder='Email' required />
-			<input v-model='password' type='password' placeholder='Password' required />
+			<input v-model='password' type='password' placeholder='Password' id='password' required />
+			<label for='password' class='reset-label'><router-link to='/reset' class='reset-link'>Forgot your password?</router-link></label>
+			<br />
 			<input type='checkbox' id='privacy' name='privacy' required />
 			<label for='privacy'>By checking, you are agreeing to Vacansee's <router-link to='/privacy' class='privacy-policy'>Privacy Policy</router-link>.</label>
 			<button class='submit'>Log In</button>
@@ -55,7 +57,6 @@
 		font-size: 12px;
 		text-align: left;
 		margin: 0 0 10px 5px;
-		display: inline-block;
 	}
 
 	.auth-page {
@@ -115,6 +116,20 @@
 	}
 
 	.privacy-policy:hover {
+		color: var(--red-focus);
+	}
+
+	.reset-label {
+		float: right;
+		margin: 2px;
+	}
+
+	.reset-link {
+		color: var(--red);
+		text-decoration: none;
+	}
+
+	.reset-link:hover {
 		color: var(--red-focus);
 	}
 
