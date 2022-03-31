@@ -6,13 +6,13 @@
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
     
     import { ref, onMounted } from 'vue';
-    import { getJwt } from '@/assets/js/jwt';
+    import { getAccessToken } from '@/assets/js/jwt';
 
 
     const url = window.location.pathname;
     const vacancyId = url.substring(url.lastIndexOf('/') + 1);
 
-    const jwt = getJwt();
+    const jwt = getAccessToken();
     const notifs = ref(2);
     const jwtRef = ref(jwt);
     const matches = ref([]);

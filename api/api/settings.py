@@ -50,6 +50,8 @@ CORS_ALLOWED_ORIGINS = [
     'https://www.tp45.co.uk'
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 
 # Application definition
 

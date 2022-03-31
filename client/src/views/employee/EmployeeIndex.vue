@@ -4,7 +4,7 @@
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
 
-    import { jwtGetId } from '@/assets/js/jwt';
+    import { getAccessToken } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
 
 
@@ -59,22 +59,29 @@
     const getVacancies = async (options) => {
         const { count = 3, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
 
-        const uID = jwtGetId(window.localStorage.jwt);
+        const token = getAccessToken(window.localStorage.accessToken);
 
         const response = await axios({
             method: 'get',
             url: '/vacancy/',
             baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
+            headers: {
+                Authorization: `Bearer: ${ token }`
+            },
             params: {
-                uID,
                 sort,
                 count,
                 filter,
                 pageNum
             }
         }).catch((err) => {
-            console.log(`oops: ${ err }`);
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+            }
         });
 
         if(!response || !response.data)

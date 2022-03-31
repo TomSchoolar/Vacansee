@@ -1,4 +1,3 @@
-import jwt as jwtLib
 from math import ceil
 from datetime import datetime
 from rest_framework import status
@@ -7,15 +6,20 @@ from employee.models import Application
 from .serializers import VacancySerializer
 from rest_framework.response import Response
 from .models import EmployerDetails, Vacancy
-from authentication import jwt as jwtHelper
 from rest_framework.decorators import api_view
-from employer.helpers import getIndex as indexHelper, getReview as reviewHelper, getMatch as matchHelper
+from authentication.helpers import jwt as jwtHelper
 from employee.serializers import ApplicationSerializer, SummaryProfileSerializer
+from employer.helpers import getIndex as indexHelper, getReview as reviewHelper, getMatch as matchHelper
 
 
 
 @api_view(['GET'])
 def getIndex(request):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     # get query params: sort, count, filter, pageNum, uID
     params = request.query_params
 
@@ -142,15 +146,10 @@ def getIndexStats(request):
 def getReview(request, vacancyId):
     # get jwt
     
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
 
     try:
         vacancy = reviewHelper.checkUserOwnsVacancy(vacancyId, jwt)
@@ -183,16 +182,10 @@ def getReview(request, vacancyId):
 @api_view(['PUT'])
 def putReviewApplication(request, vacancyId, applicationId):
     # get jwt
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
     
     # check user owns vacancy
     try:
@@ -255,6 +248,12 @@ def putReviewApplication(request, vacancyId, applicationId):
 
 @api_view(['GET'])
 def getMatchVacancies(request):
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     params = request.query_params
 
     try:
@@ -299,6 +298,12 @@ def getMatchVacancies(request):
 
 @api_view(['GET'])
 def getMatches(request):
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     params = request.query_params
 
     try:
@@ -330,6 +335,12 @@ def getMatches(request):
 
 @api_view(['GET'])
 def getCard(request):
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     params = request.query_params
 
     try:
