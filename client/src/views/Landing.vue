@@ -1,9 +1,6 @@
 <script setup>
-
-    import ApplyCard from '@/components/auth/ApplyCard.vue';
     import VacancyCard from '@/components/auth/VacancyCard.vue';
 
-    import { onMounted } from 'vue';
 
 
     let vacancies = [
@@ -13,18 +10,42 @@
         description: 'We are looking for a lot of words and more words here because we need more words to fill up space with words.',
 
         },
+
         {
         jobTitle: 'Reporter',
         position: 'The News',
         description: 'We are looking for...',
 
         },
+
         {
         jobTitle: 'Reporter',
         position: 'The News',
         description: 'We are looking for...',
         },
+
                 {
+        jobTitle: 'Reporter',
+        position: 'The News',
+        description: 'We are looking for...',
+        },
+
+
+         {
+        jobTitle: 'Newsdancer',
+        position: 'The News',
+        description: 'We are looking for a lot of words and more words here because we need more words to fill up space with words.',
+
+        },
+
+        {
+        jobTitle: 'Reporter',
+        position: 'The News',
+        description: 'We are looking for...',
+
+        },
+
+        {
         jobTitle: 'Reporter',
         position: 'The News',
         description: 'We are looking for...',
@@ -32,8 +53,6 @@
 
     ];
     
-
-
 
 </script>
 
@@ -78,6 +97,19 @@
         display: flex;
         justify-content: space-evenly;
         margin-bottom: 20px;
+        position: relative;
+        animation-name: example;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+        animation-delay: 2s;
+    }
+
+    @keyframes example {
+        0%   {left:0px;}
+        25%  {left:-50px;}
+        50%  { left:-100px;}
+        75%  { left:-150px;}
+        100% { left:-200px;}
     }
 
     .login {

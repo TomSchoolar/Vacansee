@@ -37,6 +37,7 @@
         align-items: center;
         text-align: left;
         justify-content: space-between;
+        margin: 5px;
     }
 
     .description{
