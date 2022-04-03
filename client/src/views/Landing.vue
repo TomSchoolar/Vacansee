@@ -1,15 +1,80 @@
+<script setup>
+
+    import ApplyCard from '@/components/auth/ApplyCard.vue';
+    import VacancyCard from '@/components/auth/VacancyCard.vue';
+
+
+    let vacancies = [
+        {
+        jobTitle: 'Newsdancer',
+        position: 'The News',
+        description: 'We are looking for a lot of words and more words here because we need more words to fill up space with words.',
+
+        },
+        {
+        jobTitle: 'Reporter',
+        position: 'The News',
+        description: 'We are looking for...',
+
+        },
+        {
+        jobTitle: 'Reporter',
+        position: 'The News',
+        description: 'We are looking for...',
+        },
+                {
+        jobTitle: 'Reporter',
+        position: 'The News',
+        description: 'We are looking for...',
+        },
+    ];
+
+
+</script>
+
 <template>
     <main class='container'>
-        <section class='landing-page'>
-            <h1>Landing Page</h1>
-            <div class='login'>
-                <router-link :to='`/login`' class='login-button'>Login</router-link>
+        <section class='top'>
+            <div class='left column'>
+                <h1 class = 'tagline'>Vacansee</h1>
+                <p class = 'tagline'> Making finding soul-sucking jobs a little less naff </p>
+                <div class='login'>
+                    <router-link :to='`/login`' class='login-button'>Start Now</router-link>
+                </div>
+            </div>
+
+            <div class = 'right column'>
+                <img src='@/assets/career-center-carousel-p-500.png' alt='man' height=310 />
             </div>
         </section>
+
+        <section class='mid'>
+            <h3> Feast your eyes, employment gannets </h3>
+            <p style= 'padding:10px 50px 10px 50px;'> Thousands of organisations that we just made up publish advertisements for new vacancies every hour,<br /> so there is something for everyone held by the scruff of the neck by the Student Loans Company </p>
+            <div class='cards'>
+                <VacancyCard v-for='vacancy in vacancies' :vacancy='vacancy' />
+            </div>
+        </section>
+
+        <section class='bottom'>
+            <h3> Feeling a little boujie? </h3>
+            <p style= 'padding:0px 50px 10px 50px;'> We provide employers with tools that allow them to post vacancies and to review and contact applicants. </p>
+            <div class='login'>
+                <router-link :to='`/login`' class='login-button'>Start Now</router-link>
+            </div>
+        </section>
+
     </main>
 </template>
 
-<style>
+<style scoped>
+
+    .cards {
+        display: flex;
+        justify-content: space-evenly;
+        margin-bottom: 20px;
+    }
+
     .login {
         display: flex;
         flex-direction: column;
@@ -17,13 +82,62 @@
     }
 
     .login-button {
-        width: 200px;
+        width: 100px;
         border: 2px solid black;
         border-radius: 5px;
-        font-size: 24px;
-        background-color: var(--slate);
+        background-color: var(--red);
         color: white;
         text-decoration: none;
+    }
+
+    .tagline{
+        font-size: 24px;
+        padding: 0px 120px 0px 120px;
+        text-align: left;
+    }
+
+    .top{
+        color: black;
+    }
+
+
+    .top:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .left{
+        background-color: white;
+        float:left;
+        width:40%;
+        height: 300px;
+        padding: 10px;
+
+    }
+
+    .right{
+        background-color: #cc2936;
+        float:right;
+        width:50%;
+        height: 300px;
+        padding:10px;
+    }
+
+    .mid{
+        padding: 50px;
+        background-color: #333;
+        color: white;
+    }
+
+    .bottom{
+        padding: 20px;
+        background-color: #08415c;
+        color: white;
+    }
+
+    th{
+        padding:50px;
     }
 
 </style>
