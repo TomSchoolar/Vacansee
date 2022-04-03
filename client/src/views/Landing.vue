@@ -51,6 +51,12 @@
         description: 'We are looking for...',
         },
 
+        {
+        jobTitle: 'Reporter',
+        position: 'The News',
+        description: 'We are looking for...',
+        },
+
     ];
     
 
@@ -62,8 +68,8 @@
             <div class='left column'>
                 <h1 class = 'tagline'>Vacansee</h1>
                 <p class = 'tagline'> Making finding soul-sucking jobs a little less naff </p>
-                <div class='login'>
-                    <router-link :to='`/login`' class='login-button'>Start Now</router-link>
+                <div class='login-top'>
+                    <router-link :to='`/login`' class='login-button-top'>Start Now</router-link>
                 </div>
             </div>
 
@@ -118,12 +124,28 @@
         align-items: center;
     }
 
-    .login-button {
+    .login-top {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        padding: 0px 120px 0px 120px;
+    }
+
+    .login-button-top {
         width: 100px;
         border: 2px solid black;
         border-radius: 5px;
         background-color: var(--red);
         color: white;
+        text-decoration: none;
+    }
+
+    .login-button {
+        width: 100px;
+        border: 2px solid black;
+        border-radius: 5px;
+        background-color: white;
+        color: var(--blue);
         text-decoration: none;
     }
 
