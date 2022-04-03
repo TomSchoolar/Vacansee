@@ -38,6 +38,8 @@
                 <span id='navbar-notif-alert' v-if='notifs'>{{ numNotifs }}</span>
             </a>
             <span class='navbar-divider'></span>
+            <router-link to='/profile' class='navbar-link' :class='{"navbar-active-link": (page == "profile")}'>My Profile</router-link>
+            <span class='navbar-divider'></span>
             <a href='#' @click='logout' class='navbar-link'>Log out</a>
         </div>
     </section>
