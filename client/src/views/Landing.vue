@@ -1,8 +1,6 @@
 <script setup>
     import VacancyCard from '@/components/auth/VacancyCard.vue';
 
-
-
     let vacancies = [
         {
         jobTitle: 'Newsdancer',
@@ -98,6 +96,19 @@
 </template>
 
 <style scoped>
+    @keyframes example {
+        0%   {left:0px;}
+        25%  {left:-50px;}
+        50%  { left:-100px;}
+        75%  { left:-150px;}
+        100% { left:-200px;}
+    }
+
+    .bottom{
+        padding: 20px;
+        background-color: #08415c;
+        color: white;
+    }
 
     .cards {
         display: flex;
@@ -110,25 +121,19 @@
         animation-delay: 2s;
     }
 
-    @keyframes example {
-        0%   {left:0px;}
-        25%  {left:-50px;}
-        50%  { left:-100px;}
-        75%  { left:-150px;}
-        100% { left:-200px;}
-    }
-
     .login {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
-    .login-top {
-        display: flex;
-        flex-direction: column;
-        align-items: left;
-        padding: 0px 120px 0px 120px;
+    .login-button {
+        width: 100px;
+        border: 2px solid black;
+        border-radius: 5px;
+        background-color: white;
+        color: var(--blue);
+        text-decoration: none;
     }
 
     .login-button-top {
@@ -140,14 +145,38 @@
         text-decoration: none;
     }
 
-    .login-button {
-        width: 100px;
-        border: 2px solid black;
-        border-radius: 5px;
-        background-color: white;
-        color: var(--blue);
-        text-decoration: none;
+    .login-top {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        padding: 0px 120px 0px 120px;
     }
+
+    .left{
+        background-color: white;
+        float:left;
+        width:40%;
+        height: 300px;
+        padding: 10px;
+
+    }
+
+
+    .mid{
+        padding: 50px;
+        background-color: #333;
+        color: white;
+    }
+
+    .right{
+        background-color: #cc2936;
+        float:right;
+        width:50%;
+        height: 300px;
+        padding:10px;
+    }
+
+    
 
     .tagline{
         font-size: 24px;
@@ -164,39 +193,6 @@
         content: "";
         display: table;
         clear: both;
-    }
-
-    .left{
-        background-color: white;
-        float:left;
-        width:40%;
-        height: 300px;
-        padding: 10px;
-
-    }
-
-    .right{
-        background-color: #cc2936;
-        float:right;
-        width:50%;
-        height: 300px;
-        padding:10px;
-    }
-
-    .mid{
-        padding: 50px;
-        background-color: #333;
-        color: white;
-    }
-
-    .bottom{
-        padding: 20px;
-        background-color: #08415c;
-        color: white;
-    }
-
-    th{
-        padding:50px;
     }
 
 </style>
