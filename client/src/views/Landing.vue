@@ -3,6 +3,8 @@
     import ApplyCard from '@/components/auth/ApplyCard.vue';
     import VacancyCard from '@/components/auth/VacancyCard.vue';
 
+    import { onMounted } from 'vue';
+
 
     let vacancies = [
         {
@@ -27,7 +29,10 @@
         position: 'The News',
         description: 'We are looking for...',
         },
+
     ];
+    
+
 
 
 </script>
@@ -52,7 +57,7 @@
             <h3> Feast your eyes, employment gannets </h3>
             <p style= 'padding:10px 50px 10px 50px;'> Thousands of organisations that we just made up publish advertisements for new vacancies every hour,<br /> so there is something for everyone held by the scruff of the neck by the Student Loans Company </p>
             <div class='cards'>
-                <VacancyCard v-for='vacancy in vacancies' :vacancy='vacancy' />
+                <VacancyCard v-for='vacancy in vacancies' :vacancy='vacancy' id= 'cards'/>
             </div>
         </section>
 
