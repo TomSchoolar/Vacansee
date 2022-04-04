@@ -4,9 +4,10 @@
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
 
+    import functions from '@/assets/js/jwt';
+
     import { getAccessToken } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
-
 
     // vars init
     const tagsLim = 6;

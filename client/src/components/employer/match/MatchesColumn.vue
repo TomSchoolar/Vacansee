@@ -1,7 +1,7 @@
 <script setup>
     import MatchCard from '@/components/employer/match/MatchCard.vue';
 
-    import { jwtGetId } from '@/assets/js/jwt';
+    import { getIdFromToken } from '@/assets/js/jwt';
     import { ref, onMounted, watch, toRef } from 'vue';
     import axios from 'axios';
 
@@ -26,7 +26,7 @@
     const getMatches = async (options) => {
         const { sort = 'dateDesc', vID = selected.value  } = options;
 
-        const uID = jwtGetId(window.localStorage.accessToken);
+        const uID = getIdFromToken(window.localStorage.accessToken);
 
         const response = await axios({
             method: 'get',

@@ -11,6 +11,57 @@ from authentication.serializers import RefreshTokenSerializer
 env = environ.Env()
 
 
+
+def getTokenFromRequest(request):
+    # function to get auth token from req and extract jwt string from it
+    authToken = request.META.get('HTTP_AUTHORIZATION')
+    authTokenRegex = re.compile(r'^Bearer: (.+\..+\..+)')
+
+    jwtRegex = authTokenRegex.match(authToken)
+    return jwtRegex.group(1)
+
+
+
+def extractJwt(request):
+    # get jwt from request
+
+    try:
+        jwt = getTokenFromRequest(request)
+
+        jwt = jwtLib.decode(jwt, env('JWT_SECRET'), algorithms=['HS256'])
+
+        return jwt
+    except jwtLib.ExpiredSignatureError:
+        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
+        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+def extractExpiredJwt(request):
+    # get jwt from request irrespective of expiry
+
+    try:
+        authToken = request.META.get('HTTP_AUTHORIZATION')
+        authTokenRegex = re.compile(r'^Bearer: (.+\..+\..+)')
+
+        jwtRegex = authTokenRegex.match(authToken)
+        jwt = jwtRegex.group(1)
+
+        jwt = jwtLib.decode(jwt, env('JWT_SECRET'), algorithms=['HS256'], options={"verify_signature": False})
+
+        return jwt
+    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
+        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 def getRefreshExpiry():
     # function to create date object extended to 1 week from now
     return datetime.now(tz=timezone.utc) + timedelta(weeks=1)
@@ -94,23 +145,12 @@ def saveRefreshToken(newJwt, oldJwt = False):
 
 
 
-def extractJwt(request):
-    # get jwt from request
+def destroyRefreshFamily(latestToken, request):
+    # function to remove both the latest token and all previous tokens in the same family
+    tokenString = getTokenFromRequest(request)
+    token = RefreshToken.objects.get(Token__exact = tokenString)
+    
+    familyId = token.FamilyId
+    token.delete()
 
-    try:
-        authToken = request.META.get('HTTP_AUTHORIZATION')
-        authTokenRegex = re.compile(r'^Bearer: (.+\..+\..+)')
-
-        jwtRegex = authTokenRegex.match(authToken)
-        jwt = jwtRegex.group(1)
-
-        jwt = jwtLib.decode(jwt, env('JWT_SECRET'), algorithms=['HS256'])
-
-        return jwt
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    familyTokenSet = RefreshToken.objects.filter(FamilyId__exact = familyId).delete()
