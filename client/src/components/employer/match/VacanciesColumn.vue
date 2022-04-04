@@ -1,6 +1,6 @@
 <script setup>
     import { onMounted, ref, watch } from 'vue';
-    import { jwtGetId } from '@/assets/js/jwt';
+    import { getIdFromToken } from '@/assets/js/jwt';
     import axios from 'axios';
 
     //let { numVacancies = 0, vacancies = [] } = defineProps(['numVacancies', 'vacancies']);
@@ -20,7 +20,7 @@
     const getVacancies = async (options) => {
         const { sort = 'matchesDesc' } = options;
 
-        const uID = jwtGetId(window.localStorage.accessToken);
+        const uID = getIdFromToken(window.localStorage.accessToken);
 
         const response = await axios({
             method: 'get',

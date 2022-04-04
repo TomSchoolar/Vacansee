@@ -1,15 +1,27 @@
+import axios from 'axios';
+
 const functions = {};
 
 
-functions.getAccessToken = () => {
-    let jwt = window.localStorage.getItem('accessToken');
-    if(jwt)
-        return jwt;
+export const getAccessToken = () => {
+    // return accessToken from local storage
+    let token = window.localStorage.getItem('accessToken');
+    if(token)
+        return token;
     return false;
 }
 
 
-functions.parseToken = () => {
+export const getRefreshToken = () => {
+    // return refreshToken from local storage
+    let token = window.localStorage.getItem('refreshToken');
+    if(token)
+        return token;
+    return false;
+}
+
+
+export const parseToken = () => {
     // return json version of jwt
     let token = functions.getAccessToken();
 
@@ -26,7 +38,7 @@ functions.parseToken = () => {
 };
 
 
-functions.jwtGetId = () => {
+export const getIdFromToken = () => {
     // return uid from jwt
     let token = functions.getAccessToken();
     if(!token)
@@ -36,4 +48,30 @@ functions.jwtGetId = () => {
     return jwt.id;
 }
 
-module.exports = functions;
+
+export const logout = async () => {
+    // send logout request to api and on success, remove tokens from storage
+
+    const refreshToken = getRefreshToken();
+
+    const response = await axios({
+        url: '/logout/',
+        baseURL: process.env.VUE_APP_API_ENDPOINT,
+        method: 'post',
+        timeout: 3000,
+        headers: {
+            authorization: `Bearer: ${ refreshToken }`
+        }
+    }).catch((err) => {
+        console.error(`uh oh: ${ err }`);
+        alert('An error was encountered while logging you out')
+        return false;
+    });
+
+    if(response) {
+        window.localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('refreshToken');
+        window.localStorage.removeItem('session');
+        window.location.href = '/login'
+    }
+}
