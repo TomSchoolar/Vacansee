@@ -1,5 +1,6 @@
 <script setup>
-    import { ref, onMounted, toRef, watch } from 'vue';
+    import { toRef } from 'vue';
+    import { logout } from '@/assets/js/jwt';
     
     const props = defineProps(['page', 'numNotifs']);
 
@@ -7,12 +8,6 @@
 
     const notification = () => {
         alert("notification!");
-    }
-
-    const logout = () => {
-        window.localStorage.removeItem('jwt');
-        window.localStorage.removeItem('session');
-        window.location.href = '/login'
     }
 </script>
 

@@ -5,7 +5,7 @@
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
 
-    import { jwtGetId } from '@/assets/js/jwt';
+    import { getIdFromToken } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
     
     dayjs.extend(relativeTime);
@@ -40,7 +40,7 @@
     const getVacancies = async (options) => {
         const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
 
-        const uID = jwtGetId();
+        const uID = getIdFromToken();
 
         if(!uID)
             return;
@@ -113,7 +113,7 @@
     onMounted(async () => {
         // get stats
 
-        const uID = jwtGetId();
+        const uID = getIdFromToken();
 
         if(!uID)
             return;
