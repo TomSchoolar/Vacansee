@@ -65,7 +65,7 @@ def getLogout(request):
     try:
         jwtHelper.destroyRefreshFamily(jwt, request)
     except RefreshToken.DoesNotExist as err:
-        print('hi')
+        print('refresh token in logout request doesn\'t exist')
     except Exception as err:
         print(f'uh oh { err }')
         return Response({ 'status': 500, 'message': 'Server error while trying to delete refresh tokens'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -74,3 +74,39 @@ def getLogout(request):
     
 
     
+@api_view(['POST'])
+def postRefreshToken(request):
+    # get refresh token
+    refreshToken = jwtHelper.extractJwt(request)
+
+    if type(refreshToken) is not dict:
+        return refreshToken
+
+    try:
+        refreshTokenString = jwtHelper.getTokenFromRequest(request)
+    except Exception as err:
+        print(f'strange error in token refresh request while getting refreshToken string from request')
+        return Response({ 'status': 500, 'message': 'Server error while retrieving refresh token from request'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    # find refresh token in db
+    try: 
+        token = RefreshToken.objects.get(Token__exact = refreshTokenString)
+
+        if not token.IsLatest or refreshToken['typ'] != 'refresh':
+            return Response({ 'status': 401, 'message': 'provided refresh token is invalid' }, status=status.HTTP_401_UNAUTHORIZED)
+
+        # refresh token is valid, not expired and the latest in its family
+        newAccessToken = jwtHelper.createAccessToken(refreshToken['id'])
+        newRefreshToken = jwtHelper.createRefreshToken(refreshToken['id'])
+
+        jwtHelper.saveRefreshToken(newRefreshToken, refreshTokenString)
+
+        return Response({ 'accessToken': newAccessToken, 'refreshToken': newRefreshToken }, status=status.HTTP_200_OK)
+
+    except RefreshToken.DoesNotExist as err:
+        return Response({ 'status': 401, 'message': 'provided refresh token is invalid' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(err)
+        return Response({ 'status': 500, 'message': 'Server error while getting refresh token in access token refresh request'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

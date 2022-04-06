@@ -1,12 +1,13 @@
 <script setup>
-    import axios from 'axios';
     import dayjs from 'dayjs';
+    import api from '@/assets/js/api';
     import relativeTime from 'dayjs/plugin/relativeTime';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
 
-    import { getIdFromToken } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
+    import { apiCatchError } from '@/assets/js/api';
+    import { getIdFromToken, getAccessToken } from '@/assets/js/jwt';
     
     dayjs.extend(relativeTime);
     
@@ -40,15 +41,15 @@
     const getVacancies = async (options) => {
         const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
 
+        // TODO: remove and use id from access token on api side
         const uID = getIdFromToken();
 
         if(!uID)
             return;
 
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/e/vacancy/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
             params: {
                 uID,
@@ -57,23 +58,14 @@
                 filter,
                 pageNum
             }
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-            } catch {
-                console.error(`uh oh: ${ err }`);
-                alert('Error: Server may not be running');
-            }
+        }).catch(apiCatchError);
 
-        });
-
-        if(!response || !response.data)
+        if(!response)
             return false;
 
         const { data } = response;
 
-        data.vacancies.forEach((vacancy) => {
+        data?.vacancies.forEach((vacancy) => {
             vacancy.listedAgo = dayjs(vacancy.Created).fromNow();
         });
 
@@ -117,29 +109,21 @@
 
         if(!uID)
             return;
-
-        const response = await axios({
+        // TODO: remove uid and use id from access token on api side
+        const response = await api({
             method: 'get',
             url: '/e/vacancy/stats/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
             params: {
                 uID
             }
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-            } catch {
-                console.error(`uh oh: ${ err }`);
-            }
-        });
+        }).catch(apiCatchError);
 
-        if(!response || !response.data) {
+        if(!response?.data) {
             return;
         }
 
-        stats.value = response.data.stats;
+        stats.value = response.data?.stats;
     })
 
 

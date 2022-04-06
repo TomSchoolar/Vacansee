@@ -14,18 +14,17 @@
 </template>
 
 <script setup>
-    import axios from 'axios';
     import dayjs from 'dayjs';
     import { ref } from 'vue';
+    import api from '@/assets/js/api';
 
 	const email = ref('');
     const password = ref('');
 
 	const login = async () => {
-        const { data = {} } = await axios({
+        const { data = {} } = await api({
             method: 'post',
             url: '/login/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             withCredentials: true,
             data: {
                 email: email.value,
