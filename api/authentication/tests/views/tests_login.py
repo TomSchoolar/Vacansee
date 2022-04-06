@@ -1,5 +1,5 @@
-import jwt
 import environ
+import jwt as jwtLib
 from django.test import TestCase
 
 env = environ.Env()
@@ -20,9 +20,13 @@ class LoginPostTestClass(TestCase):
 
         self.assertDictEqual(response.data['userData'], expectedUserData)
 
-        returnedJwt = jwt.decode(response.data['jwt'], env('JWT_SECRET'), algorithms=['HS256'], verify=True)
+        accessToken = jwtLib.decode(response.data['accessToken'], env('JWT_SECRET'), algorithms=['HS256'], verify=True)
+        refreshToken = jwtLib.decode(response.data['refreshToken'], env('JWT_SECRET'), algorithms=['HS256'], verify=True)
 
-        if not returnedJwt['exp'] or not returnedJwt['iat'] or returnedJwt['id'] != 2:
+        if not accessToken['exp'] or not accessToken['iat'] or accessToken['id'] != 2:
+            raise Exception
+
+        if not refreshToken['exp'] or not refreshToken['iat'] or refreshToken['id'] != 2:
             raise Exception
 
 
