@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const functions = {};
+import api from '@/assets/js/api';
 
 
 export const getAccessToken = () => {
@@ -23,7 +21,7 @@ export const getRefreshToken = () => {
 
 export const parseToken = () => {
     // return json version of jwt
-    let token = functions.getAccessToken();
+    let token = getAccessToken();
 
     if(!token)
         return false;
@@ -40,11 +38,11 @@ export const parseToken = () => {
 
 export const getIdFromToken = () => {
     // return uid from jwt
-    let token = functions.getAccessToken();
+    let token = getAccessToken();
     if(!token)
         return false;
 
-    jwt = functions.parseToken(token)
+    let jwt = parseToken(token)
     return jwt.id;
 }
 
@@ -54,14 +52,9 @@ export const logout = async () => {
 
     const refreshToken = getRefreshToken();
 
-    const response = await axios({
+    const response = await api({
         url: '/logout/',
-        baseURL: process.env.VUE_APP_API_ENDPOINT,
-        method: 'post',
-        timeout: 3000,
-        headers: {
-            authorization: `Bearer: ${ refreshToken }`
-        }
+        method: 'post'
     }).catch((err) => {
         console.error(`uh oh: ${ err }`);
         alert('An error was encountered while logging you out')
