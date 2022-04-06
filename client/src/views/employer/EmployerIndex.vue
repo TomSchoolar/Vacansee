@@ -6,6 +6,8 @@
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
 
     import { ref, watch, onMounted } from 'vue';
+    import { apiCatchError } from '@/assets/js/api';
+    import { getIdFromToken, getAccessToken } from '@/assets/js/jwt';
     
     dayjs.extend(relativeTime);
     
@@ -38,7 +40,6 @@
     // api request function
     const getVacancies = async (options) => {
         const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
-
 
         const response = await api({
             method: 'get',
