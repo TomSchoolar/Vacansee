@@ -3,5 +3,6 @@ from django.urls import path
 
 urlpatterns = [
     path('login/', views.postLogin),
-    path('logout/', views.getLogout)
+    path('logout/', views.getLogout),
+    path('refreshtoken/', views.postRefreshToken)
 ]

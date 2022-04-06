@@ -125,6 +125,11 @@ def getIndex(request):
 @api_view(['GET'])
 def getIndexStats(request):
     # get query params: sort, count, stats, pageNum 
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     params = request.query_params
 
     try:
