@@ -2,10 +2,10 @@
     const { stats } = defineProps(['stats']);
     const { application = {}, profile = {} } = stats;
 
-    import api from '@/assets/js/api';
+    import api, { apiCatchError } from '@/assets/js/api';
 
     import { onMounted } from 'vue';
-    import { apiCatchError } from '@/assets/js/api';
+    
 
     const emits = defineEmits(["showApplication"])
 

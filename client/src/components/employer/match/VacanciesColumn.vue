@@ -1,8 +1,8 @@
 <script setup>
-    import api from '@/assets/js/api';
+    import api, { apiCatchError } from '@/assets/js/api';
 
     import { onMounted, ref, watch } from 'vue';
-    import { apiCatchError } from '@/assets/js/api';
+    
     
 
     //let { numVacancies = 0, vacancies = [] } = defineProps(['numVacancies', 'vacancies']);

@@ -1,21 +1,17 @@
 <script setup>
-    import api from '@/assets/js/api';
+    import api, { apiCatchError } from '@/assets/js/api';
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
     import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
     
-    import { ref, onMounted } from 'vue';
-    import { getAccessToken } from '@/assets/js/jwt';
-    import { apiCatchError } from '@/assets/js/api'
+    import { ref, onMounted } from 'vue';    
 
 
     const url = window.location.pathname;
     const vacancyId = url.substring(url.lastIndexOf('/') + 1);
 
-    const jwt = getAccessToken();
     const notifs = ref(2);
-    const jwtRef = ref(jwt);
     const matches = ref([]);
     const vacancy = ref({});
     const currentProfile = ref({});
@@ -105,7 +101,6 @@
                     :application='currentApplication' 
                     :profile='currentProfile' 
                     :vacancyId='vacancyId' 
-                    :jwt='jwtRef'
                     @match='onMatch'
                     @defer='updateCard'
                     @reject='updateCard'
