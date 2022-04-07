@@ -1,5 +1,5 @@
 <script setup>
-    import axios from 'axios';
+    import api from '@/assets/js/api';
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
     import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
@@ -7,6 +7,7 @@
     
     import { ref, onMounted } from 'vue';
     import { getAccessToken } from '@/assets/js/jwt';
+    import { apiCatchError } from '@/assets/js/api'
 
 
     const url = window.location.pathname;
@@ -22,32 +23,14 @@
 
     onMounted(async () => {
         // get current card and matches
-        if(!jwt)
-            return;
 
-        const response = await axios({
+        const response = await api({
             url: `/e/review/${ vacancyId }/`,
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             method: 'get',
-            headers: {
-                Authorization: `Bearer: ${ jwt }`
-            },
-            responseType: 'json',
-            timeout: 4000
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
+            responseType: 'json'
+        }).catch(apiCatchError);
 
-                if(status === 401) {
-                    alert('Your auth token has likely expired, please login again');
-                }
-            } catch {
-                console.error(`uh oh: ${ err }`);
-            }
-        });
-
-        if(!response)
+        if(!response?.data)
             return;
 
         const { matches: apiMatches = [], new: newApp = {}, vacancy: apiVacancy = {} } = response.data;

@@ -25,7 +25,6 @@ def getIndex(request):
 
     # destructure params and typecast
     try:
-        uID = params['uID']
         sort = params['sort']
         filter = params['filter']
         count = int(params['count'])
@@ -61,7 +60,7 @@ def getIndex(request):
 
     # get number of pages
     numVacancies = Vacancy.objects.filter(
-                UserId__exact = uID,
+                UserId__exact = jwt['id'],
                 IsOpen__in = filterParam
             ).count()
     pages = int(ceil(numVacancies / int(params['count'])))
@@ -78,7 +77,7 @@ def getIndex(request):
     if sortByApps:
         # sort by the number of applications referencing vacancy
         vacanciesSet = Vacancy.objects.filter(
-                UserId__exact = uID,
+                UserId__exact = jwt['id'],
                 IsOpen__in = filterParam
             ).annotate(
                 applicationCount = Count('application', filter=Q(application__ApplicationStatus__exact='PENDING'))
@@ -98,7 +97,7 @@ def getIndex(request):
 
     try:
         # get company name
-        employerDetails = EmployerDetails.objects.get(UserId__exact = uID)
+        employerDetails = EmployerDetails.objects.get(UserId__exact = jwt['id'])
         companyName = employerDetails.CompanyName
 
         # get number of new, matched and rejected apps for each vacancy
@@ -130,16 +129,8 @@ def getIndexStats(request):
     if type(jwt) is not dict:
         return jwt
 
-    params = request.query_params
-
     try:
-        # destructure params and typecast
-        uID = params['uID']
-    except:
-        return Response(data={'code': 400, 'message': 'Incomplete request'}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        stats = indexHelper.getStats(uID)
+        stats = indexHelper.getStats(jwt['id'])
     except Exception as e:
         return Response(data={'code': 500, 'message': e.__str__}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
    
@@ -262,7 +253,6 @@ def getMatchVacancies(request):
     params = request.query_params
 
     try:
-        uID = params['uID']
         sort = params['sort']
         sortByNum = False
     except:
@@ -281,12 +271,12 @@ def getMatchVacancies(request):
         sortParam = '-VacancyName'
 
     numVacancies = Vacancy.objects.filter(
-        UserId__exact = uID,
+        UserId__exact = jwt['id'],
     ).count()
 
     #add if-else for sortByNum
     vacanciesSet = Vacancy.objects.filter(
-        UserId__exact = uID,
+        UserId__exact = jwt['id'],
     ).order_by(sortParam)
 
     vacancySerializer = VacancySerializer(vacanciesSet, many=True)
@@ -312,7 +302,6 @@ def getMatches(request):
     params = request.query_params
 
     try:
-        uID = params['uID']
         vID = params['vID']
         sort = params['sort']
     except:
@@ -346,10 +335,9 @@ def getCard(request):
     if type(jwt) is not dict:
         return jwt
 
-    params = request.query_params
-
     try:
-        uID = params['uID']
+        params = request.query_params
+        applicantId = params['applicantId']
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -357,7 +345,9 @@ def getCard(request):
 
     #matches = matchHelper.getMatches(vID)
     #matches = reviewHelper.getApplications(vID)
-    details = matchHelper.getDetails(uID)
+    details = matchHelper.getDetails(applicantId)
+
+    print(details)
 
     returnData = {
         'details': details

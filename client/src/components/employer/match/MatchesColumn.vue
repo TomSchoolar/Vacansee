@@ -1,9 +1,10 @@
 <script setup>
+    import api from '@/assets/js/api';
     import MatchCard from '@/components/employer/match/MatchCard.vue';
 
-    import { getIdFromToken } from '@/assets/js/jwt';
-    import { ref, onMounted, watch, toRef } from 'vue';
-    import axios from 'axios';
+    import { apiCatchError } from '@/assets/js/api';
+    import { ref, watch, toRef } from 'vue';
+    
 
     const emits = defineEmits(["show-application"])
     const selectedProfile = ref();
@@ -26,21 +27,15 @@
     const getMatches = async (options) => {
         const { sort = 'dateDesc', vID = selected.value  } = options;
 
-        const uID = getIdFromToken(window.localStorage.accessToken);
-
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/e/match/matches/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
             params: {
-                uID,
                 vID,
                 sort,
             }
-        }).catch((err) => {
-            console.log(`oops ${ err }`);
-        });
+        }).catch(apiCatchError);
 
         if(!response || !response.data)
             return false;
@@ -85,7 +80,6 @@
     }
 
     const updateCard = (nextProfile) => {
-        console.log(`Current Profile: ${ nextProfile.FirstName }`);
         emits("show-application", nextProfile);
     }
 
