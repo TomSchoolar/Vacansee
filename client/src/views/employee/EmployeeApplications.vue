@@ -271,9 +271,9 @@
                 authorization: `Bearer: ${ jwt }`
             },
             params: {
-                sort,
+                sort: sort.value,
                 count,
-                filter,
+                filter: filter.value,
                 pageNum
             }
         }).catch((err) => {
