@@ -18,10 +18,14 @@ def getTokenFromRequest(request):
     authTokenRegex = re.compile(r'^Bearer: (.+\..+\..+)')
 
     jwtRegex = authTokenRegex.match(authToken)
+
+    if jwtRegex == None:
+        raise KeyError('Auth token missing from request')
+
     return jwtRegex.group(1)
 
 
-
+import traceback
 def extractJwt(request):
     # get jwt from request
 
@@ -30,11 +34,14 @@ def extractJwt(request):
         jwt = jwtLib.decode(jwt, env('JWT_SECRET'), algorithms=['HS256'])
 
         return jwt
+    except KeyError:
+        return Response({ 'status': 401, 'message': 'Missing auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except jwtLib.ExpiredSignatureError:
         return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
         return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
+        traceback.print_exc()
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -121,13 +128,6 @@ def saveRefreshToken(newJwt, oldJwt = False):
 
     expiry = jwtLib.decode(newJwt, env('JWT_SECRET'), algorithms=['HS256'])['exp']
         
-    newToken = {
-        'FamilyId': family,
-        'Token': newJwt,
-        'Expiry': expiry,
-        'IsLatest': True
-    }
-
     newTokenObj = RefreshToken(
         FamilyId = family,
         Token = newJwt,

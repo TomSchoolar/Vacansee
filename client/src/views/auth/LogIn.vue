@@ -46,8 +46,6 @@
             return;
         }
 
-        session.expire = dayjs().add(2, 'hour').toDate();
-
         window.localStorage.setItem('session', JSON.stringify(session))
         window.localStorage.setItem('accessToken', accessToken)
         window.localStorage.setItem('refreshToken', refreshToken)
