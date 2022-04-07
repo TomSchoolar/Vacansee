@@ -21,7 +21,7 @@ const refreshAuthLogic = async (failedRequest) => {
             let { message = error?.message, status = 500 } = data;
             const refreshToken = localStorage.getItem('refreshToken');
 
-            if(status == 401) {
+            if(status == 401 || status == 403) {
                 // authorisation error
 
                 if(refreshToken != null) {

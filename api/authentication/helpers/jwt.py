@@ -71,7 +71,7 @@ def getRefreshExpiry():
 
 def getAccessExpiry():
     # function to create date object extended to 10 mins from now
-    return datetime.now(tz=timezone.utc) + timedelta(minutes=10)
+    return datetime.now(tz=timezone.utc) + timedelta(seconds=10)
 
 
 
@@ -139,7 +139,7 @@ def saveRefreshToken(newJwt, oldJwt = False):
 
 
 
-def destroyRefreshFamily(latestToken, request):
+def destroyRefreshFamily(request):
     # function to remove both the latest token and all previous tokens in the same family
     tokenString = getTokenFromRequest(request)
     token = RefreshToken.objects.get(Token__exact = tokenString)
@@ -147,4 +147,4 @@ def destroyRefreshFamily(latestToken, request):
     familyId = token.FamilyId
     token.delete()
 
-    familyTokenSet = RefreshToken.objects.filter(FamilyId__exact = familyId).delete()
+    RefreshToken.objects.filter(FamilyId__exact = familyId).delete()
