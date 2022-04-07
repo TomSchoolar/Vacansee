@@ -59,3 +59,8 @@ class applicationTestCase(TestCase):
         print(len(NewSet))
 
         self.assertEqual(len(OriginalSet) - 1, len(NewSet))
+
+    def test_delete_invalid(self):
+        response = self.client.delete('/applications/delete/1019/', { "ApplicationId":1019 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(response.status_code, 401)
