@@ -1,6 +1,11 @@
 <script setup> 
+<<<<<<< HEAD
     import api, { apiCatchError } from '@/assets/js/api';
     
+=======
+    import api from '@/assets/js/api';
+    import { apiCatchError } from '@/assets/js/api';
+>>>>>>> d07b142 (Update employer routes to use new user auth)
 
     const emit = defineEmits(['match', 'defer', 'reject'])
 
