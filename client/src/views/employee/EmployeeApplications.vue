@@ -258,6 +258,49 @@
 
         if(data)
             emit('newVacancy', data);
+
+        const count = limit.value;
+        const pageNum = page.value;
+        
+        const response2 = await axios({
+            method: 'get',
+            url: '/applications/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            headers: {
+                authorization: `Bearer: ${ jwt }`
+            },
+            params: {
+                sort,
+                count,
+                filter,
+                pageNum
+            }
+        }).catch((err) => {
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+                alert('Error: Server may not be running');
+            }
+
+        });
+
+        if(!response2 || !response2.data)
+            return false;
+
+        const { applications: newApps = [], numPages: ps = 1 } = response2.data;
+
+        if(!newApps)
+            return false;
+
+        numPages.value = ps;
+        applications.value = newApps;
+
+        applications.value.forEach((application) => {
+            application.formattedDate = dayjs(application.LastUpdated).format("DD/MM/YYYY")
+        });
     }
 </script>
 
