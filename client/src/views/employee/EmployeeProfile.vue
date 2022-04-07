@@ -6,6 +6,8 @@
         document.getElementById('contactDetails').style.display = 'none';
         document.getElementById('location').style.display = 'none';
         document.getElementById('softskills').style.display = 'none';
+        document.getElementById('experience').style.display = 'none';
+        document.getElementById('qualifications').style.display = 'none';
     }
 
     function contactDetails(){
@@ -13,6 +15,8 @@
         document.getElementById('personalDetails').style.display = 'none';
         document.getElementById('location').style.display = 'none';
         document.getElementById('softskills').style.display = 'none';
+        document.getElementById('experience').style.display = 'none';
+        document.getElementById('qualifications').style.display = 'none';
     }
 
     function location(){
@@ -20,6 +24,8 @@
         document.getElementById('personalDetails').style.display = 'none';
         document.getElementById('contactDetails').style.display = 'none';
         document.getElementById('softskills').style.display = 'none';
+        document.getElementById('experience').style.display = 'none';
+        document.getElementById('qualifications').style.display = 'none';
         var range = document.getElementById('range');
         var output = document.getElementById('output');
 
@@ -33,6 +39,8 @@
         document.getElementById('personalDetails').style.display = 'none';
         document.getElementById('contactDetails').style.display = 'none';
         document.getElementById('location').style.display = 'none';
+        document.getElementById('experience').style.display = 'none';
+        document.getElementById('qualifications').style.display = 'none';
         var skill1 = document.getElementById('skill-1');
         var skill2input = document.getElementById('skill-2-input');
         var skill3input = document.getElementById('skill-3-input');
@@ -44,6 +52,48 @@
             }
         }
         
+    }
+
+    function experience(){
+        document.getElementById('experience').style.display = '';
+        document.getElementById('personalDetails').style.display = 'none';
+        document.getElementById('contactDetails').style.display = 'none';
+        document.getElementById('location').style.display = 'none';
+        document.getElementById('softskills').style.display = 'none';
+        document.getElementById('qualifications').style.display = 'none';
+        var position1 = document.getElementById('position-1');
+        var position2input = document.getElementById('position-2-input');
+        var position3input = document.getElementById('position-3-input');
+        position1.onchange = function() {
+            position2input.innerHTML = "<label for='positions'>position title:</label><br /> <input type='text' id='position-2' name='positions'><br /> <label for='position-2-start'>start date:</label> <label for='position-2-end'>end date:</label><br /> <input type='date' id='position-2-start' name='position-2-start'>  <input type='date' id='position-2-end' name='position-2-end'> <br />";
+            var position2 = document.getElementById('position-2');
+            position2.onchange = function() {
+                position3input.innerHTML = "<label for='positions'>position title:</label><br /> <input type='text' id='position-3' name='positions'><br /> <label for='position-3-start'>start date:</label> <label for='position-3-end'>end date:</label><br /> <input type='date' id='position-3-start' name='position-3-start'>  <input type='date' id='position-3-end' name='position-3-end'> <br />";
+            }
+        }
+    }
+
+    function qualifications(){
+        document.getElementById('qualifications').style.display = '';
+        document.getElementById('personalDetails').style.display = 'none';
+        document.getElementById('contactDetails').style.display = 'none';
+        document.getElementById('location').style.display = 'none';
+        document.getElementById('softskills').style.display = 'none';
+        document.getElementById('experience').style.display = 'none';
+        
+        var qualification = document.getElementById('qualification');
+        qualification.onchange = function() {
+
+            var selectedQual = qualification.options[qualification.selectedIndex].value;
+            if (selectedQual == 'gcses' || selectedQual =='alevels'){
+                document.getElementById('gcse-alevel-form').style.display = '';
+                document.getElementById('degree-form').style.display = 'none';
+            }
+            else if (selectedQual == 'degree'){
+                document.getElementById('degree-form').style.display = '';
+                document.getElementById('gcse-alevel-form').style.display = 'none';
+            }
+        }
     }
 
     
@@ -59,8 +109,8 @@
             <button @click = 'contactDetails' id= 'contactDetails-button'> Contact Details </button>
             <button @click= 'location' id='location-button'> Location </button>
             <button @click= 'softskills' id='softskills-button'> Soft Skills </button>
-            <button> Experience </button>
-            <button> Qualifications </button>
+            <button @click= 'experience' id='experience-button'> Experience </button>
+            <button @click= 'qualifications' id='qualification-button'> Qualifications </button>
             <button> Review </button>
         </div>
 
@@ -133,6 +183,51 @@
                 <div id='skill-3-input'> </div>
             </form>
             <button @click = 'location'> Back </button>
+            <button @click = 'experience'> Next </button>
+        </div>
+
+        <div id='experience' style='display:none;'>
+            <h1> Experience </h1> 
+            <p> Include up to three of your most relevant or most recent <br /> jobs/placements/internships below </p>
+            <form>
+                <label for='positions'>position title:</label><br />
+                <input type='text' id='position-1' name='positions'><br />
+                <label for='position-1-start'>start date:</label>
+                <label for='position-1-end'>end date:</label><br />
+                <input type='date' id='position-1-start' name='position-1-start'> 
+                <input type='date' id='position-1-end' name='position-1-end'> <br />
+                <div id='position-2-input'> </div>
+                <div id='position-3-input'> </div>
+            </form>
+            <button @click = 'softskills'> Back </button>
+            <button @click = 'qualifications'> Next </button>
+        </div>
+
+        <div id='qualifications' style='display:none;'>
+            <h1> Qualifications </h1> 
+            <p> Enter up to three sets of qualifications below E.g.<br /> GCSEs, A-Levels, Degree. Include the number of <br />
+             that type of q1ualification you got and the minimum and <br/> maximum grades you achieved.</p>
+            <form>
+                <label for='qualification'>qualification type:</label><br />
+                <select id='qualification' name='qualification'>
+                    <option value = 'temp' hidden selected> Choose option </option>
+                    <option value = 'gcses'> GCSEs </option>
+                    <option value = 'alevels'> A Levels </option>
+                    <option value = 'degree'> Degree </option>
+                    <option value = 'other'> Other: </option>
+                </select> <br />
+                <div id='gcse-alevel-form' style='display:none;'>
+                    <label for='lowgrade'>lowest grade:</label> <label for='highgrade'>highest grade:</label> <label for='number'>number:</label><br />
+                    <input type='text' id='lowgrade' name='lowgrade' size='7'> <input type='text' id='highgrade' name='highgrade' size='7'> <input type='number' id='number' name='number' min = '1' max = '10' style = 'width = 6px;'><br />
+                </div>
+                <div id='degree-form' style='display:none;'>
+                    <label for='subject'>subject:</label><br />
+                    <input type='text' id='subject' name='subject'><br />
+                    <label for='type'>type:</label> <label for='classification'>classification:</label> <br />
+                    <input type='text' id='type' name='type' size='4'> <input type='text' id='classification' name='classification' size='10'> <br />
+                </div>
+            </form>
+            <button @click = 'experience'> Back </button>
             <button> Next </button>
         </div>
 
