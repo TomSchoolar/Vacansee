@@ -1,5 +1,4 @@
 from copy import copy
-from xml import dom
 from rest_framework import status
 from .models import RefreshToken, User
 from .serializers import UserSerializer
@@ -63,7 +62,7 @@ def getLogout(request):
 
     # find and remove refresh token and all refresh tokens in family
     try:
-        jwtHelper.destroyRefreshFamily(jwt, request)
+        jwtHelper.destroyRefreshFamily(request)
     except RefreshToken.DoesNotExist as err:
         print('refresh token in logout request doesn\'t exist')
     except Exception as err:
@@ -91,9 +90,14 @@ def postRefreshToken(request):
     # find refresh token in db
     try: 
         token = RefreshToken.objects.get(Token__exact = refreshTokenString)
-
-        if not token.IsLatest or refreshToken['typ'] != 'refresh':
+        
+        if refreshToken['typ'] != 'refresh':
             return Response({ 'status': 401, 'message': 'provided refresh token is invalid' }, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not token.IsLatest:
+            # token reuse, delete whole family
+            jwtHelper.destroyRefreshFamily(request)
+            return Response({ 'status': 403, 'message': 'Token reuse detected' }, status=status.HTTP_403_FORBIDDEN)
 
         # refresh token is valid, not expired and the latest in its family
         newAccessToken = jwtHelper.createAccessToken(refreshToken['id'])
