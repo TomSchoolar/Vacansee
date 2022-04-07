@@ -1,37 +1,13 @@
-import environ
-import jwt as jwtLib
 from django.test import TestCase
 from employee.models import Application
-from datetime import datetime, timezone, timedelta
-
-
-env = environ.Env()
-
-
-def createJwt(uid, expire='later'):
-    jwt = { 
-        'id': uid,
-        'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=60),
-        'iat': datetime.now(tz=timezone.utc)
-    }
-
-    if expire == 'now':
-        jwt['exp'] = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
-
-    encodedJWT = jwtLib.encode(
-        jwt,
-        env('JWT_SECRET'),
-        algorithm='HS256'
-    )
-
-    return encodedJWT
+from authentication.tests import jwtFuncs
 
 
 class applicationTestCase(TestCase):
 
     userId = 2 # Adam
     vacancyId = 1
-    jwt = createJwt(userId)
+    jwt = jwtFuncs.createJwt(userId)
     applicationId = 1003
     fixtures = ['authentication/fixtures/testseed.json']
 

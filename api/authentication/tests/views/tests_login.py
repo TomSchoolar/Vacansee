@@ -13,7 +13,6 @@ class LoginPostTestClass(TestCase):
         response = self.client.post('/login/', { 'email': 'ajb042@student.bham.ac.uk', 'password': 'password' })
         
         expectedUserData = {
-            'UserId': 2,
             'IsEmployer': False,
             'Email': "ajb042@student.bham.ac.uk"
         }
