@@ -41,18 +41,12 @@
     const getVacancies = async (options) => {
         const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
 
-        // TODO: remove and use id from access token on api side
-        const uID = getIdFromToken();
-
-        if(!uID)
-            return;
 
         const response = await api({
             method: 'get',
             url: '/e/vacancy/',
             responseType: 'json',
             params: {
-                uID,
                 sort,
                 count,
                 filter,
@@ -104,19 +98,11 @@
     // stats api request, separate request to speed up page load
     onMounted(async () => {
         // get stats
-
-        const uID = getIdFromToken();
-
-        if(!uID)
-            return;
-        // TODO: remove uid and use id from access token on api side
+        // TODO: fix this spaghetti code and get show application working on matches again
         const response = await api({
             method: 'get',
             url: '/e/vacancy/stats/',
-            responseType: 'json',
-            params: {
-                uID
-            }
+            responseType: 'json'
         }).catch(apiCatchError);
 
         if(!response?.data) {

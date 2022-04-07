@@ -2,8 +2,10 @@
     const { stats } = defineProps(['stats']);
     const { application = {}, profile = {} } = stats;
 
-    import axios from 'axios';
-    import { onMounted, ref } from 'vue';
+    import api from '@/assets/js/api';
+
+    import { onMounted } from 'vue';
+    import { apiCatchError } from '@/assets/js/api';
 
     const emits = defineEmits(["showApplication"])
 
@@ -18,19 +20,17 @@
     };
 
     const getDetails = async (options) => {
-        const { uID = application.UserId } = options;
 
-        const response = await axios({
+        const { applicantId } = options;
+
+        const response = await api({
             method: 'get',
             url: '/e/match/card',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
-            responseType: 'json',
             params: {
-                uID
-            }
-        }).catch((err) => {
-            console.log(`oops ${ err }`);
-        });
+                applicantId 
+            },
+            responseType: 'json'
+        }).catch(apiCatchError);
 
         if(!response || !response.data)
             return false;
@@ -50,7 +50,7 @@
     };
 
     onMounted(async () => {
-        const result = getDetails({ uID: application.UserId });
+        const result = getDetails({ applicantId: application.UserId });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
