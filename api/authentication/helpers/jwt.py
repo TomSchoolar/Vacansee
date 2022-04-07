@@ -5,7 +5,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from authentication.models import RefreshToken
 from datetime import datetime, timezone, timedelta
-from authentication.serializers import RefreshTokenSerializer
 
 
 env = environ.Env()
@@ -25,7 +24,6 @@ def getTokenFromRequest(request):
     return jwtRegex.group(1)
 
 
-import traceback
 def extractJwt(request):
     # get jwt from request
 
@@ -41,7 +39,6 @@ def extractJwt(request):
     except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
         return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
-        traceback.print_exc()
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

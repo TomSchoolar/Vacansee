@@ -295,10 +295,10 @@ def deleteApplication(request, applicationId):
         application.delete()
         return Response(status=status.HTTP_200_OK)
     except Application.DoesNotExist:
-        return Response({'status': 401, 'message':'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'status': 401, 'message': 'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: {err}')
-        return Response({'status':500, 'message':'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'status': 500, 'message': 'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
