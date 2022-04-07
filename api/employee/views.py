@@ -164,7 +164,9 @@ def postApplication(request):
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
-
+@api_view(['GET'])
+def favourites(request):
+    return Response(status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def postFavourite(request):
