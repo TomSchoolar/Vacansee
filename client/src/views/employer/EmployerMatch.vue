@@ -10,7 +10,6 @@
     document.title = 'Matches | Vacansee';
 
     const updateCard = (nextProfile) => {
-        console.log(`Current Profile: ${ currentProfile.FirstName }`);
         currentProfile.value = nextProfile.value;
     }
     
@@ -21,7 +20,6 @@
 
     const updateVacancyId = (vacancy) => {
         selectedVacancy.value = vacancy.VacancyId;
-        console.log(`Selected Vacancy: ${ selectedVacancy.value }`);
     };
 </script>
 

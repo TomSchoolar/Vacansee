@@ -88,7 +88,6 @@ def postRefreshToken(request):
         print(f'strange error in token refresh request while getting refreshToken string from request')
         return Response({ 'status': 500, 'message': 'Server error while retrieving refresh token from request'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     # find refresh token in db
     try: 
         token = RefreshToken.objects.get(Token__exact = refreshTokenString)

@@ -1,7 +1,9 @@
 <script setup>
+    import api from '@/assets/js/api';
+
     import { onMounted, ref, watch } from 'vue';
-    import { getIdFromToken } from '@/assets/js/jwt';
-    import axios from 'axios';
+    import { apiCatchError } from '@/assets/js/api';
+    
 
     //let { numVacancies = 0, vacancies = [] } = defineProps(['numVacancies', 'vacancies']);
 
@@ -20,20 +22,14 @@
     const getVacancies = async (options) => {
         const { sort = 'matchesDesc' } = options;
 
-        const uID = getIdFromToken(window.localStorage.accessToken);
-
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/e/match/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
             params: {
-                uID,
                 sort
             }
-        }).catch((err) => {
-            console.log(`oops ${ err }`);
-        });
+        }).catch(apiCatchError);
 
         if(!response || !response.data)
             return false;
