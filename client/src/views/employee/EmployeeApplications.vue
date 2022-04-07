@@ -228,13 +228,79 @@
 
     
     // application button actions
-    
-    const cancelApplication = () => {
-        alert('are you sure you want to cancel this application?');
-    }
 
-    const deleteApplication = () => {
-        alert('are you sure you want to delete this application?');
+    const deleteApplication = async (applicationId) => {
+        const jwt = getJwt();
+
+        const response = await axios({
+            url: '/applications/delete/'+applicationId,
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            method: 'delete',
+            timeout: 3000,
+            responseType: 'json',
+            data: { 
+                ApplicationId: applicationId
+                 
+            },
+            headers: { 
+                authorization: `Bearer: ${ jwt }`
+            }
+        }).catch((err) => {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+
+                if(status === 401) {
+                    alert('Yourz auth token has likely expired, please login again');
+                }
+        });
+
+        const { data = false } = response;
+
+        if(data)
+            emit('newVacancy', data);
+
+        const count = limit.value;
+        const pageNum = page.value;
+        
+        const response2 = await axios({
+            method: 'get',
+            url: '/applications/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            headers: {
+                authorization: `Bearer: ${ jwt }`
+            },
+            params: {
+                sort: sort.value,
+                count,
+                filter: filter.value,
+                pageNum
+            }
+        }).catch((err) => {
+            try {
+                let { message = err.message, status = err.status } = err.response.data;
+                console.error(`oops: ${ status }: ${ message }`);
+            } catch {
+                console.error(`uh oh: ${ err }`);
+                alert('Error: Server may not be running');
+            }
+
+        });
+
+        if(!response2 || !response2.data)
+            return false;
+
+        const { applications: newApps = [], numPages: ps = 1 } = response2.data;
+
+        if(!newApps)
+            return false;
+
+        numPages.value = ps;
+        applications.value = newApps;
+
+        applications.value.forEach((application) => {
+            application.formattedDate = dayjs(application.LastUpdated).format("DD/MM/YYYY")
+        });
     }
 </script>
 
@@ -298,8 +364,7 @@
                     </div>
                     <div class='right'>
                         <div class='applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
-                        <button class='button button-grey' @click='deleteApplication' v-if='application.ApplicationStatus == "REJECTED"'>Delete Application</button>
-                        <button class='button button-red' @click='cancelApplication' v-else>Cancel Application</button>
+                        <button class='button button-red' @click='deleteApplication(application.ApplicationId)'>Delete Application</button>
                         <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
                     </div>
                 </div>

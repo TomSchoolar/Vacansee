@@ -1,4 +1,4 @@
-from doctest import DocFileSuite
+from os import stat
 import jwt as jwtLib
 from math import ceil
 from rest_framework import status
@@ -289,6 +289,32 @@ def postReject(request):
         return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
+
+@api_view(['DELETE'])
+def deleteApplication(request, applicationId):
+    try:
+        jwt = jwtHelper.extractJwt(request)
+    except jwtLib.ExpiredSignatureError:
+        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
+        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        application = Application.objects.get(
+            pk=applicationId,
+            UserId__exact = jwt['id']
+        )
+
+        application.delete()
+        return Response(status=status.HTTP_200_OK)
+    except Application.DoesNotExist:
+        return Response({'status': 401, 'message':'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: {err}')
+        return Response({'status':500, 'message':'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
