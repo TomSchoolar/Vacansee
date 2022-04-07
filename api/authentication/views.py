@@ -30,7 +30,7 @@ def postLogin(request):
     
     # remove private fields from user object
     userData = copy(user)
-    toRemove = ['PasswordHash', 'PasswordSalt', 'PasswordResetToken', 'PasswordResetExpiration']
+    toRemove = ['UserId', 'PasswordHash', 'PasswordSalt', 'PasswordResetToken', 'PasswordResetExpiration']
 
     for key in toRemove:
         del userData[key]

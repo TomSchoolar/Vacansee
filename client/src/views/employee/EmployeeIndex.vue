@@ -95,12 +95,7 @@
 
     // vacancy api request
     onMounted(async () => {
-        const result = await getVacancies({ });
-
-        if(!result) {
-            alert('uh oh! something went wrong :(');
-            return;
-        }
+        await getVacancies({ });
     });
 
     // get vacancies in new order
@@ -108,7 +103,6 @@
         const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
         
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
 
@@ -120,7 +114,6 @@
         const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value });
 
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
 
@@ -133,7 +126,6 @@
         const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
 
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
 
@@ -150,7 +142,6 @@
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
 

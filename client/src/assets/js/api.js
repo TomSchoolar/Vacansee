@@ -12,16 +12,34 @@ const refreshAuthLogic = async (failedRequest) => {
     const tokenRefreshResponse = await api({
         url: '/refreshtoken/',
         method: 'post',
-        skipAuthRefresh: true, 
-        headers: {
-            Authorization: `Bearer: ${ localStorage.getItem('refreshToken') }`
-        },
+        skipAuthRefresh: true,
         responseType: 'json'
-    }).catch((error) => {
+    }).catch(async (error) => {
         try {
-            // TODO: log out automatically
+            // error while refreshing access token
             let data = error?.response?.data ?? {};
             let { message = error?.message, status = 500 } = data;
+            const refreshToken = localStorage.getItem('refreshToken');
+
+            if(status == 401) {
+                // authorisation error
+
+                if(refreshToken != null) {
+                    // refresh token available, can make logout request
+                    await api({
+                        url: '/logout/',
+                        method: 'post',
+                        skipAuthRefresh: true,
+                    }).catch((err) => { console.error(err) })
+                }
+
+                window.localStorage.removeItem('accessToken');
+                window.localStorage.removeItem('refreshToken');
+                window.localStorage.removeItem('session');
+                window.location.href = '/login'
+            
+            }
+
             console.error(`oops: ${ status }: ${ message }`);
         } catch {
             console.error(`uh oh: ${ error }`);
@@ -62,7 +80,7 @@ export const apiCatchError = (error) => {
         let { message = error?.message, status = 500 } = data;
 
         if(status == 401) {
-        //     // 401 errors will be handled by the refreshAuthLogic function
+            // 401 errors will be handled by the refreshAuthLogic function
             return;
         }
 

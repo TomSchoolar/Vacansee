@@ -1,7 +1,7 @@
 const middleware = {}
 
 middleware.isLoggedIn = ({ next, router }) => {
-    if(!localStorage.getItem('session') || !localStorage.getItem('accessToken') || !localStorage.getItem('refreshToken')) {
+    if(!localStorage.getItem('refreshToken') && !localStorage.getItem('accessToken')) {
         router.push({ name: 'LogIn' });
     }
 
@@ -9,7 +9,7 @@ middleware.isLoggedIn = ({ next, router }) => {
 }
 
 middleware.isNotLoggedIn = ({ next, router }) => {
-    if(localStorage.getItem('accessToken') && localStorage.getItem('session') && localStorage.getItem('refreshToken')) {
+    if(localStorage.getItem('refreshToken')) {
         // if logged in, redirect to respective home page
         const { IsEmployer = false } = localStorage.getItem('session');
         if(IsEmployer)
@@ -21,7 +21,7 @@ middleware.isNotLoggedIn = ({ next, router }) => {
     }
     
     if(localStorage.getItem('accessToken')) {
-        // not logged in but jwt remains - corrupted
+        // not logged in but access token remains - corrupted
         localStorage.removeItem('accessToken');
 
     }
@@ -29,11 +29,6 @@ middleware.isNotLoggedIn = ({ next, router }) => {
     if(localStorage.getItem('session')) {
         // not logged in but session remains - corrupted
         localStorage.removeItem('session');
-    }
-
-    if(localStorage.getItem('refreshToken')) {
-        // not logged in but refresh token remains - corrupted
-        localStorage.removeItem('refreshToken')
     }
 
     return next();
