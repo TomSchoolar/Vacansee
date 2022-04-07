@@ -101,7 +101,7 @@
             </div>
 
             <div class='vacancy-container'>
-                <ApplyVacancyCard v-for='vacancy in favourites' :vacancy=vacancy :tags='tags' />
+                <ApplyVacancyCard v-for='vacancy in favourites' :key='vacancy.VacancyId' :vacancy=vacancy :tags='tags' />
             </div> 
 
             <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>

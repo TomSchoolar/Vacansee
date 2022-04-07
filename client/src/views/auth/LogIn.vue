@@ -16,7 +16,7 @@
 <script setup>
     import dayjs from 'dayjs';
     import { ref } from 'vue';
-    import api from '@/assets/js/api';
+    import api, { apiCatchError } from '@/assets/js/api';
 
 	const email = ref('');
     const password = ref('');
