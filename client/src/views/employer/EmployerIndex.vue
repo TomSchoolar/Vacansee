@@ -6,8 +6,6 @@
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
 
     import { ref, watch, onMounted } from 'vue';
-    import { apiCatchError } from '@/assets/js/api';
-    import { getIdFromToken, getAccessToken } from '@/assets/js/jwt';
     
     dayjs.extend(relativeTime);
     

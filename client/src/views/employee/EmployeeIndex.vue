@@ -61,9 +61,6 @@
             method: 'get',
             url: '/vacancy/',
             responseType: 'json',
-            headers: {
-                Authorization: `Bearer: ${ token }`
-            },
             params: {
                 sort,
                 count,
