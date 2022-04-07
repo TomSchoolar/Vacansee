@@ -277,17 +277,14 @@ def postReject(request):
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
+
+
 @api_view(['DELETE'])
 def deleteApplication(request, applicationId):
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
 
     try:
         application = Application.objects.get(
