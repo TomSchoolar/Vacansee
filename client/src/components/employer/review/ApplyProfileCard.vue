@@ -1,10 +1,10 @@
 <script setup> 
-    import api from '@/assets/js/api';
-    import { apiCatchError } from '@/assets/js/api';
+    import api, { apiCatchError } from '@/assets/js/api';
+    
 
     const emit = defineEmits(['match', 'defer', 'reject'])
 
-    const { application, jwt, profile, vacancyId } = defineProps(['application', 'jwt', 'profile', 'vacancyId']);
+    const { application, profile, vacancyId } = defineProps(['application', 'profile', 'vacancyId']);
 
     const updateStatus = async (newStatus, applicationId) => {
         const response = await api({

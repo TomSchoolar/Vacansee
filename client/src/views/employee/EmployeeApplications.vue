@@ -1,13 +1,12 @@
 <script setup>
-    import axios from 'axios';
     import dayjs from 'dayjs';
+    import api, { apiCatchError } from '@/assets/js/api';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import MatchModal from '@/components/employee/applications/MatchModal.vue';
     import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
 
-    import { getAccessToken } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
-
+    
 
    // vars init
     const stats = ref({
@@ -34,37 +33,19 @@
     const getApplications = async (options) => {
         const { count = 5, pageNum = 1, sort = 'dateDesc', filter = 'all' } = options;
 
-        const jwt = getAccessToken();
-
-        if(!jwt)
-            return;
-
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/applications/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
-            headers: {
-                authorization: `Bearer: ${ jwt }`
-            },
             params: {
                 sort,
                 count,
                 filter,
                 pageNum
             }
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-            } catch {
-                console.error(`uh oh: ${ err }`);
-                alert('Error: Server may not be running');
-            }
+        }).catch(apiCatchError);
 
-        });
-
-        if(!response || !response.data)
+        if(!response?.data)
             return false;
 
         const { applications: newApps = [], numPages: ps = 1 } = response.data;
@@ -95,27 +76,11 @@
 
     // get stats
     onMounted(async () => {
-        const jwt = getAccessToken();
-
-        if(!jwt)
-            return;
-
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/applications/stats/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
-            responseType: 'json',
-            headers: {
-                authorization: `Bearer: ${ jwt }`
-            }
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-            } catch {
-                console.error(`uh oh: ${ err }`);
-            }
-        });
+            responseType: 'json'
+        }).catch(apiCatchError);
 
         if(!response || !response.data)
             return false;
@@ -160,32 +125,11 @@
 
 
     const showMatch = async (matchId) => {
-        const jwt = getAccessToken();
-
-        if(!jwt)
-            return;
-
         const response = await axios({
             url: `/applications/${ matchId }/`,
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             method: 'get',
-            responseType: 'json',
-            timeout: 3000,
-            headers: {
-                authorization: `Bearer: ${ jwt }`
-            }
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-
-                if(status === 401) {
-                    alert('Your auth token has likely expired, please login again');
-                }
-            } catch {
-                console.error(`uh oh: ${ err }`);
-            }
-        });
+            responseType: 'json'
+        }).catch(apiCatchError);
 
         const { data: newStats = false } = response;
 
@@ -194,7 +138,6 @@
 
         modalStats.value = newStats;
         displayModal.value = true;
-
     }
 
 

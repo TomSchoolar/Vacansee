@@ -1,8 +1,8 @@
 <script setup>
-    import api from '@/assets/js/api';
+    import api, { apiCatchError } from '@/assets/js/api';
     import MatchCard from '@/components/employer/match/MatchCard.vue';
 
-    import { apiCatchError } from '@/assets/js/api';
+    
     import { ref, watch, toRef } from 'vue';
     
 
