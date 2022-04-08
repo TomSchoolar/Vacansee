@@ -1,7 +1,7 @@
 import environ
 import jwt as jwtLib
 from django.test import TestCase
-from authentication import jwt as jwtHelper
+from authentication.helpers import jwt as jwtHelper
 from datetime import datetime, timezone, timedelta
 from employee.models import Favourite
 

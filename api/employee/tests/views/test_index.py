@@ -1,10 +1,8 @@
-from ast import Or
 import environ
 import jwt as jwtLib
 from django.test import TestCase
-from authentication import jwt as jwtHelper
-from datetime import datetime, timezone, timedelta
 from employer.models import Vacancy
+from datetime import datetime, timezone, timedelta
 
 
 env = environ.Env()
