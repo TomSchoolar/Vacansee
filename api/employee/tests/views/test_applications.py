@@ -34,6 +34,16 @@ class applicationTestCase(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
     jwt = createJwt(1000)
 
+    def test_getApplications(self):
+        response = self.client.get('/applications/', { 'uID':1019, 'sort':'titleAsc', 'count':5, 'pageNum':1, 'filter':'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        applicationSet = Application.objects.filter(
+            UserId__exact = 1019
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['applications']), len(applicationSet))
+
     def test_delete(self):
         userId = 1000
         vacancyId = 3
