@@ -97,7 +97,7 @@ def getIndex(request):
         'numVacancies': numVacancies
     }
 
-    return Response(returnData)
+    return Response(returnData, status=status.HTTP_200_OK)
 
 
 
@@ -567,4 +567,4 @@ def getApplicationDetails(request, applicationId):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting vacancy from the server' })
 
-    return Response({ **application, **vacancy, 'CompanyName': companyName })
+    return Response({ **application, **vacancy, 'CompanyName': companyName }, status=status.HTTP_200_OK)

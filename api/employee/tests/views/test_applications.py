@@ -5,7 +5,6 @@ from django.test import TestCase
 from authentication import jwt as jwtHelper
 from datetime import datetime, timezone, timedelta
 from employee.models import Application
-from employee.serializers import ApplicationSerializer
 
 
 env = environ.Env()
@@ -44,6 +43,20 @@ class applicationTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['applications']), len(applicationSet))
+
+    def test_getApplicationsStats(self):
+        response = self.client.get('/applications/stats/', { } , **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        applicationSet = Application.objects.filter(
+            UserId__exact = 1019
+        )
+
+        self.assertEqual(response.data['total'], len(applicationSet))
+
+    def test_getApplicationsDetails(self):
+        response = self.client.get('/applications/1000/', { } , **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(response.status_code, 200)
 
     def test_delete(self):
 

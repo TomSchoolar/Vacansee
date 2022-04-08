@@ -1,9 +1,10 @@
+from ast import Or
 import environ
 import jwt as jwtLib
 from django.test import TestCase
 from authentication import jwt as jwtHelper
 from datetime import datetime, timezone, timedelta
-from employee.models import Favourite
+from employer.models import Vacancy
 
 
 env = environ.Env()
@@ -28,17 +29,15 @@ def createJwt(uid, expire='later'):
     return encodedJWT
 
 
-class favouritesTestCase(TestCase):
+class applicationTestCase(TestCase):
 
     fixtures = ['authentication/fixtures/testseed.json']
-    jwt = createJwt(2)
+    jwt = createJwt(1019)
 
-    def test_getFavourites(self):
-        response = self.client.get('/favourites/', { 'uID':2, 'sort':'titleAsc', 'count':5, 'pageNum':1 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+    def test_getApplications(self):
+        response = self.client.get('/vacancy/', { 'uID':1019, 'sort':'titleAsc', 'count':5, 'pageNum':1, 'filter':'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
-        favouriteSet = Favourite.objects.filter(
-            UserId__exact = 2
-        )
+        vacancySet = Vacancy.objects.all()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['numVacancies'], len(favouriteSet))
+        self.assertEqual((response.data['numVacancies']), len(vacancySet))
