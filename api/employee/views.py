@@ -248,7 +248,7 @@ def getFavourites(request):
         'numVacancies': numVacancies
     }
 
-    return Response(returnData)
+    return Response(returnData, status=status.HTTP_200_OK)
 
 
 
@@ -491,7 +491,7 @@ def getApplications(request):
 
 
 
-    return Response({ 'applications': pairedApplications, 'numPages': numPages })
+    return Response({ 'applications': pairedApplications, 'numPages': numPages }, status=status.HTTP_200_OK)
 
 
 
