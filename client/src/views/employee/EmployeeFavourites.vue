@@ -203,6 +203,10 @@
 
 
 <style scoped>
+    *:deep(.card) {
+        margin-right: 25px;
+    }
+
     select {
         border: 2px solid;
         float:right;
@@ -324,9 +328,11 @@
     }
 
     .vacancy-container { 
-        text-align: center; 
         display: flex; 
-        justify-content: space-evenly; 
+        flex-direction: row;
+        justify-content: center; 
         flex-wrap: wrap;
+
+
     }
 </style>
