@@ -1,3 +1,4 @@
+import sys
 import json
 from faker import Faker
 from random import choice, sample
@@ -10,8 +11,36 @@ class Fake():
     vacancyPK = 1000
     favouritePK = 1000
     applicationPK = 1000
+    outpath = './api/authentication/fixtures/'
 
     fake = Faker()
+
+    def __init__(self, type):
+        if type == 'full':
+            self.outpath += 'fullseed.json'
+
+            self.params = {
+                'employees': 25,
+                'vacanciesLower': 8,
+                'vacanciesUpper': 20,
+                'applicantsLower': 8,
+                'applicantsUpper': 20,
+                'favouritesLower': 3,
+                'favouritesUpper': 11,
+            }
+
+        elif type == 'test':
+            self.outpath += 'testseed.json'
+
+            self.params = {
+                'employees': 2,
+                'vacanciesLower': 3,
+                'vacanciesUpper': 7,
+                'applicantsLower': 3,
+                'applicantsUpper': 6,
+                'favouritesLower': 3,
+                'favouritesUpper': 5,
+            }
 
     tags = [
         {
@@ -101,7 +130,8 @@ class Fake():
                 'NotableSkills': [self.fake.bs() for x in range(choice(range(1,4)))],
                 'Experience': [self.fake.sentence(nb_words=3, variable_nb_words=True) for x in range(choice(range(1,4)))],
                 'Qualifications': [choice(quals) for x in range(choice(range(1,4)))],
-                'PhoneNumber': self.fake.phone_number()
+                'PhoneNumber': self.fake.phone_number(),
+                'Location': self.fake.location_on_land()[2]
             }
         }
 
@@ -150,7 +180,8 @@ class Fake():
                 'IsOpen': choice([True, True, True, False]),
                 'PhoneNumber': self.fake.phone_number(),
                 'Email': self.fake.free_email(),
-                'Created': self.fake.date_this_year().strftime('%Y-%m-%d')
+                'Created': self.fake.date_this_year().strftime('%Y-%m-%d'),
+                'Location': self.fake.location_on_land()[2]
             }
         }
 
@@ -257,7 +288,7 @@ def readFixtures():
     ]
 
 
-def generateData():
+def generateData(limits):
     fixtures = readFixtures()
     
     employees = fixtures[0]
@@ -270,7 +301,7 @@ def generateData():
     tags = f.tags
 
 
-    for x in range(25):  # full: 25, test: 2
+    for x in range(limits['employees']):  # full: 25, test: 2
         # add employees
         user = f.User()
         employees.append(user)
@@ -296,18 +327,18 @@ def generateData():
     #         employerDetails.append(details)
 
     for employer in employers:
-        vacs = [f.Vacancy(employer) for x in range(choice(range(3,7)))] # full: 8,20  test: 3,7
+        vacs = [f.Vacancy(employer) for x in range(choice(range(limits['vacanciesLower'], limits['vacanciesUpper'])))] # full: 8,20  test: 3,7
         vacancies += [el for el in vacs if el != None]
 
     for vacancy in vacancies:
-        applicants = sample(employees, choice(range(3,6)))   # full: 8,20  test: 3,6
+        applicants = sample(employees, choice(range(limits['applicantsLower'], limits['applicantsUpper'])))   # full: 8,20  test: 3,6
         for applicant in applicants:
             app = f.Application(applicant, vacancy)
 
             if app != None:
                 applications.append(app)
         
-        favouriters = sample(employees, choice(range(2,5)))   # full: 3,11  test: 2,5
+        favouriters = sample(employees, choice(range(limits['favouritesLower'], limits['favouritesUpper'])))   # full: 3,11  test: 2,5
         
         for favouriter in favouriters:
             fav = f.Favourite(favouriter, vacancy)
@@ -323,13 +354,20 @@ def generateData():
 
 
 if __name__ == '__main__':
-    f = Fake()
+    try:
+        type = sys.argv[1].lower()
+        
+        if type not in ['test', 'full']:
+            print('Invalid dataset type: must be either \'test\' or \'full\' (default)')
+            exit()
+    except IndexError as err:
+        type = 'full'
 
-    outpath = './api/authentication/fixtures/testseed.json'  # fullseed or testseed
+    f = Fake(type)
 
-    data = generateData()
+    data = generateData(f.params)
 
-    with open(outpath, 'w') as outfile:
+    with open(f.outpath, 'w') as outfile:
         outfile.write(data)
 
 
