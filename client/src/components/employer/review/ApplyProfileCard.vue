@@ -2,7 +2,6 @@
 
     import api, { apiCatchError } from '@/assets/js/api';
 
-
     const emit = defineEmits(['match', 'defer', 'reject'])
 
     const { application, profile, vacancyId } = defineProps(['application', 'profile', 'vacancyId']);

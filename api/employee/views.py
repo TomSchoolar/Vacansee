@@ -1,3 +1,4 @@
+import jwt as jwtLib
 from math import ceil
 from rest_framework import status
 from rest_framework.response import Response
@@ -451,17 +452,14 @@ def postReject(request):
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
+
+
 @api_view(['DELETE'])
 def deleteApplication(request, applicationId):
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
 
     try:
         application = Application.objects.get(
@@ -472,10 +470,10 @@ def deleteApplication(request, applicationId):
         application.delete()
         return Response(status=status.HTTP_200_OK)
     except Application.DoesNotExist:
-        return Response({'status': 401, 'message':'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'status': 401, 'message': 'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: {err}')
-        return Response({'status':500, 'message':'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'status': 500, 'message': 'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
