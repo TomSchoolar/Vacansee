@@ -31,7 +31,7 @@ class applicationTestCase(TestCase):
 
     userId = 2 # Adam
     vacancyId = 1
-    jwt = createJwt(2)
+    jwt = createJwt(userId)
     applicationId = 1003
     fixtures = ['authentication/fixtures/testseed.json']
 
