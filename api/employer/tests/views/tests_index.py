@@ -1,21 +1,23 @@
 from math import ceil
+from venv import create
 from django.test import TestCase
-from django.core import management
 from employer.models import Vacancy
 from django.db.models import Count, Q
 from employer.serializers import VacancySerializer
+from authentication.tests.jwtFuncs import createJwt
 from employer.helpers.getIndex import getVacancyStats
 
 
 class indexTestCase(TestCase):
 
+    jwt = createJwt(4)
     fixtures = ['authentication/fixtures/testseed.json']
 
     # GET INDEX TESTS
 
     def test_validRequestSortNewApplications(self):
         # User: Sabah
-        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'newApps', 'filter': 'all', 'pageNum': 1, 'count': '10' })
+        response = self.client.get('/e/vacancy/', { 'sort': 'newApps', 'filter': 'all', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
         
         vacancySet = Vacancy.objects.filter(
                 UserId__exact = 4
@@ -35,12 +37,13 @@ class indexTestCase(TestCase):
             'companyName': 'Facebook'
         }
 
+        self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
 
     def test_incorrectlyLargePageNumSortDateDesc(self):
         # User: Sabah
-        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'dateDesc', 'filter': 'all', 'pageNum': 3, 'count': '10' })
+        response = self.client.get('/e/vacancy/', { 'sort': 'dateDesc', 'filter': 'all', 'pageNum': 3, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
         
         vacancySet = Vacancy.objects.filter(
                 UserId__exact = 4
@@ -58,13 +61,14 @@ class indexTestCase(TestCase):
             'companyName': 'Facebook'
         }
 
+        self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
 
 
     def test_onlyOpenAdvertsSortTitleAsc(self):
         # User: Sabah
-        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'titleAsc', 'filter': 'active', 'pageNum': 1, 'count': '10' })
+        response = self.client.get('/e/vacancy/', { 'sort': 'titleAsc', 'filter': 'active', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
         
         vacancySet = Vacancy.objects.filter(
                 UserId__exact = 4,
@@ -83,12 +87,13 @@ class indexTestCase(TestCase):
             'companyName': 'Facebook'
         }
 
+        self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
     
     def test_onlyClosedSortTitleDesc(self):
         # User: Sabah
-        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'titleDesc', 'filter': 'closed', 'pageNum': 1, 'count': '10' })
+        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'titleDesc', 'filter': 'closed', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
         
         vacancySet = Vacancy.objects.filter(
                 UserId__exact = 4,
@@ -107,12 +112,14 @@ class indexTestCase(TestCase):
             'companyName': 'Facebook'
         }
 
+        self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
 
     def test_noVacanciesIncorrectlyLargePageNum(self):
         # User: empty
-        response = self.client.get('/e/vacancy/', { 'uID': 7, 'sort': 'newApps', 'filter': 'all', 'pageNum': 2, 'count': '10' })
+        jwt = createJwt(7)
+        response = self.client.get('/e/vacancy/', { 'sort': 'newApps', 'filter': 'all', 'pageNum': 2, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
         
         expectedData = {
             'vacancies': [],
@@ -121,12 +128,13 @@ class indexTestCase(TestCase):
             'companyName': 'Discord'
         }
 
+        self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
     
     def test_missingParameters(self):
         # User: Sabah
-        response = self.client.get('/e/vacancy/', { 'uID': 4, 'sort': 'newApps' })
+        response = self.client.get('/e/vacancy/', { 'sort': 'newApps' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         self.assertEquals(response.status_code, 400)
 
@@ -135,7 +143,7 @@ class indexTestCase(TestCase):
 
     def test_validId(self):
         # Sabah
-        response = self.client.get('/e/vacancy/stats/', { 'uID': 4 })
+        response = self.client.get('/e/vacancy/stats/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         expectedStats = { 
             'activeAdverts': 5, 
@@ -145,11 +153,13 @@ class indexTestCase(TestCase):
             'rejectedApplications': 10, 
         } 
 
+        self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedStats, response.data['stats'])
 
 
     def test_invalidId(self):
-        response = self.client.get('/e/vacancy/stats/', { 'uID': 9999 })
+        jwt = createJwt(9999)
+        response = self.client.get('/e/vacancy/stats/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         expectedStats = { 
             'activeAdverts': 0, 
@@ -158,13 +168,15 @@ class indexTestCase(TestCase):
             'acceptedApplications': 0, 
             'rejectedApplications': 0, 
         } 
-
+        
+        self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedStats, response.data['stats'])
 
 
     def test_noAdverts(self):
         # empty
-        response = self.client.get('/e/vacancy/stats/', { 'uID': 7 })
+        jwt = createJwt(7)
+        response = self.client.get('/e/vacancy/stats/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         expectedStats = { 
             'activeAdverts': 0, 
@@ -174,11 +186,11 @@ class indexTestCase(TestCase):
             'rejectedApplications': 0, 
         } 
 
+        self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedStats, response.data['stats'])
 
     
-    def test_missingParameter(self):
-        # Sabah
+    def test_missingAccessToken(self):
         response = self.client.get('/e/vacancy/stats/')
 
-        self.assertEquals(response.status_code, 400)
+        self.assertEquals(response.status_code, 401)
