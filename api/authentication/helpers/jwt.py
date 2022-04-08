@@ -16,6 +16,9 @@ def getTokenFromRequest(request):
     authToken = request.META.get('HTTP_AUTHORIZATION')
     authTokenRegex = re.compile(r'^Bearer: (.+\..+\..+)')
 
+    if not authToken:
+        raise KeyError('Auth token missing from request')
+
     jwtRegex = authTokenRegex.match(authToken)
 
     if jwtRegex == None:
