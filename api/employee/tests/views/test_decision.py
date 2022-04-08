@@ -4,7 +4,6 @@ from django.test import TestCase
 from authentication import jwt as jwtHelper
 from datetime import datetime, timezone, timedelta
 from employee.models import Favourite, Application, Reject
-from employee.serializers import FavouriteSerializer, ApplicationSerializer, RejectSerializer
 
 
 env = environ.Env()

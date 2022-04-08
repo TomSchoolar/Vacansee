@@ -1,28 +1,17 @@
 <script setup>
+    import axios from 'axios';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
     
-    import { ref } from 'vue';
+    import { jwtGetId } from '@/assets/js/jwt';
+    import { ref, watch, onMounted } from 'vue';
 
 
     // vars init
     const tagsLim = 6;
     const extraTags = '';
     const notifs = ref(2);
-    const favourites = ref([
-        {
-            "VacancyName":"Junior Developer","Salary":"Competitive","Description":"Looking for a young developer with knowledge in Python","SkillsRequired":["Python","Team-Working","Django"],"ExperienceRequired":["Agile team experience"],"TimeZone":0,"Tags":["0","1","4"],"IsOpen":true,"PhoneNumber":"07745469444","Email":"example@facebook.com","Created":"2022-03-01","Location":"Birmingham",'Favourited':true,"UserId":4,"CompanyName":"Facebook"
-        },
-        {
-            "VacancyName":"Junior Developer","Salary":"Competitive","Description":"Looking for a young developer with knowledge in Python","SkillsRequired":["Python","Team-Working","Django"],"ExperienceRequired":["Agile team experience"],"TimeZone":0,"Tags":["0","1","4"],"IsOpen":true,"PhoneNumber":"07745469444","Email":"example@facebook.com","Created":"2022-03-01","Location":"Birmingham",'Favourited':true,"UserId":4,"CompanyName":"Facebook"
-        },
-        {
-            "VacancyName":"Junior Developer","Salary":"Competitive","Description":"Looking for a young developer with knowledge in Python","SkillsRequired":["Python","Team-Working","Django"],"ExperienceRequired":["Agile team experience"],"TimeZone":0,"Tags":["0","1","4"],"IsOpen":true,"PhoneNumber":"07745469444","Email":"example@facebook.com","Created":"2022-03-01","Location":"Birmingham",'Favourited':true,"UserId":4,"CompanyName":"Facebook"
-        },
-        {
-            "VacancyName":"Junior Developer","Salary":"Competitive","Description":"Looking for a young developer with knowledge in Python","SkillsRequired":["Python","Team-Working","Django"],"ExperienceRequired":["Agile team experience"],"TimeZone":0,"Tags":["0","1","4"],"IsOpen":true,"PhoneNumber":"07745469444","Email":"example@facebook.com","Created":"2022-03-01","Location":"Birmingham",'Favourited':true,"UserId":4,"CompanyName":"Facebook"
-        }
-    ]);
+    const vacancies = ref([]);
 
     // dropdown values
     const limit = ref(3);
@@ -31,7 +20,7 @@
     // pagination
     const page = ref(1);
     const numPages = ref(1);
-    const numFavourites = ref(0);
+    const numVacancies = ref(0);
 
     const tags = [
         {
@@ -61,6 +50,103 @@
     ]
 
     document.title = 'Favourites | Vacansee';
+
+        // api request function
+    const getFavourites = async (options) => {
+        const { count = 3, pageNum = 1, sort = 'dateDesc' } = options;
+
+        const uID = jwtGetId(window.localStorage.jwt);
+
+        const response = await axios({
+            method: 'get',
+            url: '/favourites/',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID,
+                sort,
+                count,
+                pageNum
+            }
+        }).catch((err) => {
+            console.log(`oops: ${ err }`);
+        });
+
+        if(!response || !response.data)
+            return false;
+
+        const { data } = response;
+
+        if(!data)
+            return false;
+
+        const { 
+            vacancies: newVacancies = vacancies.value, 
+            numPages: pages = 1, 
+            numVacancies: total = 0,
+        } = data;
+
+
+        while((page.value - 1) * limit.value >= total) page.value--;
+
+        numPages.value = pages;
+        numVacancies.value = total;
+        vacancies.value = newVacancies;
+        return true;
+    }
+
+    // vacancy api request
+    onMounted(async () => {
+        const result = await getFavourites({ });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+    });
+
+    // get vacancies in new order
+    const sortVacancies = async (sortParam) => {
+        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value });
+        
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        sort.value = sortParam;
+    }
+
+    // pagination: change page
+    const changePage = async (newPage) => {
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        page.value = newPage;   
+    }
+
+    watch(limit, async (newLimit) => {
+        // change number of vacancies per page
+        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
+
+        if(page.value < 0)
+            page.value = 0;
+
+        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.value });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+
+        limit.value = newLimit;
+    });
+
+    watch(sort, sortVacancies);
 
 </script>
 
@@ -100,9 +186,9 @@
                     </div>
             </div>
 
-            <div class='vacancy-container'>
-                <ApplyVacancyCard v-for='vacancy in favourites' :vacancy=vacancy :tags='tags' />
-            </div> 
+           <div class='vacancy-container'>
+                <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
+            </div>
 
             <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
             <i class="fa-solid fa-circle-arrow-right"></i>
@@ -117,6 +203,10 @@
 
 
 <style scoped>
+    *:deep(.card) {
+        margin-right: 25px;
+    }
+
     select {
         border: 2px solid;
         float:right;
@@ -238,9 +328,11 @@
     }
 
     .vacancy-container { 
-        text-align: center; 
         display: flex; 
-        justify-content: space-evenly; 
+        flex-direction: row;
+        justify-content: center; 
         flex-wrap: wrap;
+
+
     }
 </style>

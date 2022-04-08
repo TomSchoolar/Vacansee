@@ -9,5 +9,6 @@ urlpatterns = [
     path('applications/', views.getApplications),
     path('applications/stats/', views.getApplicationStats),
     path('applications/delete/<int:applicationId>/', views.deleteApplication),
-    path('applications/<int:applicationId>/', views.getApplicationDetails)
+    path('applications/<int:applicationId>/', views.getApplicationDetails),
+    path('favourites/', views.getFavourites)
 ]
