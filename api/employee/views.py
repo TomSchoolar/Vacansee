@@ -164,6 +164,8 @@ def postApplication(request):
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
+
+
 @api_view(['GET'])
 def getFavourites(request):
     params = request.query_params
@@ -375,6 +377,8 @@ def postReject(request):
         return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
+
+
 
 @api_view(['DELETE'])
 def deleteApplication(request, applicationId):
