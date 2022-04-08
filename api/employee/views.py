@@ -2,7 +2,7 @@ from os import stat
 import jwt as jwtLib
 from math import ceil
 from rest_framework import status
-from employee.models import Application
+from employee.models import Application, Favourite
 from authentication import jwt as jwtHelper
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -165,8 +165,92 @@ def postApplication(request):
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
-def favourites(request):
-    return Response(status=status.HTTP_200_OK)
+def getFavourites(request):
+    params = request.query_params
+
+    # destructure params and typecast
+    try:
+        uID = params['uID']
+        sort = params['sort']
+        count = int(params['count'])
+        pageNum = int(params['pageNum'])
+    except:
+        return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # parse sort parameter into django sort parameter
+    if sort == 'dateDesc':
+        sortParam = '-Created'
+    elif sort == 'dateAsc':
+        sortParam = 'Created'
+    elif sort == 'titleAsc':
+        sortParam = 'VacancyName'
+    else:
+        # 'titleDesc'
+        sortParam = '-VacancyName'
+
+    try:
+        favouriteSet = Favourite.objects.filter(
+                UserId__exact = uID
+        )
+
+        VacancyIds = []
+
+        for fav in favouriteSet:
+            VacancyIds.append(int(fav.VacancyId.VacancyId))
+
+        # get number of pages
+        numVacancies = len(VacancyIds)
+        pages = int(ceil(numVacancies / int(params['count'])))
+        
+        # deals with a lower number of pages than the current page
+        while (pageNum - 1) * count >= numVacancies and pageNum > 1:
+            pageNum -= 1
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status': 500, 'message': 'Server error counting vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    skip = max(count * (pageNum - 1), 0)
+    limit = count * pageNum
+
+    try:
+        # get vacancies
+        vacanciesSet = Vacancy.objects.filter(
+            VacancyId__in = VacancyIds
+        ).order_by(sortParam)[skip:limit]
+
+        vacancySerializer = VacancySerializer(vacanciesSet, many=True)
+        vacancies = vacancySerializer.data
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status': 500, 'message': 'Server error fetching vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+
+    try:
+        # get company name
+        for vacancy in vacancies:
+            employerDetails = EmployerDetails.objects.get(UserId__exact = vacancy['UserId'])
+            vacancy['CompanyName'] = employerDetails.CompanyName
+
+    except EmployerDetails.DoesNotExist:
+        return Response(data={'code': 500, 'message': 'error getting company name for vacancy'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'code': 500, 'message': 'Server error getting company name and stats'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    # compile return data and send response
+    returnData = {
+        'numPages': pages,
+        'vacancies': vacancies,
+        'numVacancies': numVacancies
+    }
+
+    return Response(returnData)
+
+
 
 @api_view(['POST'])
 def postFavourite(request):
