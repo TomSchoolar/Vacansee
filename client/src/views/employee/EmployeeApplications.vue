@@ -125,7 +125,7 @@
 
 
     const showMatch = async (matchId) => {
-        const response = await axios({
+        const response = await api({
             url: `/applications/${ matchId }/`,
             method: 'get',
             responseType: 'json'

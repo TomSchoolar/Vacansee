@@ -1,9 +1,8 @@
 <script setup>
-    import axios from 'axios';
+    import api, { apiCatchError } from '@/assets/js/api';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
     
-    import { jwtGetId } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
 
 
@@ -55,22 +54,17 @@
     const getFavourites = async (options) => {
         const { count = 3, pageNum = 1, sort = 'dateDesc' } = options;
 
-        const uID = jwtGetId(window.localStorage.jwt);
 
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/favourites/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
             params: {
-                uID,
                 sort,
                 count,
                 pageNum
             }
-        }).catch((err) => {
-            console.log(`oops: ${ err }`);
-        });
+        }).catch(apiCatchError);
 
         if(!response || !response.data)
             return false;
