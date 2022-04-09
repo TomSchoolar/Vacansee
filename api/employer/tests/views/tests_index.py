@@ -1,16 +1,15 @@
 from math import ceil
-from venv import create
 from django.test import TestCase
 from employer.models import Vacancy
 from django.db.models import Count, Q
 from employer.serializers import VacancySerializer
-from authentication.tests.jwtFuncs import createJwt
 from employer.helpers.getIndex import getVacancyStats
+from authentication.tests.jwtFuncs import createAccessToken
 
 
 class indexTestCase(TestCase):
 
-    jwt = createJwt(4)
+    jwt = createAccessToken(4)
     fixtures = ['authentication/fixtures/testseed.json']
 
     # GET INDEX TESTS
@@ -118,7 +117,7 @@ class indexTestCase(TestCase):
 
     def test_noVacanciesIncorrectlyLargePageNum(self):
         # User: empty
-        jwt = createJwt(7)
+        jwt = createAccessToken(7)
         response = self.client.get('/e/vacancy/', { 'sort': 'newApps', 'filter': 'all', 'pageNum': 2, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
         
         expectedData = {
@@ -158,7 +157,7 @@ class indexTestCase(TestCase):
 
 
     def test_invalidId(self):
-        jwt = createJwt(9999)
+        jwt = createAccessToken(9999)
         response = self.client.get('/e/vacancy/stats/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         expectedStats = { 
@@ -175,7 +174,7 @@ class indexTestCase(TestCase):
 
     def test_noAdverts(self):
         # empty
-        jwt = createJwt(7)
+        jwt = createAccessToken(7)
         response = self.client.get('/e/vacancy/stats/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         expectedStats = { 

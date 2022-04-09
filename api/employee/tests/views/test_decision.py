@@ -1,5 +1,5 @@
 from django.test import TestCase
-from authentication.tests.jwtFuncs import createJwt
+from authentication.tests.jwtFuncs import createAccessToken
 from employee.models import Favourite, Application, Reject
 
 
@@ -7,7 +7,7 @@ from employee.models import Favourite, Application, Reject
 class decisionTestCase(TestCase):
 
     fixtures = ['authentication/fixtures/testseed.json']
-    jwt = createJwt(2)
+    jwt = createAccessToken(2)
 
     def test_favouriting(self):
 

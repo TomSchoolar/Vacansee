@@ -7,7 +7,7 @@ class applicationTestCase(TestCase):
 
     userId = 2 # Adam
     vacancyId = 1
-    jwt = jwtFuncs.createJwt(userId)
+    jwt = jwtFuncs.createAccessToken(userId)
     applicationId = 1003
     fixtures = ['authentication/fixtures/testseed.json']
 

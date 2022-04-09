@@ -6,12 +6,12 @@ from datetime import datetime, timezone, timedelta
 env = environ.Env()
 
 
-def createJwt(uid, expire='later'):
+def createAccessToken(uid, expire='later', typ='access'):
     jwt = { 
         'id': uid,
         'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=60),
         'iat': datetime.now(tz=timezone.utc),
-        'typ': 'access'
+        'typ': typ
     }
 
     if expire == 'now':
@@ -24,3 +24,8 @@ def createJwt(uid, expire='later'):
     )
 
     return encodedJWT
+
+
+def createRefreshToken(uid, expire='later'):
+    token = createAccessToken(uid, expire, 'refresh')
+    return token

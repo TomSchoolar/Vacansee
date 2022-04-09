@@ -20,8 +20,9 @@ def postLogin(request):
         user = UserSerializer(userObj).data
     except User.DoesNotExist:
         return Response(data={'code': 401, 'message': 'invalid login details'}, status=status.HTTP_401_UNAUTHORIZED)
-    except User.MultipleObjectsReturned:
-        return Response(data={'code': 500, 'message': 'multiple users found'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while finding user account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     # check if submitted password matches saved one
     if not passwordHelper.correctPassword(body['password'], user):
@@ -64,7 +65,8 @@ def getLogout(request):
     try:
         jwtHelper.destroyRefreshFamily(request)
     except RefreshToken.DoesNotExist as err:
-        print('refresh token in logout request doesn\'t exist')
+        # refresh token in logout request doesn't exist
+        pass
     except Exception as err:
         print(f'uh oh { err }')
         return Response({ 'status': 500, 'message': 'Server error while trying to delete refresh tokens'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -90,9 +92,6 @@ def postRefreshToken(request):
     # find refresh token in db
     try: 
         token = RefreshToken.objects.get(Token__exact = refreshTokenString)
-        
-        if refreshToken['typ'] != 'refresh':
-            return Response({ 'status': 401, 'message': 'provided refresh token is invalid' }, status=status.HTTP_401_UNAUTHORIZED)
 
         if not token.IsLatest:
             # token reuse, delete whole family

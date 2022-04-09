@@ -1,13 +1,13 @@
 from django.test import TestCase
 from employee.models import Favourite
-from authentication.tests.jwtFuncs import createJwt
+from authentication.tests.jwtFuncs import createAccessToken
 
 
 
 class favouritesTestCase(TestCase):
 
     fixtures = ['authentication/fixtures/testseed.json']
-    jwt = createJwt(2)
+    jwt = createAccessToken(2)
 
     def test_getFavourites(self):
         response = self.client.get('/favourites/', { 'uID':2, 'sort':'titleAsc', 'count':5, 'pageNum':1 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})

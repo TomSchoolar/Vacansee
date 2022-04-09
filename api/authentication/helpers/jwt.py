@@ -22,7 +22,7 @@ def getTokenFromRequest(request):
     jwtRegex = authTokenRegex.match(authToken)
 
     if jwtRegex == None:
-        raise KeyError('Auth token missing from request')
+        raise jwtLib.InvalidTokenError('Invalid auth token')
 
     return jwtRegex.group(1)
 
@@ -49,12 +49,14 @@ def extractJwt(request):
 
 def extractExpiredJwt(request):
     # get jwt from request irrespective of expiry
-
+    
     try:
         jwt = getTokenFromRequest(request)
         jwt = jwtLib.decode(jwt, env('JWT_SECRET'), algorithms=['HS256'], options={"verify_signature": False})
 
         return jwt
+    except KeyError:
+        return Response({ 'status': 401, 'message': 'Missing auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
         return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
