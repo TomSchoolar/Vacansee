@@ -1,3 +1,6 @@
+# it's actually embarrassing how shit this gitlab server is
+# imagine having to commit a comment to get a pipeline to rerun that only failed
+# because the server crashed for the 900000th time
 stages:
   - build
   - test
