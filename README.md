@@ -41,6 +41,33 @@ The client has a package called axios installed to send and receive requests/res
 - https://www.npmjs.com/package/axios
 - https://axios-http.com/docs/intro
 
+The auth system uses json web tokens (jwts) in the form of access and refresh tokens to provide api access. In order for this system to work, a modified version of the default axios instance must be imported and used in sfcs. Further, in the same file as the modified axios object (called api) there is a request error handler to standardise error handling and tidy up the sfcs. Both objects can be imported and used like this:
+
+```javascript
+import api, { apiCatchError } from '@/assets/js/api';
+
+const makeRequest = async () => {
+    const response = await api({
+        url: '/e/vacancy/',
+        method: 'get',
+        responseType: 'json'
+    }).catch(apiCatchError);
+
+    return response?.data
+}
+```
+
+You will notice in the above example that baseURL and timeout are not defined in the request object, this is because they have been pre-defined in the api object as the api endpoint and 3000 (ms) respectively. These can be overridden if required by setting them in the request object, this might be useful if a request takes a long time (although idk why a request would be taking 3+ seconds).
+
+The authorisation token has also not been added to the request object as the api object adds this itself before sending the request. It will attach the access token unless the url is in an array in the source file (currently only includes /refreshtoken/ and /logout/) in which case the refresh token will be attached. The instance will also update the auth token on all subsequent requests following a token refresh request including those submitted before the refresh request returned. All jwt helper functions have been removed apart from logout() since jwt manipulation should not really occur in the client, if you need user data outside of getting it from the api, this can be retrived from the session in localStorage.
+
+The api object, as well as attaching the auth tokens to every request, handles the case where a request fails with status 401. If this happens, and a refresh token can be retrieved from localStorage, it makes a token refresh request to receive a token pair if the refresh token is valid. If the refresh token has expired, is missing or the refresh request fails in some other way, the user is logged out. Further, token reuse results in both parties that used the same token in refresh requests being logged out (once their access token has expired).
+
+All existing api requests on main have been updated to use the api object, make sure that any new routes also use this otherwise the authentication system will fail and all requests will result in 401 if you don't provide an access token and *all* requests after the access token has expired will fail.
+
+Finally, do not pass the current user id as a param/data item in an api request, get the id from the jwt only on the api side. To help enforce this and for improved security, the user id has been removed from the session.
+
+
 
 ## CI/CD
 
@@ -76,13 +103,13 @@ In order to be make sure python tests are discoverable, they must be in a file w
         fixtures = ['authentication/fixutures/fixtures.json'] 
 
         def this_wont_run(self):
-            print 'Fail'
+            print('Fail')
 
         def test_this_will(self):
-            print 'Win'
+            print('Win')
 ```
 
-Each django app will auto-generate a tests.py file, this will be insignificant to hold all the tests for each app so it is advisable to create a tests folder with multiple test_namehere.py files. If creating a tests directory, you also need to create an empty file called \_\_init\_\_.py in order to make django discover the tests files in the directory.
+Each django app will auto-generate a tests.py file, this will be insufficient to hold all the tests for each app so it is advisable to create a tests folder with multiple test_namehere.py files. If creating a tests directory, you also need to create an empty file called \_\_init\_\_.py in order to make django discover the tests files in the directory.
 
 To run the tests, navigate to /api and run ```python manage.py test```. To run tests and get coverage information, run:
 
