@@ -1,31 +1,7 @@
-import environ
-import jwt as jwtLib
 from django.test import TestCase
-from authentication.helpers import jwt as jwtHelper
-from datetime import datetime, timezone, timedelta
 from employee.models import Favourite
+from authentication.tests.jwtFuncs import createJwt
 
-
-env = environ.Env()
-
-
-def createJwt(uid, expire='later'):
-    jwt = { 
-        'id': uid,
-        'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=60),
-        'iat': datetime.now(tz=timezone.utc)
-    }
-
-    if expire == 'now':
-        jwt['exp'] = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
-
-    encodedJWT = jwtLib.encode(
-        jwt,
-        env('JWT_SECRET'),
-        algorithm='HS256'
-    )
-
-    return encodedJWT
 
 
 class favouritesTestCase(TestCase):

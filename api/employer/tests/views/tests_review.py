@@ -1,34 +1,9 @@
-import environ
-import jwt as jwtLib
 from authentication.models import User
 from employee.models import Application, Profile
-from datetime import datetime, timezone, timedelta
+from authentication.tests.jwtFuncs import createJwt
 from employer.models import EmployerDetails, Vacancy
 from django.test import TestCase, TransactionTestCase
 from employee.serializers import ApplicationSerializer, ProfileSerializer, SummaryProfileSerializer
-
-
-env = environ.Env()
-
-
-def createJwt(uid, expire='later'):
-    jwt = { 
-        'id': uid,
-        'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=60),
-        'iat': datetime.now(tz=timezone.utc)
-    }
-
-    if expire == 'now':
-        jwt['exp'] = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
-
-    encodedJWT = jwtLib.encode(
-        jwt,
-        env('JWT_SECRET'),
-        algorithm='HS256'
-    )
-
-    return encodedJWT
-
 
 
 class getReviewTests(TestCase):

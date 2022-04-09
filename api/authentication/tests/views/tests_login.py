@@ -22,11 +22,16 @@ class LoginPostTestClass(TestCase):
         accessToken = jwtLib.decode(response.data['accessToken'], env('JWT_SECRET'), algorithms=['HS256'], verify=True)
         refreshToken = jwtLib.decode(response.data['refreshToken'], env('JWT_SECRET'), algorithms=['HS256'], verify=True)
 
-        if not accessToken['exp'] or not accessToken['iat'] or accessToken['id'] != 2:
-            raise Exception
+        
+        self.assertTrue('exp' in accessToken)
+        self.assertTrue('iat' in accessToken)
+        self.assertEquals(accessToken['id'], 2)
+        self.assertEquals(accessToken['typ'], 'access')
 
-        if not refreshToken['exp'] or not refreshToken['iat'] or refreshToken['id'] != 2:
-            raise Exception
+        self.assertTrue('exp' in refreshToken)
+        self.assertTrue('iat' in refreshToken)
+        self.assertEquals(refreshToken['id'], 2)
+        self.assertEquals(refreshToken['typ'], 'refresh')
 
 
     def test_incorrectEmail(self):
