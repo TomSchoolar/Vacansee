@@ -96,14 +96,8 @@ def getIndex(request):
     vacancies = vacancySerializer.data
 
     try:
-        # get company name
-        employerDetails = EmployerDetails.objects.get(UserId__exact = jwt['id'])
-        companyName = employerDetails.CompanyName
-
         # get number of new, matched and rejected apps for each vacancy
         indexHelper.getVacancyStats(vacancies)
-    except EmployerDetails.DoesNotExist:
-        return Response(data={'code': 500, 'message': 'error getting company name or stats'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as err:
         print(f'uh oh: { err }')
         return Response(data={'code': 500, 'message': 'Server error getting company name and stats'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -113,7 +107,6 @@ def getIndex(request):
     returnData = {
         'numPages': pages,
         'vacancies': vacancies,
-        'companyName': companyName,
         'numVacancies': numVacancies
     }
 

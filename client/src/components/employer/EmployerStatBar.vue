@@ -1,5 +1,7 @@
 <script setup>
-    const props = defineProps(['user', 'stats']);
+    import { ref } from 'vue';
+
+    const props = defineProps(['stats']);
     
     const labels = {
         newApplications: 'New Applications',
@@ -8,13 +10,18 @@
         rejectedApplications: 'Rejected Applications',
         acceptedApplications: 'Accepted Applications'
     };
+
+    // get company name
+    let session = window.localStorage.getItem('session') ?? '{}'
+    const { CompanyName: cn = 'Vacancy Stats' } = JSON.parse(session);
+    const companyName = ref(cn);
 </script>
 
 
 
 <template>
     <div class='stat-bar'>
-        <h1 class='title'>{{ user }}</h1>
+        <h1 class='title'>{{ companyName }}</h1>
         <hr />
         <div class='stat-boxes'>
             <div class='stat-box' v-for='[key, value] of Object.entries(stats)' :key='key'>
