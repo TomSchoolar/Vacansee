@@ -70,6 +70,7 @@ import EmployerIndex from '../views/employer/EmployerIndex.vue';
 import EmployerMatch from '../views/employer/EmployerMatch.vue';
 import EmployerReview from '../views/employer/EmployerReview.vue';
 import EmployerAccount from '../views/employer/EmployerAccount.vue';
+import EmployerNewVacancy from '../views/employer/EmployerNewVacancy.vue';
 
 const employerRoutes = [
     {
@@ -103,7 +104,15 @@ const employerRoutes = [
         meta : {
           middleware: [isLoggedIn, isEmployer]
         }
-      }
+    },
+    {
+        path: '/e/vacancy/new',
+        name: 'EmployerNewVacancy',
+        component: EmployerNewVacancy,
+        meta: {
+            middleware: [isLoggedIn, isEmployer]
+        }
+    }
 ];
 
 
