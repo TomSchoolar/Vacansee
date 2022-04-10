@@ -1,8 +1,12 @@
 import sys
 import json
 from faker import Faker
+from django.conf import settings
 from random import choice, sample
 
+settings.configure()
+
+from django.contrib.auth.hashers import make_password
 
 class Fake():
     userPK = 1000
@@ -91,8 +95,7 @@ class Fake():
             'fields': {
                 'IsEmployer': employer,
                 'Email': self.fake.free_email(),
-                'PasswordHash': 'password',
-                'PasswordSalt': self.fake.pystr()
+                'Password': make_password('password')
             }
         }
 

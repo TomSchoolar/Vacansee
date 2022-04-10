@@ -5,8 +5,7 @@
         "fields" : {
             "IsEmployer" : false,
             "Email" : "txs090@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "7RiFwFWY"
+            "Password": "pbkdf2_sha256$320000$yfOSGiUmnmBGqlODy0L25p$HKR9U/074B6hQ1ThujIE8/Mm/ridT9JH4trcv3Ux7/A="
         }
     },
 
@@ -33,8 +32,7 @@
         "fields" : {
             "IsEmployer" : false,
             "Email" : "ajb042@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "LO4#uY5m"
+            "Password" : "pbkdf2_sha256$320000$dlKJXgqhzDgaTE9RloYwF8$404pSYAGQJa9CtBk67ZuI1eJGrEnksTQMcEjgsMSEbU="
         }
     },
 
@@ -61,8 +59,7 @@
         "fields" : {
             "IsEmployer" : false,
             "Email" : "cxd066@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "WbjbIE2u"
+            "Password" : "pbkdf2_sha256$320000$8hpOaFZLF5c3gR9Ka9IAZ1$9lZL+EzCKq8u+Rw8Exie9OzWnOcQ32V+DhMJYoyApDc="
         }
     },
 
@@ -89,8 +86,7 @@
         "fields" : {
             "IsEmployer" : true,
             "Email" : "sxd110@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "!*Y(A?Rv"
+            "Password" : "pbkdf2_sha256$320000$ul1OWJnsMBiNGh62LejtKE$+TCyu73LPK1z4eyVUzpr/VD0+QSdbHeJkFtU3d6lkgA="
         }
     },
 
@@ -110,8 +106,7 @@
         "fields" : {
             "IsEmployer" : true,
             "Email" : "yxs909@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "s)/Pn0O("
+            "Password" : "pbkdf2_sha256$320000$XVewp5BVRTlyTFYay0ulYF$6JsPaEoGCFSLdqcVM/vOGKTWBNy+STq/yhFYdMyl2l4="
         }
     },
 
@@ -131,8 +126,7 @@
         "fields" : {
             "IsEmployer" : true,
             "Email" : "vrt911@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "V0u#_UvU"
+            "Password" : "pbkdf2_sha256$320000$t3CjBQlnsu2ZdzreETOVCz$FT6Ne3f3jgGVokeb6TE8MB+LVbHH3wmy/znWrm7JpUw="
         }
     },
 
@@ -152,8 +146,7 @@
         "fields" : {
             "IsEmployer" : true,
             "Email" : "empty@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "kjahasdflkjas"
+            "Password" : "pbkdf2_sha256$320000$H6huUaH3c2FRZbXySspwgG$R9YiPpDQYPrtAxYcAP4X7JFw+ly1epI2bvsvFbcSW/g="
         }
     },
 

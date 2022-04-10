@@ -145,11 +145,11 @@ class indexTestCase(TestCase):
         response = self.client.get('/e/vacancy/stats/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         expectedStats = { 
-            'activeAdverts': 5, 
-            'totalApplications': 25, 
-            'newApplications': 12, 
-            'acceptedApplications': 3, 
-            'rejectedApplications': 10, 
+            'activeAdverts': 3, 
+            'totalApplications': 20, 
+            'newApplications': 8, 
+            'acceptedApplications': 4, 
+            'rejectedApplications': 8, 
         } 
 
         self.assertEquals(response.status_code, 200)

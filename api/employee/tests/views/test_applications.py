@@ -8,7 +8,7 @@ class applicationTestCase(TestCase):
     userId = 2 # Adam
     vacancyId = 1
     jwt = jwtFuncs.createAccessToken(userId)
-    applicationId = 1003
+    applicationId = 1002
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_getApplications(self):
@@ -60,7 +60,7 @@ class applicationTestCase(TestCase):
 
 
     def test_delete_invalid(self):
-        applicationId = 1019
+        applicationId = 1017
         response = self.client.delete(f'/applications/delete/{ applicationId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 401)

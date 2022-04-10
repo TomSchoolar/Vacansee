@@ -110,7 +110,7 @@ class putReviewValidTests(TransactionTestCase):
     
     userId = 4 # Sabah
     vacancyId = 2 # Senior Developer (Facebook)
-    applicationId = 1008 # Elizabeth to Senior Developer
+    applicationId = 1006 # Adam to Senior Developer
     jwt = createAccessToken(userId)
     reset_sequences = True
 
@@ -164,7 +164,7 @@ class putReviewInvalidTests(TestCase):
     
     userId = 4 # Sabah
     vacancyId = 2 # Senior Developer (Facebook)
-    applicationId = 1005 # Tom to Senior Developer
+    applicationId = 1005 # Christopher to Senior Developer
     jwt = createAccessToken(userId)
 
     fixtures = ['authentication/fixtures/testseed.json']
