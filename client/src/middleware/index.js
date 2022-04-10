@@ -11,7 +11,13 @@ middleware.isLoggedIn = ({ next, router }) => {
 middleware.isNotLoggedIn = ({ next, router }) => {
     if(localStorage.getItem('refreshToken')) {
         // if logged in, redirect to respective home page
-        const { IsEmployer = false } = localStorage.getItem('session');
+        const session = localStorage.getItem('session');
+        console.log(session)
+        if(!session) {
+            window.localStorage.removeItem('accessToken');
+            window.localStorage.removeItem('refreshToken');
+        }
+
         if(IsEmployer)
             router.push({ name: 'EmployerIndex' });
         else
@@ -35,7 +41,13 @@ middleware.isNotLoggedIn = ({ next, router }) => {
 }
 
 middleware.isEmployer = ({ next, router }) => {
-    const session = JSON.parse(localStorage.getItem('session'));
+    let session = localStorage.getItem('session');
+
+    if(!session) {
+        router.push({ name: 'LogIn' });
+    }
+
+    session = JSON.parse(session);
 
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === false) {
         router.push({ name: 'EmployeeIndex' });
@@ -45,7 +57,13 @@ middleware.isEmployer = ({ next, router }) => {
 }
 
 middleware.isEmployee = ({ next, router }) => {
-    const session = JSON.parse(localStorage.getItem('session'));
+    let session = localStorage.getItem('session');
+
+    if(!session) {
+        router.push({ name: 'LogIn' });
+    }
+
+    session = JSON.parse(session);
 
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === true) {
         router.push({ name: 'EmployerIndex' });

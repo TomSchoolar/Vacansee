@@ -17,7 +17,7 @@ const refreshAuthLogic = async (failedRequest) => {
     }).catch(async (error) => {
         try {
             // error while refreshing access token
-            let data = error?.response?.data ?? {};
+            let data = error.response.data;
             let { message = error?.message, status = 500 } = data;
             const refreshToken = localStorage.getItem('refreshToken');
 
@@ -76,7 +76,7 @@ api.interceptors.request.use((request) => {
 export const apiCatchError = (error) => {
 
     try {
-        let data = error?.response?.data ?? {};
+        let data = error.response.data;
         let { message = error?.message, status = 500 } = data;
 
         if(status == 401) {

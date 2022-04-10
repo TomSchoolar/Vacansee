@@ -30,13 +30,7 @@
                 email: email.value,
                 password: password.value
             }
-        }).catch((err) => {
-            if(err.response && err.response.status == 401) {
-                alert('incorrect email or password');
-            } else {            
-                console.log(`oops ${ err }`);
-            }
-        });
+        }).catch(apiCatchError);
 
         const { userData: session, accessToken = false, refreshToken = false } = data;
 
