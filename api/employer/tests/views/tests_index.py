@@ -32,8 +32,7 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies),
-            'companyName': 'Facebook'
+            'numVacancies': len(vacancies)
         }
 
         self.assertEquals(response.status_code, 200)
@@ -56,8 +55,7 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies),
-            'companyName': 'Facebook'
+            'numVacancies': len(vacancies)
         }
 
         self.assertEquals(response.status_code, 200)
@@ -82,8 +80,7 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies),
-            'companyName': 'Facebook'
+            'numVacancies': len(vacancies)
         }
 
         self.assertEquals(response.status_code, 200)
@@ -107,8 +104,7 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies),
-            'companyName': 'Facebook'
+            'numVacancies': len(vacancies)
         }
 
         self.assertEquals(response.status_code, 200)
@@ -123,8 +119,7 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': [],
             'numPages': 0,
-            'numVacancies': 0,
-            'companyName': 'Discord'
+            'numVacancies': 0
         }
 
         self.assertEquals(response.status_code, 200)

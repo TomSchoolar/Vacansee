@@ -8,7 +8,6 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.hashers import check_password
 
 
-
 @api_view(['POST'])
 def postLogin(request):
     # get vacancies matching userid
@@ -30,8 +29,23 @@ def postLogin(request):
     if not check_password(body['password'], user['Password']):
         return Response(data={'code': 401, 'message': 'invalid login details'}, status=status.HTTP_401_UNAUTHORIZED)
     
+    try:
+        # get user type specific details
+        print(user['IsEmployer'])
+        if(user['IsEmployer']):
+            extraDetails = authHelper.getEmployerDetails(user['UserId'])
+        else:
+            extraDetails = authHelper.getEmployeeDetails(user['UserId'])
+    except User.DoesNotExist:
+        return Response(data={'code': 400, 'message': 'could not find user details' }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while finding user details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
     # remove private fields from user object
     userData = copy(user)
+    userData = { **userData, **extraDetails }
     toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
 
     for key in toRemove:
@@ -48,7 +62,7 @@ def postLogin(request):
     responseData = {
         'userData': userData,
         'accessToken': accessToken,
-        'refreshToken': refreshToken
+        'refreshToken': refreshToken,
     }
 
     return Response(data=responseData, status=status.HTTP_200_OK)
