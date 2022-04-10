@@ -10,8 +10,7 @@ class User(models.Model):
     UserId = models.AutoField(primary_key=True) 
     Email = models.EmailField(max_length=254, blank=False, unique=True)
     IsEmployer = models.BooleanField(default=False, blank=False)
-    PasswordHash = models.CharField(max_length=500)
-    PasswordSalt = models.CharField(max_length=500)
+    Password = models.CharField(max_length=100, blank=False)
     PasswordResetToken = models.CharField(max_length=100, null=True)
     PasswordResetExpiration = models.DateField(null=True)
 

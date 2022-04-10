@@ -4,6 +4,7 @@ from .models import RefreshToken, User
 from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.contrib.auth.hashers import check_password
 from .helpers import jwt as jwtHelper, password as passwordHelper
 
 
@@ -25,12 +26,12 @@ def postLogin(request):
         return Response(data={'code': 500, 'message': 'Server error while finding user account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     # check if submitted password matches saved one
-    if not passwordHelper.correctPassword(body['password'], user):
+    if not check_password(body['password'], user['Password']):
         return Response(data={'code': 401, 'message': 'invalid login details'}, status=status.HTTP_401_UNAUTHORIZED)
     
     # remove private fields from user object
     userData = copy(user)
-    toRemove = ['UserId', 'PasswordHash', 'PasswordSalt', 'PasswordResetToken', 'PasswordResetExpiration']
+    toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
 
     for key in toRemove:
         del userData[key]
