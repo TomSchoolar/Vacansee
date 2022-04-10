@@ -27,6 +27,7 @@
         --green-focus: #00910d; /* 8% darker */
 
         /* grey */
+        --accent-grey: #bbbbbb;
         --slate: #6b818c;
         --slate-focus: #627680; /* 8% darker */
         --jet: #333;
