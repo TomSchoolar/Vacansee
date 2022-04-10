@@ -35,7 +35,9 @@
         
         
         <div class='form-page'>
-            <div class='circle'></div>
+            <div class='circle'>
+                <i class="fa-solid fa-check"></i>
+            </div>
             <div class='label'>
                 Basic Details
             </div>
@@ -44,7 +46,9 @@
         <div class='spacer'></div>
         
         <div class='form-page'>
-            <div class='circle'></div>
+            <div class='circle'>
+                <i class="fa-solid fa-check"></i>
+            </div>
             <div class='label'>
                 More Details
             </div>
@@ -53,7 +57,9 @@
         <div class='spacer'></div>
         
         <div class='form-page'>
-            <div class='circle'></div>
+            <div class='circle'>
+                <i class="fa-solid fa-check"></i>
+            </div>
             <div class='label'>
                 Contact Details
             </div>
@@ -62,7 +68,9 @@
         <div class='spacer'></div>
         
         <div class='form-page'>
-            <div class='circle'></div>
+            <div class='circle'>
+                <i class="fa-solid fa-check"></i>
+            </div>
             <div class='label'>
                 Logistics
             </div>
@@ -71,7 +79,9 @@
         <div class='spacer'></div>
         
         <div class='form-page'>
-            <div class='circle'></div>
+            <div class='circle'>
+                <i class="fa-solid fa-check"></i>
+            </div>
             <div class='label'>
                 Tags
             </div>
@@ -80,7 +90,9 @@
         <div class='spacer'></div>
         
         <div class='form-page'>
-            <div class='circle'></div>
+            <div class='circle'>
+                <i class="fa-solid fa-check"></i>
+            </div>
             <div class='label'>
                 Review
             </div>
@@ -102,11 +114,22 @@
         border-radius: 50%;
         height: 25px;
         width: 25px;
-        transition: background 0.1s linear 0.05s;
+        transition: 0.1s linear 0.05s;
+        color: var(--accent-grey);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .circle i {
+        position: relative;
+        top: 1px;
+        right: 0.5px;
     }
 
     .circle-colour {
         background: var(--green);
+        color: white;
     }
 
     .label {
