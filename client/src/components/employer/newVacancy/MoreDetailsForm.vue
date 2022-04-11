@@ -1,7 +1,8 @@
 <script setup>
-    import FormText from '@/components/employer/newVacancy/formComponents/FormText.vue';
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
     import FormButtons from '@/components/employer/newVacancy/formComponents/FormButtons.vue';
+    import FormTextArea from '@/components/employer/newVacancy/formComponents/FormTextArea.vue';
+    import FormExpandingText from '@/components/employer/newVacancy/formComponents/FormExpandingText.vue';
 
     const emit = defineEmits(['next', 'back']);
 </script>
@@ -11,9 +12,8 @@
         Enter more job specifics so applicants know what they're applying for.
     </FormHeader>
 
-    <FormText label='company name' name='companyName' :disabled='true' />
-    <FormText label='position title' name='vacancyName' />
-    <FormText label='salary/wage' name='salary' placeholder='e.g. NMW or £30,000 pa or $8/hr' />
+    <FormTextArea label='job description' name='description' rows='7' />
+    <FormExpandingText label='necessary skills' name='skills' :max='3' />
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='emit("next")' />
 </template>

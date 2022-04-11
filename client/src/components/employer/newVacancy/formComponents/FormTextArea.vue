@@ -1,19 +1,18 @@
 <script setup>
-    const props = defineProps(['name', 'label', 'placeholder', 'value', 'disabled'])
+    const props = defineProps(['name', 'label', 'placeholder', 'value', 'rows'])
 </script>
 
 <template>
     <div class='form-group'>
         <label :for='props.name' class='label'>{{ props.label }}:</label>
-        <input 
-            type='text' 
+        <textarea 
             :name='props.name' 
-            class='input'
+            class='textarea'
             :id='props.name' 
             :placeholder='props.placeholder ? props.placeholder : "" ' 
-            :value='props.value ? props.value : "" ' 
-            :disabled='props.disabled ? true : false'
-        >
+            :rows='props.rows ? props.rows : 5'
+            v-model='props.value' 
+        ></textarea>
     </div>
 </template>
 
@@ -25,16 +24,16 @@
         margin: 0 4px 25px 4px;
     }
 
-    .input {
-        padding: 4px 2px;
-        font-size: 16px;
-    }
-
     .label {
         font-weight: bold;
         font-size: 11px;
         margin: 0;
         position: relative;
         left: 1px;
+    }
+
+    .textarea {
+        padding: 4px 2px;
+        font-size: 16px;
     }
 </style>

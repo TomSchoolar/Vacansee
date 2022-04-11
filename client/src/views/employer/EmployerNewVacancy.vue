@@ -10,22 +10,29 @@
     
     import { onMounted, ref } from 'vue';
 
+    let pages;
     const notifs = ref(2);
     const currentPageNum = ref(0);
-    const pages = ['basic details', 'more details'];
 
     // get company name
     let session = window.localStorage.getItem('session') ?? '{}'
     const { CompanyName: cn = 'Vacancy Stats' } = JSON.parse(session);
     const companyName = ref(cn);
 
+    onMounted(() => {
+        pages = document.querySelectorAll('.form-page-container');
+    });
 
     const changePage = (incr) => {
         const maxPage = pages.length - 1;
+        const oldPage = currentPageNum.value;
         const newPage = currentPageNum.value + incr;
 
         if(newPage > maxPage || newPage < 0)
             return;
+
+        pages[oldPage].classList.add('form-page-container-hidden');
+        pages[newPage].classList.remove('form-page-container-hidden');
 
         currentPageNum.value += incr;
     }
@@ -47,8 +54,13 @@
     </nav>
 
     <form class='form-pane'>
-        <BasicDetailsForm @next='changePage(1)' :companyName='companyName' v-if='pages[currentPageNum] == "basic details"' />
-        <MoreDetailsForm @next='changePage(1)' @back='changePage(-1)' v-if='pages[currentPageNum] == "more details"' />
+        <div class='form-page-container'>
+            <BasicDetailsForm @next='changePage(1)' :companyName='companyName' />
+        </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <MoreDetailsForm @next='changePage(1)' @back='changePage(-1)' />
+        </div>
+        
     </form>
 
 </template>
@@ -64,6 +76,13 @@
     .container {
         width: calc(100vw - 80px);
         padding: 0 40px;
+    }
+
+    .form-page-container-hidden {
+        visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
     }
 
     .form-pane {
