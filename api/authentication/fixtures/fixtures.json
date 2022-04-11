@@ -5,8 +5,7 @@
         "fields" : {
             "IsEmployer" : false,
             "Email" : "txs090@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "7RiFwFWY"
+            "Password": "pbkdf2_sha256$320000$yfOSGiUmnmBGqlODy0L25p$HKR9U/074B6hQ1ThujIE8/Mm/ridT9JH4trcv3Ux7/A="
         }
     },
 
@@ -22,7 +21,8 @@
             "NotableSkills" : ["Python", "Vue", "Django"],
             "Experience" : ["1 Year Bar support","1 month work experience in coding","agile team experience"],
             "Qualifications" : ["10 GCSEs","3 A-Levels","1 BSc"],
-            "PhoneNumber" : "07743769344"
+            "PhoneNumber" : "07743769344",
+            "Location": "Birmingham"
         } 
     },
 
@@ -32,8 +32,7 @@
         "fields" : {
             "IsEmployer" : false,
             "Email" : "ajb042@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "LO4#uY5m"
+            "Password" : "pbkdf2_sha256$320000$dlKJXgqhzDgaTE9RloYwF8$404pSYAGQJa9CtBk67ZuI1eJGrEnksTQMcEjgsMSEbU="
         }
     },
 
@@ -49,7 +48,8 @@
             "NotableSkills" : ["JavaScript", "C#", "Python"],
             "Experience" : ["1 year at tescos","1 month work experience in design","waterfall development experience"],
             "Qualifications" : ["CCNA","B-tech","O-Level"],
-            "PhoneNumber" : "07743469344"
+            "PhoneNumber" : "07743469344",
+            "Location": "Wakefield"
         } 
     },
 
@@ -59,8 +59,7 @@
         "fields" : {
             "IsEmployer" : false,
             "Email" : "cxd066@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "WbjbIE2u"
+            "Password" : "pbkdf2_sha256$320000$8hpOaFZLF5c3gR9Ka9IAZ1$9lZL+EzCKq8u+Rw8Exie9OzWnOcQ32V+DhMJYoyApDc="
         }
     },
 
@@ -76,7 +75,8 @@
             "NotableSkills" : ["HTML", "Vue", "CSS"],
             "Experience" : ["Personal Tutoring","2 months working in a lab","team management experience"],
             "Qualifications" : ["5 O-Levels","8 GCSEs","1 BSc"],
-            "PhoneNumber" : "07543769344"
+            "PhoneNumber" : "07543769344",
+            "Location": "London"
         } 
     },
 
@@ -86,8 +86,7 @@
         "fields" : {
             "IsEmployer" : true,
             "Email" : "sxd110@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "!*Y(A?Rv"
+            "Password" : "pbkdf2_sha256$320000$ul1OWJnsMBiNGh62LejtKE$+TCyu73LPK1z4eyVUzpr/VD0+QSdbHeJkFtU3d6lkgA="
         }
     },
 
@@ -107,8 +106,7 @@
         "fields" : {
             "IsEmployer" : true,
             "Email" : "yxs909@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "s)/Pn0O("
+            "Password" : "pbkdf2_sha256$320000$XVewp5BVRTlyTFYay0ulYF$6JsPaEoGCFSLdqcVM/vOGKTWBNy+STq/yhFYdMyl2l4="
         }
     },
 
@@ -128,8 +126,7 @@
         "fields" : {
             "IsEmployer" : true,
             "Email" : "vrt911@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "V0u#_UvU"
+            "Password" : "pbkdf2_sha256$320000$t3CjBQlnsu2ZdzreETOVCz$FT6Ne3f3jgGVokeb6TE8MB+LVbHH3wmy/znWrm7JpUw="
         }
     },
 
@@ -149,8 +146,7 @@
         "fields" : {
             "IsEmployer" : true,
             "Email" : "empty@student.bham.ac.uk",
-            "PasswordHash" : "password",
-            "PasswordSalt" : "kjahasdflkjas"
+            "Password" : "pbkdf2_sha256$320000$H6huUaH3c2FRZbXySspwgG$R9YiPpDQYPrtAxYcAP4X7JFw+ly1epI2bvsvFbcSW/g="
         }
     },
 
@@ -219,7 +215,8 @@
             "IsOpen" : true,
             "PhoneNumber" : "07745469444",
             "Email" : "example@facebook.com",
-            "Created": "2022-03-01"
+            "Created": "2022-03-01",
+            "Location": "London"
         }
     },
 
@@ -238,7 +235,8 @@
             "IsOpen" : false,
             "PhoneNumber" : "07945469444",
             "Email" : "example@facebook.com",
-            "Created": "2022-01-03"
+            "Created": "2022-01-03",
+            "Location": "Birmingham"
         }
     },
 
@@ -257,7 +255,8 @@
             "IsOpen" : false,
             "PhoneNumber" : "07947469444",
             "Email" : "example2@facebook.com",
-            "Created": "2022-02-19"
+            "Created": "2022-02-19",
+            "Location": "Manchester"
         }
     }
 ]

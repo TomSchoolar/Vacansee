@@ -1,20 +1,17 @@
 <script setup>
-    import axios from 'axios';
+    import api, { apiCatchError } from '@/assets/js/api';
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
     import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
     
-    import { ref, onMounted } from 'vue';
-    import { getJwt } from '@/assets/js/jwt';
+    import { ref, onMounted } from 'vue';    
 
 
     const url = window.location.pathname;
     const vacancyId = url.substring(url.lastIndexOf('/') + 1);
 
-    const jwt = getJwt();
     const notifs = ref(2);
-    const jwtRef = ref(jwt);
     const matches = ref([]);
     const vacancy = ref({});
     const currentProfile = ref({});
@@ -22,32 +19,14 @@
 
     onMounted(async () => {
         // get current card and matches
-        if(!jwt)
-            return;
 
-        const response = await axios({
+        const response = await api({
             url: `/e/review/${ vacancyId }/`,
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             method: 'get',
-            headers: {
-                Authorization: `Bearer: ${ jwt }`
-            },
-            responseType: 'json',
-            timeout: 4000
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
+            responseType: 'json'
+        }).catch(apiCatchError);
 
-                if(status === 401) {
-                    alert('Your auth token has likely expired, please login again');
-                }
-            } catch {
-                console.error(`uh oh: ${ err }`);
-            }
-        });
-
-        if(!response)
+        if(!response?.data)
             return;
 
         const { matches: apiMatches = [], new: newApp = {}, vacancy: apiVacancy = {} } = response.data;
@@ -122,7 +101,6 @@
                     :application='currentApplication' 
                     :profile='currentProfile' 
                     :vacancyId='vacancyId' 
-                    :jwt='jwtRef'
                     @match='onMatch'
                     @defer='updateCard'
                     @reject='updateCard'

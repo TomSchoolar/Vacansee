@@ -1,7 +1,9 @@
-import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import { createRouter, createWebHistory } from 'vue-router';
-import EmployeeNavbar from '@/components/employee/EmployeeNavbar';
 import routes from '@/router/routes';
+import EmployeeNavbar from '@/components/employee/EmployeeNavbar';
+
+import { createRouter, createWebHistory } from 'vue-router';
+import { shallowMount, RouterLinkStub } from '@vue/test-utils';
+
 
 const router = createRouter({
     routes,
@@ -23,7 +25,7 @@ const mountSettings = {
     }
 };
 
-describe('EmployeeNavbar.vue Test', () => {
+describe('EmployeeNavbar.vue', () => {
     let wrapper;
 
     beforeEach(() => {

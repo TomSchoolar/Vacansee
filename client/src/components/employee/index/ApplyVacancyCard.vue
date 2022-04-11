@@ -1,34 +1,20 @@
 <script setup>  
-    import { ref } from 'vue';
-    import { getJwt } from '@/assets/js/jwt';
-    import axios from 'axios';
+    import api, { apiCatchError } from '@/assets/js/api';
+
+    import { ref } from 'vue';    
 
     const { tags = [], vacancy = {} } = defineProps(['vacancy', 'tags']);
     const emit = defineEmits(['newVacancy']);
 
     const favourite = async (vID) => {
-        const jwt = getJwt();
-
-        const response = await axios({
+        const response = await api({
             url: '/vacancy/fav/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             method: 'post',
-            timeout: 3000,
             responseType: 'json',
             data: { 
                 VacancyId: vID 
-            },
-            headers: { 
-                authorization: `Bearer: ${ jwt }`
             }
-        }).catch((err) => {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-
-                if(status === 401) {
-                    alert('Your auth token has likely expired, please login again');
-                }
-        });
+        }).catch(apiCatchError);
 
         const { data = false } = response;
 
@@ -37,66 +23,37 @@
     }
 
     const apply = async (vID) => {
-        const jwt = getJwt();
 
-        const response = await axios({
+        const response = await api({
             url: '/vacancy/apply/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             method: 'post',
-            timeout: 3000,
             responseType: 'json',
             data: { 
                 VacancyId: vID 
-            },
-            headers: { 
-                authorization: `Bearer: ${ jwt }`
             }
-        }).catch((err) => {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-
-                if(status === 401) {
-                    alert('Your auth token has likely expired, please login again');
-                }
-        });
+        }).catch(apiCatchError);
 
         const { data = false } = response;
-        console.log(response);
-        console.log(data);
+
         if(data)
             emit('newVacancy', data);
 
     }
 
     const reject = async (vID) => {
-        const jwt = getJwt();
-
-        const response = await axios({
+        const response = await api({
             url: '/vacancy/reject/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             method: 'post',
-            timeout: 3000,
             responseType: 'json',
             data: { 
                 VacancyId: vID 
-            },
-            headers: { 
-                authorization: `Bearer: ${ jwt }`
             }
-        }).catch((err) => {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-
-                if(status === 401) {
-                    alert('Your auth token has likely expired, please login again');
-                }
-        });
+        }).catch(apiCatchError);
 
         const { data = false } = response;
 
         if(data)
             emit('newVacancy', data);
-
 
     }
 
@@ -119,7 +76,7 @@
     <div class='card'>
         <div class='company-info'>
             <div class='company-name'>{{ vacancy.CompanyName }}<i id='favourite' class='fas fa-star' title='favourited' v-if='vacancy.Favourited'></i></div>
-            <p class='job-title'>{{ vacancy.VacancyName }}</p>
+            <p class='job-title'>{{ vacancy.VacancyName }} - {{ vacancy.Salary }}</p>
             <p class='location' v-if='vacancy.Location'>Based in {{ vacancy.Location }}</p>
         </div>
         <div class='description' v-if='vacancy.Description'>

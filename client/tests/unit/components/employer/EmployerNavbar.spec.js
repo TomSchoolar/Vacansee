@@ -22,7 +22,7 @@ const mountSettings = {
     }
 };
 
-describe('EmployerNavbar.vue Test', () => {
+describe('EmployerNavbar.vue', () => {
     let wrapper;
 
     beforeEach(() => {

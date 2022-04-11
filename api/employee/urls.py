@@ -8,5 +8,7 @@ urlpatterns = [
     path('vacancy/reject/', views.postReject),
     path('applications/', views.getApplications),
     path('applications/stats/', views.getApplicationStats),
-    path('applications/<int:applicationId>/', views.getApplicationDetails)
+    path('applications/delete/<int:applicationId>/', views.deleteApplication),
+    path('applications/<int:applicationId>/', views.getApplicationDetails),
+    path('favourites/', views.getFavourites)
 ]

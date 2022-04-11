@@ -1,26 +1,38 @@
 const middleware = {}
 
 middleware.isLoggedIn = ({ next, router }) => {
-    if(!localStorage.getItem('jwt') || !localStorage.getItem('session')) {
-        return router.push({ name: 'LogIn' });
+    if(!localStorage.getItem('refreshToken') && !localStorage.getItem('accessToken')) {
+        router.push({ name: 'LogIn' });
     }
 
     return next();
 }
 
 middleware.isNotLoggedIn = ({ next, router }) => {
-    if(localStorage.getItem('jwt') && localStorage.getItem('session')) {
+    if(localStorage.getItem('refreshToken')) {
         // if logged in, redirect to respective home page
-        const { IsEmployer = false } = localStorage.getItem('session');
-        if(IsEmployer)
-            return router.push({ name: 'EmployerIndex' });
-        return router.push({ name: 'EmployeeIndex' });
+        const session = localStorage.getItem('session');
 
-    } else if(localStorage.getItem('jwt')) {
-        // not logged in but jwt remains - corrupted
-        localStorage.removeItem('jwt');
+        if(!session) {
+            window.localStorage.removeItem('accessToken');
+            window.localStorage.removeItem('refreshToken');
+        }
 
-    } else if(localStorage.getItem('session')) {
+        if(session.IsEmployer)
+            router.push({ name: 'EmployerIndex' });
+        else
+            router.push({ name: 'EmployeeIndex' });
+
+        return next();
+    }
+    
+    if(localStorage.getItem('accessToken')) {
+        // not logged in but access token remains - corrupted
+        localStorage.removeItem('accessToken');
+
+    }
+    
+    if(localStorage.getItem('session')) {
         // not logged in but session remains - corrupted
         localStorage.removeItem('session');
     }
@@ -29,20 +41,32 @@ middleware.isNotLoggedIn = ({ next, router }) => {
 }
 
 middleware.isEmployer = ({ next, router }) => {
-    const session = JSON.parse(localStorage.getItem('session'));
+    let session = localStorage.getItem('session');
+
+    if(!session) {
+        router.push({ name: 'LogIn' });
+    }
+
+    session = JSON.parse(session);
 
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === false) {
-        return router.push({ name: 'EmployeeIndex' });
+        router.push({ name: 'EmployeeIndex' });
     }
 
     return next();
 }
 
 middleware.isEmployee = ({ next, router }) => {
-    const session = JSON.parse(localStorage.getItem('session'));
+    let session = localStorage.getItem('session');
+
+    if(!session) {
+        router.push({ name: 'LogIn' });
+    }
+
+    session = JSON.parse(session);
 
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === true) {
-        return router.push({ name: 'EmployerIndex' });
+        router.push({ name: 'EmployerIndex' });
     }
 
     return next();

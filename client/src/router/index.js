@@ -17,7 +17,7 @@ const nextFactory = (context, middleware, index) => {
 
     return (...parameters) => {
         // Run the default Vue Router `next()` callback first.
-        context.next(...parameters);
+        // context.next(...parameters);
         // Then run the subsequent Middleware with a new
         // `nextMiddleware()` callback.
         const nextMiddleware = nextFactory(context, middleware, index + 1);

@@ -1,40 +1,20 @@
 <script setup> 
-    import axios from 'axios';
+
+    import api, { apiCatchError } from '@/assets/js/api';
 
     const emit = defineEmits(['match', 'defer', 'reject'])
 
-    const { application, jwt, profile, vacancyId } = defineProps(['application', 'jwt', 'profile', 'vacancyId']);
+    const { application, profile, vacancyId } = defineProps(['application', 'profile', 'vacancyId']);
 
     const updateStatus = async (newStatus, applicationId) => {
-        const response = await axios({
+        const response = await api({
             url: `/e/review/${ vacancyId }/updatestatus/${ applicationId }/`,
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             method: 'put',
-            timeout: 4000,
-            headers: {
-                Authorization: `Bearer: ${ jwt }`
-            },
             data: {
                 setStatus: newStatus
             },
             responseType: 'json'
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-
-                if(status === 401) {
-                    alert('Your auth token has likely expired, please login again');
-                }
-
-                if(message === 'server error getting next application') {
-                    alert('Error getting the next application')
-                    return {};
-                }
-            } catch {
-                console.error(`uh oh: ${ err }`);
-            }
-        });
+        }).catch(apiCatchError);
 
         if(!response) {
             return false;

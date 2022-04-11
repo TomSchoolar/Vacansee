@@ -1,24 +1,27 @@
-from doctest import DocFileSuite
 import jwt as jwtLib
 from math import ceil
 from rest_framework import status
-from employee.models import Application
-from authentication import jwt as jwtHelper
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from employee.models import Application, Favourite
 from employer.serializers import VacancySerializer
+from authentication.helpers import jwt as jwtHelper
 from employer.models import EmployerDetails, Vacancy
 from .serializers import ApplicationSerializer, FavouriteSerializer, RejectSerializer
 
 
 @api_view(['GET'])
 def getIndex(request):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     # get query params: sort, count, filter, pageNum
     params = request.query_params
 
     # destructure params and typecast
     try:
-        uID = params['uID']
         sort = params['sort']
         filter = params['filter']
         count = int(params['count'])
@@ -97,21 +100,16 @@ def getIndex(request):
         'numVacancies': numVacancies
     }
 
-    return Response(returnData)
+    return Response(returnData, status=status.HTTP_200_OK)
 
 
 
 @api_view(['POST'])
 def postApplication(request):
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    jwt = jwtHelper.extractJwt(request)
+    
+    if type(jwt) is not dict:
+        return jwt
 
     try:
         vacancyId = request.data['VacancyId']
@@ -166,17 +164,104 @@ def postApplication(request):
 
 
 
-@api_view(['POST'])
-def postFavourite(request):
+@api_view(['GET'])
+def getFavourites(request):
+    
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    # destructure params and typecast
     try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
+        params = request.query_params
+        sort = params['sort']
+        count = int(params['count'])
+        pageNum = int(params['pageNum'])
+    except:
+        return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # parse sort parameter into django sort parameter
+    if sort == 'dateDesc':
+        sortParam = '-Created'
+    elif sort == 'dateAsc':
+        sortParam = 'Created'
+    elif sort == 'titleAsc':
+        sortParam = 'VacancyName'
+    else:
+        # 'titleDesc'
+        sortParam = '-VacancyName'
+
+    try:
+        favouriteSet = Favourite.objects.filter(
+                UserId__exact = jwt['id']
+        )
+
+        VacancyIds = []
+
+        for fav in favouriteSet:
+            VacancyIds.append(int(fav.VacancyId.VacancyId))
+
+        # get number of pages
+        numVacancies = len(VacancyIds)
+        pages = int(ceil(numVacancies / int(params['count'])))
+        
+        # deals with a lower number of pages than the current page
+        while (pageNum - 1) * count >= numVacancies and pageNum > 1:
+            pageNum -= 1
+
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'status': 500, 'message': 'Server error counting vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    skip = max(count * (pageNum - 1), 0)
+    limit = count * pageNum
+
+    try:
+        # get vacancies
+        vacanciesSet = Vacancy.objects.filter(
+            VacancyId__in = VacancyIds
+        ).order_by(sortParam)[skip:limit]
+
+        vacancySerializer = VacancySerializer(vacanciesSet, many=True)
+        vacancies = vacancySerializer.data
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status': 500, 'message': 'Server error fetching vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+
+    try:
+        # get company name
+        for vacancy in vacancies:
+            employerDetails = EmployerDetails.objects.get(UserId__exact = vacancy['UserId'])
+            vacancy['CompanyName'] = employerDetails.CompanyName
+
+    except EmployerDetails.DoesNotExist:
+        return Response(data={'code': 500, 'message': 'error getting company name for vacancy'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'code': 500, 'message': 'Server error getting company name and stats'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    # compile return data and send response
+    returnData = {
+        'numPages': pages,
+        'vacancies': vacancies,
+        'numVacancies': numVacancies
+    }
+
+    return Response(returnData, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def postFavourite(request):
+    jwt = jwtHelper.extractJwt(request)
+    
+    if type(jwt) is not dict:
+        return jwt
 
     try:
         vacancyId = request.data['VacancyId']
@@ -231,15 +316,10 @@ def postFavourite(request):
 
 @api_view(['POST'])
 def postReject(request):
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    jwt = jwtHelper.extractJwt(request)
+    
+    if type(jwt) is not dict:
+        return jwt
 
     try:
         vacancyId = request.data['VacancyId']
@@ -292,18 +372,35 @@ def postReject(request):
 
 
 
+@api_view(['DELETE'])
+def deleteApplication(request, applicationId):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    try:
+        application = Application.objects.get(
+            pk=applicationId,
+            UserId__exact = jwt['id']
+        )
+
+        application.delete()
+        return Response(status=status.HTTP_200_OK)
+    except Application.DoesNotExist:
+        return Response({'status': 401, 'message': 'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: {err}')
+        return Response({'status': 500, 'message': 'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 @api_view(['GET'])
 def getApplications(request):
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    jwt = jwtHelper.extractJwt(request)
 
+    if type(jwt) is not dict:
+        return jwt
 
     # destructure params and typecast
     try:
@@ -379,22 +476,17 @@ def getApplications(request):
 
 
 
-    return Response({ 'applications': pairedApplications, 'numPages': numPages })
+    return Response({ 'applications': pairedApplications, 'numPages': numPages }, status=status.HTTP_200_OK)
 
 
 
 
 @api_view(['GET'])
 def getApplicationStats(request):
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    jwt = jwtHelper.extractJwt(request)
+    
+    if type(jwt) is not dict:
+        return jwt
 
     
     try:
@@ -419,16 +511,11 @@ def getApplicationStats(request):
 
 @api_view(['GET'])
 def getApplicationDetails(request, applicationId):
-    try:
-        # test jwt
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    # test jwt
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
 
     try:
         applicationSet = Application.objects.get(pk = applicationId, UserId__exact = jwt['id'])
@@ -455,4 +542,4 @@ def getApplicationDetails(request, applicationId):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting vacancy from the server' })
 
-    return Response({ **application, **vacancy, 'CompanyName': companyName })
+    return Response({ **application, **vacancy, 'CompanyName': companyName }, status=status.HTTP_200_OK)
