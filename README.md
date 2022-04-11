@@ -1,4 +1,4 @@
-# Vacansee
+# Vacansee 
 [![pipeline status](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/pipeline.svg)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-python-unit-tests&key_text=API%20Coverage&key_width=90&min_good=90&min_acceptable=80&min_medium=70)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main) [![coverage report](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/badges/main/coverage.svg?job=run-js-unit-tests&key_text=Client%20Coverage&key_width=100&min_good=90&min_acceptable=80&min_medium=70)](https://git-teaching.cs.bham.ac.uk/mod-team-project-2021/team45-21/-/commits/main)
 
 ## Language Versions in use
