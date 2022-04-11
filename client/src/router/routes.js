@@ -69,6 +69,7 @@ const employeeRoutes = [
 import EmployerIndex from '../views/employer/EmployerIndex.vue';
 import EmployerMatch from '../views/employer/EmployerMatch.vue';
 import EmployerReview from '../views/employer/EmployerReview.vue';
+import EmployerAccount from '../views/employer/EmployerAccount.vue';
 
 const employerRoutes = [
     {
@@ -94,7 +95,15 @@ const employerRoutes = [
         meta: {
           middleware: [isLoggedIn, isEmployer]
         }
-    }
+    },
+    {
+        path: '/e/account',
+        name: 'EmployerAccount',
+        component: EmployerAccount,
+        meta : {
+          middleware: [isLoggedIn, isEmployer]
+        }
+      }
 ];
 
 
