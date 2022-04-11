@@ -1,11 +1,10 @@
 <script setup>
-    import axios from 'axios';
     import dayjs from 'dayjs';
+    import api, { apiCatchError } from '@/assets/js/api';
     import relativeTime from 'dayjs/plugin/relativeTime';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
 
-    import { jwtGetId } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
     
     dayjs.extend(relativeTime);
@@ -40,40 +39,24 @@
     const getVacancies = async (options) => {
         const { count = 5, pageNum = 1, sort = 'newApps', filter = 'all' } = options;
 
-        const uID = jwtGetId();
-
-        if(!uID)
-            return;
-
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/e/vacancy/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
             params: {
-                uID,
                 sort,
                 count,
                 filter,
                 pageNum
             }
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-            } catch {
-                console.error(`uh oh: ${ err }`);
-                alert('Error: Server may not be running');
-            }
+        }).catch(apiCatchError);
 
-        });
-
-        if(!response || !response.data)
+        if(!response)
             return false;
 
         const { data } = response;
 
-        data.vacancies.forEach((vacancy) => {
+        data?.vacancies.forEach((vacancy) => {
             vacancy.listedAgo = dayjs(vacancy.Created).fromNow();
         });
 
@@ -112,34 +95,18 @@
     // stats api request, separate request to speed up page load
     onMounted(async () => {
         // get stats
-
-        const uID = jwtGetId();
-
-        if(!uID)
-            return;
-
-        const response = await axios({
+        // TODO: fix this spaghetti code and get show application working on matches again
+        const response = await api({
             method: 'get',
             url: '/e/vacancy/stats/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
-            responseType: 'json',
-            params: {
-                uID
-            }
-        }).catch((err) => {
-            try {
-                let { message = err.message, status = err.status } = err.response.data;
-                console.error(`oops: ${ status }: ${ message }`);
-            } catch {
-                console.error(`uh oh: ${ err }`);
-            }
-        });
+            responseType: 'json'
+        }).catch(apiCatchError);
 
-        if(!response || !response.data) {
+        if(!response?.data) {
             return;
         }
 
-        stats.value = response.data.stats;
+        stats.value = response.data?.stats;
     })
 
 

@@ -1,4 +1,3 @@
-import jwt as jwtLib
 from math import ceil
 from datetime import datetime
 from rest_framework import status
@@ -7,21 +6,25 @@ from employee.models import Application
 from .serializers import VacancySerializer
 from rest_framework.response import Response
 from .models import EmployerDetails, Vacancy
-from authentication import jwt as jwtHelper
 from rest_framework.decorators import api_view
-from employer.helpers import getIndex as indexHelper, getReview as reviewHelper, getMatch as matchHelper
+from authentication.helpers import jwt as jwtHelper
 from employee.serializers import ApplicationSerializer, SummaryProfileSerializer
+from employer.helpers import getIndex as indexHelper, getReview as reviewHelper, getMatch as matchHelper
 
 
 
 @api_view(['GET'])
 def getIndex(request):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     # get query params: sort, count, filter, pageNum, uID
     params = request.query_params
 
     # destructure params and typecast
     try:
-        uID = params['uID']
         sort = params['sort']
         filter = params['filter']
         count = int(params['count'])
@@ -57,7 +60,7 @@ def getIndex(request):
 
     # get number of pages
     numVacancies = Vacancy.objects.filter(
-                UserId__exact = uID,
+                UserId__exact = jwt['id'],
                 IsOpen__in = filterParam
             ).count()
     pages = int(ceil(numVacancies / int(params['count'])))
@@ -74,7 +77,7 @@ def getIndex(request):
     if sortByApps:
         # sort by the number of applications referencing vacancy
         vacanciesSet = Vacancy.objects.filter(
-                UserId__exact = uID,
+                UserId__exact = jwt['id'],
                 IsOpen__in = filterParam
             ).annotate(
                 applicationCount = Count('application', filter=Q(application__ApplicationStatus__exact='PENDING'))
@@ -94,7 +97,7 @@ def getIndex(request):
 
     try:
         # get company name
-        employerDetails = EmployerDetails.objects.get(UserId__exact = uID)
+        employerDetails = EmployerDetails.objects.get(UserId__exact = jwt['id'])
         companyName = employerDetails.CompanyName
 
         # get number of new, matched and rejected apps for each vacancy
@@ -121,16 +124,13 @@ def getIndex(request):
 @api_view(['GET'])
 def getIndexStats(request):
     # get query params: sort, count, stats, pageNum 
-    params = request.query_params
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
 
     try:
-        # destructure params and typecast
-        uID = params['uID']
-    except:
-        return Response(data={'code': 400, 'message': 'Incomplete request'}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        stats = indexHelper.getStats(uID)
+        stats = indexHelper.getStats(jwt['id'])
     except Exception as e:
         return Response(data={'code': 500, 'message': e.__str__}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
    
@@ -142,15 +142,10 @@ def getIndexStats(request):
 def getReview(request, vacancyId):
     # get jwt
     
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
 
     try:
         vacancy = reviewHelper.checkUserOwnsVacancy(vacancyId, jwt)
@@ -183,16 +178,10 @@ def getReview(request, vacancyId):
 @api_view(['PUT'])
 def putReviewApplication(request, vacancyId, applicationId):
     # get jwt
-    try:
-        jwt = jwtHelper.extractJwt(request)
-    except jwtLib.ExpiredSignatureError:
-        return Response({ 'status': 401, 'message': 'Expired auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except (jwtLib.InvalidKeyError, jwtLib.InvalidSignatureError, jwtLib.InvalidTokenError) as err:
-        return Response({ 'status': 401, 'message': 'Invalid auth token' }, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error acquiring auth token' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
     
     # check user owns vacancy
     try:
@@ -255,10 +244,15 @@ def putReviewApplication(request, vacancyId, applicationId):
 
 @api_view(['GET'])
 def getMatchVacancies(request):
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     params = request.query_params
 
     try:
-        uID = params['uID']
         sort = params['sort']
         sortByNum = False
     except:
@@ -277,12 +271,12 @@ def getMatchVacancies(request):
         sortParam = '-VacancyName'
 
     numVacancies = Vacancy.objects.filter(
-        UserId__exact = uID,
+        UserId__exact = jwt['id'],
     ).count()
 
     #add if-else for sortByNum
     vacanciesSet = Vacancy.objects.filter(
-        UserId__exact = uID,
+        UserId__exact = jwt['id'],
     ).order_by(sortParam)
 
     vacancySerializer = VacancySerializer(vacanciesSet, many=True)
@@ -299,10 +293,15 @@ def getMatchVacancies(request):
 
 @api_view(['GET'])
 def getMatches(request):
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
     params = request.query_params
 
     try:
-        uID = params['uID']
         vID = params['vID']
         sort = params['sort']
     except:
@@ -330,10 +329,15 @@ def getMatches(request):
 
 @api_view(['GET'])
 def getCard(request):
-    params = request.query_params
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
 
     try:
-        uID = params['uID']
+        params = request.query_params
+        applicantId = params['applicantId']
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -341,7 +345,9 @@ def getCard(request):
 
     #matches = matchHelper.getMatches(vID)
     #matches = reviewHelper.getApplications(vID)
-    details = matchHelper.getDetails(uID)
+    details = matchHelper.getDetails(applicantId)
+
+    print(details)
 
     returnData = {
         'details': details

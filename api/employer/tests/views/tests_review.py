@@ -1,34 +1,9 @@
-import environ
-import jwt as jwtLib
 from authentication.models import User
 from employee.models import Application, Profile
-from datetime import datetime, timezone, timedelta
 from employer.models import EmployerDetails, Vacancy
 from django.test import TestCase, TransactionTestCase
+from authentication.tests.jwtFuncs import createAccessToken
 from employee.serializers import ApplicationSerializer, ProfileSerializer, SummaryProfileSerializer
-
-
-env = environ.Env()
-
-
-def createJwt(uid, expire='later'):
-    jwt = { 
-        'id': uid,
-        'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=60),
-        'iat': datetime.now(tz=timezone.utc)
-    }
-
-    if expire == 'now':
-        jwt['exp'] = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
-
-    encodedJWT = jwtLib.encode(
-        jwt,
-        env('JWT_SECRET'),
-        algorithm='HS256'
-    )
-
-    return encodedJWT
-
 
 
 class getReviewTests(TestCase):
@@ -39,7 +14,7 @@ class getReviewTests(TestCase):
     userId = 4
     # vacancy: Senior Developer (Facebook)
     vacancyId = 2
-    jwt = createJwt(userId)
+    jwt = createAccessToken(userId)
 
     # GET TESTS
 
@@ -114,7 +89,7 @@ class getReviewTests(TestCase):
 
 
     def test_expiredJwt(self):
-        jwt = createJwt(self.userId, 'now')
+        jwt = createAccessToken(self.userId, 'now')
         response = self.client.get(f'/e/review/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
         
         self.assertEquals(response.data['status'], 401)
@@ -135,8 +110,8 @@ class putReviewValidTests(TransactionTestCase):
     
     userId = 4 # Sabah
     vacancyId = 2 # Senior Developer (Facebook)
-    applicationId = 1008 # Elizabeth to Senior Developer
-    jwt = createJwt(userId)
+    applicationId = 1006 # Adam to Senior Developer
+    jwt = createAccessToken(userId)
     reset_sequences = True
 
     fixtures = ['authentication/fixtures/testseed.json']
@@ -189,8 +164,8 @@ class putReviewInvalidTests(TestCase):
     
     userId = 4 # Sabah
     vacancyId = 2 # Senior Developer (Facebook)
-    applicationId = 1005 # Tom to Senior Developer
-    jwt = createJwt(userId)
+    applicationId = 1005 # Christopher to Senior Developer
+    jwt = createAccessToken(userId)
 
     fixtures = ['authentication/fixtures/testseed.json']
 
@@ -271,7 +246,7 @@ class putReviewInvalidTests(TestCase):
 
 
     def test_expiredJwt(self):
-        jwt = createJwt(self.userId, 'now')
+        jwt = createAccessToken(self.userId, 'now')
         response = self.client.put(
             f'/e/review/{ self.vacancyId }/updatestatus/{ self.applicationId }/',
             data={ 'setStatus': 'reject' },

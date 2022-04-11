@@ -14,36 +14,35 @@
 </template>
 
 <script setup>
-    import axios from 'axios';
     import dayjs from 'dayjs';
     import { ref } from 'vue';
+    import api, { apiCatchError } from '@/assets/js/api';
 
 	const email = ref('');
     const password = ref('');
 
 	const login = async () => {
-        const { data = {} } = await axios({
+        const { data = {} } = await api({
             method: 'post',
             url: '/login/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            withCredentials: true,
             data: {
                 email: email.value,
                 password: password.value
             }
-        }).catch((err) => {
-            if(err.response && err.response.status == 401) {
-                alert('incorrect email or password');
-            } else {            
-                console.log(`oops ${ err }`);
-            }
-        });
+        }).catch(apiCatchError);
 
-        const { userData: session, jwt } = data;
+        const { userData: session, accessToken = false, refreshToken = false } = data;
 
-        session.expire = dayjs().add(2, 'hour').toDate();
+        if(!session || !accessToken || !refreshToken) {
+            alert('uh oh, we encountered an error while logging you in, please try again later')
+            console.error('uh oh, error logging in')
+            return;
+        }
 
-        window.localStorage.setItem('session', JSON.stringify(session));
-        window.localStorage.setItem('jwt', jwt)
+        window.localStorage.setItem('session', JSON.stringify(session))
+        window.localStorage.setItem('accessToken', accessToken)
+        window.localStorage.setItem('refreshToken', refreshToken)
 
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'

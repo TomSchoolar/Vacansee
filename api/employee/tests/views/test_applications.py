@@ -1,38 +1,14 @@
-import environ
-import jwt as jwtLib
 from django.test import TestCase
 from employee.models import Application
-from datetime import datetime, timezone, timedelta
-
-
-env = environ.Env()
-
-
-def createJwt(uid, expire='later'):
-    jwt = { 
-        'id': uid,
-        'exp': datetime.now(tz=timezone.utc) + timedelta(minutes=60),
-        'iat': datetime.now(tz=timezone.utc)
-    }
-
-    if expire == 'now':
-        jwt['exp'] = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
-
-    encodedJWT = jwtLib.encode(
-        jwt,
-        env('JWT_SECRET'),
-        algorithm='HS256'
-    )
-
-    return encodedJWT
+from authentication.tests import jwtFuncs
 
 
 class applicationTestCase(TestCase):
 
     userId = 2 # Adam
     vacancyId = 1
-    jwt = createJwt(userId)
-    applicationId = 1003
+    jwt = jwtFuncs.createAccessToken(userId)
+    applicationId = 1002
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_getApplications(self):
@@ -84,7 +60,7 @@ class applicationTestCase(TestCase):
 
 
     def test_delete_invalid(self):
-        applicationId = 1019
+        applicationId = 1017
         response = self.client.delete(f'/applications/delete/{ applicationId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 401)

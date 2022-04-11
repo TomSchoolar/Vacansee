@@ -1,15 +1,23 @@
-from datetime import datetime
-from enum import Enum
-import imp
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from datetime import datetime, timezone, timedelta
+
+def getAccessExpiry():
+    # function to create date object extended to 10 mins from now
+    return datetime.now(tz=timezone.utc) + timedelta(minutes=10)
 
 # Create your models here.
 class User(models.Model):
     UserId = models.AutoField(primary_key=True) 
     Email = models.EmailField(max_length=254, blank=False, unique=True)
     IsEmployer = models.BooleanField(default=False, blank=False)
-    PasswordHash = models.CharField(max_length=500)
-    PasswordSalt = models.CharField(max_length=500)
+    Password = models.CharField(max_length=100, blank=False)
     PasswordResetToken = models.CharField(max_length=100, null=True)
     PasswordResetExpiration = models.DateField(null=True)
+
+
+class RefreshToken(models.Model):
+    TokenId = models.AutoField(primary_key=True)
+    FamilyId = models.IntegerField(null=False)
+    Token = models.CharField(max_length=200, null=False, unique=True)
+    Expiry = models.DateTimeField(null=False, default=getAccessExpiry)
+    IsLatest = models.BooleanField(null=False, default=True)

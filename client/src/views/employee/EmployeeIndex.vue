@@ -1,12 +1,10 @@
 <script setup>
-    import axios from 'axios';
+    import api, { apiCatchError } from '@/assets/js/api';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
 
-    import { jwtGetId } from '@/assets/js/jwt';
     import { ref, watch, onMounted } from 'vue';
-
 
     // vars init
     const tagsLim = 6;
@@ -59,23 +57,17 @@
     const getVacancies = async (options) => {
         const { count = 3, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
 
-        const uID = jwtGetId(window.localStorage.jwt);
-
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/vacancy/',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
             responseType: 'json',
             params: {
-                uID,
                 sort,
                 count,
                 filter,
                 pageNum
             }
-        }).catch((err) => {
-            console.log(`oops: ${ err }`);
-        });
+        }).catch(apiCatchError);
 
         if(!response || !response.data)
             return false;
@@ -103,12 +95,7 @@
 
     // vacancy api request
     onMounted(async () => {
-        const result = await getVacancies({ });
-
-        if(!result) {
-            alert('uh oh! something went wrong :(');
-            return;
-        }
+        await getVacancies({ });
     });
 
     // get vacancies in new order
@@ -116,7 +103,6 @@
         const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
         
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
 
@@ -128,7 +114,6 @@
         const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value });
 
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
 
@@ -141,7 +126,6 @@
         const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
 
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
 
@@ -158,7 +142,6 @@
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
         if(!result) {
-            alert('uh oh! something went wrong :(');
             return;
         }
 
