@@ -1,13 +1,32 @@
 <script setup>
+    import api, { apiCatchError } from '@/assets/js/api';
     const { stats } = defineProps(['stats']);
+    const emit = defineEmits(['unmatch'])
     const { application = {}, profile = {} } = stats;
 
     const downloadApplication = () => {
         alert('download application');
     };
 
-    const unmatch = () => {
-        alert('unmatch');
+    const unmatch = async () => {
+        const response = await api({
+            url: `/e/review/${ application.VacancyId }/updatestatus/${ application.ApplicationId }/`,
+            method: 'put',
+            data: {
+                setStatus: "reject"
+            },
+            responseType: 'json'
+        }).catch(apiCatchError);
+
+        if(!response) {
+            return false;
+        }
+
+        const { data = {} } = response;
+
+        emit('unmatch');
+
+        return data;
     };
 
     const showApplication = () => {
