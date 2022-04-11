@@ -12,13 +12,13 @@ middleware.isNotLoggedIn = ({ next, router }) => {
     if(localStorage.getItem('refreshToken')) {
         // if logged in, redirect to respective home page
         const session = localStorage.getItem('session');
-        console.log(session)
+
         if(!session) {
             window.localStorage.removeItem('accessToken');
             window.localStorage.removeItem('refreshToken');
         }
 
-        if(IsEmployer)
+        if(session.IsEmployer)
             router.push({ name: 'EmployerIndex' });
         else
             router.push({ name: 'EmployeeIndex' });

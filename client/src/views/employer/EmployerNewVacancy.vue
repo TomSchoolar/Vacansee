@@ -49,7 +49,6 @@
     <form class='form-pane'>
         <BasicDetailsForm @next='changePage(1)' :companyName='companyName' v-if='pages[currentPageNum] == "basic details"' />
         <MoreDetailsForm @next='changePage(1)' @back='changePage(-1)' v-if='pages[currentPageNum] == "more details"' />
-        
     </form>
 
 </template>
