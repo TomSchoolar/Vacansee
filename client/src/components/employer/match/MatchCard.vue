@@ -2,12 +2,10 @@
     const { stats } = defineProps(['stats']);
     const { application = {}, profile = {} } = stats;
 
-    import api, { apiCatchError } from '@/assets/js/api';
+    import axios from 'axios';
+    import { onMounted, ref } from 'vue';
 
-    import { onMounted } from 'vue';
-    
-
-    const emits = defineEmits(["showApplication"])
+    const emits = defineEmits(["showApplication", "unmatch"])
 
     const details = {};
 
@@ -15,22 +13,41 @@
         alert('download application');
     };
 
-    const unmatch = () => {
-        alert('unmatch');
-    };
-
-    const getDetails = async (options) => {
-
-        const { applicantId } = options;
-
+    const unmatch = async () => {
         const response = await api({
-            method: 'get',
-            url: '/e/match/card',
-            params: {
-                applicantId 
+            url: `/e/review/${ application.VacancyId }/updatestatus/${ application.ApplicationId }/`,
+            method: 'put',
+            data: {
+                setStatus: "reject"
             },
             responseType: 'json'
         }).catch(apiCatchError);
+
+        if(!response) {
+            return false;
+        }
+
+        const { data = {} } = response;
+
+        emit('unmatch');
+
+        return data;
+    };
+
+    const getDetails = async (options) => {
+        const { uID = application.UserId } = options;
+
+        const response = await axios({
+            method: 'get',
+            url: '/e/match/card',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
+            params: {
+                uID
+            }
+        }).catch((err) => {
+            console.log(`oops ${ err }`);
+        });
 
         if(!response || !response.data)
             return false;
@@ -50,7 +67,7 @@
     };
 
     onMounted(async () => {
-        const result = getDetails({ applicantId: application.UserId });
+        const result = getDetails({ uID: application.UserId });
 
         if(!result) {
             alert('uh oh! something went wrong :(');

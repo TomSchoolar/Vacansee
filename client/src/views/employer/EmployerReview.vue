@@ -17,9 +17,7 @@
     const currentProfile = ref({});
     const currentApplication = ref({});    
 
-    onMounted(async () => {
-        // get current card and matches
-
+    const getApplicants = async () => {
         const response = await api({
             url: `/e/review/${ vacancyId }/`,
             method: 'get',
@@ -39,7 +37,15 @@
             currentApplication.value = application;
             currentProfile.value = profile;
         }
+    }
+
+    onMounted(async () => {
+        getApplicants();
     });
+
+    const onUnmatch = () => {
+        getApplicants();
+    }
 
 
     const onMatch = (application, nextApplication, nextProfile) => {
@@ -79,7 +85,10 @@
             <hr class='slim-hr'/>
 
             <div class='applications'>
-                <MatchCard v-for='match in matches' :key='match.id' :stats='match' />
+                <MatchCard v-for='match in matches' 
+                :key='match.id' 
+                :stats='match'
+                @unmatch='onUnmatch' />
             </div>
         </div>
 

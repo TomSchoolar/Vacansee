@@ -79,6 +79,10 @@
         selectedVacancy.value = newVac;
     }
 
+    const onUnmatch = () => {
+        alert("d");
+    }
+
     const updateCard = (nextProfile) => {
         emits("show-application", nextProfile);
     }
@@ -125,7 +129,9 @@
         <div class='matches'>
             <h3 class='no-matches' v-if='numMatches == 0'>No matches to display. </h3>
             <div class='match' v-else v-for='match in matches' :key='match'>
-                <MatchCard :stats='match' @showApplication='updateCard'/>
+                <MatchCard :stats='match' 
+                @showApplication='updateCard' 
+                @unmatch='onUnmatch' />
             </div>
         </div>
     </section>
