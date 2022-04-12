@@ -106,6 +106,7 @@
 
     .bottom{
         padding: 20px;
+        height: 20vh;
         background-color: #08415c;
         color: white;
     }
@@ -128,21 +129,33 @@
     }
 
     .login-button {
-        width: 100px;
-        border: 2px solid black;
+        width: 10vw;
+        height: 3vh;
+        border: 0;
         border-radius: 5px;
         background-color: white;
         color: var(--blue);
         text-decoration: none;
+        line-height: 3vh;
+    }
+
+    .login-button:active .login-button:focus .login-button:hover {
+        color: var(--blue-focus);
     }
 
     .login-button-top {
-        width: 100px;
-        border: 2px solid black;
+        width: 10vw;
+        height: 3vh;
+        border: 0;
         border-radius: 5px;
         background-color: var(--red);
         color: white;
         text-decoration: none;
+        line-height: 3vh;
+    }
+
+    .login-button-top:active .login-button-top:hover .login-button-top:focus {
+        background-color: var(--red-focus);
     }
 
     .login-top {
@@ -150,6 +163,7 @@
         flex-direction: column;
         align-items: left;
         padding: 0px 120px 0px 120px;
+        text-align: center;
     }
 
     .left{
@@ -166,6 +180,7 @@
         padding: 50px;
         background-color: #333;
         color: white;
+        height: 40vh;
     }
 
     .right{
