@@ -2,51 +2,71 @@
     import { onMounted, ref } from 'vue';
 
     const props = defineProps(['name', 'label', 'placeholder', 'max'])
-    
+
     let fields = [];
-    let listeners = [];
+    let activeFields = [];
     const numFields = ref(1);
     
     onMounted(() => {
+        // get fields and add event listeners
+        const fieldPane = document.getElementById(`expanding-${ props.name }`);
         fields = document.querySelectorAll(`.input-${ props.name }`);
+        activeFields.push(fields[0]);
 
-        for(let i = 0; i < props.max; i++) {
-            let listener = fields[i].addEventListener('input', (event) => {
-                let input = event.target;
-                let value = input.value;
-                const id = input.id.split('-');
-                let inputNum = parseInt(id[1]);
-                let previousInputNum = ( inputNum - 1 >= 1 ? inputNum - 1 : false )
-                let nextInputNum = ( inputNum + 1 <= props.max ? inputNum + 1 : false );
 
-                if(value && nextInputNum) {
-                    // field has been populated, add another field if not at max
-                    let nextInput = document.querySelector(`#${ id[0] }-${ nextInputNum }`);
-                    nextInput.classList.remove('input-hidden');
+
+
+        const listener = fieldPane.addEventListener('keyup', () => {
+            for(let i = 0; i < activeFields.length; i++) {
+                let field = activeFields[i];
+                listenerAction(field);
+            }
+        });
+            
+        const listenerAction = (input) => {
+            let value = input.value;
+            const id = input.id.split('-');
+            let inputNum = parseInt(id[1]);
+            let nextInputNum = ( inputNum + 1 <= props.max ? inputNum + 1 : false );
+            let nextInput = document.querySelector(`#${ id[0] }-${ nextInputNum }`);
+
+            if(value && nextInputNum && nextInput.classList.contains('input-hidden')) {
+                // field has been populated, add another field if not at max
+                nextInput.classList.remove('input-hidden');
+                activeFields.push(nextInput);
+            }
+
+            // TODO: fix when populate all 3 fields, empty first and second
+            
+            if(!value && inputNum < activeFields.length && !nextInput?.value) {
+                // if current and next fields are empty, a field needs to be removed
+                if(activeFields.length > inputNum + 1) {
+                    // if there is a field after the next one, its value needs shuffling down
+                    shuffleInputValues(inputNum)
+                } else {
+                    // if the next field is last, it can just be removed
+                    activeFields.pop().classList.add('input-hidden')
                 }
-
-                // TODO: fix when populate all 3 fields, empty first and second
-                
-                if(!value && nextInputNum) {
-                    // field is empty, if next field is also empty, remove it
-                    let nextInput = document.querySelector(`#${ id[0] }-${ nextInputNum }`);
-                    
-                    if(!nextInput.value) {
-                        nextInput.classList.add('input-hidden');
-                    }
-                }
-
-            });
-
-            listeners.push(listener);
-        }
+            }
+        };
     });
+
+    const shuffleInputValues = (startIndex) => {
+        for(let i = --startIndex; i + 2 < activeFields.length; i++) {
+            // move fields values down two places
+            activeFields[i].value = activeFields[i+2].value;
+            activeFields[i+2].value = '';
+        }
+        
+        // remove last input from form and active fields array
+        activeFields.pop().classList.add('input-hidden');
+    }
 
 
 </script>
 
 <template>
-    <div class='form-group'>
+    <div class='form-group' :id='`expanding-${ props.name }`'>
         <label :for='`${ props.name }-1`' class='label'>{{ props.label }}:</label>
         <input 
             v-for='i in props.max'
