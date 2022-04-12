@@ -144,13 +144,14 @@
 
     watch(filter, async (filterValue) => {
         // change which applications are display based on isOpen
-        const result = await getApplications({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
+        const result = await getApplications({ sort: sort.value, count: limit.value, pageNum: 1, filter: filterValue });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
 
+        page.value = 1;
         filter.value = filterValue;
     });
 
