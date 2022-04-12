@@ -115,12 +115,12 @@
             <h3 class='no-vacancies' v-if='numVacancies == 0'>No vacancies to display</h3>
             
             <div class='vacancy' v-else v-for='vacancy in vacancies' :key='vacancy.VacancyName' @click='$emit("selectVacancy", vacancy)'>
-                <span class='vacancy-title'>
+                <span class='vacancy-title' :title='( !vacancy.IsOpen ? "(closed) " : "" ) + vacancy.VacancyName'>
                     <span class='vacancy-closed' v-if='!vacancy.IsOpen'>(closed) </span> 
                     {{ vacancy.VacancyName }} 
                 </span>
 
-                <span class='vacancy-matches' v-if='vacancy.numMatches'> {{ vacancy.numMatches }} matches</span>
+                <span class='vacancy-matches' v-if='vacancy.MatchesCount != undefined'> {{ vacancy.MatchesCount }} matches</span>
             </div>
         </div>
     </section>
@@ -207,8 +207,16 @@
 
     .vacancy-matches {
         font-size: 14px;
+        width: 90px;
         color: var(--slate);
         font-style: italic;
     }
 
+
+    .vacancy-title {
+        text-overflow: ellipsis !important; 
+        max-width: calc(100% - 90px);
+        overflow: hidden;
+        white-space: nowrap;
+    }
 </style>

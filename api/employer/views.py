@@ -258,11 +258,9 @@ def getMatchVacancies(request):
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
-    print(sort)
 
     if sort == 'matchesDesc':
-        sortParam = '-Created'
-        sortByNum = True
+        sortParam = '-MatchesCount'
     elif sort == 'dateDesc':
         sortParam = '-Created'
     elif sort == 'dateAsc':
@@ -276,53 +274,14 @@ def getMatchVacancies(request):
         UserId__exact = jwt['id'],
     ).count()
 
-    print(sortByNum)
-
-    vacanciesSet = Vacancy.objects.filter(
+    vacancies = Vacancy.objects.filter(
         UserId__exact = jwt['id']
-    ).order_by(sortParam)
-
-    if sortByNum == False:
-        vacanciesSet = Vacancy.objects.filter(
-            UserId__exact = jwt['id']
-        ).order_by(sortParam)
-
-        vacancySerializer = VacancySerializer(vacanciesSet, many=True)
-
-        vacancies = vacancySerializer.data
-    else:
-        applicationsSet = Application.objects.filter(
-            ApplicationStatus__exact = "MATCHED",
-            VacancyId__UserId__exact = jwt['id']
-        )
-
-        numberOfMatches = { }
-
-        for application in applicationsSet:
-            id = application.VacancyId.VacancyId
-
-            if application in numberOfMatches:
-                numberOfMatches[id] = numberOfMatches[id] + 1
-            else:
-                numberOfMatches[id] = 1
-
-        orderedList = []
-
-        while(len(numberOfMatches) > 0):
-            maxKey = max(numberOfMatches, key=numberOfMatches.get)
-
-            orderedList.append(Vacancy.objects.get(pk=maxKey))
-
-            numberOfMatches.pop(maxKey, None)
-
-        newList = []
-
-        for i in range(0, len(orderedList)):
-            newList.append(orderedList[len(orderedList) - i - 1])
-
-        vacancySerializer = VacancySerializer(newList, many=True)
-
-        vacancies = vacancySerializer.data 
+    ).annotate(
+        MatchesCount = Count('application', filter = Q(
+            application__ApplicationStatus__exact='MATCHED',
+            application__VacancyId__UserId__exact = jwt['id']
+        ))
+    ).order_by(sortParam).values()
 
     returnData = {
         'vacancies': vacancies,
