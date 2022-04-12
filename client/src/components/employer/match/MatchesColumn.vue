@@ -17,7 +17,7 @@
     const matches = ref([]);
     const numMatches = ref(0);
 
-    const sort = ref('dateDesc');
+    const sort = ref('LastNameAsc');
 
     const download = () => {
         alert("downloaded!");
@@ -25,7 +25,7 @@
 
     // api request function
     const getMatches = async (options) => {
-        const { sort = 'dateDesc', vID = selected.value  } = options;
+        const { sort = 'LastNameAsc', vID = selected.value  } = options;
 
         const response = await api({
             method: 'get',
@@ -114,10 +114,10 @@
                     </div>
 
                     <select v-model='sort' aria-label='sort matches' id='sort-matches' class='sort'>
-                        <option value='dateDesc' selected>latest first</option>
-                        <option value='dateAsc'>oldest first</option>
-                        <option value='titleAsc'>title (a-z)</option>
-                        <option value='titleDesc'>title (z-a)</option>
+                        <option value='LastNameAsc' selected>Last name (a-z)</option>
+                        <option value='LastNameDesc'>Last name (z-a)</option>
+                        <option value='FirstNameAsc'>First name (a-z)</option>
+                        <option value='FirstNameDesc'>First name (z-a)</option>
                     </select>
                 </div>
             </div>

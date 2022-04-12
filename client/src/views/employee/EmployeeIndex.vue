@@ -4,7 +4,7 @@
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
 
-    import { ref, watch, onMounted } from 'vue';
+    import { ref, watch, onMounted, onUpdated } from 'vue';
 
     // vars init
     const tagsLim = 6;
@@ -96,6 +96,15 @@
     // vacancy api request
     onMounted(async () => {
         await getVacancies({ });
+    });
+
+    onUpdated(async () => {
+        const result = await getVacancies({ });
+
+        if(!result){
+            alert('uh oh! something went wrong :(');
+            return;
+        }
     });
 
     // get vacancies in new order
@@ -221,8 +230,7 @@
         </div>
 
         <div class='right'>
-            <button type='button' class='button apply-btn' @click= apply>Apply Now!</button>
-            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' @newVacancy='(newVacancy) => { currentVacancy = newVacancy }' />
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' />
         </div>
     </div>
     

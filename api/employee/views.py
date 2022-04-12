@@ -1,9 +1,10 @@
+from plistlib import UID
 import jwt as jwtLib
 from math import ceil
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from employee.models import Application, Favourite
+from employee.models import Application, Favourite, Reject
 from employer.serializers import VacancySerializer
 from authentication.helpers import jwt as jwtHelper
 from employer.models import EmployerDetails, Vacancy
@@ -51,7 +52,36 @@ def getIndex(request):
 
     try:
         # get number of pages
-        numVacancies = Vacancy.objects.filter(IsOpen__in = filterParam).count()
+
+        vacancyList = []
+
+        favouriteSet = Favourite.objects.filter(
+            UserId__exact = jwt['id']
+        )
+
+        rejectSet = Reject.objects.filter(
+            UserId__exact = jwt['id']
+        )
+
+        applicationSet = Application.objects.filter(
+            UserId__exact = jwt['id']
+        )
+
+        for fav in favouriteSet:
+            vacancyList.append(fav.VacancyId.VacancyId)
+
+        for rej in rejectSet:
+            vacancyList.append(rej.VacancyId.VacancyId)
+
+        for app in applicationSet:
+            vacancyList.append(app.VacancyId.VacancyId)
+
+        numVacancies = Vacancy.objects.filter(
+            IsOpen__in = filterParam
+        ).exclude(
+            VacancyId__in = vacancyList
+        ).count()
+
         pages = int(ceil(numVacancies / int(params['count'])))
         
         # deals with a lower number of pages than the current page
@@ -69,6 +99,8 @@ def getIndex(request):
         # get vacancies
         vacanciesSet = Vacancy.objects.filter(
             IsOpen__in = filterParam
+        ).exclude(
+            VacancyId__in = vacancyList
         ).order_by(sortParam)[skip:limit]
 
         vacancySerializer = VacancySerializer(vacanciesSet, many=True)
@@ -439,7 +471,10 @@ def getApplications(request):
     
 
     try:
-        numApps = Application.objects.filter(UserId__exact = jwt['id']).count()
+        numApps = Application.objects.filter(
+            UserId__exact = jwt['id'],
+            ApplicationStatus__in = filterParam
+        ).count()
         numPages = ceil(numApps / count)
 
         # deals with a lower number of pages than the current page

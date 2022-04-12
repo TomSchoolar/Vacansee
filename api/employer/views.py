@@ -164,7 +164,7 @@ def getReview(request, vacancyId):
     
 
     try:
-        applications = reviewHelper.getApplications(vacancyId)
+        applications = reviewHelper.getApplications(vacancyId, "FirstNameAsc")
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting applications' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -258,9 +258,11 @@ def getMatchVacancies(request):
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
+    print(sort)
+
     if sort == 'matchesDesc':
+        sortParam = '-Created'
         sortByNum = True
-        sortParam = '-Created' #delete
     elif sort == 'dateDesc':
         sortParam = '-Created'
     elif sort == 'dateAsc':
@@ -274,13 +276,53 @@ def getMatchVacancies(request):
         UserId__exact = jwt['id'],
     ).count()
 
-    #add if-else for sortByNum
+    print(sortByNum)
+
     vacanciesSet = Vacancy.objects.filter(
-        UserId__exact = jwt['id'],
+        UserId__exact = jwt['id']
     ).order_by(sortParam)
 
-    vacancySerializer = VacancySerializer(vacanciesSet, many=True)
-    vacancies = vacancySerializer.data
+    if sortByNum == False:
+        vacanciesSet = Vacancy.objects.filter(
+            UserId__exact = jwt['id']
+        ).order_by(sortParam)
+
+        vacancySerializer = VacancySerializer(vacanciesSet, many=True)
+
+        vacancies = vacancySerializer.data
+    else:
+        applicationsSet = Application.objects.filter(
+            ApplicationStatus__exact = "MATCHED",
+            VacancyId__UserId__exact = jwt['id']
+        )
+
+        numberOfMatches = { }
+
+        for application in applicationsSet:
+            id = application.VacancyId.VacancyId
+
+            if application in numberOfMatches:
+                numberOfMatches[id] = numberOfMatches[id] + 1
+            else:
+                numberOfMatches[id] = 1
+
+        orderedList = []
+
+        while(len(numberOfMatches) > 0):
+            maxKey = max(numberOfMatches, key=numberOfMatches.get)
+
+            orderedList.append(Vacancy.objects.get(pk=maxKey))
+
+            numberOfMatches.pop(maxKey, None)
+
+        newList = []
+
+        for i in range(0, len(orderedList)):
+            newList.append(orderedList[len(orderedList) - i - 1])
+
+        vacancySerializer = VacancySerializer(newList, many=True)
+
+        vacancies = vacancySerializer.data 
 
     returnData = {
         'vacancies': vacancies,
@@ -310,7 +352,7 @@ def getMatches(request):
     # add sorting
 
     #matches = matchHelper.getMatches(vID)
-    matches = reviewHelper.getApplications(vID)
+    matches = reviewHelper.getApplications(vID, sort)
 
     numMatches = Application.objects.filter(
         VacancyId__exact = vID,
