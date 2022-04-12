@@ -1,12 +1,12 @@
 <script setup>
-    const props = defineProps(['name', 'label', 'placeholder', 'value', 'disabled'])
+    const props = defineProps(['name', 'label', 'placeholder', 'type', 'value', 'disabled'])
 </script>
 
 <template>
     <div class='form-group'>
         <label :for='props.name' class='label'>{{ props.label }}:</label>
         <input 
-            type='text' 
+            :type='props.type' 
             :name='props.name' 
             class='input'
             :id='props.name' 
