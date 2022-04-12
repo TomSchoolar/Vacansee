@@ -6,6 +6,7 @@
     // form pages
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
     import MoreDetailsForm from '@/components/employer/newVacancy/MoreDetailsForm.vue';
+    import ContactDetailsForm from '@/components/employer/newVacancy/ContactDetailsForm.vue';
 
     
     import { onMounted, ref } from 'vue';
@@ -24,6 +25,7 @@
     });
 
     const changePage = (incr) => {
+        try {
         const maxPage = pages.length - 1;
         const oldPage = currentPageNum.value;
         const newPage = currentPageNum.value + incr;
@@ -35,6 +37,9 @@
         pages[newPage].classList.remove('form-page-container-hidden');
 
         currentPageNum.value += incr;
+        } catch(e) {
+            console.log(e)
+        }
     }
 
 </script>
@@ -59,6 +64,9 @@
         </div>
         <div class='form-page-container form-page-container-hidden'>
             <MoreDetailsForm @next='changePage(1)' @back='changePage(-1)' />
+        </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <ContactDetailsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
         
     </form>
