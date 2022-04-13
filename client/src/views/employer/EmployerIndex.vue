@@ -140,13 +140,14 @@
 
     watch(filter, async (filterValue) => {
         // change which vacancies are display based on isOpen
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: 1, filter: filterValue });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
 
+        page.value = 1;
         filter.value = filterValue;
     });
 
@@ -158,13 +159,14 @@
         if(page.value < 0)
             page.value = 0;
 
-        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
+        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: 1, filter: filter.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
 
+        page.value = 1;
         limit.value = newLimit;
     });
 

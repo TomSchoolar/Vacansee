@@ -158,13 +158,14 @@
 
     watch(limit, async (newLimit) => {
         // change number of applications per page
-        const result = await getApplications({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
+        const result = await getApplications({ sort: sort.value, count: newLimit, pageNum: 1, filter: filter.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
 
+        page.value = 1;
         limit.value = newLimit;
     });
 
