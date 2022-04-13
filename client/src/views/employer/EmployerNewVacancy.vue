@@ -7,6 +7,7 @@
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
     import MoreDetailsForm from '@/components/employer/newVacancy/MoreDetailsForm.vue';
     import ContactDetailsForm from '@/components/employer/newVacancy/ContactDetailsForm.vue';
+    import LogisticsForm from '@/components/employer/newVacancy/LogisticsForm.vue';
 
     
     import { onMounted, ref } from 'vue';
@@ -17,7 +18,7 @@
 
     // get company name
     let session = window.localStorage.getItem('session') ?? '{}'
-    const { CompanyName: cn = 'Vacancy Stats' } = JSON.parse(session);
+    const { CompanyName: cn = false } = JSON.parse(session);
     const companyName = ref(cn);
 
     onMounted(() => {
@@ -49,7 +50,7 @@
 
     <main class='container'>
         <div class='header'>
-            <h1 class='title'>{{ companyName }}</h1>
+            <h1 class='title'>{{ (companyName ? `${ companyName } - ` : '') + 'New Vacancy' }}</h1>
             <hr />
         </div>
     </main>
@@ -67,6 +68,9 @@
         </div>
         <div class='form-page-container form-page-container-hidden'>
             <ContactDetailsForm @next='changePage(1)' @back='changePage(-1)' />
+        </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <LogisticsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
         
     </form>
