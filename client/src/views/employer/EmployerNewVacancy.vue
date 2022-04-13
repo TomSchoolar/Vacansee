@@ -8,7 +8,7 @@
     import MoreDetailsForm from '@/components/employer/newVacancy/MoreDetailsForm.vue';
     import ContactDetailsForm from '@/components/employer/newVacancy/ContactDetailsForm.vue';
     import LogisticsForm from '@/components/employer/newVacancy/LogisticsForm.vue';
-
+    import TagsForm from '@/components/employer/newVacancy/TagsForm.vue';
     
     import { onMounted, ref } from 'vue';
 
@@ -71,6 +71,9 @@
         </div>
         <div class='form-page-container form-page-container-hidden'>
             <LogisticsForm @next='changePage(1)' @back='changePage(-1)' />
+        </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <TagsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
         
     </form>
