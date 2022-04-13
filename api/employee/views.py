@@ -464,10 +464,6 @@ def getApplications(request):
     else:
         'all'
         filterParam = ['MATCHED', 'PENDING', 'REJECTED']
-
-
-    skip = max(count * (pageNum - 1), 0)
-    limit = count * pageNum
     
 
     try:
@@ -480,6 +476,9 @@ def getApplications(request):
         # deals with a lower number of pages than the current page
         while (pageNum - 1) * count >= numApps and pageNum > 1:
             pageNum -= 1
+
+        skip = max(count * (pageNum - 1), 0)
+        limit = count * pageNum
 
         applicationSet = Application.objects.filter(
             UserId__exact = jwt['id'],
@@ -511,7 +510,7 @@ def getApplications(request):
 
 
 
-    return Response({ 'applications': pairedApplications, 'numPages': numPages }, status=status.HTTP_200_OK)
+    return Response({ 'applications': pairedApplications, 'numPages': numPages, 'pageNum': pageNum }, status=status.HTTP_200_OK)
 
 
 

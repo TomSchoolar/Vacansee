@@ -47,11 +47,12 @@
         if(!response?.data)
             return false;
 
-        const { applications: newApps = [], numPages: ps = 1 } = response.data;
+        const { applications: newApps = [], numPages: ps = 1, pageNum: pn = 1 } = response.data;
 
         if(!newApps)
             return false;
 
+        page.value = pn;
         numPages.value = ps;
         applications.value = newApps;
 
@@ -143,33 +144,18 @@
 
     watch(filter, async (filterValue) => {
         // change which applications are display based on isOpen
-        const result = await getApplications({ sort: sort.value, count: limit.value, pageNum: 1, filter: filterValue });
+        const result = await getApplications({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
 
-        page.value = 1;
         filter.value = filterValue;
     });
 
 
     watch(limit, async (newLimit) => {
-        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
-
-        if(page.value < 0)
-        {
-            page.value = 0;
-        }
- 
-        newPage = 1;
-
-        currentFirstVacancy = page.value * limit;
-        newPage = currentFirstVacancy / newLimit;
-
-        page.value = newPage;
-
         // change number of applications per page
         const result = await getApplications({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
