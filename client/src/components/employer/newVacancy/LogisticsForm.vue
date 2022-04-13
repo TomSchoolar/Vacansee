@@ -1,10 +1,29 @@
 <script setup>
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
     import FormButtons from '@/components/employer/newVacancy/formComponents/FormButtons.vue';
-    import FormDropdown from '@/components/employer/newVacancy/formComponents/FormDropdown.vue';
+    import FormSelect from '@/components/employer/newVacancy/formComponents/FormSelect.vue';
     import FormExpandingDoubleText from '@/components/employer/newVacancy/formComponents/FormExpandingDoubleText.vue';
 
     const emit = defineEmits(['next', 'back']);
+
+    const dropdownOptions = [
+        {
+            value: 'all',
+            text: 'all'
+        },
+        {
+            value: 'of',
+            text: 'of'
+        },
+        {
+            value: 'the',
+            text: 'the'
+        },
+        {
+            value: 'timezones',
+            text: 'timezones'
+        },
+    ];
 </script>
 
 <template>
@@ -13,7 +32,7 @@
     </FormHeader>
 
     <FormExpandingDoubleText label='relevant experience required' name='experience' placeholder='position' secondPlaceholder='time' :max='3' />
-    <FormDropdown label='timezone' name='timezone' />
+    <FormSelect label='timezone' name='timezone' placeholder='select a timezone' :options='dropdownOptions' />
 
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='emit("next")' />

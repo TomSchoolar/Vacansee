@@ -1,5 +1,5 @@
 <script setup>
-    const props = defineProps(['name', 'label'])
+    const props = defineProps(['name', 'label', 'multiple', 'options', 'placeholder'])
 </script>
 
 <template>
@@ -10,12 +10,11 @@
             class='input'
             :id='props.name' 
             required
+            :multiple='(props.multiple ? props.multiple : false)'
+            :style='(props.multiple ? "height: 150px;" : "")'
         >
-            <option value='' selected hidden disabled>select a timezone</option>
-            <option value='all'>all</option>
-            <option value='the'>the</option>
-            <option value='different'>different</option>
-            <option value='timezones'>timezones</option>
+            <option value='' selected hidden disabled>{{ props.placeholder }}</option>
+            <option v-for='option in options' :key='option.value' :value='option.value'>{{ option.text }}</option>
         </select>
     </div>
 </template>
