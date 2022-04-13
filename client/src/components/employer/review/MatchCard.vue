@@ -79,7 +79,7 @@ export default {
             <button class='application-button application-button-grey' @click='showApplication' id='show'>Show Application</button>
             <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
             <button class='application-button application-button-red' @click="showModal = true">Unmatch</button>
-            <AreYouSureModal v-show="showModal" @close-modal="showModal = false" @unmatch='unmatch' />
+            <AreYouSureModal v-show="showModal" @close-modal="showModal = false" :profile=profile @unmatch='unmatch' />
         </div>
     </article>
     <hr class='slim-hr' />
