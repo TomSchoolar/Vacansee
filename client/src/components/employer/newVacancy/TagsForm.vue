@@ -6,27 +6,27 @@
     const emit = defineEmits(['next', 'back']);
     const options = [
         {
-            value: '0;fa-solid fa-book',
+            value: '0',
             text: 'book'
         },
         {
-            value: '1;fa-solid fa-code',
+            value: '1',
             text: 'code'
         },
         {
-            value: '2;fa-brands fa-python',
+            value: '2',
             text: 'python'
         },
         {
-            value: '3;fa-solid fa-school',
+            value: '3',
             text: 'school'
         },
         {
-            value: '4;fa-solid fa-briefcase',
+            value: '4',
             text: 'briefcase'
         },
         {
-            value: '5;fa-solid fa-database',
+            value: '5',
             text: 'database'
         },
     ]
@@ -37,7 +37,7 @@
         In order to help well-suited applicants find this vacancy more easily, select as many tags below as are relevant to the position.
     </FormHeader>
 
-    <FormSelect label='tags' name='tags' :multiple='true' :options='options' />
+    <FormSelect label='tags' name='tagsInput' :multiple='true' :options='options' />
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='emit("next")' />
 </template>

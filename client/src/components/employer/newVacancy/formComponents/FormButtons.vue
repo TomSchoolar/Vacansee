@@ -1,6 +1,6 @@
 <script setup>
-    const props = defineProps(['next', 'back']);
-    const emit = defineEmits(['next', 'back']);
+    const props = defineProps(['back', 'next', 'publish']);
+    const emit = defineEmits(['back', 'next', 'publish']);
 </script>
 
 <template>
@@ -10,6 +10,9 @@
         </button>
         <button type='button' class='btn btn-next' @click='emit("next")' v-if='next'>
             Next
+        </button>
+        <button type='button' class='btn btn-next' @click='emit("publish")' v-if='publish'>
+            Publish
         </button>
     </div>
 </template>
@@ -47,5 +50,7 @@
         display: flex;
         flex-direction: row;
         width: 100%;
+        max-width: 500px;
+        margin: auto;
     }
 </style>

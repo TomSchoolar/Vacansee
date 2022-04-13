@@ -12,8 +12,8 @@
         We need your contact details next. Enter a current phone number and email address.
     </FormHeader>
 
-    <FormText type='text' label='phone number' name='phoneNumber' :value='props.phoneNumber' />
-    <FormText type='email' label='email' name='email' :value='props.email' />
+    <FormText type='text' label='phone number' name='PhoneNumber' :value='props.phoneNumber' />
+    <FormText type='email' label='email' name='Email' :value='props.email' />
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='emit("next")' />
 </template>

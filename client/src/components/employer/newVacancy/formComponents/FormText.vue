@@ -1,5 +1,5 @@
 <script setup>
-    const props = defineProps(['name', 'label', 'placeholder', 'type', 'value', 'disabled'])
+    const props = defineProps(['name', 'label', 'placeholder', 'type', 'value', 'readonly', 'disabled'])
 </script>
 
 <template>
@@ -12,12 +12,23 @@
             :id='props.name' 
             :placeholder='props.placeholder ? props.placeholder : "" ' 
             :value='props.value ? props.value : "" ' 
+            :readonly='props.readonly ? true : false'
             :disabled='props.disabled ? true : false'
+            
         >
     </div>
 </template>
 
 <style scoped>
+    input[readonly] {
+        /* chrome default disabled styles */
+        cursor: default;
+        background-color: rgba(239, 239, 239, 0.3);/*, rgba(59, 59, 59, 0.3)); */
+        color: rgb(84, 84, 84);/*, rgb(170, 170, 170));*/
+        border-color: rgba(118, 118, 118, 0.3);
+        border-width: 1.5px;
+    }
+
     .form-group {
         display: flex;
         flex-direction: column;

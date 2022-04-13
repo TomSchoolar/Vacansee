@@ -12,8 +12,8 @@
         Enter more job specifics so applicants know what they're applying for.
     </FormHeader>
 
-    <FormTextArea label='job description' name='description' rows='7' />
-    <FormExpandingText label='necessary skills' name='skills' :max='3' />
+    <FormTextArea label='job description' name='Description' rows='7' />
+    <FormExpandingText label='necessary skills' name='SkillsRequired' :max='3' />
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='emit("next")' />
 </template>

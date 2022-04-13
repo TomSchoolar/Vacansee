@@ -9,10 +9,12 @@
     import ContactDetailsForm from '@/components/employer/newVacancy/ContactDetailsForm.vue';
     import LogisticsForm from '@/components/employer/newVacancy/LogisticsForm.vue';
     import TagsForm from '@/components/employer/newVacancy/TagsForm.vue';
+    import ReviewForm from '@/components/employer/newVacancy/ReviewForm.vue';
     
     import { onMounted, ref } from 'vue';
 
     let pages;
+    const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
 
@@ -27,19 +29,27 @@
 
     const changePage = (incr) => {
         try {
-        const maxPage = pages.length - 1;
+        const maxPage = pages.length;
         const oldPage = currentPageNum.value;
         const newPage = currentPageNum.value + incr;
 
         if(newPage > maxPage || newPage < 0)
             return;
 
-        pages[oldPage].classList.add('form-page-container-hidden');
-        pages[newPage].classList.remove('form-page-container-hidden');
+        if(newPage < maxPage) {
+            pages[oldPage].classList.add('form-page-container-hidden');
+            pages[newPage].classList.remove('form-page-container-hidden');
+        }
+
+        if(newPage == pages.length - 1) {
+            // review page, get form data
+            const form = document.querySelector('form');
+            formData.value = new FormData(form);
+        }
 
         currentPageNum.value += incr;
         } catch(e) {
-            console.log(e)
+            console.error(e)
         }
     }
 
@@ -74,6 +84,9 @@
         </div>
         <div class='form-page-container form-page-container-hidden'>
             <TagsForm @next='changePage(1)' @back='changePage(-1)' />
+        </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' />
         </div>
         
     </form>
