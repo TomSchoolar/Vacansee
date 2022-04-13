@@ -1,5 +1,8 @@
 <script setup>
+    import { ref } from 'vue';
+
     const props = defineProps(['name', 'label', 'placeholder', 'value', 'rows'])
+    const areaValue = ref(props.value);
 </script>
 
 <template>
@@ -11,7 +14,7 @@
             :id='props.name' 
             :placeholder='props.placeholder ? props.placeholder : "" ' 
             :rows='props.rows ? props.rows : 5'
-            v-model='props.value' 
+            v-model='areaValue' 
         ></textarea>
     </div>
 </template>
