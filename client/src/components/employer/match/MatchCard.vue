@@ -1,11 +1,10 @@
 <script setup>
+    import api, { apiCatchError } from '@/assets/js/api';
     const { stats } = defineProps(['stats']);
     const { application = {}, profile = {} } = stats;
-
-    import axios from 'axios';
     import { onMounted, ref } from 'vue';
 
-    const emits = defineEmits(["showApplication", "unmatch"])
+    const emit = defineEmits(["showApplication", "unmatch"])
 
     const details = {};
 
@@ -22,6 +21,7 @@
             },
             responseType: 'json'
         }).catch(apiCatchError);
+
 
         if(!response) {
             return false;

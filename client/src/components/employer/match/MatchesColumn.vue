@@ -80,7 +80,7 @@
     }
 
     const onUnmatch = () => {
-        alert("d");
+        updateMatches(selectedVacancy.vacancyId)
     }
 
     const updateCard = (nextProfile) => {
