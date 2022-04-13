@@ -157,16 +157,24 @@
         while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
 
         if(page.value < 0)
+        {
             page.value = 0;
+        }
 
-        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: 1, filter: filter.value });
+        newPage = 1;
+
+        currentFirstVacancy = page.value * limit;
+        newPage = currentFirstVacancy / newLimit;
+
+        page.value = newPage;
+
+        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
 
-        page.value = 1;
         limit.value = newLimit;
     });
 

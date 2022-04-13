@@ -26,7 +26,6 @@
     const sort = ref('dateDesc');
     const displayModal = ref(false);
 
-
     document.title = 'Applications | Vacansee'
 
     // api request function
@@ -157,15 +156,28 @@
 
 
     watch(limit, async (newLimit) => {
+        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
+
+        if(page.value < 0)
+        {
+            page.value = 0;
+        }
+ 
+        newPage = 1;
+
+        currentFirstVacancy = page.value * limit;
+        newPage = currentFirstVacancy / newLimit;
+
+        page.value = newPage;
+
         // change number of applications per page
-        const result = await getApplications({ sort: sort.value, count: newLimit, pageNum: 1, filter: filter.value });
+        const result = await getApplications({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
 
-        page.value = 1;
         limit.value = newLimit;
     });
 
