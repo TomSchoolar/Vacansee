@@ -36,6 +36,19 @@
     
 </script>
 
+<script>
+import AreYouSureModal from './AreYouSureModal.vue'
+
+export default {
+  components: { AreYouSureModal },
+  data() {
+    return {
+      showModal: false,
+    }
+  },
+}
+</script>
+
 
 <template>
     <article class='application'>
@@ -65,7 +78,8 @@
         <div class='application-right'>
             <button class='application-button application-button-grey' @click='showApplication' id='show'>Show Application</button>
             <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
-            <button class='application-button application-button-red' @click='unmatch'>Unmatch</button>
+            <button class='application-button application-button-red' @click="showModal = true">Unmatch</button>
+            <AreYouSureModal v-show="showModal" @close-modal="showModal = false" @unmatch='unmatch' />
         </div>
     </article>
     <hr class='slim-hr' />
