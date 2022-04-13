@@ -1,6 +1,5 @@
 <script setup>
 
-    import ApplyCard from '@/components/auth/ApplyCard.vue';
     import VacancyCard from '@/components/auth/VacancyCard.vue';
 
 

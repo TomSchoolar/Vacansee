@@ -47,31 +47,31 @@ const employeeRoutes = [
             middleware: [isLoggedIn, isEmployee]
         }
     },
-  {
-    path: '/applications',
-    name: 'EmployeeApplications',
-    component: EmployeeApplications,
-    meta: {
-        middleware: [isLoggedIn, isEmployee]
+    {
+        path: '/applications',
+        name: 'EmployeeApplications',
+        component: EmployeeApplications,
+        meta: {
+            middleware: [isLoggedIn, isEmployee]
+        }
+    },
+    {
+        path: '/favourites',
+        name: 'EmployeeFavourites',
+        component: EmployeeFavourites,
+        meta: {
+            middleware: [isLoggedIn, isEmployee]
+        }
+    },
+    {
+        path: '/profile',
+        name: 'EmployeeProfile',
+        component: EmployeeProfile,
+        meta: {
+            middleware: [isLoggedIn, isEmployee]
+        }
     }
-  },
-  {
-    path: '/favourites',
-    name: 'EmployeeFavourites',
-    component: EmployeeFavourites,
-    meta: {
-        middleware: [isLoggedIn, isEmployee]
-    }
-  },
-  {
-    path: '/profile',
-    name: 'EmployeeProfile',
-    component: EmployeeProfile,
-    meta: {
-        middleware: [isLoggedIn, isEmployee]
-    }
-  }
-]
+];
 
 
 

@@ -1,6 +1,34 @@
 <script setup>
 
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
+
+    import { onMounted, ref } from 'vue';
+
+    let pages;
+    const notifs = ref(2);
+    const currentPageNum = ref(0);
+    const headings = ['Personal', 'Contact', 'Location', 'Soft', 'Exp', 'Quali', 'Review'];
+
+    onMounted(() => {
+        pages = document.querySelectorAll('.form-page-container');
+    });
+
+    const changePage = (incr) => {
+        const maxPage = pages.length - 1;
+        const oldPage = currentPageNum.value;
+        const newPage = currentPageNum.value + incr;
+
+        if(newPage > maxPage || newPage < 0)
+            return;
+
+        pages[oldPage].classList.add('form-page-container-hidden');
+        pages[newPage].classList.remove('form-page-container-hidden');
+
+        currentPageNum.value += incr;
+    }
+
+
     function personalDetails(){
         document.getElementById('personalDetails').style.display = '';
         document.getElementById('contactDetails').style.display = 'none';
@@ -102,8 +130,14 @@
 
 <template>
     <EmployeeNavbar page='home' :numNotifs='notifs'></EmployeeNavbar>
+
+    
     <div class= 'container'>
         <h1 class ='title'> User Profile SetUp </h1>
+
+        <nav class='form-progress'>
+            <FormStepper :stepNum='currentPageNum' :headings='headings' />
+        </nav>
         <div class= 'bar'>
             <button @click = 'personalDetails' id= 'personalDetails-button'> Personal Details </button>
             <button @click = 'contactDetails' id= 'contactDetails-button'> Contact Details </button>
@@ -114,7 +148,7 @@
             <button> Review </button>
         </div>
 
-        <div id ='personalDetails' style='display:none;'> 
+        <div id ='personalDetails'> 
             <h1> Personal Details </h1> 
             <p> Let's start off with the simple stuff. <br /> Enter your first and last name and your pronouns </p>
             <form>
@@ -132,6 +166,7 @@
             <button @click = 'contactDetails'> Next </button>
         </div>
         <div id='contactDetails' style='display:none;'>
+            <FormButtons :next='true' @next='changePage(1)' />
             <h1> Contact Details </h1> 
             <p> We need your contact details next. <br /> Enter a current phone number and email address </p>
             <form>
