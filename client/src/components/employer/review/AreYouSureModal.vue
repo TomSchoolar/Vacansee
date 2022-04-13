@@ -1,9 +1,22 @@
+<script setup>
+    const { profile = {} } = defineProps(["profile"]);
+    const emit = defineEmits(['unmatch', 'close-modal'])
+
+    const unmatched = () => {
+        emit('close-modal');
+        emit('unmatch');
+    };
+</script>
+
 <template>
-  <div class="modal-overlay" @click="$emit('close-modal')">
+  <div class="modal-overlay">
     <div class="modal">
-      <h6>Are You Sure you want to unmatch with</h6>
-      <button @click="$emit('close-modal')">No</button>
-      <button @click="$emit('unmatch')">Yes</button>
+      <img class="warning" src="../../../assets/AreYouSureImage.png" alt="" />
+      <p class="description">You are about to unmatch with</p>
+      <p class="name">{{profile.FirstName}} {{profile.LastName}}</p>
+      <p class="description">Are you sure you want to do this?</p>
+      <button class="application-button application-button-grey" @click="$emit('close-modal')">Go Back</button>
+      <button class="application-button application-button-red" @click="unmatched">Unmatch</button>
     </div>
   </div>
 </template>
@@ -14,6 +27,56 @@
 </script>
 
 <style scoped>
+
+.warning {
+  width: 150px;
+}
+
+.description p {
+    height: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.name { 
+    font-weight: bold;
+    font-size: 18px;
+    margin: 0px;
+    padding: 0px 0px 0px 0px;
+}
+
+.application-button {
+    font-weight: 500; /* required for some reason */
+    border-radius: 7px;
+    color: #fff;
+    border: 2.2px solid #333;
+    min-width: 150px;
+    font-size: 12px;
+    text-decoration: none;
+    padding: 2px 4px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.application-button-grey {
+    background: var(--slate);
+}
+
+.application-button-grey:hover, .application-button-grey:focus, .application-button-grey:active {
+    background: var(--slate-focus);
+    cursor: pointer;
+} 
+
+.application-button-red {
+    background: var(--red);
+}
+
+.application-button-red:hover, .application-button-red:focus, .application-button-red:active {
+    background: var(--red-focus);
+    cursor: pointer;
+} 
+
 
 .modal-overlay {
   position: absolute;
@@ -30,34 +93,11 @@
 .modal {
   text-align: center;
   background-color: white;
-  height: 200px;
+  height: 380px;
   width: 400px;
-  margin-top: 10%;
-  padding: 60px 0;
+  margin-top: 5%;
+  padding: 20px 0;
   border-radius: 20px;
-}
-.close {
-  margin: 10% 0 0 16px;
-  cursor: pointer;
-}
-
-.close-img {
-  width: 25px;
-}
-
-.check {
-  width: 150px;
-}
-
-h6 {
-  font-weight: 500;
-  font-size: 28px;
-  margin: 20px 0;
-}
-
-p {
-  font-size: 16px;
-  margin: 20px 0;
 }
 
 button {
