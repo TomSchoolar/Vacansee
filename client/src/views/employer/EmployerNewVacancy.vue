@@ -1,4 +1,5 @@
 <script setup>
+    import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
@@ -94,6 +95,10 @@
 </template>
 
 <style scoped>
+    *:deep(.invalid-input) {
+        border: 3px solid var(--red) !important;
+    }
+
     hr {
         width: 100%;
         margin: 8px 0 12px 0;

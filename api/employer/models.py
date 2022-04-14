@@ -21,7 +21,7 @@ class Vacancy(models.Model):
     Salary = models.CharField(max_length=80, blank=False)
     Description = models.CharField(max_length=150, blank=False)
     SkillsRequired = ArrayField(models.CharField(max_length=50), size=3, default=list)
-    ExperienceRequired = ArrayField(models.CharField(max_length=500), size=3, default=list)
+    ExperienceRequired = ArrayField(models.CharField(max_length=75), size=3, default=list)
     TimeZone = models.IntegerField(blank=False)
     Tags = ArrayField(models.CharField(max_length=20), size=10, default=list)
     IsOpen = models.BooleanField(blank=False, default=True)
