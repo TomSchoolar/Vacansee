@@ -1,14 +1,14 @@
-from . import views
 from django.urls import path
+from .views import applications, favourites, index
 
 urlpatterns = [
-    path('vacancy/', views.getIndex),
-    path('vacancy/fav/', views.postFavourite),
-    path('vacancy/apply/', views.postApplication),
-    path('vacancy/reject/', views.postReject),
-    path('applications/', views.getApplications),
-    path('applications/stats/', views.getApplicationStats),
-    path('applications/delete/<int:applicationId>/', views.deleteApplication),
-    path('applications/<int:applicationId>/', views.getApplicationDetails),
-    path('favourites/', views.getFavourites)
+    path('vacancy/', index.getIndex),
+    path('vacancy/fav/', favourites.postFavourite),
+    path('vacancy/apply/', applications.postApplication),
+    path('vacancy/reject/', index.postReject),
+    path('applications/', applications.getApplications),
+    path('applications/stats/', applications.getApplicationStats),
+    path('applications/delete/<int:applicationId>/', applications.deleteApplication),
+    path('applications/<int:applicationId>/', applications.getApplicationDetails),
+    path('favourites/', favourites.getFavourites)
 ]

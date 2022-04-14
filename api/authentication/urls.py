@@ -1,8 +1,8 @@
-from . import views
 from django.urls import path
+from .views import doorAuth, jwt
 
 urlpatterns = [
-    path('login/', views.postLogin),
-    path('logout/', views.getLogout),
-    path('refreshtoken/', views.postRefreshToken)
+    path('login/', doorAuth.postLogin),
+    path('logout/', doorAuth.postLogout),
+    path('refreshtoken/', jwt.postRefreshToken)
 ]
