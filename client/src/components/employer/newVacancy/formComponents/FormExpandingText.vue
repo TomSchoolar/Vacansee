@@ -13,10 +13,7 @@
         fields = document.querySelectorAll(`.input-${ props.name }`);
         activeFields.push(fields[0]);
 
-
-
-
-        const listener = fieldPane.addEventListener('keyup', () => {
+        fieldPane.addEventListener('keyup', () => {
             for(let i = 0; i < activeFields.length; i++) {
                 let field = activeFields[i];
                 listenerAction(field);
@@ -93,8 +90,8 @@
         font-size: 16px;
     }
 
-    .input:not(:last-of-type) {
-        margin-bottom: 12px;
+    .input:not(:first-of-type) {
+        margin-top: 12px;
     }
 
     .input-hidden {

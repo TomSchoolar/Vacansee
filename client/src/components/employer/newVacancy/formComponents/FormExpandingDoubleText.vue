@@ -99,8 +99,8 @@
         justify-content: space-between;
     }
 
-    .double-input-container:not(:last-of-type) {
-        margin-bottom: 12px;
+    .double-input-container:not(:first-of-type) {
+        margin-top: 12px;
     }
 
     .form-group {
