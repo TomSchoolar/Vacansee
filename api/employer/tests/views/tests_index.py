@@ -40,6 +40,32 @@ class indexTestCase(TestCase):
         self.assertDictEqual(expectedData, response.data)
 
 
+    def test_validRequestSortDateAsc(self):
+        # User: Sabah
+        response = self.client.get('/e/vacancy/', { 'sort': 'dateAsc', 'filter': 'all', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        
+        vacancySet = Vacancy.objects.filter(
+                UserId__exact = 4
+            ).annotate( 
+                applicationCount = Count('application', filter=Q(application__ApplicationStatus__exact='PENDING')) 
+            ).order_by( 
+                'Created' 
+            )
+        vacancies = VacancySerializer(vacancySet, many=True).data
+
+        getVacancyStats(vacancies)
+
+        expectedData = {
+            'vacancies': vacancies,
+            'numPages': ceil(len(vacancies) / 10),
+            'numVacancies': len(vacancies),
+            'companyName': 'Facebook'
+        }
+
+        self.assertEquals(response.status_code, 200)
+        self.assertDictEqual(expectedData, response.data)
+
+
     def test_incorrectlyLargePageNumSortDateDesc(self):
         # User: Sabah
         response = self.client.get('/e/vacancy/', { 'sort': 'dateDesc', 'filter': 'all', 'pageNum': 3, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
@@ -193,3 +219,17 @@ class indexTestCase(TestCase):
         response = self.client.get('/e/vacancy/stats/')
 
         self.assertEquals(response.status_code, 401)
+
+    def test_expiredJWT(self):
+        jwt = createAccessToken(self.jwt, 'now')
+        response = self.client.get('/e/vacancy/', { 'sort': 'newApps', 'filter': 'all', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+
+        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['message'], 'Expired auth token')
+
+    def test_invalidJWT(self):
+        jwt = self.jwt[:-1]
+        response = self.client.get('/e/vacancy/', { 'sort': 'newApps', 'filter': 'all', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+
+        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['message'], 'Invalid auth token')
