@@ -1,6 +1,11 @@
+from copy import copy
 from math import ceil
+from json import loads
+from xml.dom import ValidationErr
+from django.forms import ValidationError
 from rest_framework import status
 from django.db.models import Count, Q
+from authentication.models import User
 from ..serializers import VacancySerializer
 from rest_framework.response import Response
 from ..models import EmployerDetails, Vacancy
@@ -10,12 +15,15 @@ from employer.helpers import getIndex as indexHelper, getReview
 
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def getIndex(request):
     jwt = jwtHelper.extractJwt(request)
 
     if type(jwt) is not dict:
         return jwt
+
+    if request.method == 'POST':
+        return postIndex(request, jwt)
 
     # get query params: sort, count, filter, pageNum, uID
     params = request.query_params
@@ -132,3 +140,30 @@ def getIndexStats(request):
         return Response(data={'code': 500, 'message': e.__str__}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
    
     return Response({ 'stats': stats })
+
+
+
+def postIndex(request, jwt):
+    try:
+        data = request.data.dict()
+
+        listKeys = ['SkillsRequired', 'ExperienceRequired', 'Tags']
+
+        for key in listKeys:
+            if key in data:
+                data[key] = loads(data[key])
+
+        data['UserId'] = User.objects.get(pk = jwt['id'])
+
+        newVacancy = Vacancy(**data)
+        newVacancy.full_clean()
+        newVacancy.save()
+
+        return Response(status=status.HTTP_200_OK)
+    except ValidationError as err:
+        return Response({ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as err:
+        import traceback
+        traceback.print_exc()
+        print(f'uh oh: { err }')
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
