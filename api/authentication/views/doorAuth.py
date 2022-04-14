@@ -1,11 +1,11 @@
 from copy import copy
 from rest_framework import status
-from ..helpers import jwt as jwtHelper
 from ..models import RefreshToken, User
 from ..serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.hashers import check_password
+from ..helpers import jwt as jwtHelper, auth as authHelper
 
 
 @api_view(['POST'])
@@ -31,7 +31,6 @@ def postLogin(request):
     
     try:
         # get user type specific details
-        print(user['IsEmployer'])
         if(user['IsEmployer']):
             extraDetails = authHelper.getEmployerDetails(user['UserId'])
         else:
