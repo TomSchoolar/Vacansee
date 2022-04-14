@@ -26,13 +26,15 @@ class indexTestCase(TestCase):
                 '-applicationCount' 
             )
         vacancies = VacancySerializer(vacancySet, many=True).data
+        vacanciesCount = vacancySet = Vacancy.objects.filter(UserId__exact = 4).count()
 
         getVacancyStats(vacancies)
 
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies)
+            'numVacancies': vacanciesCount,
+            'companyName': 'Facebook'
         }
 
         self.assertEquals(response.status_code, 200)
@@ -55,7 +57,8 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies)
+            'numVacancies': len(vacancies),
+            'companyName': 'Facebook'
         }
 
         self.assertEquals(response.status_code, 200)
@@ -74,13 +77,15 @@ class indexTestCase(TestCase):
                 'VacancyName' 
             )
         vacancies = VacancySerializer(vacancySet, many=True).data
+        vacanciesCount = Vacancy.objects.filter(UserId__exact = 4, IsOpen__exact = True).count()
 
         getVacancyStats(vacancies)
 
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies)
+            'numVacancies': vacanciesCount,
+            'companyName': 'Facebook'
         }
 
         self.assertEquals(response.status_code, 200)
@@ -98,13 +103,15 @@ class indexTestCase(TestCase):
                 '-VacancyName' 
             )
         vacancies = VacancySerializer(vacancySet, many=True).data
+        vacanciesCount = Vacancy.objects.filter(UserId__exact = 4, IsOpen__exact = False).count()
 
         getVacancyStats(vacancies)
 
         expectedData = {
             'vacancies': vacancies,
             'numPages': ceil(len(vacancies) / 10),
-            'numVacancies': len(vacancies)
+            'numVacancies': vacanciesCount,
+            'companyName': 'Facebook'
         }
 
         self.assertEquals(response.status_code, 200)
@@ -119,7 +126,8 @@ class indexTestCase(TestCase):
         expectedData = {
             'vacancies': [],
             'numPages': 0,
-            'numVacancies': 0
+            'numVacancies': 0,
+            'companyName': 'Discord'
         }
 
         self.assertEquals(response.status_code, 200)
