@@ -26,7 +26,6 @@
     const sort = ref('dateDesc');
     const displayModal = ref(false);
 
-
     document.title = 'Applications | Vacansee'
 
     // api request function
@@ -48,11 +47,12 @@
         if(!response?.data)
             return false;
 
-        const { applications: newApps = [], numPages: ps = 1 } = response.data;
+        const { applications: newApps = [], numPages: ps = 1, pageNum: pn = 1 } = response.data;
 
         if(!newApps)
             return false;
 
+        page.value = pn;
         numPages.value = ps;
         applications.value = newApps;
 
@@ -284,7 +284,7 @@
                 </div>
             </div>
 
-            <div class='pagination'>
+            <div class='pagination' v-if='numPages > 1'>
                 <div class='pag-block pag-start' @click='page > 1 ? changePage(--page) : page'><i class="fa-solid fa-angle-left"></i></div>
                 <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
                 <div class='pag-block pag-end' @click='page < numPages ? changePage(++page) : page'><i class="fa-solid fa-angle-right"></i></div>

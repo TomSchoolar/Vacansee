@@ -164,7 +164,7 @@ def getReview(request, vacancyId):
     
 
     try:
-        applications = reviewHelper.getApplications(vacancyId)
+        applications = reviewHelper.getApplications(vacancyId, "FirstNameAsc")
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting applications' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -258,9 +258,9 @@ def getMatchVacancies(request):
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
+
     if sort == 'matchesDesc':
-        sortByNum = True
-        sortParam = '-Created' #delete
+        sortParam = '-MatchesCount'
     elif sort == 'dateDesc':
         sortParam = '-Created'
     elif sort == 'dateAsc':
@@ -274,13 +274,14 @@ def getMatchVacancies(request):
         UserId__exact = jwt['id'],
     ).count()
 
-    #add if-else for sortByNum
-    vacanciesSet = Vacancy.objects.filter(
-        UserId__exact = jwt['id'],
-    ).order_by(sortParam)
-
-    vacancySerializer = VacancySerializer(vacanciesSet, many=True)
-    vacancies = vacancySerializer.data
+    vacancies = Vacancy.objects.filter(
+        UserId__exact = jwt['id']
+    ).annotate(
+        MatchesCount = Count('application', filter = Q(
+            application__ApplicationStatus__exact='MATCHED',
+            application__VacancyId__UserId__exact = jwt['id']
+        ))
+    ).order_by(sortParam).values()
 
     returnData = {
         'vacancies': vacancies,
@@ -310,7 +311,7 @@ def getMatches(request):
     # add sorting
 
     #matches = matchHelper.getMatches(vID)
-    matches = reviewHelper.getApplications(vID)
+    matches = reviewHelper.getApplications(vID, sort)
 
     numMatches = Application.objects.filter(
         VacancyId__exact = vID,

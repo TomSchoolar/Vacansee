@@ -1,3 +1,4 @@
+from pstats import SortKey
 import environ
 import regex as re
 import jwt as jwtLib
@@ -38,9 +39,28 @@ def getNewApplication(vacancyId):
         return populatedNew[0]
     return False
 
+def alphabeticalSort(applicationList, sortField):
+
+    sortingDict = { }
+    returnList = []
+
+    for i in range(0, len(applicationList)):
+        app = applicationList[i]
+        sortingDict[app['profile'][sortField]] = i
+
+    sortednames=sorted(sortingDict.keys(), key=lambda x:x.lower())
+
+    counter = 0
+
+    while len(sortingDict) > 0:
+        returnList.append(applicationList[sortingDict[sortednames[0]]])
+        sortingDict.pop(sortednames[0])
+        sortednames.pop(0)
+
+    return returnList
 
 
-def getApplications(vacancyId):
+def getApplications(vacancyId, sortParam):
     # get the matches and pending applications for review page
 
     matchesSet = Application.objects.filter(
@@ -52,11 +72,27 @@ def getApplications(vacancyId):
     matches = ApplicationSerializer(matchesSet, many = True).data
     populatedMatches = pairApplications(matches, SummaryProfileSerializer)
 
+    if sortParam == "FirstNameAsc" or sortParam == "FirstNameDesc":
+        sortKey = "FirstName"
+    else:
+        sortKey = "LastName"
+
+    populatedMatches = alphabeticalSort(populatedMatches, sortKey)
+
+    if sortParam == 'FirstNameDesc' or sortParam == "LastNameDesc":
+        newPopList = []
+
+        for i in range(0, len(populatedMatches)):
+            newPopList.append(populatedMatches[len(populatedMatches) - i - 1])
+
+        populatedMatches = newPopList
+
     populatedNew = getNewApplication(vacancyId)
 
     if populatedNew:
         return { 'matches': populatedMatches, 'new': populatedNew }
     return { 'matches': populatedMatches }
+
 
 
 
