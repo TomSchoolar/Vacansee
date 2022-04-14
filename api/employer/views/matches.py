@@ -110,8 +110,6 @@ def getCard(request):
 
     details = matchHelper.getDetails(applicantId)
 
-    print(details)
-
     returnData = {
         'details': details
     }
