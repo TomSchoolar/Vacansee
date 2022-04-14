@@ -3,13 +3,13 @@ from datetime import datetime
 from rest_framework import status
 from django.db.models import Count, Q
 from employee.models import Application
-from .serializers import VacancySerializer
+from .serializers import VacancySerializer, EmployerDetailsSerializer
 from rest_framework.response import Response
 from .models import EmployerDetails, Vacancy
 from rest_framework.decorators import api_view
 from authentication.helpers import jwt as jwtHelper
 from employee.serializers import ApplicationSerializer, SummaryProfileSerializer
-from employer.helpers import getIndex as indexHelper, getReview as reviewHelper, getMatch as matchHelper
+from employer.helpers import getIndex as indexHelper, getReview as reviewHelper, getMatch as matchHelper, getAccount as accountHelper
 
 
 
@@ -157,7 +157,7 @@ def getReview(request, vacancyId):
     
 
     try:
-        applications = reviewHelper.getApplications(vacancyId)
+        applications = reviewHelper.getApplications(vacancyId, "FirstNameAsc")
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting applications' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -251,9 +251,9 @@ def getMatchVacancies(request):
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
+
     if sort == 'matchesDesc':
-        sortByNum = True
-        sortParam = '-Created' #delete
+        sortParam = '-MatchesCount'
     elif sort == 'dateDesc':
         sortParam = '-Created'
     elif sort == 'dateAsc':
@@ -267,13 +267,14 @@ def getMatchVacancies(request):
         UserId__exact = jwt['id'],
     ).count()
 
-    #add if-else for sortByNum
-    vacanciesSet = Vacancy.objects.filter(
-        UserId__exact = jwt['id'],
-    ).order_by(sortParam)
-
-    vacancySerializer = VacancySerializer(vacanciesSet, many=True)
-    vacancies = vacancySerializer.data
+    vacancies = Vacancy.objects.filter(
+        UserId__exact = jwt['id']
+    ).annotate(
+        MatchesCount = Count('application', filter = Q(
+            application__ApplicationStatus__exact='MATCHED',
+            application__VacancyId__UserId__exact = jwt['id']
+        ))
+    ).order_by(sortParam).values()
 
     returnData = {
         'vacancies': vacancies,
@@ -303,7 +304,7 @@ def getMatches(request):
     # add sorting
 
     #matches = matchHelper.getMatches(vID)
-    matches = reviewHelper.getApplications(vID)
+    matches = reviewHelper.getApplications(vID, sort)
 
     numMatches = Application.objects.filter(
         VacancyId__exact = vID,
@@ -347,3 +348,87 @@ def getCard(request):
     }
 
     return Response(returnData)
+
+@api_view(['GET'])
+def getAccount(request):
+    # get jwt
+    
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    try:
+        detailsSet = EmployerDetails.objects.get(UserId__exact=jwt['id'])
+        detailsSerializer = EmployerDetailsSerializer(detailsSet)
+        details = detailsSerializer.data
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={ 'status': 500, 'message': 'Error acquiring details'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        email = accountHelper.getEmail(jwt['id'])
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={ 'status': 500, 'message': 'Error acquiring email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    returnData = {
+        'details': details,
+        'email': email['Email']
+    }
+
+    return Response(returnData)
+
+@api_view(['PUT'])
+def putAccount(request):
+    # get jwt
+    
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    # destructure
+    try:
+        newCompanyName = request.data['setCompanyName']
+        newPhoneNumber = request.data['setPhoneNumber']
+        newEmail = request.data['setEmail']
+    except:
+        return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # update EmployerDetails
+    try:
+        employerDetails = EmployerDetails.objects.get(UserId__exact=jwt['id'])
+        employerDetails.CompanyName = newCompanyName
+        employerDetails.PhoneNumber = newPhoneNumber
+        employerDetails.save()
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status': 500, 'message': 'server error updating details'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # update Email/User['Email']
+    try:
+        accountHelper.updateEmail(jwt['id'], newEmail)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status': 500, 'message': 'server error updating email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response({ 'status': 200, 'message': 'Account updated.'}, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+def deleteAccount(request):
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    try:
+        accountHelper.deleteUser(jwt['id'])
+        return Response(status=status.HTTP_200_OK)
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

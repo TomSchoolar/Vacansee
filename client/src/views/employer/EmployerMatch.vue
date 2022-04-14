@@ -74,8 +74,9 @@
 
     .profile-column {
         background-color: var(--background-blue);
+        width: 33vw;
         min-width: 450px;
-        flex-grow: 2;
+        flex-grow: 0;
         display: flex;
         align-items: center;
     }
