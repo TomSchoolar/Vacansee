@@ -1,4 +1,4 @@
-export default (schema, data, options) => {
+export default (schema, data, options = {}) => {
     const { addErrorToParent = false } = options;
 
     // clear validation error styles

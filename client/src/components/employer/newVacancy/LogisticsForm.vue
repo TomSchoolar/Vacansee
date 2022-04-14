@@ -42,7 +42,9 @@
 
             'Location': Joi.string().max(30).required().label('location'),
             'TimeZone': Joi.string().required().label('timezone')
-        }).when('.ExperienceRequired-1', { is: Joi.string().min(1), then: Joi.object({ 'ExperienceRequired-1-time': Joi.string().min(1).required() }).required() });
+        }).when('.ExperienceRequired-1', { is: Joi.string().min(1), then: Joi.object({ 'ExperienceRequired-1-time': Joi.string().min(1).required() }).required() })
+        .when('.ExperienceRequired-2', { is: Joi.string().min(1), then: Joi.object({ 'ExperienceRequired-2-time': Joi.string().min(1).required() }).required() })
+        .when('.ExperienceRequired-3', { is: Joi.string().min(1), then: Joi.object({ 'ExperienceRequired-3-time': Joi.string().min(1).required() }).required() })
 
         // get input data
         const data = {
