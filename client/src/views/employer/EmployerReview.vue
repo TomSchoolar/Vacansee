@@ -43,8 +43,8 @@
         getApplicants();
     });
 
-    const onUnmatch = async (application) => {
-        getApplicants();
+    const onUnmatch = () => {
+        getApplicants()
     }
 
     const onMatch = (application, nextApplication, nextProfile) => {
@@ -87,7 +87,7 @@
                 <MatchCard v-for='match in matches' 
                 :key='match.id' 
                 :stats='match'
-                @unmatch='onUnmatch(match)' />
+                @unmatch='onUnmatch' />
             </div>
         </div>
 
