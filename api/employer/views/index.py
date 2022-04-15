@@ -150,12 +150,6 @@ def postIndex(request, jwt):
         else:
             data = request.data
 
-        listKeys = ['SkillsRequired', 'ExperienceRequired', 'Tags']
-
-        for key in listKeys:
-            if key in data:
-                data[key] = loads(data[key])
-
         data['UserId'] = User.objects.get(pk = jwt['id'])
 
         newVacancy = Vacancy(**data)

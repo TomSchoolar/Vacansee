@@ -75,7 +75,7 @@
                     for(let j = 0; j < inputsPerItem; j++) {
                         subArr.push(arr[i + j]);
                     }
-                    return subArr;
+                    return subArr.join('&&');
                 }
             });
         }
