@@ -39,7 +39,7 @@
             </div>
             <div class='contact'>
                 <i class="fa-solid fa-clock"></i>
-                {{ profile.TimeZone }}
+                GMT {{ profile.TimeZone }}
             </div>
         </div>
 
