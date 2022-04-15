@@ -12,7 +12,7 @@
         // define schema
         const schema = Joi.object({
             'CompanyName': Joi.string(),
-            'VacancyName': Joi.string().alphanum().max(80).required().label('position title'),
+            'VacancyName': Joi.string().max(80).required().label('position title'),
             'Salary': Joi.string().required().max(80).label('salary')
         });
 

@@ -145,7 +145,10 @@ def getIndexStats(request):
 
 def postIndex(request, jwt):
     try:
-        data = request.data.dict()
+        if request.data is not dict:
+            data = dict(request.data)
+        else:
+            data = request.data
 
         listKeys = ['SkillsRequired', 'ExperienceRequired', 'Tags']
 
@@ -159,11 +162,11 @@ def postIndex(request, jwt):
         newVacancy.full_clean()
         newVacancy.save()
 
-        return Response(status=status.HTTP_200_OK)
+        return Response({ 'status': 200 }, status=status.HTTP_200_OK)
     except ValidationError as err:
         return Response({ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
         import traceback
         traceback.print_exc()
         print(f'uh oh: { err }')
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

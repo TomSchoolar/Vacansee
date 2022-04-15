@@ -9,24 +9,14 @@
 
     const emit = defineEmits(['next', 'back']);
 
-    const dropdownOptions = [
-        {
-            value: 'all',
-            text: 'all'
-        },
-        {
-            value: 'of',
-            text: 'of'
-        },
-        {
-            value: 'the',
-            text: 'the'
-        },
-        {
-            value: 'timezones',
-            text: 'timezones'
-        },
-    ];
+    const dropdownOptions = [ ];
+
+    for(let i = -11; i < 12; i++) {
+        dropdownOptions.push({
+            value: i,
+            text: i
+        });
+    }
 
     const validate = () => {
         // define schema

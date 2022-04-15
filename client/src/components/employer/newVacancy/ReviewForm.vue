@@ -1,4 +1,5 @@
 <script setup>
+    import api, { apiCatchError } from '@/assets/js/api';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ContactCard from '@/components/employer/newVacancy/ContactCard.vue';
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
@@ -41,7 +42,7 @@
         object.Tags = [];
 
         if(!props.formData) {
-
+            return;
         }
 
         props.formData.forEach((value, key) =>  {
@@ -82,9 +83,35 @@
         inputObj[field] = array.filter((el) => el ? true : false);
     }
 
-    const publish = () => {
-        alert('publish');
+    const publish = async () => {
+        
+        const data = { ...formDataProp.value };
+        delete data['CompanyName'];
+        
+        data.Tags = data.Tags.map((tag) => parseInt(tag) );
+        data.ExperienceRequired = data.ExperienceRequired.map((exp) => `${ exp[0] }&&${ exp[1] }`);
+        data.TimeZone = parseInt(data.TimeZone)
+
+        data.Tags = JSON.stringify(data.Tags);
+        data.SkillsRequired = JSON.stringify(data.SkillsRequired);
+        data.ExperienceRequired = JSON.stringify(data.ExperienceRequired);
+        
+        const response = await api({
+            url: '/e/vacancy/',
+            method: 'post',
+            data,
+            contentType: 'json'
+        }).catch(apiCatchError);
+
+        if(response?.data?.status != 200) {
+            return;
+        }
+
         emit('next')
+
+        await new Promise(r => setTimeout(r, 1000));
+
+        window.location.href = '/e/vacancy/';
     }
 
 </script>
