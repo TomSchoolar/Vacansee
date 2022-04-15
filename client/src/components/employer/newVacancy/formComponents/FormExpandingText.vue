@@ -63,16 +63,16 @@
 </script>
 
 <template>
-    <div class='form-group' :id='`expanding-${ props.name }`'>
-        <label :for='`${ props.name }-1`' class='label'>{{ props.label }}:</label>
+    <div class='form-group' :id='`expanding-${ name }`'>
+        <label :for='`${ name }-1`' class='label'>{{ label }}:</label>
         <input 
-            v-for='i in props.max'
+            v-for='i in max'
             :key='i' 
             type='text' 
-            :name='`${ props.name }-${ i }`' 
-            :class='"input " + `input-${ props.name }` + " " + ( i <= numFields ? "" : "input-hidden" )'
-            :id='`${ props.name }-${ i }`' 
-            :placeholder='props.placeholder ? props.placeholder : "" ' 
+            :name='`${ name }-${ i }`' 
+            :class='"input " + `input-${ name }` + " " + ( i <= numFields ? "" : "input-hidden" )'
+            :id='`${ name }-${ i }`' 
+            :placeholder='placeholder ? placeholder : "" ' 
         >
     </div>
 </template>

@@ -7,13 +7,13 @@
 
 <template>
     <div class='form-group'>
-        <label :for='props.name' class='label'>{{ props.label }}:</label>
+        <label :for='name' class='label'>{{ label }}:</label>
         <textarea 
-            :name='props.name' 
+            :name='name' 
             class='textarea'
-            :id='props.name' 
-            :placeholder='props.placeholder ? props.placeholder : "" ' 
-            :rows='props.rows ? props.rows : 5'
+            :id='name' 
+            :placeholder='placeholder ? placeholder : "" ' 
+            :rows='rows ? rows : 5'
             v-model='areaValue' 
         ></textarea>
     </div>

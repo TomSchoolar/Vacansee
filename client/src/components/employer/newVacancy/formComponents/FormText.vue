@@ -4,16 +4,16 @@
 
 <template>
     <div class='form-group'>
-        <label :for='props.name' class='label'>{{ props.label }}:</label>
+        <label :for='name' class='label'>{{ label }}:</label>
         <input 
-            :type='props.type' 
-            :name='props.name' 
+            :type='type' 
+            :name='name' 
             class='input'
-            :id='props.name' 
-            :placeholder='props.placeholder ? props.placeholder : "" ' 
-            :value='props.value ? props.value : "" ' 
-            :readonly='props.readonly ? true : false'
-            :disabled='props.disabled ? true : false'
+            :id='name' 
+            :placeholder='placeholder ? placeholder : "" ' 
+            :value='value ? value : "" ' 
+            :readonly='readonly ? true : false'
+            :disabled='disabled ? true : false'
             
         >
     </div>

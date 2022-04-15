@@ -4,16 +4,16 @@
 
 <template>
     <div class='form-group'>
-        <label :for='props.name' class='label'>{{ props.label }}:</label>
+        <label :for='name' class='label'>{{ label }}:</label>
         <select 
-            :name='props.name' 
+            :name='name' 
             class='input'
-            :id='props.name' 
+            :id='name' 
             required
-            :multiple='(props.multiple ? props.multiple : false)'
-            :style='(props.multiple ? "height: 150px;" : "")'
+            :multiple='(multiple ? multiple : false)'
+            :style='(multiple ? "height: 150px;" : "")'
         >
-            <option value='' selected hidden disabled>{{ props.placeholder }}</option>
+            <option value='' selected hidden disabled>{{ placeholder }}</option>
             <option v-for='option in options' :key='option.value' :value='option.value'>{{ option.text }}</option>
         </select>
     </div>

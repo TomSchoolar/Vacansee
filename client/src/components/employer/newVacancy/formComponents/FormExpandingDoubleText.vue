@@ -70,22 +70,22 @@
 </script>
 
 <template>
-    <div class='form-group' :id='`expanding-${ props.name }`'>
-        <label :for='`${ props.name }-1`' class='label'>{{ props.label }}:</label>
-        <div :class='"double-input-container" + " " + ( i <= numFields ? "" : "input-hidden" )' v-for='i in props.max' :key='i'>
+    <div class='form-group' :id='`expanding-${ name }`'>
+        <label :for='`${ name }-1`' class='label'>{{ label }}:</label>
+        <div :class='"double-input-container" + " " + ( i <= numFields ? "" : "input-hidden" )' v-for='i in max' :key='i'>
             <input 
                 type='text' 
-                :name='`${ props.name }-${ i }`' 
-                :class='"input " + `input-${ props.name }`'
-                :id='`${ props.name }-${ i }`' 
-                :placeholder='props.placeholder ? props.placeholder : "" ' 
+                :name='`${ name }-${ i }`' 
+                :class='"input " + `input-${ name }`'
+                :id='`${ name }-${ i }`' 
+                :placeholder='placeholder ? placeholder : "" ' 
             >
             <input 
                 type="text"
-                :name='`${ props.name }-${ i }-time`'
-                :class='"input input-time " + `input-${ props.name }-time`'
-                :id='`${ props.name }-${ i }`' 
-                :placeholder='props.secondPlaceholder ? props.secondPlaceholder : "" ' 
+                :name='`${ name }-${ i }-time`'
+                :class='"input input-time " + `input-${ name }-time`'
+                :id='`${ name }-${ i }`' 
+                :placeholder='secondPlaceholder ? secondPlaceholder : "" ' 
             >
         </div>
     </div>
