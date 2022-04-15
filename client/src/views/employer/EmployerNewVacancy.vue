@@ -21,8 +21,10 @@
 
     // get company name
     let session = window.localStorage.getItem('session') ?? '{}'
-    const { CompanyName: cn = false } = JSON.parse(session);
+    const { CompanyName: cn = false, PhoneNumber: phone = false, Email: em = false } = JSON.parse(session);
+    const email = ref(em);
     const companyName = ref(cn);
+    const phoneNumber = ref(phone);
 
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
@@ -78,7 +80,7 @@
             <MoreDetailsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ContactDetailsForm @next='changePage(1)' @back='changePage(-1)' />
+            <ContactDetailsForm :email='email' :phoneNumber='phoneNumber' @next='changePage(1)' @back='changePage(-1)' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
             <LogisticsForm @next='changePage(1)' @back='changePage(-1)' />
