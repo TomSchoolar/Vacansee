@@ -1,7 +1,8 @@
 <script setup>  
     import { ref } from 'vue';
 
-    const { vacancy = {}, tags = [] } = defineProps(['vacancy', 'tags']);
+    const props = defineProps(['vacancy', 'tags']);
+    const { tags } = props;
 
     let tagsLim = ref(6);
     let extraTags = ref('');
@@ -20,36 +21,35 @@
 <template>
     <div class='card'>
         <div class='company-info'>
-            <div class='company-name'>{{ vacancy.CompanyName }}<i id='favourite' class='fas fa-star' title='favourited' v-if="vacancy.Favourited"></i></div>
-            <p class='job-title'>{{ vacancy.VacancyName }} - {{ vacancy.Salary }}</p>
-            <p class='location' v-if='vacancy.Location'>Based in {{ vacancy.Location }}</p>
+            <div class='company-name'>{{ vacancy?.CompanyName }}<i id='favourite' class='fas fa-star' title='favourited' v-if="vacancy?.Favourited"></i></div>
+            <p class='job-title'>{{ vacancy?.VacancyName }}{{ vacancy?.Salary ? ` - ${ vacancy.Salary }` : '' }}</p>
+            <p class='location' v-if='vacancy?.Location'>Based in {{ vacancy?.Location }}</p>
         </div>
         <div class='description'>
-            <p>{{ vacancy.Description }}</p>
+            <p>{{ vacancy?.Description }}</p>
         </div>
         
-        <span v-if='vacancy.SkillsRequired' class='card-section'>Necessary Skills:</span>
+        <span v-if='vacancy?.SkillsRequired' class='card-section'>Necessary Skills:</span>
         <div class='skills'>
-            <table>
-                <tr v-for='skill in vacancy.SkillsRequired' v-bind:key='skill'>
-                    <th>- {{ skill }}</th>
-                </tr>
-            </table>
+            <div>
+                <div v-for='skill in vacancy?.SkillsRequired' v-bind:key='skill'>
+                    - {{ skill }}
+                </div>
+            </div>
         </div>
 
-        <span v-if='vacancy.ExperienceRequired' class='card-section'>Experience:</span>
+        <span v-if='vacancy?.ExperienceRequired' class='card-section'>Experience:</span>
         <div class='experience'>
-            <table>
-                <tr v-for='xp in vacancy.ExperienceRequired' v-bind:key='xp'>
-                    <th>- {{ xp }}</th>
-                </tr>
-            </table>
+            <div class='exp-container' v-for='xp in vacancy?.ExperienceRequired' v-bind:key='xp'>
+                <span class='exp-position'>- {{ xp.split('&&')[0] }}</span>
+                <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
+            </div>
         </div>
-        <span v-if='vacancy.Tags' class='card-section'>Requirements:</span>
-        <div class='tags-row'>
-            <i class='tag' v-for='tag in vacancy.Tags.slice(0,tagsLim)' v-bind:key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
-            <div v-if='vacancy.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
-                <div class='tags-num' ref='extra-tags'>+{{ vacancy.Tags.length - tagsLim }}</div>
+        <span v-if='vacancy?.Tags' class='card-section'>Requirements:</span>
+        <div class='tags-row' v-if='vacancy?.Tags'>
+            <i class='tag' v-for='tag in vacancy?.Tags.slice(0,tagsLim)' v-bind:key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
+            <div v-if='vacancy?.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
+                <div class='tags-num' ref='extra-tags'>+{{ vacancy?.Tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
             </div>
         </div>
@@ -66,8 +66,10 @@
     .card {
         font-size: 16px;
         font-weight: normal;
-        height: 500px;
+        min-height: 400px;
         width: calc(100% / 3 - 56px);
+        max-width: 380px;
+        min-width: 310px;
         border: 2px solid #555;
         border-radius: 15px;
         margin: 12px 6px;
@@ -85,6 +87,7 @@
 
     .card-section {
         font-weight: 600;
+        margin: 5px 0 5px 0;
     }
 
     .company-info p {
@@ -101,9 +104,20 @@
 
     .description p {
         font-size: 16px;
-        margin: 10px 0;
+        margin: 10px 0 5px 0;
     }
     
+    .exp-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .exp-time {
+        color: var(--slate);
+        font-style: italic;
+        font-size: 13px;
+    }
+
     .job-title {
         font-size: 18px;
         font-style: italic;

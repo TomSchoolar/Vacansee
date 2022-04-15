@@ -29,11 +29,9 @@
     // pagination
     const page = ref(1);
     const numPages = ref(1);
-    const companyName = ref('');
     const numVacancies = ref(0);
 
     document.title = 'Home | Vacansee';
-
 
     // api request function
     const getVacancies = async (options) => {
@@ -65,7 +63,6 @@
 
         const { 
             numPages: pages = 1, 
-            companyName: name = '',
             numVacancies: total = 0,
             vacancies: newVacancies = vacancies.value, 
         } = data;
@@ -74,7 +71,6 @@
         while((page.value - 1) * limit.value >= total) page.value--;
 
         numPages.value = pages;
-        companyName.value = name;
         numVacancies.value = total;
         vacancies.value = newVacancies;
 
@@ -198,7 +194,7 @@
     <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
 
     <main class='container'>
-        <EmployerStatBar :user='companyName' :stats='stats' />
+        <EmployerStatBar :stats='stats' />
 
         <section class='vacancies-section'>
             <div class='title-bar'>
