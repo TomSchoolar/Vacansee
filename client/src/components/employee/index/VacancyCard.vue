@@ -31,20 +31,19 @@
         
         <span v-if='vacancy?.SkillsRequired' class='card-section'>Necessary Skills:</span>
         <div class='skills'>
-            <table>
-                <tr v-for='skill in vacancy?.SkillsRequired' v-bind:key='skill'>
-                    <th>- {{ skill }}</th>
-                </tr>
-            </table>
+            <div>
+                <div v-for='skill in vacancy?.SkillsRequired' v-bind:key='skill'>
+                    - {{ skill }}
+                </div>
+            </div>
         </div>
 
         <span v-if='vacancy?.ExperienceRequired' class='card-section'>Experience:</span>
         <div class='experience'>
-            <table>
-                <tr v-for='xp in vacancy?.ExperienceRequired' v-bind:key='xp'>
-                    <th>- {{ xp }}</th>
-                </tr>
-            </table>
+            <div class='exp-container' v-for='xp in vacancy?.ExperienceRequired' v-bind:key='xp'>
+                <span class='exp-position'>- {{ xp[0] }}</span>
+                <span class='exp-time'>{{ xp[1] }}</span>
+            </div>
         </div>
         <span v-if='vacancy?.Tags' class='card-section'>Requirements:</span>
         <div class='tags-row' v-if='vacancy?.Tags'>
@@ -108,6 +107,17 @@
         margin: 10px 0 5px 0;
     }
     
+    .exp-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .exp-time {
+        color: var(--slate);
+        font-style: italic;
+        font-size: 13px;
+    }
+
     .job-title {
         font-size: 18px;
         font-style: italic;

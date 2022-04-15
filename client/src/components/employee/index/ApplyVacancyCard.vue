@@ -170,7 +170,9 @@
     .card {
         font-weight: normal;
         height: 550px;
-        width: 400px;
+        width: 80% !important;
+        max-width: 380px;
+        min-width: 310px;
         border: 2px solid #555;
         border-radius: 15px;
         margin: 12px 0;

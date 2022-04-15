@@ -98,15 +98,6 @@
         await getVacancies({ });
     });
 
-    onUpdated(async () => {
-        const result = await getVacancies({ });
-
-        if(!result){
-            alert('uh oh! something went wrong :(');
-            return;
-        }
-    });
-
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
         const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
@@ -115,7 +106,6 @@
             return;
         }
 
-        sort.value = sortParam;
     }
 
     // pagination: change page
@@ -138,7 +128,6 @@
             return;
         }
 
-        filter.value = filterValue;
     });
 
     watch(limit, async (newLimit) => {
@@ -154,14 +143,9 @@
             return;
         }
 
-        limit.value = newLimit;
     });
 
     watch(sort, sortVacancies);
-
-    const apply = () => {
-        alert("applied!");
-    }
 
 </script>
 
