@@ -1,17 +1,15 @@
 <script setup>
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
-    
+    import $ from 'jquery';
 
     const emit = defineEmits(['next', 'back']);
 
     $(document).ready(function(){
 
         $('#position-1').on("input", function(){
-            console.log('hello');
             $('#position-2-input').show();
         });
         $('#position-2').on("input", function(){
-            console.log('hello');
             $('#position-3-input').show();
         });
     });
