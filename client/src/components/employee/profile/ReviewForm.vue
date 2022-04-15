@@ -1,0 +1,115 @@
+<script setup>
+    import VacancyCard from '@/components/employee/profile/VacancyCard.vue';
+    import ContactCard from '@/components/employee/profile/ProfileCard.vue';
+    import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
+    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
+
+    import { computed } from 'vue';
+
+    const props = defineProps(['formData']);
+    const emit = defineEmits(['back', 'next', 'publish']);
+
+    const tags = [
+        {
+            id: 0,
+            icon: 'fa-solid fa-book'
+        },
+        {
+            id: 1,
+            icon: 'fa-solid fa-code'
+        },
+        {
+            id: 2,
+            icon: 'fa-brands fa-python'
+        },
+        {
+            id: 3,
+            icon: 'fa-solid fa-school'
+        },
+        {
+            id: 4,
+            icon: 'fa-solid fa-briefcase'
+        },
+        {
+            id: 5,
+            icon: 'fa-solid fa-database'
+        },
+    ]
+
+    const formDataProp = computed(() => {
+        const object = {};
+        object.Tags = [];
+
+        if(!props.formData) {
+
+        }
+
+        props.formData.forEach((value, key) =>  {
+            object[key] = value;
+        });
+
+        parseExpandingList(object, 'SkillsRequired', 1);
+        parseExpandingList(object, 'ExperienceRequired', 2);
+
+        return object;
+    });
+
+    const parseExpandingList = (inputObj, field, inputsPerItem) => {
+        let array = [];
+        Object.keys(inputObj).forEach((key) => {
+            if(key.split('-')[0] == field) {
+                array.push(inputObj[key]);
+                delete inputObj[key];
+            }
+        });
+
+        if(inputsPerItem > 1) {
+            // more than one input per item, create 2d array
+            array = array.map((el, i, arr) => {
+                if(i % inputsPerItem == 0 && el) {
+                    let subArr = [];
+                    for(let j = 0; j < inputsPerItem; j++) {
+                        subArr.push(arr[i + j]);
+                    }
+                    return subArr;
+                }
+            });
+        }
+
+        inputObj[field] = array.filter((el) => el ? true : false);
+    }
+
+    const publish = () => {
+        alert('publish');
+        emit('next')
+    }
+
+</script>
+
+<template>
+    <FormHeader title='Review'>
+        Here's how your vacancy looks to applicants. Check the details and publish when you're ready.
+    </FormHeader>
+
+    <div class="review-container">
+        <VacancyCard :vacancy='formDataProp' :tags='tags' />
+        <ContactCard :PhoneNumber='formDataProp?.PhoneNumber' :Email='formDataProp?.Email' :TimeZone='formDataProp?.TimeZone' />
+    </div>
+
+    <FormButtons :back='true' :publish='true' @back='emit("back")' @publish='publish()' />
+</template>
+
+<style>
+    .review-container {
+        width: 43vw;
+        min-width: 700px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 20px 0;
+    }
+
+    .card {
+        width: 42.5% !important;
+    }
+</style>

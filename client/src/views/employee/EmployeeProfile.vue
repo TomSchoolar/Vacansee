@@ -16,13 +16,9 @@
     import { onMounted, ref } from 'vue';
 
     let pages;
+    const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
-
-    // get company name
-    let session = window.localStorage.getItem('session') ?? '{}'
-    const { CompanyName: cn = 'Vacancy Stats' } = JSON.parse(session);
-    const companyName = ref(cn);
 
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
@@ -40,7 +36,16 @@
         pages[newPage].classList.remove('form-page-container-hidden');
 
         currentPageNum.value += incr;
+
+        if(newPage == pages.length - 1) {
+            // review page, get form data
+            const form = document.querySelector('form');
+            formData.value = new FormData(form);
+        }
     }
+
+    
+
 
 </script>
 
@@ -77,7 +82,7 @@
             <QualificationsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ReviewForm @back='changePage(-1)' />
+            <ReviewForm :formData='formData' @back='changePage(-1)' />
         </div>
         
     </form>
