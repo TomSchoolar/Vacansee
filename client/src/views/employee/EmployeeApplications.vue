@@ -173,7 +173,6 @@
     // application button actions
 
     const deleteApplication = async (applicationId) => {
-        const jwt = getJwt();
 
         const response = await api({
             url: `/applications/delete/${ applicationId }`,
