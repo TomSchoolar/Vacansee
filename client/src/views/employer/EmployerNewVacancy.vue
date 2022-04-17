@@ -1,4 +1,5 @@
 <script setup>
+    import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
@@ -7,35 +8,53 @@
     // form pages
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
     import MoreDetailsForm from '@/components/employer/newVacancy/MoreDetailsForm.vue';
-
+    import ContactDetailsForm from '@/components/employer/newVacancy/ContactDetailsForm.vue';
+    import LogisticsForm from '@/components/employer/newVacancy/LogisticsForm.vue';
+    import TagsForm from '@/components/employer/newVacancy/TagsForm.vue';
+    import ReviewForm from '@/components/employer/newVacancy/ReviewForm.vue';
     
     import { onMounted, ref } from 'vue';
 
     let pages;
+    const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
 
     // get company name
     let session = window.localStorage.getItem('session') ?? '{}'
-    const { CompanyName: cn = 'Vacancy Stats' } = JSON.parse(session);
+    const { CompanyName: cn = false, PhoneNumber: phone = false, Email: em = false } = JSON.parse(session);
+    const email = ref(em);
     const companyName = ref(cn);
+    const phoneNumber = ref(phone);
 
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
     });
 
     const changePage = (incr) => {
-        const maxPage = pages.length - 1;
+        try {
+        const maxPage = pages.length;
         const oldPage = currentPageNum.value;
         const newPage = currentPageNum.value + incr;
 
         if(newPage > maxPage || newPage < 0)
             return;
 
-        pages[oldPage].classList.add('form-page-container-hidden');
-        pages[newPage].classList.remove('form-page-container-hidden');
+        if(newPage < maxPage) {
+            pages[oldPage].classList.add('form-page-container-hidden');
+            pages[newPage].classList.remove('form-page-container-hidden');
+        }
+
+        if(newPage == pages.length - 1) {
+            // review page, get form data
+            const form = document.querySelector('form');
+            formData.value = new FormData(form);
+        }
 
         currentPageNum.value += incr;
+        } catch(e) {
+            console.error(e)
+        }
     }
 
 </script>
@@ -45,7 +64,7 @@
 
     <main class='container'>
         <div class='header'>
-            <h1 class='title'>{{ companyName }}</h1>
+            <h1 class='title'>{{ (companyName ? `${ companyName } - ` : '') + 'New Vacancy' }}</h1>
             <hr />
         </div>
     </main>
@@ -61,12 +80,28 @@
         <div class='form-page-container form-page-container-hidden'>
             <MoreDetailsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <ContactDetailsForm :email='email' :phoneNumber='phoneNumber' @next='changePage(1)' @back='changePage(-1)' />
+        </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <LogisticsForm @next='changePage(1)' @back='changePage(-1)' />
+        </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <TagsForm @next='changePage(1)' @back='changePage(-1)' />
+        </div>
+        <div class='form-page-container form-page-container-hidden'>
+            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' />
+        </div>
         
     </form>
 
 </template>
 
 <style scoped>
+    *:deep(.invalid-input) {
+        border: 3px solid var(--red) !important;
+    }
+
     hr {
         width: 100%;
         margin: 8px 0 12px 0;

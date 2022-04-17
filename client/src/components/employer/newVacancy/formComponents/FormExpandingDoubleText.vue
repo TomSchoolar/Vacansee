@@ -1,7 +1,7 @@
 <script setup>
     import { onMounted, ref } from 'vue';
 
-    const props = defineProps(['name', 'label', 'placeholder', 'max'])
+    const props = defineProps(['name', 'label', 'placeholder', 'secondPlaceholder', 'max'])
 
     let fields = [];
     let activeFields = [];
@@ -13,7 +13,10 @@
         fields = document.querySelectorAll(`.input-${ props.name }`);
         activeFields.push(fields[0]);
 
-        fieldPane.addEventListener('keyup', () => {
+
+
+
+        const listener = fieldPane.addEventListener('keyup', () => {
             for(let i = 0; i < activeFields.length; i++) {
                 let field = activeFields[i];
                 listenerAction(field);
@@ -27,9 +30,9 @@
             let nextInputNum = ( inputNum + 1 <= props.max ? inputNum + 1 : false );
             let nextInput = document.querySelector(`#${ id[0] }-${ nextInputNum }`);
 
-            if(value && nextInputNum && nextInput.classList.contains('input-hidden')) {
+            if(value && nextInputNum && nextInput.parentElement.classList.contains('input-hidden')) {
                 // field has been populated, add another field if not at max
-                nextInput.classList.remove('input-hidden');
+                nextInput.parentElement.classList.remove('input-hidden');
                 activeFields.push(nextInput);
             }
 
@@ -42,7 +45,9 @@
                     shuffleInputValues(inputNum)
                 } else {
                     // if the next field is last, it can just be removed
-                    activeFields.pop().classList.add('input-hidden')
+                    let el = activeFields.pop();
+                    el.parentElement.classList.add('input-hidden');
+                    el.nextElementSibling.value = '';
                 }
             }
         };
@@ -52,11 +57,13 @@
         for(let i = --startIndex; i + 2 < activeFields.length; i++) {
             // move fields values up two places
             activeFields[i].value = activeFields[i+2].value;
+            activeFields[i].nextElementSibling.value = activeFields[i+2].nextElementSibling.value;
             activeFields[i+2].value = '';
+            activeFields[i+2].nextElementSibling.value = '';
         }
         
         // remove last input from form and active fields array
-        activeFields.pop().classList.add('input-hidden');
+        activeFields.pop().parentElement.classList.add('input-hidden');
     }
 
 
@@ -65,19 +72,37 @@
 <template>
     <div class='form-group' :id='`expanding-${ name }`'>
         <label :for='`${ name }-1`' class='label'>{{ label }}:</label>
-        <input 
-            v-for='i in max'
-            :key='i' 
-            type='text' 
-            :name='`${ name }-${ i }`' 
-            :class='"input " + `input-${ name }` + " " + ( i <= numFields ? "" : "input-hidden" )'
-            :id='`${ name }-${ i }`' 
-            :placeholder='placeholder ? placeholder : "" ' 
-        >
+        <div :class='"double-input-container" + " " + ( i <= numFields ? "" : "input-hidden" )' v-for='i in max' :key='i'>
+            <input 
+                type='text' 
+                :name='`${ name }-${ i }`' 
+                :class='"input " + `input-${ name }`'
+                :id='`${ name }-${ i }`' 
+                :placeholder='placeholder ? placeholder : "" ' 
+            >
+            <input 
+                type="text"
+                :name='`${ name }-${ i }-time`'
+                :class='"input input-time " + `input-${ name }-time`'
+                :id='`${ name }-${ i }`' 
+                :placeholder='secondPlaceholder ? secondPlaceholder : "" ' 
+            >
+        </div>
     </div>
+
 </template>
 
 <style scoped>
+    .double-input-container {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .double-input-container:not(:first-of-type) {
+        margin-top: 12px;
+    }
+
     .form-group {
         display: flex;
         flex-direction: column;
@@ -88,14 +113,18 @@
     .input {
         padding: 4px 2px;
         font-size: 16px;
-    }
-
-    .input:not(:first-of-type) {
-        margin-top: 12px;
+        width: 65px;
+        flex-grow: 1;
     }
 
     .input-hidden {
         display: none;
+    }
+
+    .input-time {
+        margin-left: 10px;
+        width: 30%;
+        flex-grow: 0;
     }
 
     .label {

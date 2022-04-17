@@ -6,61 +6,49 @@ from employee.models import Favourite, Application, Reject
 
 class decisionTestCase(TestCase):
 
+    userId = 1
+    vacancyId = 1
+    jwt = createAccessToken(userId)
     fixtures = ['authentication/fixtures/testseed.json']
-    jwt = createAccessToken(2)
 
     def test_favouriting(self):
-
-        userid = 1
-        vacancyid = 1
-
-        response = self.client.post('/vacancy/fav/', { "VacancyId": vacancyid }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
-
-        favouriteSet = Favourite.objects.filter(
-            UserId__exact = userid,
-            VacancyId__exact = vacancyid
-        )
+        response = self.client.post('/vacancy/fav/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 201)
-
-        correct_response = True
-
-        self.assertEqual(correct_response, True)
 
     def test_apply(self):
-
-        userid = 1
-        vacancyid = 1
-
-        response = self.client.post('/vacancy/apply/', { "VacancyId": vacancyid }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
-
-        applicaionSet = Application.objects.filter(
-            UserId__exact = userid,
-            VacancyId__exact = vacancyid
-        )
+        response = self.client.post('/vacancy/apply/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 201)
 
-        correct_response = True
-
-
-        self.assertEqual(correct_response, True)
-
-    def test_reject(self):
-
-        userid = 1
-        vacancyid = 1
-
-        response = self.client.post('/vacancy/reject/', { "VacancyId": vacancyid }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
-
-        rejectSet = Reject.objects.filter(
-            UserId__exact = userid,
-            VacancyId__exact = vacancyid
-        )
+    def test_validReject(self):
+        response = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 201)
 
-        correct_response = True
+    def test_invalidReject(self):
+        response = self.client.post('/vacancy/reject/', { "VacancyId": 9999 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['message'], 'That vacancy is not open for applications')
 
-        self.assertEqual(correct_response, True)
+    def test_missingParameters(self):
+        response = self.client.post('/vacancy/reject/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_expiredJWT(self):
+        jwt = createAccessToken(self.userId, 'now')
+
+        response = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+
+        self.assertEqual(response.data['status'], 401)
+        self.assertEqual(response.data['message'], 'Expired auth token')
+
+    def test_invalidJWT(self):
+        jwt = self.jwt[:-1]
+
+        response = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+
+        self.assertEqual(response.data['status'], 401)
+        self.assertEqual(response.data['message'], 'Invalid auth token')

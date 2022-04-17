@@ -1,23 +1,34 @@
 <script setup>
-    const props = defineProps(['name', 'label', 'placeholder', 'value', 'disabled'])
+    const props = defineProps(['name', 'label', 'placeholder', 'type', 'value', 'readonly', 'disabled'])
 </script>
 
 <template>
     <div class='form-group'>
-        <label :for='props.name' class='label'>{{ props.label }}:</label>
+        <label :for='name' class='label'>{{ label }}:</label>
         <input 
-            type='text' 
-            :name='props.name' 
+            :type='type' 
+            :name='name' 
             class='input'
-            :id='props.name' 
-            :placeholder='props.placeholder ? props.placeholder : "" ' 
-            :value='props.value ? props.value : "" ' 
-            :disabled='props.disabled ? true : false'
+            :id='name' 
+            :placeholder='placeholder ? placeholder : "" ' 
+            :value='value ? value : "" ' 
+            :readonly='readonly ? true : false'
+            :disabled='disabled ? true : false'
+            
         >
     </div>
 </template>
 
 <style scoped>
+    input[readonly] {
+        /* chrome default disabled styles */
+        cursor: default;
+        background-color: rgba(239, 239, 239, 0.3);/*, rgba(59, 59, 59, 0.3)); */
+        color: rgb(84, 84, 84);/*, rgb(170, 170, 170));*/
+        border-color: rgba(118, 118, 118, 0.3);
+        border-width: 1.5px;
+    }
+
     .form-group {
         display: flex;
         flex-direction: column;

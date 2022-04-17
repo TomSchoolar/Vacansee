@@ -1,17 +1,20 @@
 <script setup>
+    import { ref } from 'vue';
+
     const props = defineProps(['name', 'label', 'placeholder', 'value', 'rows'])
+    const areaValue = ref(props.value);
 </script>
 
 <template>
     <div class='form-group'>
-        <label :for='props.name' class='label'>{{ props.label }}:</label>
+        <label :for='name' class='label'>{{ label }}:</label>
         <textarea 
-            :name='props.name' 
+            :name='name' 
             class='textarea'
-            :id='props.name' 
-            :placeholder='props.placeholder ? props.placeholder : "" ' 
-            :rows='props.rows ? props.rows : 5'
-            v-model='props.value' 
+            :id='name' 
+            :placeholder='placeholder ? placeholder : "" ' 
+            :rows='rows ? rows : 5'
+            v-model='areaValue' 
         ></textarea>
     </div>
 </template>

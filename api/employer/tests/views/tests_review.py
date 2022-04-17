@@ -13,7 +13,7 @@ class getReviewTests(TestCase):
     # user: Sabah
     userId = 4
     # vacancy: Senior Developer (Facebook)
-    vacancyId = 2
+    vacancyId = 1002
     jwt = createAccessToken(userId)
 
     # GET TESTS
@@ -44,17 +44,15 @@ class getReviewTests(TestCase):
         # check new is correct
         newSet = Application.objects.filter(VacancyId__exact = self.vacancyId, ApplicationStatus__exact = 'PENDING').order_by('LastUpdated')[:1]
 
-        if len(newSet):
-            new = ApplicationSerializer(newSet[0]).data
+        new = ApplicationSerializer(newSet[0]).data
 
-            profileSet = Profile.objects.get(UserId__exact = new['UserId'])
-            profile = ProfileSerializer(profileSet).data
+        profileSet = Profile.objects.get(UserId__exact = new['UserId'])
+        profile = ProfileSerializer(profileSet).data
 
-            expectedNew = { 'application': new, 'profile': profile }
+        expectedNew = { 'application': new, 'profile': profile }
 
-            self.assertDictEqual(data['new'], expectedNew)
-        else:
-            self.assertFalse('new' in data)
+        self.assertDictEqual(data['new'], expectedNew)
+
         
         # check vacancy is correct
         vacancy = Vacancy.objects.get(pk = self.vacancyId)
@@ -62,11 +60,7 @@ class getReviewTests(TestCase):
         expectedVacancy = { 'VacancyId': vacancy.VacancyId, 'VacancyName': vacancy.VacancyName, 'CompanyName': employerDetails.CompanyName }
         self.assertEqual(data['vacancy'], expectedVacancy)
         
-        if len(newSet):
-            numKeys = 3
-        else:
-            numKeys = 2
-
+        numKeys = 3
         self.assertTrue(len(data.keys()) == numKeys)
     
 
@@ -192,20 +186,6 @@ class putReviewInvalidTests(TestCase):
 
         self.assertEquals(response.data['status'], 400)
         self.assertEquals(response.data['message'], 'invalid setStatus, must be one of "defer", "accept" or "reject"')
-
-
-    def test_invalidVacancy(self):
-        vacancyId = 1010
-
-        response = self.client.put(
-            f'/e/review/{ vacancyId }/updatestatus/{ self.applicationId }/',
-            data={ 'setStatus': 'reject' },
-            content_type='application/json',
-            **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
-        )
-        
-        self.assertEquals(response.data['status'], 401)
-        self.assertEquals(response.data['message'], 'You do not have access to that vacancy')
 
 
     def test_invalidApplication(self):
