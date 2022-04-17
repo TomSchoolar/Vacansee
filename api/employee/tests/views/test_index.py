@@ -139,7 +139,7 @@ class applicationTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_expiredJWT(self):
-        jwt = createAccessToken(self.jwt, 'now')
+        jwt = createAccessToken(self.userId, 'now')
 
         response = self.client.get('/vacancy/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'filter': 'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 

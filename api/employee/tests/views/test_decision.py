@@ -38,7 +38,7 @@ class decisionTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_expiredJWT(self):
-        jwt = createAccessToken(self.jwt, 'now')
+        jwt = createAccessToken(self.userId, 'now')
 
         response = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 

@@ -120,7 +120,7 @@ class getFavouritesTests(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_expiredJWT(self):
-        jwt = createAccessToken(self.jwt, 'now')
+        jwt = createAccessToken(self.userId, 'now')
 
         response = self.client.get('/favourites/', { 'sort':'titleAsc', 'count':5, 'pageNum':1 }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
@@ -159,7 +159,7 @@ class postFavouritesTests(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_expiredJWT(self):
-        jwt = createAccessToken(self.jwt, 'now')
+        jwt = createAccessToken(self.userId, 'now')
 
         response = self.client.post('/vacancy/fav/', { 'VacancyId': self.vacId }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 

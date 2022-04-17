@@ -9,7 +9,8 @@ from authentication.tests.jwtFuncs import createAccessToken
 
 class indexTestCase(TestCase):
 
-    jwt = createAccessToken(4)
+    userId = 4
+    jwt = createAccessToken(userId)
     fixtures = ['authentication/fixtures/testseed.json']
 
     # GET INDEX TESTS
@@ -221,7 +222,7 @@ class indexTestCase(TestCase):
         self.assertEquals(response.status_code, 401)
 
     def test_expiredJWT(self):
-        jwt = createAccessToken(self.jwt, 'now')
+        jwt = createAccessToken(self.userId, 'now')
         response = self.client.get('/e/vacancy/', { 'sort': 'newApps', 'filter': 'all', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
