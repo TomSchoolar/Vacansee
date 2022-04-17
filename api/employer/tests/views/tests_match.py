@@ -57,7 +57,6 @@ class getVacanciesTests(TestCase):
         self.assertQuerysetEqual(expectedData['vacancies'], response.data['vacancies'])
         self.assertEqual(expectedData['numVacancies'], response.data['numVacancies'])
 
-    # BROKEN
     def test_validRequestSortTitleAsc(self):
         response = self.client.get('/e/match/', { 'sort': 'titleAsc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
