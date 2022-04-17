@@ -10,22 +10,24 @@ from employee.models import Favourite, Reject, Application
 class applicationTestCase(TestCase):
 
     fixtures = ['authentication/fixtures/testseed.json']
-    jwt = createAccessToken(1019)
+
+    userId = 1 # Tom
+    jwt = createAccessToken(userId)
 
     def getVacancyList(self):
 
         vacancyList = []
 
         favouriteSet = Favourite.objects.filter(
-            UserId__exact = 1019
+            UserId__exact = self.userId
         )
 
         rejectSet = Reject.objects.filter(
-            UserId__exact = 1019
+            UserId__exact = self.userId
         )
 
         applicationSet = Application.objects.filter(
-            UserId__exact = 1019
+            UserId__exact = self.userId
         )
 
         for fav in favouriteSet:
@@ -40,7 +42,7 @@ class applicationTestCase(TestCase):
         return vacancyList
 
     def test_validRequestSortTitleAscFilterAll(self):
-        response = self.client.get('/vacancy/', { 'uID':1019, 'sort':'titleAsc', 'count':5, 'pageNum':1, 'filter':'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get('/vacancy/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'filter': 'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         vacancyList = self.getVacancyList()
 
@@ -63,7 +65,7 @@ class applicationTestCase(TestCase):
         self.assertDictEqual(expectedData, response.data)
 
     def test_validRequestSortTitleDescFilterClosed(self):
-        response = self.client.get('/vacancy/', { 'uID':1019, 'sort':'titleDesc', 'count':5, 'pageNum':1, 'filter':'closed' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get('/vacancy/', { 'sort': 'titleDesc', 'count': 5, 'pageNum': 1, 'filter': 'closed' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         vacancyList = self.getVacancyList()
 
@@ -86,7 +88,7 @@ class applicationTestCase(TestCase):
         self.assertDictEqual(expectedData, response.data) 
 
     def test_validRequestSortDateDescFilterActive(self):
-        response = self.client.get('/vacancy/', { 'uID':1019, 'sort':'dateDesc', 'count':5, 'pageNum':1, 'filter':'active' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get('/vacancy/', { 'sort': 'dateDesc', 'count': 5, 'pageNum': 1, 'filter': 'active' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         vacancyList = self.getVacancyList()
 
@@ -109,13 +111,13 @@ class applicationTestCase(TestCase):
         self.assertDictEqual(expectedData, response.data) 
 
     def test_incorrectlyLargePageNumSortDateAsc(self):
-        response = self.client.get('/vacancy/', { 'uID':1019, 'sort':'dateAsc', 'count':5, 'pageNum':5, 'filter':'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get('/vacancy/', { 'sort': 'dateAsc', 'count': 5, 'pageNum': 5, 'filter': 'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         vacancyList = self.getVacancyList()
 
         numVacancies = Vacancy.objects.filter(IsOpen__in = [True, False]).exclude(VacancyId__in = vacancyList).count()
 
-        vacanciesSet = Vacancy.objects.filter(IsOpen__in = [True, False]).exclude(VacancyId__in = vacancyList).order_by('Created')[10:15] 
+        vacanciesSet = Vacancy.objects.filter(IsOpen__in = [True, False]).exclude(VacancyId__in = vacancyList).order_by('Created')[:5] 
         vacancies = VacancySerializer(vacanciesSet, many=True).data
 
         for vacancy in vacancies:
@@ -139,7 +141,7 @@ class applicationTestCase(TestCase):
     def test_expiredJWT(self):
         jwt = createAccessToken(self.jwt, 'now')
 
-        response = self.client.get('/vacancy/', { 'sort':'titleAsc', 'count':5, 'pageNum':1, 'filter':'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.get('/vacancy/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'filter': 'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
@@ -147,7 +149,7 @@ class applicationTestCase(TestCase):
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
-        response = self.client.get('/vacancy/', { 'sort':'titleAsc', 'count':5, 'pageNum':1, 'filter':'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.get('/vacancy/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'filter': 'all' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')
