@@ -12,7 +12,7 @@ class User(models.Model):
     IsEmployer = models.BooleanField(default=False, blank=False)
     Password = models.CharField(max_length=100, blank=False)
     PasswordResetToken = models.CharField(max_length=100, null=True)
-    PasswordResetExpiration = models.DateField(null=True)
+    PasswordResetExpiration = models.DateTimeField(null=True)
 
 
 class RefreshToken(models.Model):
