@@ -244,17 +244,23 @@
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>No vacancies to display</h3>
                 <div class='vacancy' v-for='vacancy in vacancies' :key='vacancy.id'>
                     <div class='vacancy-left'>
-                        <h5 class='vacancy-title' :title='vacancy.title'>{{ vacancy.VacancyName }}</h5>
+                        <h5 :class='"vacancy-title" + ( !vacancy.IsOpen ? " vacancy-title-small" : "" )' :title='vacancy.title'>
+                            <span v-if='!vacancy.IsOpen' class='vacancy-closed'>(closed)</span>
+                            {{ vacancy.VacancyName }}
+                        </h5>
                         <h5 class='vacancy-new' v-if='vacancy.NewApplications'>{{ vacancy.NewApplications }} New Applications!</h5>
                         <p class='vacancy-new' v-else>No New Applications</p>
                     </div>
                     <div class='vacancy-right'>
                         <div class='vacancy-decisions'>{{ vacancy.AcceptedApplications }} Accepted / {{ vacancy.RejectedApplications }} Rejected</div>
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
-                        <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.IsOpen'>Close Applications</button>
-                        <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
-                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
-                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
+                        <!-- <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-if='vacancy.IsOpen'>Edit</router-link> -->
+                        <div class='vacancy-button-container'>
+                            <router-link :to='`/e/vacancy/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
+                            <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue'>Review</router-link>
+                            <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.IsOpen'>Close</button>
+                            <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -401,7 +407,7 @@
         border: 2.2px solid #333;
         width: 150px;
         height: 32px;
-        margin-left: 15px;
+        margin-left: 10px;
         font-size: 13px;
         text-decoration: none;
         display: flex;
@@ -417,7 +423,14 @@
     .vacancy-button-blue:hover, .vacancy-button-blue:focus, .vacancy-button-blue:active {
         background: var(--blue-focus);
         cursor: pointer;
-  } 
+    } 
+
+    .vacancy-button-container {
+        display: flex;
+        flex-direction: row;
+        width: 290px;
+        justify-content: space-between;
+    }
 
     .vacancy-button-grey {
         background: var(--slate);
@@ -436,6 +449,10 @@
         background: var(--red-focus);
         cursor: pointer;
     } 
+
+    .vacancy-closed {
+        font-weight: bold;
+    }
 
     .vacancy-decisions {
         width: 250px;
