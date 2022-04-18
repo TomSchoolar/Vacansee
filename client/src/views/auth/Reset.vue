@@ -39,7 +39,7 @@
             url: '/reset/',
             method: 'post',
             data: {
-                password: password,
+                password: password.value,
                 token: token
             },
             responseType: 'json'

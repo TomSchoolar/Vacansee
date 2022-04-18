@@ -7,7 +7,7 @@ from django.conf import settings
 
 def getResetExpiry():
     # function to create date object extended to 10 minutes from now
-    return datetime.now(tz=timezone.utc) + timedelta(minutes=2)
+    return datetime.now(tz=timezone.utc) + timedelta(minutes=10)
 
 def createResetPlainToken():
     plainToken = token_urlsafe(75)
@@ -22,7 +22,7 @@ def createResetHashedToken(pt):
 def saveResetToken(token, user):
     expiry = getResetExpiry()
     user.PasswordResetToken = token
-    user.PasswordResetExpiration = expiry
+    user.PasswordResetExpiration = expiry.strftime('%Y-%m-%dT%H:%M:%S+0000')
     user.save(update_fields=['PasswordResetToken','PasswordResetExpiration'])
 
 def checkExpiration(user):
@@ -33,9 +33,9 @@ def checkExpiration(user):
         return True
 
 def sendEmail(token, email):
-    url = 'http://localhost:8080/reset/{}'.format(token)
+    url = 'http://tp45.co.uk/reset/{}'.format(token)
 
-    print('Sending mail...')
+    #print('Sending mail...')
 
     email = send_mail(
         subject='Password Reset',
@@ -45,8 +45,8 @@ def sendEmail(token, email):
     )
 
     if email == 1:
-        print('Email sent.')
+        #print('Email sent.')
         return True
     else:
-        print('Email failed to send.')
+        #print('Email failed to send.')
         return False
