@@ -1,31 +1,103 @@
-<template>
-    <main class='main'>
-        <section class='container' v-if='!isSubmitted'>
-			<p class='logo'>Vacansee</p>
-            <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to a reset form</p>
-			<input v-model='email' type='email' placeholder='Email' id='email' required />
-			<button class='submit' @click='submit'>Submit</button>
-            <router-link to='/login' class='return-link'>Return to log in page</router-link>
-		</section>
-        <section class='container' v-if='isSubmitted'>
-        	<p class='logo'>Vacansee</p>
-            <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to a reset form</p>
-			<div class='submitted-info'><p>You have been sent a password reset form. Please check your email inbox.</p></div>
-            <router-link to='/login' class='return-link'>Return to log in page</router-link>
-        </section>
-    </main>
-</template>
-
 <script setup>
-    import { ref } from 'vue';
+    import DefaultNavbar from '@/components/partials/DefaultNavbar.vue';
 
-	const email = ref('');
+    import api, { apiCatchError } from '@/assets/js/api';
+    import { ref, onMounted } from 'vue';
+
+    const url = window.location.pathname;
+    const token = url.substring(url.lastIndexOf('/') + 1);
+
+	const password = ref('');
+    const passwordVerify = ref('');
+    const alert = ref('');
     const isSubmitted = ref(false);
 
     const submit = () => {
         isSubmitted.value = !isSubmitted.value;
     };
+
+    const getReset = async () => {
+        const response = await api({
+            url: `/reset/${ token }/`,
+            method: 'get',
+            responseType: 'json'
+        }).catch(apiCatchError => {
+            if (apiCatchError.status == 500)
+                alert('Unauthorised token.');
+        })
+
+        if (!response)
+            return false;
+
+        const { data = {} } = response;
+
+        return data
+    }
+
+    const postReset = async () => {
+        const response = await api({
+            url: '/reset/',
+            method: 'post',
+            data: {
+                password: password,
+                token: token
+            },
+            responseType: 'json'
+        }).catch(apiCatchError => {
+            alert.value = apiCatchError.message;   
+        })
+
+        if (!response)
+            return false;
+
+        const { data = {} } = response;
+
+        window.location.href = '/login/'
+        
+    }
+
+    const checkAndResetPassword = () => {
+        alert.value = '';
+
+        if (password.value != passwordVerify.value) {
+            alert.value = 'Passwords must match.';
+            return;
+        }
+
+        postReset();
+    }
+
+    onMounted(async () => {
+        const result = await getReset({ });
+
+        if(!result) {
+            return;
+        }
+    });
+
 </script>
+
+<template>
+    <main class='main'>
+        <DefaultNavbar/>
+        <section class='container' v-if='!isSubmitted'>
+            <p class='logo'>Reset Password</p>
+            <div id="alert" v-if="alert">{{ alert }}</div>
+            <form @submit.prevent="checkAndResetPassword">
+            <label>
+                New password:
+                <input type="password" v-model="password" required />
+            </label>
+            <label>
+                Re-type new password:
+                <input type="password" v-model="passwordVerify" required />
+            </label>
+            <button type="submit" class='submit'>Reset password</button>
+            </form>
+		</section>
+    </main>
+</template>
+
 
 <style scoped>
 	.main {
