@@ -9,7 +9,7 @@
     const emits = defineEmits(["show-application"])
     const selectedProfile = ref();
 
-    const props = defineProps(['selectedVacancy']);
+    const props  = defineProps(['selectedVacancy']);
 
     const selectedVacancy = ref(0);
     const selected = toRef(props, 'selectedVacancy');
@@ -129,7 +129,7 @@
         <div class='matches'>
             <h3 class='no-matches' v-if='numMatches == 0'>No matches to display. </h3>
             <div class='match' v-else v-for='match in matches' :key='match'>
-                <MatchCard :stats='match' 
+                <MatchCard :stats='match'
                 @showApplication='updateCard' 
                 @unmatch='onUnmatch' />
             </div>

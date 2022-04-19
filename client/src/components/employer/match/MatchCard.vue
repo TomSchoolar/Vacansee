@@ -37,7 +37,7 @@
     const getDetails = async (options) => {
         const { uID = application.UserId } = options;
 
-        const response = await axios({
+        const response = await api({
             method: 'get',
             url: '/e/match/card',
             baseURL: process.env.VUE_APP_API_ENDPOINT,
