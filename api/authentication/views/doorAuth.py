@@ -5,10 +5,7 @@ from ..serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.hashers import check_password
-<<<<<<< HEAD
-=======
 from ..helpers import jwt as jwtHelper, auth as authHelper
->>>>>>> a6104a9e6cf27cb6ed54834a969ec6a2ba28beef
 
 
 @api_view(['POST'])

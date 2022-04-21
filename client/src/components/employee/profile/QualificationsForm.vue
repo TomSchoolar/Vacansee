@@ -65,7 +65,7 @@
         <div class='qual-2'>
             <label for='qualification-2'>qualification type:</label><br />
             <select id='qualification-2' name='qualification'>
-                <option value = 'temp' hidden selected> Choose option </option>
+                <option value = 'null' hidden selected> Choose option </option>
                 <option value = 'gcses'> GCSEs </option>
                 <option value = 'alevels'> A Levels </option>
                 <option value = 'degree'> Degree </option>
@@ -86,7 +86,7 @@
         <div class='qual-3'>
             <label for='qualification-3'>qualification type:</label><br />
             <select id='qualification-3' name='qualification'>
-                <option value = 'temp' hidden selected> Choose option </option>
+                <option value = 'null' hidden selected> Choose option </option>
                 <option value = 'gcses'> GCSEs </option>
                 <option value = 'alevels'> A Levels </option>
                 <option value = 'degree'> Degree </option>
