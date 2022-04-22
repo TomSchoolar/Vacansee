@@ -71,6 +71,7 @@ import EmployerMatch from '../views/employer/EmployerMatch.vue';
 import EmployerReview from '../views/employer/EmployerReview.vue';
 import EmployerAccount from '../views/employer/EmployerAccount.vue';
 import EmployerNewVacancy from '../views/employer/EmployerNewVacancy.vue';
+import EmployerEditVacancy from '../views/employer/EmployerEditVacancy.vue';
 
 const employerRoutes = [
     {
@@ -109,6 +110,14 @@ const employerRoutes = [
         path: '/e/vacancy/new',
         name: 'EmployerNewVacancy',
         component: EmployerNewVacancy,
+        meta: {
+            middleware: [isLoggedIn, isEmployer]
+        }
+    },
+    {
+        path: '/e/vacancy/edit/:vacancyId',
+        name: 'EmployerEditVacancy',
+        component: EmployerEditVacancy,
         meta: {
             middleware: [isLoggedIn, isEmployer]
         }

@@ -1,7 +1,7 @@
 <script setup>
     import { onMounted, ref } from 'vue';
 
-    const props = defineProps(['name', 'label', 'placeholder', 'max'])
+    const props = defineProps(['name', 'label', 'placeholder', 'max', 'value'])
 
     let fields = [];
     let activeFields = [];
@@ -70,9 +70,10 @@
             :key='i' 
             type='text' 
             :name='`${ name }-${ i }`' 
-            :class='"input " + `input-${ name }` + " " + ( i <= numFields ? "" : "input-hidden" )'
+            :class='"input " + `input-${ name }` + " " + ( i == 1 || (value && value[i-2]) ? "" : "input-hidden" )'
             :id='`${ name }-${ i }`' 
             :placeholder='placeholder ? placeholder : "" ' 
+            :value='value && value[i-1] ? value[i-1] : ""'
         >
     </div>
 </template>

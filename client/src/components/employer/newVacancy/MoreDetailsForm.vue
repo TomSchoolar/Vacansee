@@ -6,6 +6,7 @@
     import FormTextArea from '@/components/employer/newVacancy/formComponents/FormTextArea.vue';
     import FormExpandingText from '@/components/employer/newVacancy/formComponents/FormExpandingText.vue';
 
+    const props = defineProps(['description', 'skills'])
     const emit = defineEmits(['next', 'back']);
 
     const validate = () => {
@@ -36,8 +37,8 @@
         Enter more job specifics so applicants know what they're applying for.
     </FormHeader>
 
-    <FormTextArea label='job description' name='Description' rows='7' />
-    <FormExpandingText label='necessary skills' name='SkillsRequired' :max='3' />
+    <FormTextArea label='job description' name='Description' rows='7' :value='description' />
+    <FormExpandingText label='necessary skills' name='SkillsRequired' :max='3' :value='skills' />
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 </template>

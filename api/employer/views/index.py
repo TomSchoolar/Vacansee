@@ -160,7 +160,31 @@ def postIndex(request, jwt):
     except ValidationError as err:
         return Response({ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
-        import traceback
-        traceback.print_exc()
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+@api_view(['GET', 'PUT'])
+def editVacancy(request, vacancyId):
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    if request.method == 'GET':
+        
+        try:
+            vacancySet = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True, UserId__exact = jwt['id'])
+            vacancy = VacancySerializer(vacancySet).data
+
+            return Response(vacancy, status=status.HTTP_200_OK)
+        except Vacancy.DoesNotExist:
+            return Response({ 'message': 'That vacancy is not available for editing.', 'status': 401 }, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as err:
+            print(f'uh oh: { err }')
+            return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    else:
+        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)

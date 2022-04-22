@@ -244,7 +244,7 @@
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>No vacancies to display</h3>
                 <div class='vacancy' v-for='vacancy in vacancies' :key='vacancy.id'>
                     <div class='vacancy-left'>
-                        <h5 :class='"vacancy-title" + ( !vacancy.IsOpen ? " vacancy-title-small" : "" )' :title='vacancy.title'>
+                        <h5 class='vacancy-title' :title='vacancy.title'>
                             <span v-if='!vacancy.IsOpen' class='vacancy-closed'>(closed)</span>
                             {{ vacancy.VacancyName }}
                         </h5>
@@ -254,9 +254,8 @@
                     <div class='vacancy-right'>
                         <div class='vacancy-decisions'>{{ vacancy.AcceptedApplications }} Accepted / {{ vacancy.RejectedApplications }} Rejected</div>
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
-                        <!-- <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-if='vacancy.IsOpen'>Edit</router-link> -->
                         <div class='vacancy-button-container'>
-                            <router-link :to='`/e/vacancy/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
+                            <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
                             <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue'>Review</router-link>
                             <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.IsOpen'>Close</button>
                             <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
