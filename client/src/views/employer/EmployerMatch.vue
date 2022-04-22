@@ -21,19 +21,23 @@
     const updateVacancyId = (vacancy) => {
         selectedVacancy.value = vacancy.VacancyId;
     };
+
+    let session = window.localStorage.getItem('session') ?? '{}'
+    const { CompanyName: cn = 'Vacancy Stats' } = JSON.parse(session);
+    const companyName = ref(cn);
 </script>
 
 <template>
     <EmployerNavbar page='matches' :numNotifs='notifs'></EmployerNavbar>
 
     <header class='header'>
-        <h1 class='title'>Strat Security Co. - Matches</h1>
+        <h1 class='title'>{{companyName}} - Matches</h1>
     </header>
 
     <main class='container'>
         <VacanciesColumn @selectVacancy='updateVacancyId' />
 
-        <MatchesColumn  :selectedVacancy=selectedVacancy @show-application='updateCard'/>
+        <MatchesColumn  :selectedVacancy=selectedVacancy @show-application='updateCard' />
 
         <section class='profile-column'>
             <div class='card' v-for='profile in currentProfile' :key='profile'>

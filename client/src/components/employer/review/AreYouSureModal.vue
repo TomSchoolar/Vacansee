@@ -1,5 +1,5 @@
 <script setup>
-    const { profile = {} } = defineProps(["profile"]);
+    const { profile = {} } = defineProps(['profile']);
     const emit = defineEmits(['unmatch', 'close-modal'])
 
     const unmatched = () => {
@@ -9,22 +9,17 @@
 </script>
 
 <template>
-  <div class="modal-overlay">
-    <div class="modal">
-      <img class="warning" src="../../../assets/AreYouSureImage.png" alt="" />
-      <p class="description">You are about to unmatch with</p>
-      <p class="name">{{profile.FirstName}} {{profile.LastName}}</p>
-      <p class="description">Are you sure you want to do this?</p>
-      <button class="application-button application-button-grey" @click="$emit('close-modal')">Go Back</button>
-      <button class="application-button application-button-red" @click="unmatched">Unmatch</button>
+  <div class='modal-overlay'>
+    <div class='modal'>
+      <img class='warning' src='../../../assets/AreYouSureImage.png' alt='' />
+      <p class='description'>You are about to unmatch with</p>
+      <p class='name'>{{profile.FirstName}} {{profile.LastName}}</p>
+      <p class='description'>Are you sure you want to do this?</p>
+      <button class='application-button application-button-grey' @click="emit('close-modal')">Go Back</button>
+      <button class='application-button application-button-red' @click="unmatched">Unmatch</button>
     </div>
   </div>
 </template>
-
-<script>
-  export default {
-}
-</script>
 
 <style scoped>
 

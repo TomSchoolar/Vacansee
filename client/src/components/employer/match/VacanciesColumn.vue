@@ -3,7 +3,7 @@
 
     import { onMounted, ref, watch } from 'vue';
     
-    
+    const emits = defineEmits(['selectVacancy']);
 
     //let { numVacancies = 0, vacancies = [] } = defineProps(['numVacancies', 'vacancies']);
 

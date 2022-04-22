@@ -116,7 +116,7 @@ export default {
         </div>
 
         <div class='application-right'>
-            <button class='application-button application-button-grey' @click='$emit("showApplication",details)' id='show'>Show Application</button>
+            <button class='application-button application-button-grey' @click='emit("showApplication",details)' id='show'>Show Application</button>
             <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
             <button class='application-button application-button-red' @click="showModal = true">Unmatch</button>
             <AreYouSureModal v-show="showModal" @close-modal="showModal = false" :profile=profile @unmatch='unmatch' />

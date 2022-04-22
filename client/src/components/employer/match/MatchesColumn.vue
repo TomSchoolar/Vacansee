@@ -6,7 +6,7 @@
     import { ref, watch, toRef } from 'vue';
     
 
-    const emits = defineEmits(["show-application"])
+    const emits = defineEmits(['show-application', 'update-match-stats'])
     const selectedProfile = ref();
 
     const props  = defineProps(['selectedVacancy']);
@@ -79,12 +79,12 @@
         selectedVacancy.value = newVac;
     }
 
-    const onUnmatch = () => {
-        updateMatches(selectedVacancy.vacancyId)
+    const onUnmatch = async () => {
+        updateMatches(selectedVacancy.vacancyId);
     }
 
     const updateCard = (nextProfile) => {
-        emits("show-application", nextProfile);
+        emits('show-application', nextProfile);
     }
 
     watch(selectedVacancy, updateMatches);
