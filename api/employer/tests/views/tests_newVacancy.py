@@ -54,8 +54,6 @@ class newVacancyTestCase(TestCase):
         savedVacancySet = Vacancy.objects.get(VacancyName__exact = self.vacancyData['VacancyName'])
         savedVacancy = VacancySerializer(savedVacancySet).data
 
-
-        self.maxDiff = None
         self.assertEquals(response.status_code, 200)
         self.assertLess(initialVacancyCount, finalVacancyCount)
 
