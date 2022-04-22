@@ -7,6 +7,7 @@
     import FormButtons from '@/components/employer/newVacancy/formComponents/FormButtons.vue';
     import FormExpandingDoubleText from '@/components/employer/newVacancy/formComponents/FormExpandingDoubleText.vue';
 
+    const props = defineProps(['expectExperienceValue', 'experience', 'city', 'timezone'])
     const emit = defineEmits(['next', 'back']);
 
     const dropdownOptions = [ ];
@@ -69,9 +70,9 @@
         So we can find good applications that are cohesive with your team, enter how much experience is required for the position and the timezone in which candidates should be based.
     </FormHeader>
 
-    <FormExpandingDoubleText label='relevant experience required' name='ExperienceRequired' placeholder='position' secondPlaceholder='time' :max='3' />
-    <FormText label='nearest city' name='Location' type='text' />
-    <FormSelect label='timezone' name='TimeZone' placeholder='select a timezone' :options='dropdownOptions' />
+    <FormExpandingDoubleText label='relevant experience required' name='ExperienceRequired' placeholder='position' secondPlaceholder='time' :max='3' :expectValue='expectExperienceValue ? true : false' :value='experience' />
+    <FormText label='nearest city' name='Location' type='text' :value='city' />
+    <FormSelect label='timezone' name='TimeZone' placeholder='select a timezone' :options='dropdownOptions' :value='timezone' />
 
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />

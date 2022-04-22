@@ -187,4 +187,11 @@ def editVacancy(request, vacancyId):
             return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     else:
+        if request.data is not dict:
+            data = dict(request.data)
+        else:
+            data = request.data
+
+        print(data)
+
         return Response(status=status.HTTP_501_NOT_IMPLEMENTED)

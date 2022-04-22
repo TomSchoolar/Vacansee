@@ -1,52 +1,67 @@
 <script setup>
-    import { onMounted, ref } from 'vue';
+    import { ref, watch } from 'vue';
 
-    const props = defineProps(['name', 'label', 'placeholder', 'max', 'value'])
+    const props = defineProps(['name', 'label', 'placeholder', 'max', 'expectValue', 'value'])
 
     let fields = [];
     let activeFields = [];
     const numFields = ref(1);
     
-    onMounted(() => {
-        // get fields and add event listeners
-        const fieldPane = document.getElementById(`expanding-${ props.name }`);
-        fields = document.querySelectorAll(`.input-${ props.name }`);
-        activeFields.push(fields[0]);
+    watch(props, async () => {
+        if(props.expectValue && props.value || !props.expectValue) {
+            // get fields and add event listeners
 
-        fieldPane.addEventListener('keyup', () => {
-            for(let i = 0; i < activeFields.length; i++) {
-                let field = activeFields[i];
-                listenerAction(field);
-            }
-        });
-            
-        const listenerAction = (input) => {
-            let value = input.value;
-            const id = input.id.split('-');
-            let inputNum = parseInt(id[1]);
-            let nextInputNum = ( inputNum + 1 <= props.max ? inputNum + 1 : false );
-            let nextInput = document.querySelector(`#${ id[0] }-${ nextInputNum }`);
+            // timeout to make sure fields are populated if value passed
+            await new Promise(r => setTimeout(r, 100));
 
-            if(value && nextInputNum && nextInput.classList.contains('input-hidden')) {
-                // field has been populated, add another field if not at max
-                nextInput.classList.remove('input-hidden');
-                activeFields.push(nextInput);
-            }
+            const fieldPane = document.getElementById(`expanding-${ props.name }`);
+            fields = document.querySelectorAll(`.input-${ props.name }`);
 
-            // TODO: fix when populate all 3 fields, empty first and second
-            
-            if(!value && inputNum < activeFields.length && !nextInput?.value) {
-                // if current and next fields are empty, a field needs to be removed
-                if(activeFields.length > inputNum + 1) {
-                    // if there is a field after the next one, its value needs shuffling down
-                    shuffleInputValues(inputNum)
-                } else {
-                    // if the next field is last, it can just be removed
-                    activeFields.pop().classList.add('input-hidden')
+            fields.forEach((field, i, arr) => {
+                if(i == 0) {
+                    activeFields.push(field);
                 }
-            }
-        };
-    });
+
+                if(field.value && i+1 < props.max) {
+                    activeFields.push(arr[i+1]);
+                }
+            });
+
+            fieldPane.addEventListener('keyup', () => {
+                for(let i = 0; i < activeFields.length; i++) {
+                    let field = activeFields[i];
+                    listenerAction(field);
+                }
+            });
+                
+            const listenerAction = (input) => {
+                let value = input.value;
+                const id = input.id.split('-');
+                let inputNum = parseInt(id[1]);
+                let nextInputNum = ( inputNum + 1 <= props.max ? inputNum + 1 : false );
+                let nextInput = document.querySelector(`#${ id[0] }-${ nextInputNum }`);
+
+                if(value && nextInputNum && nextInput.classList.contains('input-hidden')) {
+                    // field has been populated, add another field if not at max
+                    nextInput.classList.remove('input-hidden');
+                    activeFields.push(nextInput);
+                }
+
+                // TODO: fix when populate all 3 fields, empty first and second
+                
+                if(!value && inputNum < activeFields.length && !nextInput?.value) {
+                    // if current and next fields are empty, a field needs to be removed
+                    if(activeFields.length > inputNum + 1) {
+                        // if there is a field after the next one, its value needs shuffling down
+                        shuffleInputValues(inputNum)
+                    } else {
+                        // if the next field is last, it can just be removed
+                        activeFields.pop().classList.add('input-hidden')
+                    }
+                }
+            };
+        }
+    }, {immediate: true});
 
     const shuffleInputValues = (startIndex) => {
         for(let i = --startIndex; i + 2 < activeFields.length; i++) {

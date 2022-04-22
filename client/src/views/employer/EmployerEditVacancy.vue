@@ -12,7 +12,7 @@
     import TagsForm from '@/components/employer/newVacancy/TagsForm.vue';
     import ReviewForm from '@/components/employer/newVacancy/ReviewForm.vue';
     
-    import { onMounted, ref } from 'vue';
+    import { onMounted, onBeforeUnmount, ref } from 'vue';
 
     let pages;
     const notifs = ref(2);
@@ -22,10 +22,8 @@
 
     // get company name
     let session = window.localStorage.getItem('session') ?? '{}'
-    const { CompanyName: cn = false, PhoneNumber: phone = false, Email: em = false } = JSON.parse(session);
-    const email = ref(em);
+    const { CompanyName: cn = false } = JSON.parse(session);
     const companyName = ref(cn);
-    const phoneNumber = ref(phone);
 
     onMounted(async () => {
         pages = document.querySelectorAll('.form-page-container');
@@ -40,8 +38,6 @@
 
         if(!vacancy.data)
             window.location.href = '/e/vacancy';
-
-        console.log(vacancy.data)
 
         vacancyData.value = vacancy.data;
     });
@@ -72,6 +68,8 @@
         }
     }
 
+    onBeforeUnmount(() => {})
+
 </script>
 
 <template>
@@ -85,7 +83,7 @@
     </main>
 
     <nav class='form-progress'>
-        <FormStepper :stepNum='currentPageNum' />
+        <FormStepper :stepNum='currentPageNum' v-if='vacancyData' />
     </nav>
 
     <form class='form-pane'>
@@ -93,19 +91,19 @@
             <BasicDetailsForm @next='changePage(1)' :companyName='companyName' :title='vacancyData.VacancyName' :salary='vacancyData.Salary' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <MoreDetailsForm @next='changePage(1)' @back='changePage(-1)' :description='vacancyData.Description' :skills='vacancyData.SkillsRequired' />
+            <MoreDetailsForm @next='changePage(1)' @back='changePage(-1)' :description='vacancyData.Description' :expectSkillsValue='true' :skills='vacancyData.SkillsRequired' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ContactDetailsForm :email='email' :phoneNumber='phoneNumber' @next='changePage(1)' @back='changePage(-1)' />
+            <ContactDetailsForm @next='changePage(1)' @back='changePage(-1)' :email='vacancyData.Email' :phoneNumber='vacancyData.PhoneNumber' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <LogisticsForm @next='changePage(1)' @back='changePage(-1)' />
+            <LogisticsForm @next='changePage(1)' @back='changePage(-1)' :expectExperienceValue='true' :experience='vacancyData.ExperienceRequired' :city='vacancyData.Location' :timezone='vacancyData.TimeZone' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <TagsForm @next='changePage(1)' @back='changePage(-1)' />
+            <TagsForm @next='changePage(1)' @back='changePage(-1)' :tags='vacancyData.Tags' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' />
+            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' :edit='true' />
         </div>
         
     </form>
