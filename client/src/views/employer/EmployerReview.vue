@@ -88,6 +88,7 @@
                 <MatchCard v-for='match in matches' 
                 :key='match.id' 
                 :stats='match'
+                :vacancyName='vacancy.VacancyName'
                 @unmatch='onUnmatch(match)' />
             </div>
         </div>

@@ -4,13 +4,12 @@
     
     import { onMounted, ref } from 'vue';
 
-    const { stats } = defineProps(['stats']);
-    const { application = {}, profile = {} } = stats;
-    const showModal = ref(false);
-
-    const emit = defineEmits(["showApplication", "unmatch"])
+    const props = defineProps(['stats', 'vacancyName']);
+    const emit = defineEmits(["showApplication", "unmatch"]);
 
     const details = {};
+    const showModal = ref(false);
+    const { application = {}, profile = {} } = props.stats;
 
     const downloadApplication = () => {
         alert('download application');
@@ -110,7 +109,7 @@
             <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show'>Show Application</button>
             <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
             <button class='application-button application-button-red' @click='showModal = true'>Unmatch</button>
-            <AreYouSureModal v-if='showModal' @close-modal='showModal = false' :profile='profile' @unmatch='unmatch' />
+            <AreYouSureModal v-if='showModal' :profile='profile' :vacancyName='vacancyName' @close-modal='showModal = false' @unmatch='unmatch' />
         </div>
     </article>
     <hr class='slim-hr' />

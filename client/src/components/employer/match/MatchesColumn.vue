@@ -4,18 +4,15 @@
     
     import { ref, watch, toRef } from 'vue';
 
+    const props  = defineProps(['selectedVacancy', 'selectedVacancyName']);
     const emits = defineEmits(['show-application', 'update-match-stats'])
-    const selectedProfile = ref();
-
-    const props  = defineProps(['selectedVacancy']);
-
-    const selectedVacancy = ref(0);
-    const selected = toRef(props, 'selectedVacancy');
 
     const matches = ref([]);
     const numMatches = ref(0);
-
+    const selectedProfile = ref();
+    const selectedVacancy = ref(0);
     const sort = ref('LastNameAsc');
+    const selected = toRef(props, 'selectedVacancy');
 
     const download = () => {
         alert("downloaded!");
@@ -127,9 +124,12 @@
         <div class='matches'>
             <h3 class='no-matches' v-if='numMatches == 0'>No matches to display. </h3>
             <div class='match' v-else v-for='match in matches' :key='match'>
-                <MatchCard :stats='match'
-                @showApplication='updateCard' 
-                @unmatch='onUnmatch' />
+                <MatchCard 
+                    :stats='match'
+                    :vacancyName='selectedVacancyName'
+                    @showApplication='updateCard' 
+                    @unmatch='onUnmatch' 
+                />
             </div>
         </div>
     </section>

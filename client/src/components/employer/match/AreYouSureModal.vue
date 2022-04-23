@@ -1,5 +1,5 @@
 <script setup>
-    const { profile = {} } = defineProps(['profile']);
+    const props = defineProps(['profile', 'vacancyName']);
     const emit = defineEmits(['unmatch', 'close-modal'])
 
     const unmatched = () => {
@@ -12,14 +12,14 @@
     <div class='modal-overlay'>
         <div class='modal'>
             <div class="warning-circle">!</div>
-
+            
             <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
 
             <div class="modal-body">
                 <p class='desc'>You are about to unmatch with</p>
                 <p class='desc desc-bold'>{{ profile.FirstName }} {{ profile.LastName }}</p>
                 <p class='desc'>for the role:</p>
-                <p class="desc desc-bold">Customer Service Representative</p>
+                <p class="desc desc-bold">{{ vacancyName }}</p>
                 <p class="desc">You will not be able to rematch with them and they will be notified.</p>
                 <p class="desc">Are you sure you want to do this?</p>
             </div>

@@ -14,12 +14,13 @@
     }
     
     const notifs = ref(2);
-    const selectedVacancy = ref();
-
     const currentProfile = ref();
+    const selectedVacancy = ref();
+    const selectedVacancyName = ref();
 
     const updateVacancyId = (vacancy) => {
         selectedVacancy.value = vacancy.VacancyId;
+        selectedVacancyName.value = vacancy.VacancyName;
     };
 
     let session = window.localStorage.getItem('session') ?? '{}'
@@ -37,7 +38,7 @@
     <main class='container'>
         <VacanciesColumn @selectVacancy='updateVacancyId' />
 
-        <MatchesColumn  :selectedVacancy=selectedVacancy @show-application='updateCard' />
+        <MatchesColumn  :selectedVacancy='selectedVacancy' :selectedVacancyName='selectedVacancyName' @show-application='updateCard' />
 
         <section class='profile-column'>
             <div class='card' v-for='profile in currentProfile' :key='profile'>
