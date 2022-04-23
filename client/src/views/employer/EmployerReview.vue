@@ -1,7 +1,7 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
+    import MatchCard from '@/components/employer/match/MatchCard.vue';
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
-    import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
     

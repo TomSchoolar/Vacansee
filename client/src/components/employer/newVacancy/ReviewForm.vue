@@ -129,7 +129,7 @@
     <FormButtons :back='true' :publish='true' @back='emit("back")' @publish='publish()' />
 </template>
 
-<style>
+<style scoped>
     .review-container {
         width: 43vw;
         min-width: 700px;
@@ -139,7 +139,7 @@
         margin: 20px 0;
     }
 
-    .card {
-        width: 42.5% !important;
+    div:deep(.card) {
+        width: 42.5%;
     }
 </style>

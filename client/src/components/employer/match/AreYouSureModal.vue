@@ -9,100 +9,141 @@
 </script>
 
 <template>
-  <div class='modal-overlay'>
-    <div class='modal'>
-      <img class='warning' src='../../../assets/AreYouSureImage.png' alt='' />
-      <p class='description'>You are about to unmatch with</p>
-      <p class='name'>{{ profile.FirstName }} {{ profile.LastName }}</p>
-      <p class='description'>Are you sure you want to do this?</p>
-      <button class='application-button application-button-grey' @click='emit("close-modal")'>Go Back</button>
-      <button class='application-button application-button-red' @click='unmatched'>Unmatch</button>
+    <div class='modal-overlay'>
+        <div class='modal'>
+            <div class="warning-circle">!</div>
+
+            <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
+
+            <div class="modal-body">
+                <p class='desc'>You are about to unmatch with</p>
+                <p class='desc desc-bold'>{{ profile.FirstName }} {{ profile.LastName }}</p>
+                <p class='desc'>for the role:</p>
+                <p class="desc desc-bold">Customer Service Representative</p>
+                <p class="desc">You will not be able to rematch with them and they will be notified.</p>
+                <p class="desc">Are you sure you want to do this?</p>
+            </div>
+
+            <div class="button-row">
+                <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
+                <button class='button button-red' @click='unmatched'>Unmatch</button>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 
 <style scoped>
+    .button {
+        color: white;
+        width: 150px;
+        font-weight: 500; /* required for some reason */
+        border: none;
+        color: #fff;
+        font-size: 14px;
+        text-decoration: none;
+        padding: 14px 4px;
+        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+        flex-grow: 1;
+        cursor: pointer;
+    }
 
-.warning {
-  width: 150px;
-}
+    .button:first-of-type {
+        border-bottom-left-radius: 20px;
+    }
 
-.description p {
-    height: 50px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
+    .button:last-of-type {
+        border-bottom-right-radius: 20px;
+    }
 
-.name { 
-    font-weight: bold;
-    font-size: 18px;
-    margin: 0px;
-    padding: 0px 0px 0px 0px;
-}
+    .button-grey {
+        background: var(--slate);
+    }
 
-.application-button {
-    font-weight: 500; /* required for some reason */
-    border-radius: 7px;
-    color: #fff;
-    border: 2.2px solid #333;
-    min-width: 150px;
-    font-size: 12px;
-    text-decoration: none;
-    padding: 2px 4px;
-    margin-left: 10px;
-    margin-right: 10px;
-    font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
-}
+    .button-grey:active, .button-grey:focus, .button-grey:hover  {
+        background: var(--slate-focus);
+    } 
 
-.application-button-grey {
-    background: var(--slate);
-}
+    .button-red {
+        background: var(--red);
+    }
 
-.application-button-grey:hover, .application-button-grey:focus, .application-button-grey:active {
-    background: var(--slate-focus);
-    cursor: pointer;
-} 
+    .button-red:active, .button-red:focus, .button-red:hover {
+        background: var(--red-focus);
+    } 
 
-.application-button-red {
-    background: var(--red);
-}
+    .button-row {
+        position: absolute;
+        display: flex;
+        bottom: 0;
+        width: 100%;
+    }
 
-.application-button-red:hover, .application-button-red:focus, .application-button-red:active {
-    background: var(--red-focus);
-    cursor: pointer;
-} 
+    .close-icon {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        font-size: 18px;
+        color: var(--jet);
+        cursor: pointer;
+    }
+
+    .close-icon:active, .close-icon:focus, .close-icon:hover {
+        color: var(--red);
+    }
+
+    .desc {
+        margin: 10px 0;
+        font-size: 14px;
+    }
+
+    .desc-bold {
+        font-weight: bold;
+    }
+
+    .modal {
+        background-color: white;
+        min-height: 380px;
+        max-width: min(425px, 90%);
+        padding: 25px 20px 40px 20px;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        bottom: 30px;
+    }
+
+    .modal-body {
+        width: 75%;
+        margin: 25px 0;
+    }
+
+    .modal-overlay {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #000000da;
+    }
+
+    .warning-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--red);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 60px;
+        font-weight: bold;
+        color: white;
+    }
 
 
-.modal-overlay {
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  background-color: #000000da;
-}
-
-.modal {
-  text-align: center;
-  background-color: white;
-  height: 380px;
-  width: 400px;
-  margin-top: 5%;
-  padding: 20px 0;
-  border-radius: 20px;
-}
-
-button {
-  background-color: #ac003e;
-  width: 150px;
-  height: 40px;
-  color: white;
-  font-size: 14px;
-  border-radius: 16px;
-  margin-top: 50px;
-}
 </style>

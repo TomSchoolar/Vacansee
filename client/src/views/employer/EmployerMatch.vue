@@ -48,15 +48,12 @@
 </template>
 
 <style scoped>
-    *:deep(.button:active), *:deep(.button:focus), *:deep(.button:hover) {
-        background-color: var(--slate-focus);
-    }
-
     .card {
         position: relative;
         margin-left : auto; 
         margin-right : auto;
         bottom: 20px;
+        min-width: 350px;
     }
     
     .container {
