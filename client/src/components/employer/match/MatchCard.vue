@@ -1,8 +1,12 @@
 <script setup>
+    import AreYouSureModal from './AreYouSureModal.vue'
     import api, { apiCatchError } from '@/assets/js/api';
+    
+    import { onMounted, ref } from 'vue';
+
     const { stats } = defineProps(['stats']);
     const { application = {}, profile = {} } = stats;
-    import { onMounted, ref } from 'vue';
+    const showModal = ref(false);
 
     const emit = defineEmits(["showApplication", "unmatch"])
 
@@ -77,19 +81,6 @@
 
 </script>
 
-<script>
-import AreYouSureModal from './AreYouSureModal.vue'
-
-export default {
-  components: { AreYouSureModal },
-  data() {
-    return {
-      showModal: false,
-    }
-  },
-}
-</script>
-
 <template>
     <article class='application'>
         <div class='application-left'>
@@ -116,10 +107,10 @@ export default {
         </div>
 
         <div class='application-right'>
-            <button class='application-button application-button-grey' @click='$emit("showApplication", details)' id='show'>Show Application</button>
+            <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show'>Show Application</button>
             <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
-            <button class='application-button application-button-red' @click="showModal = true">Unmatch</button>
-            <AreYouSureModal v-show="showModal" @close-modal="showModal = false" :profile=profile @unmatch='unmatch' />
+            <button class='application-button application-button-red' @click='showModal = true'>Unmatch</button>
+            <AreYouSureModal v-if='showModal' @close-modal='showModal = false' :profile='profile' @unmatch='unmatch' />
         </div>
     </article>
     <hr class='slim-hr' />

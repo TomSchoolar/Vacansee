@@ -1,10 +1,8 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
     import MatchCard from '@/components/employer/match/MatchCard.vue';
-
     
     import { ref, watch, toRef } from 'vue';
-    
 
     const emits = defineEmits(['show-application', 'update-match-stats'])
     const selectedProfile = ref();

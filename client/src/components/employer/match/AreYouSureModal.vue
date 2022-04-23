@@ -13,10 +13,10 @@
     <div class='modal'>
       <img class='warning' src='../../../assets/AreYouSureImage.png' alt='' />
       <p class='description'>You are about to unmatch with</p>
-      <p class='name'>{{profile.FirstName}} {{profile.LastName}}</p>
+      <p class='name'>{{ profile.FirstName }} {{ profile.LastName }}</p>
       <p class='description'>Are you sure you want to do this?</p>
-      <button class='application-button application-button-grey' @click="emit('close-modal')">Go Back</button>
-      <button class='application-button application-button-red' @click="unmatched">Unmatch</button>
+      <button class='application-button application-button-grey' @click='emit("close-modal")'>Go Back</button>
+      <button class='application-button application-button-red' @click='unmatched'>Unmatch</button>
     </div>
   </div>
 </template>
