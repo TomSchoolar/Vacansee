@@ -100,7 +100,7 @@
 
     .modal {
         background-color: white;
-        min-height: 380px;
+        min-height: 200px;
         max-width: min(425px, 90%);
         padding: 25px 20px 40px 20px;
         border-radius: 20px;
