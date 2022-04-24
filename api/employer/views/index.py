@@ -164,3 +164,45 @@ def postIndex(request, jwt):
         traceback.print_exc()
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['PUT'])
+def putIndexCloseVacancy(request, vacancyId):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    # check vacancyId is valid for that user
+    if (not indexHelper.checkUserOwnsVacancy(vacancyId, jwt)):
+        return Response(data={'status': '401', 'message': 'You do not have access to that vacancy.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        vacancy = Vacancy.objects.get(VacancyId__exact = vacancyId)
+        vacancy.IsOpen = False
+        vacancy.save()
+        return Response(status=status.HTTP_200_OK)
+    except ValidationError as err:
+        return Response(data={'status': 400, 'message': str(err)}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['DELETE'])
+def deleteIndexDeleteVacancy(request, vacancyId):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    # check vacancyId is valid for that user
+    if (not indexHelper.checkUserOwnsVacancy(vacancyId, jwt)):
+        return Response(data={'status': '401', 'message': 'You do not have access to that vacancy.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        vacancy = Vacancy.objects.get(VacancyId__exact = vacancyId)
+        vacancy.delete()
+        return Response(status=status.HTTP_200_OK)
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

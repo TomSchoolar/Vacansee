@@ -63,3 +63,13 @@ def getVacancyStats(vacancies):
             VacancyId__exact = vacancy['VacancyId'],
             ApplicationStatus__exact = 'REJECTED'
         ).count()
+
+def checkUserOwnsVacancy(vacancyId, jwt):
+    userId = jwt['id']
+
+    vacancy = Vacancy.objects.get(pk = vacancyId, UserId__exact = userId)
+    
+    if not vacancy:
+        return False
+    else:
+        return True
