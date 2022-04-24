@@ -1,10 +1,10 @@
 <script setup>
-    const props = defineProps(['name', 'vacancyName']);
-    const emit = defineEmits(['unmatch', 'close-modal'])
+    const props = defineProps(['vacancyName']);
+    const emit = defineEmits(['closeApplications', 'close-modal'])
 
-    const unmatched = () => {
+    const closeAppliation = () => {
         emit('close-modal');
-        emit('unmatch');
+        emit('closeApplications');
     };
 </script>
 
@@ -16,17 +16,14 @@
             <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
 
             <div class="modal-body">
-                <p class='desc'>You are about to unmatch with</p>
-                <p class='desc desc-bold'>{{ name }}</p>
-                <p class='desc'>for the role:</p>
-                <p class="desc desc-bold">{{ vacancyName }}</p>
-                <p class="desc">You will not be able to rematch with them and they will be notified.</p>
-                <p class="desc">Are you sure you want to do this?</p>
+                <p class='desc'>You are about to stop/delete the job advert for:</p>
+                <p class='desc desc-bold'>{{ vacancyName }}</p>
+                <p class='desc'>Are you sure you want to do this?</p>
             </div>
 
             <div class="button-row">
                 <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
-                <button class='button button-red' @click='unmatched'>Unmatch</button>
+                <button class='button button-red' @click='closeAppliation'>Delete/Stop</button>
             </div>
         </div>
     </div>

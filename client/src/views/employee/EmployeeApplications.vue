@@ -4,6 +4,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import MatchModal from '@/components/employee/applications/MatchModal.vue';
     import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
+    import AreYouSureModal from '../../components/employer/match/AreYouSureModal.vue';
 
     import { ref, watch, onMounted } from 'vue';
     
@@ -15,6 +16,9 @@
         matches: '...',
     });
 
+
+    const showModal = ref(false);
+    const currentModalApplication = ref()
 
     const page = ref(1);
     const limit = ref(5);
@@ -277,10 +281,11 @@
                     </div>
                     <div class='right'>
                         <div class='applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
-                        <button class='button button-red' @click='deleteApplication(application.ApplicationId)'>Delete Application</button>
+                        <button class='button button-red' @click='showModal = true; currentModalApplication = application'>Delete Application</button>
                         <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
                     </div>
                 </div>
+                <AreYouSureModal v-if='showModal' :name='currentModalApplication.CompanyName' :vacancyName='currentModalApplication.VacancyName' @close-modal='showModal = false' @unmatch='deleteApplication(currentModalApplication.ApplicationId)' />
             </div>
 
             <div class='pagination' v-if='numPages > 1'>
