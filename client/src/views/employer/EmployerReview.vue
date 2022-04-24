@@ -43,6 +43,10 @@
         getApplicants();
     });
 
+    const updateProfile = (nextProfile) => {
+        currentProfile.value = nextProfile.value;
+    }
+
     const onUnmatch = async (match) => {
         matches.value = { };
         getApplicants();
@@ -89,7 +93,8 @@
                 :key='match.id' 
                 :stats='match'
                 :vacancyName='vacancy.VacancyName'
-                @unmatch='onUnmatch(match)' />
+                @unmatch='onUnmatch(match)'
+                @showApplication='updateProfile' />
             </div>
         </div>
 
