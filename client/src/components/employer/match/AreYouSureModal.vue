@@ -1,6 +1,15 @@
 <script setup>
-    const props = defineProps(['name', 'vacancyName']);
-    const emit = defineEmits(['unmatch', 'close-modal'])
+    const props = defineProps(['name', 'vacancyName', 'employer']);
+    const emit = defineEmits(['unmatch', 'close-modal']);
+
+    const func = (value) => {
+        if(value)
+            return "You will not be able to rematch with them and they will be notified.";
+        else
+        {
+            return "You will be able to rematch with them but they will be notified.";
+        }
+    }
 
     const unmatched = () => {
         emit('close-modal');
@@ -20,7 +29,7 @@
                 <p class='desc desc-bold'>{{ name }}</p>
                 <p class='desc'>for the role:</p>
                 <p class="desc desc-bold">{{ vacancyName }}</p>
-                <p class="desc">You will not be able to rematch with them and they will be notified.</p>
+                <p class="desc">{{ func(employer) }}</p>
                 <p class="desc">Are you sure you want to do this?</p>
             </div>
 

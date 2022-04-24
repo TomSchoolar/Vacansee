@@ -285,7 +285,7 @@
                         <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
                     </div>
                 </div>
-                <AreYouSureModal v-if='showModal' :name='currentModalApplication.CompanyName' :vacancyName='currentModalApplication.VacancyName' @close-modal='showModal = false' @unmatch='deleteApplication(currentModalApplication.ApplicationId)' />
+                <AreYouSureModal v-if='showModal' :name='currentModalApplication.CompanyName' :vacancyName='currentModalApplication.VacancyName' :employer='false' @close-modal='showModal = false' @unmatch='deleteApplication(currentModalApplication.ApplicationId)' />
             </div>
 
             <div class='pagination' v-if='numPages > 1'>
