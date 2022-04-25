@@ -2,19 +2,34 @@
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     const emit = defineEmits(['next', 'back']);
 
+    const dropdownOptions = [ ];
+
+    for(let i = -11; i < 12; i++) {
+        let symbol = "";
+
+        if(i <= 0)
+        {
+            symbol = "+";
+        }
+
+        dropdownOptions.push({
+            value: i,
+            text: "GMT " + symbol + i,
+        });
+    }
+
+
     const validate = () => {
         // define schema
         const schema = Joi.object({
-            'city': Joi.string().alphanum().max(80).required().label('position title'),
-            'range': Joi.string(),
-            'timezone': Joi.string().required().label('pronouns')
+            'Location': Joi.string().alphanum().max(80).required().label('position title'),
+            'TimeZone': Joi.string().required().label('pronouns')
         });
 
         // get input data
         const data = {
-            'city': document.querySelector('input[name="city"]').value,
-            'range': document.querySelector('input[name="range"]').value,
-            'timezone': document.querySelector('input[name="timezone"]').value
+            'Location': document.querySelector('input[name="Location"]').value,
+            'TimeZone': document.querySelector('input[name="TimeZone"]').value
         }
 
         // validate and handle any errors
@@ -26,28 +41,15 @@
 
 <template>
     <h1> Location </h1> 
-    <p> So we can find jobs near you, enter the closest town/city to your home and how far you are willing to travel to work (range). <br />We're also going to need the timezone where you live </p>
-    <form>
-        <label for='city'>City/Town:</label><br />
-        <input type='text' id='city' name='city'><br />
-        <label for='range'>Range:</label><br />
-        <input type='range' min='0' max='100' value='50' step='20' list='tickmarks' id='range' name='range'>
-        <datalist id='tickmarks'>
-            <option>0</option>
-            <option>20</option>
-            <option>40</option>
-            <option>60</option>
-            <option>80</option>
-            <option>100</option>
-        </datalist> <br />
-        <div id = 'output'>  </div>
-        <label for='timezone'>Timezone:</label><br />
-        <select id='timezone' name='timezone'>
-            <option> Timezone 1 </option>
-            <option> Timezone 2 </option>
-            <option> Timezone 3 </option>
+    <p> So we can find jobs near you, enter the closest town/city to your home and how far you are willing to travel to work (range). <br />We're also going to need the TimeZone where you live </p>
+    <div id='myform'>
+        <label for='Location'>City/Town:</label><br />
+        <input type='text' id='Location' name='Location'><br />
+        <label for='TimeZone'>TimeZone:</label><br />
+        <select id='TimeZone' name='TimeZone'>
+            <option v-for='option in dropdownOptions' :key='option.value' :value='option.value'>{{ option.text }}</option>
         </select>
-    </form>
+    </div>
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='emit("next")' />
 </template>
