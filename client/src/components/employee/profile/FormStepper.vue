@@ -42,17 +42,6 @@
                 Personal Details
             </div>
         </div>
-
-        <div class='spacer'></div>
-        
-        <div class='form-page'>
-            <div class='circle'>
-                <i class="fa-solid fa-check"></i>
-            </div>
-            <div class='label'>
-                Contact Details
-            </div>
-        </div>
         
         <div class='spacer'></div>
         
