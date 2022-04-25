@@ -1,6 +1,6 @@
 <script setup>
-    const props = defineProps(['next', 'back']);
-    const emit = defineEmits(['next', 'back']);
+    const props = defineProps(['next', 'back', 'publish']);
+    const emit = defineEmits(['next', 'back', 'publish']);
 </script>
 
 <template>
@@ -10,6 +10,9 @@
         </button>
         <button type='button' class='btn btn-next' @click='emit("next")' v-if='next'>
             Next
+        </button>
+        <button type='button' class='btn btn-nexts' @click='emit("publish")' v-if='publish'>
+            Submit
         </button>
     </div>
 </template>
