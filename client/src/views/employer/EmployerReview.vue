@@ -1,7 +1,7 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
+    import MatchCard from '@/components/employer/match/MatchCard.vue';
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
-    import MatchCard from '@/components/employer/review/MatchCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
     
@@ -17,9 +17,7 @@
     const currentProfile = ref({});
     const currentApplication = ref({});    
 
-    onMounted(async () => {
-        // get current card and matches
-
+    const getApplicants = async () => {
         const response = await api({
             url: `/e/review/${ vacancyId }/`,
             method: 'get',
@@ -39,8 +37,16 @@
             currentApplication.value = application;
             currentProfile.value = profile;
         }
+    }
+
+    onMounted(async () => {
+        getApplicants();
     });
 
+    const onUnmatch = async (match) => {
+        matches.value = { };
+        getApplicants();
+    }
 
     const onMatch = (application, nextApplication, nextProfile) => {
         matches.value.push(application);
@@ -79,7 +85,11 @@
             <hr class='slim-hr'/>
 
             <div class='applications'>
-                <MatchCard v-for='match in matches' :key='match.id' :stats='match' />
+                <MatchCard v-for='match in matches' 
+                :key='match.id' 
+                :stats='match'
+                :vacancyName='vacancy.VacancyName'
+                @unmatch='onUnmatch(match)' />
             </div>
         </div>
 

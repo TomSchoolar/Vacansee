@@ -1,23 +1,18 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
     import MatchCard from '@/components/employer/match/MatchCard.vue';
-
     
     import { ref, watch, toRef } from 'vue';
-    
 
-    const emits = defineEmits(["show-application"])
-    const selectedProfile = ref();
-
-    const props = defineProps(['selectedVacancy']);
-
-    const selectedVacancy = ref(0);
-    const selected = toRef(props, 'selectedVacancy');
+    const props  = defineProps(['selectedVacancy', 'selectedVacancyName']);
+    const emits = defineEmits(['show-application', 'update-match-stats'])
 
     const matches = ref([]);
     const numMatches = ref(0);
-
+    const selectedProfile = ref();
+    const selectedVacancy = ref(0);
     const sort = ref('LastNameAsc');
+    const selected = toRef(props, 'selectedVacancy');
 
     const download = () => {
         alert("downloaded!");
@@ -79,8 +74,12 @@
         selectedVacancy.value = newVac;
     }
 
+    const onUnmatch = async () => {
+        updateMatches(selectedVacancy.vacancyId);
+    }
+
     const updateCard = (nextProfile) => {
-        emits("show-application", nextProfile);
+        emits('show-application', nextProfile);
     }
 
     watch(selectedVacancy, updateMatches);
@@ -125,7 +124,12 @@
         <div class='matches'>
             <h3 class='no-matches' v-if='numMatches == 0'>No matches to display. </h3>
             <div class='match' v-else v-for='match in matches' :key='match'>
-                <MatchCard :stats='match' @showApplication='updateCard'/>
+                <MatchCard 
+                    :stats='match'
+                    :vacancyName='selectedVacancyName'
+                    @showApplication='updateCard' 
+                    @unmatch='onUnmatch' 
+                />
             </div>
         </div>
     </section>

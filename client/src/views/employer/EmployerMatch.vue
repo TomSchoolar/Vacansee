@@ -14,26 +14,31 @@
     }
     
     const notifs = ref(2);
-    const selectedVacancy = ref();
-
     const currentProfile = ref();
+    const selectedVacancy = ref();
+    const selectedVacancyName = ref();
 
     const updateVacancyId = (vacancy) => {
         selectedVacancy.value = vacancy.VacancyId;
+        selectedVacancyName.value = vacancy.VacancyName;
     };
+
+    let session = window.localStorage.getItem('session') ?? '{}'
+    const { CompanyName: cn = 'Vacancy Stats' } = JSON.parse(session);
+    const companyName = ref(cn);
 </script>
 
 <template>
     <EmployerNavbar page='matches' :numNotifs='notifs'></EmployerNavbar>
 
     <header class='header'>
-        <h1 class='title'>Strat Security Co. - Matches</h1>
+        <h1 class='title'>{{companyName}} - Matches</h1>
     </header>
 
     <main class='container'>
         <VacanciesColumn @selectVacancy='updateVacancyId' />
 
-        <MatchesColumn  :selectedVacancy=selectedVacancy @show-application='updateCard'/>
+        <MatchesColumn  :selectedVacancy='selectedVacancy' :selectedVacancyName='selectedVacancyName' @show-application='updateCard' />
 
         <section class='profile-column'>
             <div class='card' v-for='profile in currentProfile' :key='profile'>
@@ -44,15 +49,12 @@
 </template>
 
 <style scoped>
-    *:deep(.button:active), *:deep(.button:focus), *:deep(.button:hover) {
-        background-color: var(--slate-focus);
-    }
-
     .card {
         position: relative;
         margin-left : auto; 
         margin-right : auto;
         bottom: 20px;
+        min-width: 350px;
     }
     
     .container {
