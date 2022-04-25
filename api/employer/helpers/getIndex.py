@@ -69,7 +69,4 @@ def checkUserOwnsVacancy(vacancyId, jwt):
 
     vacancy = Vacancy.objects.get(pk = vacancyId, UserId__exact = userId)
     
-    if not vacancy:
-        return False
-    else:
-        return True
+    return vacancy

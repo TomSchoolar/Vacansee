@@ -237,3 +237,67 @@ class indexTestCase(TestCase):
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
+
+class putIndexVacancyTests(TestCase):
+    userId = 6 # Victoria
+    vacancyId = 1007 # Paramedic
+    jwt = createAccessToken(userId)
+    fixtures = ['authentication/fixtures/testseed.json']
+
+    def test_validRequest(self):
+        response = self.client.put(f'/e/vacancy/close/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+
+        self.assertEqual(response.status_code, 200)
+        
+    def test_unauthorisedVacancy(self):
+        invalidVacancy = 1002
+        response = self.client.put(f'/e/vacancy/close/{ invalidVacancy }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+
+        self.assertEqual(response.data['status'], 401)
+        self.assertEqual(response.data['message'], 'You do not have access to that vacancy.')
+
+    def test_expiredJWT(self):
+        jwt = createAccessToken(self.userId, 'now')
+        response = self.client.put(f'/e/vacancy/close/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+
+        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['message'], 'Expired auth token')
+
+    def test_invalidJWT(self):
+        jwt = self.jwt[:-1]
+        response = self.client.put(f'/e/vacancy/close/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+
+        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['message'], 'Invalid auth token')
+
+class deleteIndexVacancyTests(TestCase):
+    userId = 6 # Victoria
+    vacancyId = 1007 # Paramedic
+    jwt = createAccessToken(userId)
+    fixtures = ['authentication/fixtures/testseed.json']
+
+    def test_validRequest(self):
+        response = self.client.delete(f'/e/vacancy/delete/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_unauthorisedVacancy(self):
+        invalidVacancy = 1002
+        response = self.client.delete(f'/e/vacancy/delete/{ invalidVacancy }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+
+        self.assertEqual(response.data['status'], 401)
+        self.assertEqual(response.data['message'], 'You do not have access to that vacancy.')
+
+    def test_expiredJWT(self):
+        jwt = createAccessToken(self.userId, 'now')
+        response = self.client.delete(f'/e/vacancy/delete/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+
+        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['message'], 'Expired auth token')
+
+    def test_invalidJWT(self):
+        jwt = self.jwt[:-1]
+        response = self.client.delete(f'/e/vacancy/delete/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+
+        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['message'], 'Invalid auth token')
