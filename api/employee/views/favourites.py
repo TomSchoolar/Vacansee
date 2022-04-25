@@ -175,7 +175,7 @@ def deleteFavourite(request):
     except KeyError:
         return Response({ 'status': 400, 'message': 'Missing vacancy id from request' }, status=status.HTTP_400_BAD_REQUEST)
     except Favourite.DoesNotExist:
-        return Response({ 'status': 400, 'message': 'That vacancy is not open for applications' }, status=status.HTTP_400_BAD_REQUEST)
+        return Response({ 'status': 401, 'message': 'Unauthorised favourite deletion' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
