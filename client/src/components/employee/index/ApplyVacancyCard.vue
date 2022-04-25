@@ -125,7 +125,7 @@
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
             <button type='button' class='reject' @click='reject(vacancy.VacancyId)'><i class='fas fa-multiply'></i></button>
-            <button class='unfavourite' @click='unfavourite(vacancy.VacancyId)' v-if='favourited == true'><i class='fas fa-star'></i></button>
+            <button class='favourite' @click='unfavourite(vacancy.VacancyId)' v-if='favourited == true'><i class='far fa-star'></i></button>
             <button class='favourite' @click='favourite(vacancy.VacancyId)' v-if="favourited == false"><i class='fas fa-star'></i></button>
             <button class='apply' @click='apply(vacancy.VacancyId)'><i class='fas fa-check'></i></button>
         </div>
