@@ -1,36 +1,56 @@
 <script setup>
-    const { stats } = defineProps(['stats']);
-    const { application = {}, profile = {} } = stats;
-
+    import AreYouSureModal from './AreYouSureModal.vue'
     import api, { apiCatchError } from '@/assets/js/api';
-
-    import { onMounted } from 'vue';
     
+    import { onMounted, ref } from 'vue';
 
-    const emits = defineEmits(["showApplication"])
+    const props = defineProps(['stats', 'vacancyName']);
+    const emit = defineEmits(["showApplication", "unmatch"]);
 
     const details = {};
+    const showModal = ref(false);
+    const { application = {}, profile = {} } = props.stats;
 
     const downloadApplication = () => {
         alert('download application');
     };
 
-    const unmatch = () => {
-        alert('unmatch');
+    const unmatch = async () => {
+        const response = await api({
+            url: `/e/review/${ application.VacancyId }/updatestatus/${ application.ApplicationId }/`,
+            method: 'put',
+            data: {
+                setStatus: "reject"
+            },
+            responseType: 'json'
+        }).catch(apiCatchError);
+
+
+        if(!response) {
+            return false;
+        }
+
+        const { data = {} } = response;
+
+        emit('unmatch');
+
+        return data;
     };
 
     const getDetails = async (options) => {
-
-        const { applicantId } = options;
+        const { uID = application.UserId } = options;
 
         const response = await api({
             method: 'get',
             url: '/e/match/card',
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            responseType: 'json',
             params: {
-                applicantId 
-            },
-            responseType: 'json'
-        }).catch(apiCatchError);
+                'applicantId':uID
+            }
+        }).catch((err) => {
+            console.log(`oops ${ err }`);
+        });
 
         if(!response || !response.data)
             return false;
@@ -50,7 +70,7 @@
     };
 
     onMounted(async () => {
-        const result = getDetails({ applicantId: application.UserId });
+        const result = getDetails({ uID: application.UserId });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -59,7 +79,6 @@
     });
 
 </script>
-
 
 <template>
     <article class='application'>
@@ -87,9 +106,10 @@
         </div>
 
         <div class='application-right'>
-            <button class='application-button application-button-grey' @click='$emit("showApplication",details)' id='show'>Show Application</button>
+            <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show'>Show Application</button>
             <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
-            <button class='application-button application-button-red' @click='unmatch'>Unmatch</button>
+            <button class='application-button application-button-red' @click='showModal = true'>Unmatch</button>
+            <AreYouSureModal v-if='showModal' :profile='profile' :vacancyName='vacancyName' @close-modal='showModal = false' @unmatch='unmatch' />
         </div>
     </article>
     <hr class='slim-hr' />

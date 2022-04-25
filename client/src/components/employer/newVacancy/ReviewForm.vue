@@ -143,7 +143,7 @@
         margin: 20px 0;
     }
 
-    *:deep(.card) {
-        width: 42.5% !important;
+    div:deep(.card) {
+        width: 42.5%;
     }
 </style>
