@@ -7,16 +7,18 @@
     const validate = () => {
         // define schema
         const schema = Joi.object({
-            'fname': Joi.string().alphanum().max(80).required().label('fname'),
-            'lname': Joi.string().alphanum().max(80).required().label('lname'),
-            'pronouns': Joi.string().required().label('pronouns')
+            'FirstName': Joi.string().alphanum().max(80).required().label('FirstName'),
+            'LastName': Joi.string().alphanum().max(80).required().label('LastName'),
+            'Pronouns': Joi.string().required().label('Pronouns'),
+            'PhoneNumber': Joi.string().min(8).max(30).required().label('PhoneNumber'),
         });
 
         // get input data
         const data = {
-            'fname': document.querySelector('input[name="fname"]').value,
-            'lname': document.querySelector('input[name="lname"]').value,
-            'pronouns': document.querySelector('input[name="pronouns"]').value
+            'FirstName': document.querySelector('input[name="FirstName"]').value,
+            'LastName': document.querySelector('input[name="LastName"]').value,
+            'Pronouns': document.querySelector('input[name="Pronouns"]').value,
+            'PhoneNumber': document.querySelector('input[name="PhoneNumber"]').value,
         }
 
         // validate and handle any errors
@@ -30,19 +32,19 @@
 <template>
     <div id ='personalDetails'> 
             <h1> Personal Details </h1> 
-            <p> Let's start off with the simple stuff. Enter your first and last name and your pronouns </p>
-            <form>
-                <label for='fname'>First name:</label><br />
-                <input type='text' id='fname' name='fname'><br />
-                <label for='lname'>Last name:</label><br />
-                <input type='text' id='lname' name='lname'> <br />
-                <label>Pronouns:</label><br />
-                <select id='pronouns' name='pronouns'>
-                    <option value = 'he/him'> He/Him </option>
-                    <option value = 'she/her'> She/Her </option>
-                    <option value = 'they/them'> They/Them </option>
-                </select>
-            </form>
+            <p> Let's start off with the simple stuff. Enter your name, pronouns and phone number</p>
+            <label for='FirstName'>First name:</label><br />
+            <input type='text' id='FirstName' name='FirstName'><br />
+            <label for='LastName'>Last name:</label><br />
+            <input type='text' id='LastName' name='LastName'> <br />
+            <label>Pronouns:</label><br />
+            <select id='Pronouns' name='Pronouns'>
+                <option value = 'he/him'> He/Him </option>
+                <option value = 'she/her'> She/Her </option>
+                <option value = 'they/them'> They/Them </option>
+            </select><br />
+            <label for='PhoneNumber'>Phone number:</label><br />
+            <input type='text' id='PhoneNumber' name='PhoneNumber'><br />
     </div>
 
     <FormButtons :next='true' @next='emit("next")' />
