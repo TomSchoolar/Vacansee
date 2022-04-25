@@ -23,6 +23,7 @@
     const filter = ref('all');
     const modalStats = ref({});
     const applications = ref([]);
+    const numApps = ref(0);
     const sort = ref('dateDesc');
     const displayModal = ref(false);
 
@@ -47,7 +48,7 @@
         if(!response?.data)
             return false;
 
-        const { applications: newApps = [], numPages: ps = 1, pageNum: pn = 1 } = response.data;
+        const { applications: newApps = [], numPages: ps = 1, pageNum: pn = 1, numApps: na = 0 } = response.data;
 
         if(!newApps)
             return false;
@@ -55,6 +56,7 @@
         page.value = pn;
         numPages.value = ps;
         applications.value = newApps;
+        numApps.value = na;
 
         applications.value.forEach((application) => {
             application.formattedDate = dayjs(application.LastUpdated).format("DD/MM/YYYY")
@@ -223,9 +225,14 @@
     <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>
 
     <main class='container'>
+        <EmployeeStatBar :stats='stats' />
+
         <section class='applications-section'>
             <div class='title-bar'>
-                <h1 class='title'>Applications</h1>
+                <div class='title-bar-left'>
+                    <h1 class='title'>Applications</h1>
+                    <p class='showing' v-if='numApps'>Showing {{ (page - 1) * limit + 1 }} to {{ Math.min(page * limit, numApps) }} of {{ numApps }} </p>              
+                </div>
                 <div class='title-bar-right'>
                     <div class='select-group'>
                         <label for='filter' class='select-label select-label-hidden'>filter:</label>
@@ -260,8 +267,6 @@
                 </div>
             </div>
 
-            <EmployeeStatBar :stats='stats' />
-
             <hr />
 
             <MatchModal :display='displayModal' :stats='modalStats' @close='displayModal = false' />
@@ -269,7 +274,7 @@
             <div class='applications' v-for='application in applications' :key='application.id'>
                 <div class='application'>
                     <div class='left'>
-                        <h5 class='title'>{{ application.VacancyName }}</h5>
+                        <h5 class='application-title'>{{ application.VacancyName }}</h5>
                         <h5 class='company'>{{ application.CompanyName }}</h5>
                         <h5 class='status' v-if='application.ApplicationStatus == "MATCHED"'>Matched!</h5>
                         <h5 class='status' v-else-if='application.ApplicationStatus == "REJECTED"'>Rejected</h5>
@@ -398,18 +403,6 @@
         text-align: center;
     }
 
-    .title {
-        font-size: 18px !important;
-        cursor: default;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        text-align: left;
-        margin-right: 30px;
-        width: calc(100% - 230px);
-        font-weight: 500;
-    }
-
     .updated {
         width: 180px;
         text-align: center;
@@ -470,6 +463,15 @@
         color: white;
     }
 
+    .showing {
+        margin-left: 30px;
+        font-size: 14px;
+        color: var(--slate);
+        font-style: italic;
+        position: relative;
+        top: 4px;
+    }
+
     .title, div:deep(.title) {
         margin: 0;
         font-size: 32px;
@@ -485,6 +487,10 @@
         width: 100%;
     }
 
+    .title-bar-left {
+        display: flex;
+    }
+
     .title-bar-right {
         display: flex;
         align-items: center;
@@ -496,6 +502,18 @@
     .title-bar-right select {
         padding: 4px 6px;
         font-family: var(--fonts);
+    }
+
+    .application-title {
+        font-size: 18px;
+        cursor: default;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: left;
+        margin-right: 30px;
+        width: calc(100% - 230px);
+        font-weight: 500;
     }
 
     .applications {
