@@ -1,7 +1,8 @@
-import json
 from copy import copy
+from json import dumps
 from django.test import TestCase
 from employer.models import Vacancy
+from .. import comparisonUtils as comp
 from employer.serializers import VacancySerializer
 from authentication.tests.jwtFuncs import createAccessToken
 
@@ -15,34 +16,16 @@ class newVacancyTestCase(TestCase):
         'VacancyName': 'test vacancy',
         'Salary': '£35,000 pa',
         'Description': 'This is a test vacancy, I need some words to fill this field',
-        'SkillsRequired': json.dumps(['This is a skill', 'Another skill', 'You know what, take another skill']),
-        'ExperienceRequired': json.dumps(['Tester&&1 year', 'Life experience&&18 years', 'fuck knows what else&&1 minute']),
+        'SkillsRequired': dumps(['This is a skill', 'Another skill', 'You know what, take another skill']),
+        'ExperienceRequired': dumps(['Tester&&1 year', 'Life experience&&18 years', 'fuck knows what else&&1 minute']),
         'TimeZone': 0,
-        'Tags': json.dumps([0, 1, 3, 4]),
+        'Tags': dumps([0, 1, 3, 4]),
         'PhoneNumber': '07711 264845',
         'Email': 'orange_you.glad-I@didntsay.banana',
         'Location': 'London'
     }
 
     # GET INDEX TESTS
-
-    def compareLists(self, dbList, testList):
-        for i, dbSkill in enumerate(dbList):
-            testSkill = json.loads(testList)[i]
-            self.assertEquals(testSkill, dbSkill)
-
-
-
-    def compareDicts(self, dbDict, testDict):
-        testDict['VacancyId'] = dbDict['VacancyId']
-        testDict['UserId'] = self.userId
-        testDict['IsOpen'] = True
-        
-        del dbDict['Created']
-
-        return self.assertDictEqual(dbDict, testDict)
-
-
 
     def test_validRequest(self):
         testData = copy(self.vacancyData)
@@ -57,19 +40,19 @@ class newVacancyTestCase(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertLess(initialVacancyCount, finalVacancyCount)
 
-        self.compareLists(savedVacancy['SkillsRequired'], testData['SkillsRequired'])
+        comp.compareLists(self, savedVacancy['SkillsRequired'], testData['SkillsRequired'])
         del savedVacancy['SkillsRequired']
         del testData['SkillsRequired']
 
-        self.compareLists(savedVacancy['ExperienceRequired'], testData['ExperienceRequired'])
+        comp.compareLists(self, savedVacancy['ExperienceRequired'], testData['ExperienceRequired'])
         del savedVacancy['ExperienceRequired']
         del testData['ExperienceRequired']
 
-        self.compareLists(savedVacancy['Tags'], testData['Tags'])
+        comp.compareLists(self, savedVacancy['Tags'], testData['Tags'])
         del savedVacancy['Tags']
         del testData['Tags']
 
-        self.compareDicts(savedVacancy, testData)
+        comp.compareDicts(self, savedVacancy, testData)
 
         savedVacancySet.delete()
 
@@ -91,19 +74,19 @@ class newVacancyTestCase(TestCase):
         
         self.assertLess(initialVacancyCount, finalVacancyCount)
 
-        self.compareLists(savedVacancy['SkillsRequired'], testData['SkillsRequired'])
+        comp.compareLists(self, savedVacancy['SkillsRequired'], testData['SkillsRequired'])
         del savedVacancy['SkillsRequired']
         del testData['SkillsRequired']
 
-        self.compareLists(savedVacancy['ExperienceRequired'], testData['ExperienceRequired'])
+        comp.compareLists(self, savedVacancy['ExperienceRequired'], testData['ExperienceRequired'])
         del savedVacancy['ExperienceRequired']
         del testData['ExperienceRequired']
 
-        self.compareLists(savedVacancy['Tags'], testData['Tags'])
+        comp.compareLists(self, savedVacancy['Tags'], testData['Tags'])
         del savedVacancy['Tags']
         del testData['Tags']
 
-        self.compareDicts(savedVacancy, testData)
+        comp.compareDicts(self, savedVacancy, testData)
 
         savedVacancySet.delete()
 
@@ -111,7 +94,7 @@ class newVacancyTestCase(TestCase):
 
     def test_fieldTooLarge(self):
         testData = copy(self.vacancyData)
-        testData['Tags'] = json.dumps([el for el in range(15)])
+        testData['Tags'] = dumps([el for el in range(15)])
 
         initialVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count()        
         response = self.client.post('/e/vacancy/', testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})

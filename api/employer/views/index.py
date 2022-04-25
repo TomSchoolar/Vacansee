@@ -201,18 +201,14 @@ def editVacancy(request, vacancyId):
         data['SkillsRequired'] = loads(data['SkillsRequired'])
         data['ExperienceRequired'] = loads(data['ExperienceRequired'])
 
-        print(data)
         try:
             updatedVacancy = VacancyForm(data, instance=vacancySet)
             if updatedVacancy.is_valid():
                 updatedVacancy.save()
                 return Response({ 'status': 200 }, status=status.HTTP_200_OK)
             else:
-                print(updatedVacancy.errors)
                 return Response({ 'status': 400, 'message': 'Invalid vacancy data' }, status=status.HTTP_400_BAD_REQUEST)
             
         except Exception as err:
-            import traceback
-            traceback.print_exc()
             print(f'uh oh: { err }')
             return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
