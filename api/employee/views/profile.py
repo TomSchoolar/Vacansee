@@ -25,7 +25,7 @@ def postIndex(request):
         else:
             data = request.data
 
-        data['UserId'] = User.objects.get(pk = 2)
+        data['UserId'] = User.objects.get(pk = jwt['id'])
 
         newProfile = Profile(**data)
         newProfile.full_clean()
