@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import applications, favourites, index, account
+from .views import applications, favourites, index, account, profile
 
 urlpatterns = [
     path('vacancy/', index.getIndex),
@@ -13,5 +13,6 @@ urlpatterns = [
     path('favourites/', favourites.getFavourites),
     path('account/', account.getAccount),
     path('account/update/', account.putAccount),
-    path('account/delete/', account.deleteAccount)
+    path('account/delete/', account.deleteAccount),
+    path('profile/', profile.postIndex)
 ]

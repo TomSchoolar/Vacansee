@@ -1,4 +1,5 @@
 <script setup>
+    import api, { apiCatchError } from '@/assets/js/api';
     import VacancyCard from '@/components/employee/profile/VacancyCard.vue';
     import ContactCard from '@/components/employee/profile/ProfileCard.vue';
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
@@ -9,80 +10,109 @@
     const props = defineProps(['formData']);
     const emit = defineEmits(['back', 'next', 'publish']);
 
-    const tags = [
-        {
-            id: 0,
-            icon: 'fa-solid fa-book'
-        },
-        {
-            id: 1,
-            icon: 'fa-solid fa-code'
-        },
-        {
-            id: 2,
-            icon: 'fa-brands fa-python'
-        },
-        {
-            id: 3,
-            icon: 'fa-solid fa-school'
-        },
-        {
-            id: 4,
-            icon: 'fa-solid fa-briefcase'
-        },
-        {
-            id: 5,
-            icon: 'fa-solid fa-database'
-        },
-    ]
 
     const formDataProp = computed(() => {
         const object = {};
-        object.Tags = [];
 
         if(!props.formData) {
-
+            console.log('um');
         }
 
+        console.log('values: ');
+        console.log(object);
         props.formData.forEach((value, key) =>  {
             object[key] = value;
+            console.log('x');
         });
 
-        parseExpandingList(object, 'SkillsRequired', 1);
-        parseExpandingList(object, 'ExperienceRequired', 2);
-
+        console.log(object);
         return object;
     });
 
-    const parseExpandingList = (inputObj, field, inputsPerItem) => {
-        let array = [];
-        Object.keys(inputObj).forEach((key) => {
-            if(key.split('-')[0] == field) {
-                array.push(inputObj[key]);
-                delete inputObj[key];
-            }
-        });
 
-        if(inputsPerItem > 1) {
-            // more than one input per item, create 2d array
-            array = array.map((el, i, arr) => {
-                if(i % inputsPerItem == 0 && el) {
-                    let subArr = [];
-                    for(let j = 0; j < inputsPerItem; j++) {
-                        subArr.push(arr[i + j]);
-                    }
-                    return subArr;
-                }
-            });
+    const publish = async () => {
+        
+        const data = { ...formDataProp.value };
+
+        //format skills data
+        data.NotableSkills = [data.skill1, data.skill2, data.skill3];
+        delete data['skill1'];
+        delete data['skill2'];
+        delete data['skill3'];
+        console.log(data.NotableSkills);
+
+        //format experience data
+        if (data.position1 != ''){
+            var pos1 = data.position1 + ' (' + data.position1start + '-' + data.position1end + ')';
+            if (data.position2 != ''){
+                var pos2 = data.position2 + ' (' + data.position2start + '-' + data.position2end + ')';
+                if (data.position3 != ''){
+                var pos3 = data.position3 + ' (' + data.position3start + '-' + data.position3end + ')';
+                data.Experience = [pos1,pos2,pos3];
+            }
+            else{
+                data.Experience = [pos1,pos2];
+            }
+            }
+            else{
+                data.Experience = [pos1];
+            }
+        }
+        
+        delete data['position1'];
+        delete data['position1start'];
+        delete data['position1end'];
+        delete data['position2'];
+        delete data['position2start'];
+        delete data['position2end'];
+        delete data['position3'];
+        delete data['position3start'];
+        delete data['position3end'];
+        console.log(data.Experience);
+
+        //format qualification data
+        data.Qualifications = [data.qualification1, data.qualification2, data.qualification3]
+        delete data['qualification1'];
+        delete data['lowgrade1'];
+        delete data['highgrade1'];
+        delete data['number1'];
+        delete data['subject1'];
+        delete data['type1'];
+        delete data['classification1'];
+        delete data['qualification2'];
+        delete data['lowgrade2'];
+        delete data['highgrade2'];
+        delete data['number2'];
+        delete data['subject2'];
+        delete data['type2'];
+        delete data['classification2'];
+        delete data['qualification3'];
+        delete data['lowgrade3'];
+        delete data['highgrade3'];
+        delete data['number3'];
+        delete data['subject3'];
+        delete data['type3'];
+        delete data['classification3'];    
+        console.log(data.Qualifications);
+
+        const response = await api({
+            url: '/profile/',
+            method: 'post',
+            data,
+            contentType: 'json'
+        }).catch(apiCatchError);
+
+        if(response?.data?.status != 200) {
+            return;
         }
 
-        inputObj[field] = array.filter((el) => el ? true : false);
+        emit('next')
+
+        await new Promise(r => setTimeout(r, 1000));
+
+        window.location.href = '/profile/';
     }
 
-    const publish = () => {
-        alert('publish');
-        emit('next')
-    }
 
 </script>
 
@@ -92,8 +122,8 @@
     </FormHeader>
 
     <div class="review-container">
-        <VacancyCard :vacancy='formDataProp' :tags='tags' />
-        <ContactCard :PhoneNumber='formDataProp?.PhoneNumber' :Email='formDataProp?.Email' :TimeZone='formDataProp?.TimeZone' />
+        <VacancyCard :vacancy='formDataProp' />
+        <ContactCard :FirstName='formDataProp?.FirstName' :LastName='formDataProp?.LastName' :Pronouns='formDataProp?.Pronouns' :PhoneNumber='formDataProp?.PhoneNumber' :Email='formDataProp?.Email' :TimeZone='formDataProp?.timezone' />
     </div>
 
     <FormButtons :back='true' :publish='true' @back='emit("back")' @publish='publish()' />
