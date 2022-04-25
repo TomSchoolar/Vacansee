@@ -33,7 +33,8 @@ class getApplicationTests(TestCase):
         expectedData = {
             'applications': pairedApplications,
             'numPages': ceil(numApps / 5),
-            'pageNum': 1
+            'pageNum': 1,
+            'numApps': numApps
         }
 
         self.assertEqual(response.status_code, 200)
@@ -59,7 +60,8 @@ class getApplicationTests(TestCase):
         expectedData = {
             'applications': pairedApplications,
             'numPages': ceil(numApps / 5),
-            'pageNum': 1
+            'pageNum': 1,
+            'numApps': numApps
         }
 
         self.assertEqual(response.status_code, 200)
@@ -70,7 +72,7 @@ class getApplicationTests(TestCase):
         response = self.client.get('/applications/', { 'sort': 'dateAsc', 'count': 5, 'pageNum': 3, 'filter': 'pending' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         applicationSet = Application.objects.filter(UserId__exact = self.userId, ApplicationStatus__in = ['PENDING']).order_by('LastUpdated')[5:10]
-        numApps = Application.objects.filter(UserId__exact = self.userId).count()
+        numApps = Application.objects.filter(UserId__exact = self.userId, ApplicationStatus__in = ['PENDING']).count()
         applications = ApplicationSerializer(applicationSet, many=True).data
 
         pairedApplications = []
@@ -85,7 +87,8 @@ class getApplicationTests(TestCase):
         expectedData = {
             'applications': pairedApplications,
             'numPages': ceil(numApps / 5),
-            'pageNum': 2
+            'pageNum': 2,
+            'numApps': numApps
         }
 
         self.assertEqual(response.status_code, 200)
