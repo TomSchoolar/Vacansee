@@ -92,7 +92,7 @@ def getIndex(request):
     else:
         # sort by regular sort param
         vacanciesSet = Vacancy.objects.filter(
-            UserId__exact=4,
+            UserId__exact = jwt['id'],
             IsOpen__in = filterParam
         ).order_by(sortParam)[skip:limit]
 
