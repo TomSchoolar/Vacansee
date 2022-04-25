@@ -2,15 +2,16 @@
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     import $ from 'jquery';
 
+
     const emit = defineEmits(['next', 'back']);
 
     $(document).ready(function(){
 
-        $('#position-1').on("input", function(){
-            $('#position-2-input').show();
+        $('#position1').on("input", function(){
+            $('#position2-input').show();
         });
-        $('#position-2').on("input", function(){
-            $('#position-3-input').show();
+        $('#position2').on("input", function(){
+            $('#position3-input').show();
         });
     });
 
@@ -18,16 +19,16 @@
     const validate = () => {
         // define schema
         const schema = Joi.object({
-            'position-1': Joi.string().alphanum().max(80).required().label('positions'),
-            'position-1-start': Joi.string().alphanum().max(80).required().label('position-1-start'),
-            'position-1-end': Joi.string().alphanum().max(80).required().label('position-1-end')
+            'position1': Joi.string().alphanum().max(80).required().label('position1'),
+            'position1start': Joi.string().alphanum().max(80).required().label('position1start'),
+            'position1end': Joi.string().alphanum().max(80).required().label('position1end')
         });
 
         // get input data
         const data = {
-            'position-1': document.querySelector('input[name="position-1"]').value,
-            'position-1-start': document.querySelector('input[name="position-1-start"]').value,
-            'position-1-end': document.querySelector('input[name="position-1-end"]').value
+            'position1': document.querySelector('input[name="position1"]').value,
+            'position1start': document.querySelector('input[name="position1start"]').value,
+            'position1end': document.querySelector('input[name="position1end"]').value
         }
 
         // validate and handle any errors
@@ -41,32 +42,32 @@
 <template>
     <h1> Experience </h1> 
     <p> Include up to three of your most relevant or most recent jobs/placements/internships below </p>
-    <form>
-        <label for='positions'>position title:</label><br />
-        <input type='text' id='position-1' name='positions'><br />
-        <label for='position-1-start'>start date:</label>
-        <label for='position-1-end'>end date:</label><br />
-        <input type='date' id='position-1-start' name='position-1-start'> 
-        <input type='date' id='position-1-end' name='position-1-end'> <br />
+    <div id='myform'>
+        <label for='position1'>position title:</label><br />
+        <input type='text' id='position1' name='position1'><br />
+        <label for='position1start'>start date:</label>
+        <label for='position1end'>end date:</label><br />
+        <input type='date' id='position1start' name='position1start'> 
+        <input type='date' id='position1end' name='position1end'> <br />
 
-        <div id='position-2-input' style = 'display:none;'>
-            <label for='positions'>position title:</label><br />
-            <input type='text' id='position-2' name='positions'><br />
-            <label for='position-2-start'>start date:</label>
-            <label for='position-2-end'>end date:</label><br />
-            <input type='date' id='position-2-start' name='position-1-start'> 
-            <input type='date' id='position-2-end' name='position-1-end'> <br />
+        <div id='position2-input' style = 'display:none;'>
+            <label for='position2'>position title:</label><br />
+            <input type='text' id='position2' name='position2'><br />
+            <label for='position2start'>start date:</label>
+            <label for='position2end'>end date:</label><br />
+            <input type='date' id='position2start' name='position2start'> 
+            <input type='date' id='position2end' name='position2end'> <br />
         </div>
 
-        <div id='position-3-input' style = 'display:none;'>
-            <label for='positions'>position title:</label><br />
-            <input type='text' id='position-3' name='positions'><br />
-            <label for='position-3-start'>start date:</label>
-            <label for='position-3-end'>end date:</label><br />
-            <input type='date' id='position-3-start' name='position-1-start'> 
-            <input type='date' id='position-3-end' name='position-1-end'> <br />
+        <div id='position3-input' style = 'display:none;'>
+            <label for='position3'>position title:</label><br />
+            <input type='text' id='position3' name='position3'><br />
+            <label for='position3start'>start date:</label>
+            <label for='position3end'>end date:</label><br />
+            <input type='date' id='position3start' name='position3start'> 
+            <input type='date' id='position3end' name='position3end'> <br />
         </div>
-    </form>
+    </div>
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='emit("next")' />
 </template>
 

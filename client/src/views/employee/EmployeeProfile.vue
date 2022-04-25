@@ -1,4 +1,5 @@
 <script setup>
+    import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
@@ -6,7 +7,6 @@
     
     // form pages
     import PersonalDetailsForm from '@/components/employee/profile/PersonalDetailsForm.vue';
-    import ContactDetailsForm from '@/components/employee/profile/ContactDetailsForm.vue';
     import LocationForm from '@/components/employee/profile/LocationForm.vue';
     import SoftSkillsForm from '@/components/employee/profile/SoftSkillsForm.vue';
     import ExperienceForm from '@/components/employee/profile/ExperienceForm.vue';
@@ -19,6 +19,11 @@
     const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
+
+    let session = window.localStorage.getItem('session') ?? '{}'
+    const { PhoneNumber: phone = false, Email: em = false } = JSON.parse(session);
+    const email = ref(em);
+    const phoneNumber = ref(phone);
 
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
@@ -41,6 +46,8 @@
             // review page, get form data
             const form = document.querySelector('form');
             formData.value = new FormData(form);
+            console.log('formData:');
+            console.log(formData.value);
         }
     }
 
@@ -64,10 +71,7 @@
 
     <form class='form-pane'>
         <div class='form-page-container'>
-            <PersonalDetailsForm @next='changePage(1)' :companyName='companyName' />
-        </div>
-        <div class='form-page-container form-page-container-hidden'>
-            <ContactDetailsForm @next='changePage(1)' @back='changePage(-1)' />
+            <PersonalDetailsForm @next='changePage(1)' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
             <LocationForm @next='changePage(1)' @back='changePage(-1)' />
