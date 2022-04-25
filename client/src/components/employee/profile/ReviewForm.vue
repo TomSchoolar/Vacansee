@@ -1,7 +1,7 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
-    import VacancyCard from '@/components/employee/profile/VacancyCard.vue';
-    import ContactCard from '@/components/employee/profile/ProfileCard.vue';
+    import ProfileCard from '@/components/employee/profile/ProfileCard.vue';
+    import ContactCard from '@/components/employee/profile/ContactCard.vue';
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
 
@@ -9,6 +9,9 @@
 
     const props = defineProps(['formData']);
     const emit = defineEmits(['back', 'next', 'publish']);
+
+    const email = 'email@email.com';
+
 
 
     const formDataProp = computed(() => {
@@ -28,7 +31,6 @@
         console.log(object);
         return object;
     });
-
 
     const publish = async () => {
         
@@ -70,8 +72,61 @@
         delete data['position3end'];
         console.log(data.Experience);
 
+
         //format qualification data
-        data.Qualifications = [data.qualification1, data.qualification2, data.qualification3]
+
+        function formatGCSEsALevels(q, low, high, num) {
+            var qual = num + ' ' + q + ' (' + high + ' - ' + low + ')' ;
+            return qual;   
+        }
+
+        function formatDegree(subject, type, classification) {
+            var qual = type + ' ' + subject + ' (' + classification +')' ;
+            return qual;   
+        }
+
+        if (data.qualification1 != 'null'){
+            if (data.qualification1 == 'gcses' || data.qualification1 == 'alevels' ){
+                var q1 = formatGCSEsALevels(data.qualification1, data.lowgrade1, data.highgrade1, data.number1);
+            }
+            else if ( data.qualification1 == 'degree'){
+                var q1 = formatDegree(data.subject1, data.type1, data.classification1);
+            }
+            else {
+                var q1 = 'other';
+            }
+
+            if (data.qualification2 != 'null'){
+                if (data.qualification2 == 'gcses' || data.qualification2 == 'alevels' ){
+                    var q2 = formatGCSEsALevels(data.qualification2, data.lowgrade2, data.highgrade2, data.number2);
+                }
+                else if ( data.qualification2 == 'degree'){
+                    var q2 = formatDegree(data.subject2, data.type2, data.classification2);
+                }
+                else {
+                    var q2 = 'other';
+                }
+                if (data.qualification3 != 'null'){
+                if (data.qualification3 == 'gcses' || data.qualification3 == 'alevels' ){
+                    var q3 = formatGCSEsALevels(data.qualification3, data.lowgrade3, data.highgrade3, data.number3);
+                }
+                else if ( data.qualification3 == 'degree'){
+                    var q3 = formatDegree(data.subject3, data.type3, data.classification3);
+                }
+                else {
+                    var q3 = 'other';
+                }
+                data.Qualifications = [q1,q2,q3];
+            }
+            else{
+                data.Qualifications = [q1,q2];
+            }
+            }
+            else{
+                data.Qualifications = [q1];
+            }
+        }
+
         delete data['qualification1'];
         delete data['lowgrade1'];
         delete data['highgrade1'];
@@ -92,7 +147,8 @@
         delete data['number3'];
         delete data['subject3'];
         delete data['type3'];
-        delete data['classification3'];    
+        delete data['classification3'];
+        console.log('quals');    
         console.log(data.Qualifications);
 
         const response = await api({
@@ -122,8 +178,9 @@
     </FormHeader>
 
     <div class="review-container">
-        <VacancyCard :vacancy='formDataProp' />
-        <ContactCard :FirstName='formDataProp?.FirstName' :LastName='formDataProp?.LastName' :Pronouns='formDataProp?.Pronouns' :PhoneNumber='formDataProp?.PhoneNumber' :Email='formDataProp?.Email' :TimeZone='formDataProp?.timezone' />
+        
+        <ProfileCard :profile='formDataProp' />
+        <ContactCard :FirstName='formDataProp?.FirstName' :LastName='formDataProp?.LastName' :Pronouns='formDataProp?.Pronouns' :PhoneNumber='formDataProp?.PhoneNumber' :Email=email :TimeZone='formDataProp?.TimeZone' />
     </div>
 
     <FormButtons :back='true' :publish='true' @back='emit("back")' @publish='publish()' />
