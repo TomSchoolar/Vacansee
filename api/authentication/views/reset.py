@@ -18,7 +18,8 @@ def postEmail(request):
         userObj = User.objects.get(Email__exact=body['email'])
     except User.DoesNotExist:
         # if email is unverified, then return 401
-        return Response(data={'status': 401, 'message': 'Unauthorised request.'}, status=status.HTTP_401_UNAUTHORIZED)
+        # set as 200 so the user cannot tell if the email belongs to a user account for security
+        return Response(data={ 'status': 200 }, status=status.HTTP_200_OK)
     except Exception as err:
         return Response(data={'status': 500, 'message': 'Server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -31,6 +32,8 @@ def postEmail(request):
         return Response(status=status.HTTP_200_OK)
     else:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 @api_view(['GET'])
 def getReset(request, token):
@@ -50,6 +53,8 @@ def getReset(request, token):
         return Response(data={'status': 500, 'message': 'Server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(status=status.HTTP_200_OK)
+
+
 
 @api_view(['POST'])
 def postReset(request):

@@ -1,38 +1,36 @@
-<template>
-	<div class='auth-page'>
-		<form @submit.prevent='login' class='auth-page-container'>
-			<p class='auth-page-logo'>Vacansee</p>
-			<input v-model='email' type='email' placeholder='Email' required />
-			<input v-model='password' type='password' placeholder='Password' id='password' required />
-			<label for='password' class='reset-label'><router-link to='/forgot' class='reset-link'>Forgot your password?</router-link></label>
-			<br />
-			<input type='checkbox' id='privacy' name='privacy' required />
-			<label for='privacy'>By checking, you are agreeing to Vacansee's <router-link to='/privacy' class='privacy-policy'>Privacy Policy</router-link>.</label>
-			<button class='submit'>Log In</button>
-		</form>
-	</div>
-</template>
-
 <script setup>
-    import dayjs from 'dayjs';
+    import Joi from 'joi';
     import { ref } from 'vue';
+    import validateForm from '@/assets/js/formValidator';
     import api, { apiCatchError } from '@/assets/js/api';
 
 	const email = ref('');
     const password = ref('');
 
 	const login = async () => {
-        const { data = {} } = await api({
+        const schema = Joi.object({
+            'email': Joi.string().email({ tlds: { allow: false } }).max(254).required(),
+            'password': Joi.string().required()
+        });
+
+        const formData = {
+            email: email.value,
+            password: password.value
+        };
+              
+
+        if(!validateForm(schema, formData)) {
+            return;
+        }
+        
+        const response = await api({
             method: 'post',
             url: '/login/',
             withCredentials: true,
-            data: {
-                email: email.value,
-                password: password.value
-            }
+            data: formData
         }).catch(apiCatchError);
 
-        const { userData: session, accessToken = false, refreshToken = false } = data;
+        const { userData: session, accessToken = false, refreshToken = false } = response?.data ?? {};
 
         if(!session || !accessToken || !refreshToken) {
             alert('uh oh, we encountered an error while logging you in, please try again later')
@@ -51,7 +49,24 @@
 	}
 </script>
 
-<style>
+<template>
+	<div class='auth-page'>
+		<div class='auth-page-container'>
+			<p class='auth-page-logo'>Vacansee</p>
+			<input v-model='email' type='text' name='email' placeholder='Email' />
+			<input v-model='password' type='password' name='password' placeholder='Password' id='password' />
+
+			<button type='button' class='submit' @click='login()'>Log In</button>
+
+            <div class='links'>
+			    <router-link to='/register' class='reset-link'>New user? Register here</router-link>
+			    <router-link to='/forgot' class='reset-link'>Forgot your password?</router-link>
+            </div>
+		</div>
+	</div>
+</template>
+
+<style scoped>
 	label {
 		font-size: 12px;
 		text-align: left;
@@ -73,7 +88,7 @@
 		position: absolute;
 	}
 
-	.auth-page-container input:not(#privacy) {
+	.auth-page-container input {
 		border: 1px solid var(--slate);
 		border-radius: 5px;
 		color: var(--slate);
@@ -81,7 +96,7 @@
 		line-height: 24px;
 		display: block;
 		padding: 5px 10px;
-		margin: 0 0 10px 0;
+		margin: 10px 0 0 0;
 		width: calc(100% - 21px);
 	}
 
@@ -91,7 +106,7 @@
 		font-size: 36px;
 		line-height: 1;
 		text-transform: uppercase;
-		margin: 0 0 25px 0;
+		margin: 0 0 30px 0;
 	}
 
 	.auth-page-container button {
@@ -108,6 +123,17 @@
 		width: 100%;
 	}
 
+    .invalid-input {
+        border: 3px solid var(--red) !important;
+    }
+
+    .links {
+        display: flex;
+        justify-content: space-between;
+        margin: 2px 0 10px 0;
+        padding: 0 5px;
+    }
+
 	.privacy-policy {
 		color: var(--red);
 		text-decoration: none;
@@ -118,19 +144,19 @@
 		color: var(--red-focus);
 	}
 
-	.reset-label {
-		float: right;
-		margin: 2px;
-	}
-
 	.reset-link {
 		color: var(--red);
 		text-decoration: none;
+        font-size: 12px;
 	}
 
 	.reset-link:hover {
 		color: var(--red-focus);
 	}
+
+    .submit {
+        margin: 25px 0 10px 0;
+    }
 
     .submit:active, .submit:focus, .submit:hover {
         background: var(--red-focus);

@@ -1,7 +1,9 @@
 <script setup>
+    import Joi from 'joi';
+    import api, { apiCatchError } from '@/assets/js/api';
+    import validateForm from '@/assets/js/formValidator';
     import DefaultNavbar from '@/components/partials/DefaultNavbar.vue';
 
-    import api, { apiCatchError } from '@/assets/js/api';
     import { ref, onMounted } from 'vue';
 
     const url = window.location.pathname;
@@ -21,10 +23,7 @@
             url: `/reset/${ token }/`,
             method: 'get',
             responseType: 'json'
-        }).catch(apiCatchError => {
-            if (apiCatchError.status == 500)
-                alert('Unauthorised token.');
-        })
+        }).catch(apiCatchError)
 
         if (!response)
             return false;
@@ -35,6 +34,20 @@
     }
 
     const postReset = async () => {
+        const schema = Joi.object({
+            'password': Joi.string().min(8).required(),
+            'confirmPassword': Joi.ref('password')
+        });
+
+        const formData = {
+            password: password.value,
+            confirmPassword: passwordVerify.value
+        };
+
+        if(!validateForm(schema, formData)) {
+            return;
+        }
+
         const response = await api({
             url: '/reset/',
             method: 'post',
@@ -56,17 +69,6 @@
         
     }
 
-    const checkAndResetPassword = () => {
-        alert.value = '';
-
-        if (password.value != passwordVerify.value) {
-            alert.value = 'Passwords must match.';
-            return;
-        }
-
-        postReset();
-    }
-
     onMounted(async () => {
         const result = await getReset({ });
 
@@ -79,20 +81,20 @@
 
 <template>
     <main class='main'>
-        <DefaultNavbar/>
+        <DefaultNavbar />
         <section class='container' v-if='!isSubmitted'>
             <p class='logo'>Reset Password</p>
-            <div id="alert" v-if="alert">{{ alert }}</div>
-            <form @submit.prevent="checkAndResetPassword">
-            <label>
-                New password:
-                <input type="password" v-model="password" required />
-            </label>
-            <label>
-                Re-type new password:
-                <input type="password" v-model="passwordVerify" required />
-            </label>
-            <button type="submit" class='submit'>Reset password</button>
+
+            <form @submit.prevent="postReset">
+                <label>
+                    New password:
+                    <input type="password" name='password' v-model="password" />
+                </label>
+                <label>
+                    Re-type new password:
+                    <input type="password" name='confirmPassword' v-model="passwordVerify" />
+                </label>
+                <button type="submit" class='submit'>Reset password</button>
             </form>
 		</section>
     </main>
@@ -129,6 +131,10 @@
 
     .info {
         text-align: left;
+    }
+
+    .invalid-input {
+        border: 3px solid var(--red) !important;
     }
 
 	.logo {
