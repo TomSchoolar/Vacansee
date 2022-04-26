@@ -25,7 +25,7 @@
 	const isEmployer = false;
 
 	const register = async () => {
-        const { data = {} } = await api({
+        const response = await api({
             method: 'post',
             url: '/register/',
             withCredentials: true,
@@ -36,7 +36,7 @@
             }
         }).catch(apiCatchError);
 
-        const { userData: session, accessToken = false, refreshToken = false } = data;
+        const { userData: session, accessToken = false, refreshToken = false } = response?.data ?? {};
 
         if(!session || !accessToken || !refreshToken) {
             alert('uh oh, we encountered an error while logging you in, please try again later')
