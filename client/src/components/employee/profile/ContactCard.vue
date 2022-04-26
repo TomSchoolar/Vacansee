@@ -5,7 +5,7 @@
 <template>
     <div class="contact-card">
         <div class='personal-info'>
-            <div class='name'> <p class='name'> {{ FirstName }} {{ LastName }} </p> <p class= 'pronouns'> ({{Pronouns}}) </p></div>
+            <div class='name'> <span class='name'> {{ FirstName }} {{ LastName }} </span> <span class= 'pronouns'> ({{Pronouns}}) </span></div>
         </div>
         <div class='contact'>
             <i class="fa-solid fa-phone"></i>
@@ -17,7 +17,7 @@
         </div>
         <div class='contact'>
             <i class="fa-solid fa-clock"></i>
-            {{ TimeZone }} GMT
+            GMT {{ TimeZone }}
         </div>
     </div>
 </template>
@@ -55,11 +55,12 @@
     .name {
         font-size: 25px;
         text-align: left;
-
     }
 
     .pronouns {
         font-size: 12px;
         text-align: left;
+        margin: 0;
+        padding: 0;
     }
 </style>

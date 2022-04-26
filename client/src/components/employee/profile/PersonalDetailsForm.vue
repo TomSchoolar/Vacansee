@@ -1,5 +1,9 @@
 <script setup>
+    import Joi from 'joi';
+    import validateForm from '@/assets/js/formValidator';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
+    import FormText from '@/components/employer/newVacancy/formComponents/FormText.vue';
+    import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
 
     const props = defineProps(['companyName']);
     const emit = defineEmits(['next']);
@@ -7,10 +11,10 @@
     const validate = () => {
         // define schema
         const schema = Joi.object({
-            'FirstName': Joi.string().alphanum().max(80).required().label('FirstName'),
-            'LastName': Joi.string().alphanum().max(80).required().label('LastName'),
-            'Pronouns': Joi.string().required().label('Pronouns'),
-            'PhoneNumber': Joi.string().min(8).max(30).required().label('PhoneNumber'),
+            'FirstName': Joi.string().alphanum().max(50).required().label('first name'),
+            'LastName': Joi.string().alphanum().max(50).required().label('last name'),
+            'Pronouns': Joi.string().max(50).required().label('pronouns'),
+            'PhoneNumber': Joi.string().min(8).max(30).required().label('phone number'),
         });
 
         // get input data
@@ -30,24 +34,16 @@
 </script>
 
 <template>
-    <div id ='personalDetails'> 
-            <h1> Personal Details </h1> 
-            <p> Let's start off with the simple stuff. Enter your name, pronouns and phone number</p>
-            <label for='FirstName'>First name:</label><br />
-            <input type='text' id='FirstName' name='FirstName'><br />
-            <label for='LastName'>Last name:</label><br />
-            <input type='text' id='LastName' name='LastName'> <br />
-            <label>Pronouns:</label><br />
-            <select id='Pronouns' name='Pronouns'>
-                <option value = 'he/him'> He/Him </option>
-                <option value = 'she/her'> She/Her </option>
-                <option value = 'they/them'> They/Them </option>
-            </select><br />
-            <label for='PhoneNumber'>Phone number:</label><br />
-            <input type='text' id='PhoneNumber' name='PhoneNumber'><br />
-    </div>
+    <FormHeader title='Personal Details'>
+        Let's start off with the simple stuff. Enter your name, pronouns and phone number.
+    </FormHeader>
 
-    <FormButtons :next='true' @next='emit("next")' />
+    <FormText type='text' label='first name' name='FirstName' />
+    <FormText type='text' label='last name' name='LastName' />
+    <FormText type='text' label='pronouns' name='Pronouns' />
+    <FormText type='text' label='phone number' name='PhoneNumber' />
+
+    <FormButtons :next='true' @next='validate()' />
 </template>
 
 <style>

@@ -61,7 +61,7 @@
                 <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
-                SoftSkills
+                Soft Skills
             </div>
         </div>
         

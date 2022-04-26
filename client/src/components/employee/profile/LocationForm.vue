@@ -1,35 +1,38 @@
 <script setup>
-    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
-    const emit = defineEmits(['next', 'back']);
+    import Joi from 'joi';
+    import validateForm from '@/assets/js/formValidator';
+    import FormText from '@/components/employer/newVacancy/formComponents/FormText.vue';
+    import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
+    import FormButtons from '@/components/employer/newVacancy/formComponents/FormButtons.vue';      const emit = defineEmits(['next', 'back']);
+    import FormSelect from '@/components/employer/newVacancy/formComponents/FormSelect.vue';
 
     const dropdownOptions = [ ];
 
     for(let i = -11; i < 12; i++) {
-        let symbol = "";
+        let symbol = "+";
 
-        if(i <= 0)
+        if(i < 0)
         {
-            symbol = "+";
+            symbol = "";
         }
 
         dropdownOptions.push({
             value: i,
-            text: "GMT " + symbol + i,
+            text: "GMT" + symbol + i,
         });
     }
-
 
     const validate = () => {
         // define schema
         const schema = Joi.object({
-            'Location': Joi.string().alphanum().max(80).required().label('position title'),
-            'TimeZone': Joi.string().required().label('pronouns')
+            'Location': Joi.string().max(30).required().label('location'),
+            'TimeZone': Joi.string().required().label('timezone')
         });
 
         // get input data
         const data = {
             'Location': document.querySelector('input[name="Location"]').value,
-            'TimeZone': document.querySelector('input[name="TimeZone"]').value
+            'TimeZone': document.querySelector('select[name="TimeZone"]').value
         }
 
         // validate and handle any errors
@@ -40,18 +43,14 @@
 </script>
 
 <template>
-    <h1> Location </h1> 
-    <p> So we can find jobs near you, enter the closest town/city to your home and how far you are willing to travel to work (range). <br />We're also going to need the TimeZone where you live </p>
-    <div id='myform'>
-        <label for='Location'>City/Town:</label><br />
-        <input type='text' id='Location' name='Location'><br />
-        <label for='TimeZone'>TimeZone:</label><br />
-        <select id='TimeZone' name='TimeZone'>
-            <option v-for='option in dropdownOptions' :key='option.value' :value='option.value'>{{ option.text }}</option>
-        </select>
-    </div>
+    <FormHeader title='Location'>
+        So we can find jobs near you, enter the closest town/city to your home. We're also going to need the timezone where you live.
+    </FormHeader>
 
-    <FormButtons :back='true' :next='true' @back='emit("back")' @next='emit("next")' />
+    <FormText type='text' label='location' name='Location' />
+    <FormSelect label='timezone' name='TimeZone' placeholder='select a timezone' :options='dropdownOptions' />
+
+    <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 </template>
 
 <style>
