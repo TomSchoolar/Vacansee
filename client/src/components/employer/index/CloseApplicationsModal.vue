@@ -128,7 +128,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #000000da;
+        background-color: #00000040;
     }
 
     .warning-circle {
