@@ -10,6 +10,7 @@ const landingRoute = {
 
 
 import LogIn from '@/views/auth/LogIn.vue';
+import Forgot from '@/views/auth/Forgot.vue';
 import Reset from '@/views/auth/Reset.vue';
 
 const authRoutes = [
@@ -22,10 +23,18 @@ const authRoutes = [
         }
     },
     {
-        path: '/reset',
+        path: '/forgot',
+        name: 'Forgot',
+        component: Forgot,
+        meta: {
+            middleware: [isNotLoggedIn]
+        }
+    },
+    {
+        path: '/reset/:token',
         name: 'Reset',
         component: Reset,
-        meta: {
+        meta : {
             middleware: [isNotLoggedIn]
         }
     }

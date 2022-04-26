@@ -4,6 +4,12 @@
     import relativeTime from 'dayjs/plugin/relativeTime';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
+    import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
+    import DeleteVacancyModal from '../../components/employer/index/DeleteVacancyModal.vue';
+
+    const showModal = ref(false);
+    const showDeleteModal = ref(false);
+    const currentModalVacancy = ref('');
 
     import { ref, watch, onMounted } from 'vue';
     
@@ -179,13 +185,18 @@
 
     // vacancy button actions
 
-    const closeVacancy = () => {
-        alert('are you sure you want to close this vacancy?');
+    const closeVacancy = async () => {
+        alert('you are about the close the vacancy: '+ currentModalVacancy.value);
     }
 
     const deleteVacancy = () => {
         alert('are you sure you want to delete this vacancy?');
     }
+
+    const updateModalVacancy = async (vacanacyName) => {
+        currentModalVacancy = vacanacyName;
+        showModal = true;
+    } 
 </script>
 
 
@@ -254,12 +265,15 @@
                     <div class='vacancy-right'>
                         <div class='vacancy-decisions'>{{ vacancy.AcceptedApplications }} Accepted / {{ vacancy.RejectedApplications }} Rejected</div>
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
+
                         <div class='vacancy-button-container'>
                             <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
                             <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue'>Review</router-link>
-                            <button class='vacancy-button vacancy-button-red' @click='closeVacancy' v-if='vacancy.IsOpen'>Close</button>
-                            <button class='vacancy-button vacancy-button-red' @click='deleteVacancy' v-else>Delete</button>
+                            <button class='vacancy-button vacancy-button-red' @click='showModal = true; currentModalVacancy = vacancy.VacancyName' v-if='vacancy.IsOpen'>Close</button>
+                            <button class='vacancy-button vacancy-button-red' @click='showDeleteModal = true; currentModalVacancy = vacancy.VacancyName' v-else>Delete</button>
                         </div>
+                        <DeleteVacancyModal v-if='showDeleteModal' :vacancyName='currentModalVacancy' @close-modal='showDeleteModal = false' @deleteVacancy='deleteVacancy' />
+                        <CloseApplicationModal v-if='showModal' :vacancyName='currentModalVacancy' @close-modal='showModal = false' @closeApplications='closeVacancy' />
                     </div>
                 </div>
             </div>

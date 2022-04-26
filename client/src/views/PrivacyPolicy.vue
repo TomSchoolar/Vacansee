@@ -135,7 +135,7 @@
                 If you have any questions about Vacansee’s privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us.
             </p>
             <p class='paragraph'>
-                Email us at inquiries@Vacansee.com
+                Email us at <span class='email'>vacanseeofficial@gmail.com</span>
             </p>
             <h2 class='heading' id='how-to-contact-the-appropriate-authorities'>How to contact the appropriate authorities</h2>
             <p class='paragraph'>
@@ -189,6 +189,10 @@
         flex-direction: column;
         align-items: flex-start;
         text-align: left;
+    }
+
+    .email {
+        color: var(--red);
     }
 
     .paragraph {

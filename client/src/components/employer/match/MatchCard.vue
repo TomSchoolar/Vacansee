@@ -109,7 +109,7 @@
             <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show'>Show Application</button>
             <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
             <button class='application-button application-button-red' @click='showModal = true'>Unmatch</button>
-            <AreYouSureModal v-if='showModal' :profile='profile' :vacancyName='vacancyName' @close-modal='showModal = false' @unmatch='unmatch' />
+            <AreYouSureModal v-if='showModal' :name='profile.FirstName + " " + profile.LastName' :vacancyName='vacancyName' :employer='true' @close-modal='showModal = false' @unmatch='unmatch' />
         </div>
     </article>
     <hr class='slim-hr' />
