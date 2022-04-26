@@ -4,7 +4,7 @@ from ..models import RefreshToken, User
 from ..serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import make_password, check_password
 from ..helpers import jwt as jwtHelper, auth as authHelper
 
 
@@ -65,6 +65,86 @@ def postLogin(request):
     }
 
     return Response(data=responseData, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def postRegister(request):
+    body = request.data
+
+    if(not body or not body['email'] or not body['password']):
+        return Response(data={'code': 400, 'message': 'incomplete form data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        userObj = User.objects.get(Email__exact=body['email'])
+        user = UserSerializer(userObj).data
+        return Response(data={'code': 409, 'message': 'account already exists for given email'}, status=status.HTTP_409_CONFLICT)
+    except User.DoesNotExist:
+        userId = authHelper.generateUserId(body)
+
+        hashedPassword = make_password(body['password'])
+        
+        if not (check_password(body['password'], hashedPassword)):
+            return Response(data={'code': 500, 'message': 'Server error while generating password hash'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        try:
+            newUser = {
+                'UserId': userId,
+                'Email': body['email'],
+                'IsEmployer': body['isEmployer'],
+                'Password': hashedPassword
+            }
+
+            serializer = UserSerializer(data = newUser)
+
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            serializer.save()
+        except:
+            print(f'uh oh: { err }')
+            return Response({ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while finding user account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    try:
+        # get user type specific details
+        if(user['IsEmployer']):
+            extraDetails = authHelper.getEmployerDetails(user['UserId'])
+        else:
+            extraDetails = authHelper.getEmployeeDetails(user['UserId'])
+    except User.DoesNotExist:
+        return Response(data={'code': 400, 'message': 'could not find user details' }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while finding user details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    # remove private fields from user object
+    userData = copy(user)
+    userData = { **userData, **extraDetails }
+    toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
+
+    for key in toRemove:
+        del userData[key]
+
+    # generate auth tokens
+    accessToken = jwtHelper.createAccessToken(user['UserId'])
+    refreshToken = jwtHelper.createRefreshToken(user['UserId'])
+
+    # save refresh token in the db
+    jwtHelper.saveRefreshToken(newJwt = refreshToken)
+
+    # return auth tokens and user data
+    responseData = {
+        'userData': userData,
+        'accessToken': accessToken,
+        'refreshToken': refreshToken,
+    }
+
+    return Response(userData, status=status.HTTP_201_CREATED)
 
 
 
