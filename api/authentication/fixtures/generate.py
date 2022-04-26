@@ -51,7 +51,8 @@ class Fake():
             "model" : "employer.Tag",
             "pk" : 1,
             "fields" : {
-                "TagName" : "Development"
+                "TagName" : "Development",
+                "TagStyle" : "fa-solid fa-database"
             }
         },
 
@@ -59,7 +60,8 @@ class Fake():
             "model" : "employer.Tag",
             "pk" : 2,
             "fields" : {
-                "TagName" : "Coding"
+                "TagName" : "Coding",
+                "TagStyle" : "fa-solid fa-code"
             }
         },
 
@@ -67,7 +69,8 @@ class Fake():
             "model" : "employer.Tag",
             "pk" : 3,
             "fields" : {
-                "TagName" : "Python"
+                "TagName" : "Python",
+                "TagStyle" : "fa-brands fa-python"
             }
         },
 
@@ -75,7 +78,8 @@ class Fake():
             "model" : "employer.Tag",
             "pk" : 4,
             "fields" : {
-                "TagName" : "Entry-Level"
+                "TagName" : "Entry-Level",
+                "TagStyle" : "fa-solid fa-school"
             }
         },
 
@@ -83,7 +87,8 @@ class Fake():
             "model" : "employer.Tag",
             "pk" : 5,
             "fields" : {
-                "TagName" : "Management"
+                "TagName" : "Management",
+                "TagStyle" : "fa-solid fa-briefcase"
             }
         }
     ]

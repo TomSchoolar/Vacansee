@@ -34,5 +34,6 @@ class Vacancy(models.Model):
 class Tag(models.Model):
     TagId = models.AutoField(primary_key=True)
     TagName = models.CharField(max_length=20)
+    TagStyle = models.CharField(max_length=30, default='')
 
 
