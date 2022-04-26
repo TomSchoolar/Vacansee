@@ -20,11 +20,6 @@
     const notifs = ref(2);
     const currentPageNum = ref(0);
 
-    let session = window.localStorage.getItem('session') ?? '{}'
-    const { PhoneNumber: phone = false, Email: em = false } = JSON.parse(session);
-    const email = ref(em);
-    const phoneNumber = ref(phone);
-
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
     });
@@ -60,14 +55,16 @@
     <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar>
 
     
-    <div class= 'container'>
-        <h1 class ='title'> User Profile SetUp </h1>
+    <main class='container'>
+        <div class='header'>
+            <h1 class='title'> Edit User Profile </h1>
+            <hr />
+        </div>
+    </main>
 
-        <nav class='form-progress'>
-            <FormStepper :stepNum='currentPageNum' />
-        </nav>
-
-    </div>
+    <nav class='form-progress'>
+        <FormStepper :stepNum='currentPageNum' />
+    </nav>
 
     <form class='form-pane'>
         <div class='form-page-container'>
@@ -130,10 +127,11 @@
     }
 
     .title {
-        align: left;
-        text-align: left;  
-        margin-top:0; 
-        border-bottom: 1px solid;
+        margin: 0;
+        font-size: 32px;
+        position: relative;
+        left: 5px;
+        font-weight: 400;
     }
     
 </style>
