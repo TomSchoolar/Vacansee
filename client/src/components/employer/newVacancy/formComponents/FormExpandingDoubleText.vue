@@ -99,7 +99,7 @@
                 :class='"input input-time " + `input-${ name }-time`'
                 :id='`${ name }-${ i }`' 
                 :placeholder='secondPlaceholder ? secondPlaceholder : "" '
-                :value='value && value[i-1] && value[i-1].split("&&").length > 1 ? value[i-1].split("&&")[1] : ""' 
+                :value='value && value[i-1] && (value[i-1].split("&&").length > 1 ? (value[i-1].split("&&")[1] == "" ? " " : value[i-1].split("&&")[1]) : "")'
             >
         </div>
     </div>
