@@ -1,13 +1,7 @@
 <script setup>
     import { watch } from 'vue';
-    import { toRef } from 'vue';
     
-    const props = defineProps(['stepNum', 'headings']);
-
-    let notifs = toRef(props, 'headings');
-
-    let name = 'John';
-    document.getElementById('header1').innerHTML = "<div class='label'> Review </div>";
+    const props = defineProps(['stepNum']);
 
     let oldStep = props.stepNum
 
@@ -30,8 +24,6 @@
 
         oldStep = props.stepNum;
     });
-
-    
 </script>
 
 <template>
@@ -41,14 +33,26 @@
             <div class='line-colour'></div>
         </div>
         
+        <div class='form-page'>
+            <div class='circle'>
+                <i class='fa-solid fa-check'></i>
+            </div>
+            <div class='label'>
+                Basic Details
+            </div>
+        </div>
+        
+        <div class='spacer'></div>
         
         <div class='form-page'>
             <div class='circle'>
                 <i class='fa-solid fa-check'></i>
             </div>
-            <span id='header1'> </span>
+            <div class='label'>
+                More Details
+            </div>
         </div>
-
+        
         <div class='spacer'></div>
         
         <div class='form-page'>
@@ -67,7 +71,7 @@
                 <i class='fa-solid fa-check'></i>
             </div>
             <div class='label'>
-                Location
+                Logistics
             </div>
         </div>
         
@@ -78,29 +82,7 @@
                 <i class='fa-solid fa-check'></i>
             </div>
             <div class='label'>
-                Soft Skills
-            </div>
-        </div>
-        
-        <div class='spacer'></div>
-        
-        <div class='form-page'>
-            <div class='circle'>
-                <i class='fa-solid fa-check'></i>
-            </div>
-            <div class='label'>
-                Experience
-            </div>
-        </div>
-
-        <div class='spacer'></div>
-        
-        <div class='form-page'>
-            <div class='circle'>
-                <i class='fa-solid fa-check'></i>
-            </div>
-            <div class='label'>
-                Qualifications
+                Tags
             </div>
         </div>
         

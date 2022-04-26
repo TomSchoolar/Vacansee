@@ -3,8 +3,7 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
-    import FormButtons from '@/components/employer/newVacancy/formComponents/FormButtons.vue';
-    
+        
     // form pages
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
     import MoreDetailsForm from '@/components/employer/newVacancy/MoreDetailsForm.vue';
