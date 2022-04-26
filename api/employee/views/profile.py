@@ -1,19 +1,13 @@
-from copy import copy
-from math import ceil
-from json import loads
 from django.forms import ValidationError
 from rest_framework import status
 from authentication.models import User
-
 from rest_framework.response import Response
 from ..models import Profile
 from rest_framework.decorators import api_view
 from authentication.helpers import jwt as jwtHelper
 
-
-
 @api_view(['POST'])
-def postIndex(request):
+def postProfile(request):
     jwt = jwtHelper.extractJwt(request)
 
     if type(jwt) is not dict:
@@ -35,7 +29,5 @@ def postIndex(request):
     except ValidationError as err:
         return Response({ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
-        import traceback
-        traceback.print_exc()
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
