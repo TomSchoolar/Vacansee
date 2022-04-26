@@ -1,10 +1,10 @@
 <script setup>
     const props = defineProps(['vacancyName']);
-    const emit = defineEmits(['closeApplications', 'close-modal'])
+    const emit = defineEmits(['deleteVacancy', 'close-modal'])
 
     const closeAppliation = () => {
         emit('close-modal');
-        emit('closeApplications');
+        emit('deleteVacancy');
     };
 </script>
 
@@ -16,16 +16,14 @@
             <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
 
             <div class="modal-body">
-                <p class='desc'>You are about to close the job advert for:</p>
+                <p class='desc'>You are about to delete the job advert for:</p>
                 <p class='desc desc-bold'>{{ vacancyName }}</p>
-                <p class='desc'>After closing this advert you will not be able to reopen it and applicants will not be able to apply.</p>
-                <p class='desc'>You will still be able to view the applicants that you have matched with.</p>
-                <p class='desc'>Are you sure you want to do this?</p>
+                <p class='desc'>All matches will be lost. Are you sure you want to do this?</p>
             </div>
 
             <div class="button-row">
                 <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
-                <button class='button button-red' @click='closeAppliation'>Close Application</button>
+                <button class='button button-red' @click='closeAppliation'>Delete advert</button>
             </div>
         </div>
     </div>
