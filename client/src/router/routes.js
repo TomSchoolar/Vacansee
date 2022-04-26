@@ -10,6 +10,7 @@ const landingRoute = {
 
 
 import LogIn from '@/views/auth/LogIn.vue';
+import Register from '@/views/auth/Register.vue';
 import Forgot from '@/views/auth/Forgot.vue';
 import Reset from '@/views/auth/Reset.vue';
 
@@ -18,6 +19,14 @@ const authRoutes = [
         path: '/login',
         name: 'LogIn',
         component: LogIn,
+        meta: {
+            middleware: [isNotLoggedIn]
+        }
+    },
+    {
+        path: '/register',
+        name: 'Register',
+        component: Register,
         meta: {
             middleware: [isNotLoggedIn]
         }
