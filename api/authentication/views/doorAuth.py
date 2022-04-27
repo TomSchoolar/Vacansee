@@ -44,21 +44,24 @@ def postLogin(request):
         print(err)
         return Response(data={'code': 500, 'message': 'Server error while finding user details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    try:
+        # remove private fields from user object
+        userData = copy(user)
+        userData = { **userData, **extraDetails }
+        toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
 
-    # remove private fields from user object
-    userData = copy(user)
-    userData = { **userData, **extraDetails }
-    toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
+        for key in toRemove:
+            del userData[key]
 
-    for key in toRemove:
-        del userData[key]
+        # generate auth tokens
+        accessToken = jwtHelper.createAccessToken(user['UserId'])
+        refreshToken = jwtHelper.createRefreshToken(user['UserId'])
 
-    # generate auth tokens
-    accessToken = jwtHelper.createAccessToken(user['UserId'])
-    refreshToken = jwtHelper.createRefreshToken(user['UserId'])
-
-    # save refresh token in the db
-    jwtHelper.saveRefreshToken(newJwt = refreshToken)
+        # save refresh token in the db
+        jwtHelper.saveRefreshToken(newJwt = refreshToken)
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while generating login data' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # return auth tokens and user data
     responseData = {
@@ -74,13 +77,13 @@ def postLogin(request):
 @api_view(['POST'])
 def postRegister(request):
     body = request.data       
-    print(body)
+
     try:
-        userObj = User.objects.get(Email__exact=body['email'])
+        User.objects.get(Email__exact=body['email'])
 
         return Response(data={'code': 409, 'message': 'account already exists for given email'}, status=status.HTTP_409_CONFLICT)
-    except KeyError:
-        return Response(data={'code': 400, 'message': 'incomplete form data'}, status=status.HTTP_400_BAD_REQUEST)
+    except KeyError as err:
+        return Response(data={'code': 400, 'message': f'incomplete form data: { err }'}, status=status.HTTP_400_BAD_REQUEST)
     except User.DoesNotExist:
         # we expect this, means that the user does not exist
         pass
@@ -101,40 +104,46 @@ def postRegister(request):
             employerDetails.full_clean()
             employerDetails.save()
 
-    except KeyError:
-        if newUser:
-            newUser.delete()
-        return Response(data={'code': 400, 'message': 'incomplete form data'}, status=status.HTTP_400_BAD_REQUEST)
+    except KeyError as err:
+        failure = Response(data={'code': 400, 'message': f'incomplete form data: { err }'}, status=status.HTTP_400_BAD_REQUEST)
     except ValidationError as err:
-        if newUser:
-            newUser.delete()
-        return Response(data={'code': 400, 'message': f'invalid form data: { err }'}, status=status.HTTP_400_BAD_REQUEST)
+        failure = Response(data={'code': 400, 'message': f'invalid form data: { err }'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
-        if newUser:
-            newUser.delete()
         print(err)
-        return Response(data={'code': 500, 'message': 'Server error while creating user account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        failure = Response(data={'code': 500, 'message': 'Server error while creating user account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        if 'failure' in locals():
+            try:
+                if 'newUser' in locals():
+                    newUser.delete()
+            except:
+                pass
 
+            return failure
 
-    # remove private fields from user object
-    
-    userData = copy(user)
-    userData = { **userData }
-    toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
+    try:
+        # remove private fields from user object
+        userData = copy(user)
+        userData = { **userData }
+        toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
 
-    for key in toRemove:
-        del userData[key]
+        for key in toRemove:
+            del userData[key]
 
-    if body['isEmployer']:
-        userData['CompanyName'] = employerDetails.CompanyName
-        userData['PhoneNumber'] = employerDetails.PhoneNumber
+        if body['isEmployer']:
+            userData['CompanyName'] = employerDetails.CompanyName
+            userData['PhoneNumber'] = employerDetails.PhoneNumber
 
-    # generate auth tokens
-    accessToken = jwtHelper.createAccessToken(newUser.UserId)
-    refreshToken = jwtHelper.createRefreshToken(newUser.UserId)
+        # generate auth tokens
+        accessToken = jwtHelper.createAccessToken(newUser.UserId)
+        refreshToken = jwtHelper.createRefreshToken(newUser.UserId)
 
-    # save refresh token in the db
-    jwtHelper.saveRefreshToken(newJwt = refreshToken)
+        # save refresh token in the db
+        jwtHelper.saveRefreshToken(newJwt = refreshToken)
+
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while generating login data' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # return auth tokens and user data
     responseData = {
