@@ -60,6 +60,7 @@
         window.localStorage.setItem('session', JSON.stringify(session))
         window.localStorage.setItem('accessToken', accessToken)
         window.localStorage.setItem('refreshToken', refreshToken)
+        window.localStorage.setItem('newUser', true);
 
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'
