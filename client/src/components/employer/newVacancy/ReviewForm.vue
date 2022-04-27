@@ -7,7 +7,7 @@
 
     import { computed } from 'vue';
 
-    const props = defineProps(['formData']);
+    const props = defineProps(['formData', 'edit']);
     const emit = defineEmits(['back', 'next', 'publish']);
 
     const tags = [
@@ -89,16 +89,20 @@
         delete data['CompanyName'];
         
         data.Tags = data.Tags.map((tag) => parseInt(tag) );
-        data.ExperienceRequired = data.ExperienceRequired.map((exp) => `${ exp[0] }&&${ exp[1] }`);
         data.TimeZone = parseInt(data.TimeZone)
 
         data.Tags = JSON.stringify(data.Tags);
         data.SkillsRequired = JSON.stringify(data.SkillsRequired);
         data.ExperienceRequired = JSON.stringify(data.ExperienceRequired);
+
+        let id;
+        if(props.edit) {
+            id = window.location.pathname.split('/').pop();
+        }
         
         const response = await api({
-            url: '/e/vacancy/',
-            method: 'post',
+            url: (props.edit ? `/e/vacancy/edit/${ id }/` : '/e/vacancy/'),
+            method: (props.edit ? 'put' : 'post'),
             data,
             contentType: 'json'
         }).catch(apiCatchError);

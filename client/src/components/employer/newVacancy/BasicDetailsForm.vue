@@ -5,7 +5,7 @@
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
     import FormButtons from '@/components/employer/newVacancy/formComponents/FormButtons.vue';    
 
-    const props = defineProps(['companyName']);
+    const props = defineProps(['companyName', 'title', 'salary']);
     const emit = defineEmits(['next']);
 
     const validate = () => {
@@ -35,8 +35,8 @@
     </FormHeader>
 
     <FormText type='text' label='company name' name='CompanyName' :value='companyName' :readonly='true' />
-    <FormText type='text' label='position title' name='VacancyName' />
-    <FormText type='text' label='salary/wage' name='Salary' placeholder='e.g. NMW or £30,000 pa or $8/hr' />
+    <FormText type='text' label='position title' name='VacancyName' :value='title' />
+    <FormText type='text' label='salary/wage' name='Salary' placeholder='e.g. NMW or £30,000 pa or $8/hr' :value='salary' />
 
     <FormButtons :next='true' @next='validate()' />
 </template>

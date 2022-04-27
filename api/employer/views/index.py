@@ -1,17 +1,16 @@
-from copy import copy
 from math import ceil
 from json import loads
-from xml.dom import ValidationErr
-from django.forms import ValidationError
+from ..forms import VacancyForm
 from rest_framework import status
 from django.db.models import Count, Q
 from authentication.models import User
+from django.forms import ValidationError
 from ..serializers import VacancySerializer
 from rest_framework.response import Response
 from ..models import EmployerDetails, Vacancy
 from rest_framework.decorators import api_view
 from authentication.helpers import jwt as jwtHelper
-from employer.helpers import getIndex as indexHelper, getReview
+from employer.helpers import getIndex as indexHelper
 
 
 
@@ -160,7 +159,56 @@ def postIndex(request, jwt):
     except ValidationError as err:
         return Response({ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
-        import traceback
-        traceback.print_exc()
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+@api_view(['GET', 'PUT'])
+def editVacancy(request, vacancyId):
+
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    try:
+        vacancySet = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True, UserId__exact = jwt['id'])
+        vacancy = VacancySerializer(vacancySet).data
+
+        
+    except Vacancy.DoesNotExist:
+        return Response({ 'message': 'That vacancy is not available for editing.', 'status': 401 }, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    if request.method == 'GET':
+        # get edit form data
+
+        return Response(vacancy, status=status.HTTP_200_OK)
+
+    else:
+        # PUT: submit edit form
+        if request.data is not dict:
+            data = dict(request.data)
+        else:
+            data = request.data
+
+        data['IsOpen'] = True
+        data['Tags'] = loads(data['Tags'])
+        data['UserId'] = User.objects.get(pk = jwt['id'])
+        data['SkillsRequired'] = loads(data['SkillsRequired'])
+        data['ExperienceRequired'] = loads(data['ExperienceRequired'])
+
+        try:
+            updatedVacancy = VacancyForm(data, instance=vacancySet)
+            if updatedVacancy.is_valid():
+                updatedVacancy.save()
+                return Response({ 'status': 200 }, status=status.HTTP_200_OK)
+            else:
+                return Response({ 'status': 400, 'message': 'Invalid vacancy data' }, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as err:
+            print(f'uh oh: { err }')
+            return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

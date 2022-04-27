@@ -1,5 +1,5 @@
 <script setup>
-    const props = defineProps(['name', 'label', 'multiple', 'options', 'placeholder'])
+    const props = defineProps(['name', 'label', 'multiple', 'options', 'placeholder', 'multipleValue', 'value'])
 </script>
 
 <template>
@@ -13,8 +13,8 @@
             :multiple='(multiple ? multiple : false)'
             :style='(multiple ? "height: 150px;" : "")'
         >
-            <option value='' selected hidden disabled>{{ placeholder }}</option>
-            <option v-for='option in options' :key='option.value' :value='option.value'>{{ option.text }}</option>
+            <option value='' :selected='!props.value ? true : false' hidden disabled>{{ placeholder }}</option>
+            <option v-for='option in options' :key='option.value' :value='option.value' :selected='props.value && ( props.multipleValue && props.value.includes(option.value) || option.value == props.value) ? true : false'>{{ option.text }}</option>
         </select>
     </div>
 </template>
