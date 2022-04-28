@@ -3,8 +3,11 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
+    import TagSearchModal from '@/components/employee/index/TagSearchModal.vue';
 
     import { ref, watch, onMounted, onUpdated } from 'vue';
+
+    const showModal = ref(false);
 
     // vars init
     const tagsLim = 6;
@@ -23,6 +26,27 @@
     const numVacancies = ref(0);
 
     const currentVacancy = ref({});
+
+    const getTags = async () => {
+        console.log("before");
+        const response = await api({
+            method: 'get',
+            url: '/vacancy/tags/',
+            responseType: 'json',
+        }).catch(apiCatchError);
+
+        console.log("after");
+
+        if(!response || !response.data)
+            return false;
+
+        const { data } = response;
+
+        if(!data)
+            return false;
+
+        return true;
+    }
 
     const tags = [
         {
@@ -90,6 +114,9 @@
         numVacancies.value = total;
         vacancies.value = newVacancies;
         currentVacancy.value = vacancies.value[0];
+
+        getTags();
+
         return true;
     }
 
@@ -191,12 +218,15 @@
 
 
             <div class='filter-tags-row'>
-                    <th class='filter-tags-header'> Selected Tags </th>
-                    <div class='filter-tag'>
+                    <button type='button' class='button arrow-btn' @click='showModal = true'>
+                        <th>Select Tags</th>
+                    </button>
+                    <!-- <div class='filter-tag'>
                         <i class='fa-solid fa-book tag'></i> 
-                    </div>
+                    </div> -->
             </div>
 
+            <TagSearchModal v-show='showModal' @close-modal='showModal = false' />
 
             <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>

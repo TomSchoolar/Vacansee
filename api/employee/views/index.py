@@ -3,9 +3,9 @@ from rest_framework import status
 from ..serializers import RejectSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from employer.serializers import VacancySerializer
+from employer.serializers import VacancySerializer, TagSerializer
 from authentication.helpers import jwt as jwtHelper
-from employer.models import EmployerDetails, Vacancy
+from employer.models import EmployerDetails, Vacancy, Tag
 from employee.models import Application, Favourite, Reject
 
 
@@ -190,3 +190,25 @@ def postReject(request):
         return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def getTags(request):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    try:
+        tagSet = Tag.objects.all()
+
+        tagSerializer = TagSerializer(tagSet, many=True)
+        tags = tagSerializer.data
+
+        for tag in tags:
+            print(tag)
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status': 500, 'message': 'Server error fetching vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response("hb", status=status.HTTP_200_OK)

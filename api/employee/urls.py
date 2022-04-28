@@ -7,6 +7,7 @@ urlpatterns = [
     path('vacancy/unfav/', favourites.deleteFavourite),
     path('vacancy/apply/', applications.postApplication),
     path('vacancy/reject/', index.postReject),
+    path('vacancy/tags/', index.getTags),
     path('applications/', applications.getApplications),
     path('applications/stats/', applications.getApplicationStats),
     path('applications/delete/<int:applicationId>/', applications.deleteApplication),
