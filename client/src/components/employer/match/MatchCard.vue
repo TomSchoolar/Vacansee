@@ -11,9 +11,11 @@
     const showModal = ref(false);
     const { application = {}, profile = {} } = props.stats;
 
+    //download button
+    /*
     const downloadApplication = () => {
         alert('download application');
-    };
+    };*/
 
     const unmatch = async () => {
         const response = await api({
@@ -107,7 +109,9 @@
 
         <div class='application-right'>
             <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show'>Show Application</button>
-            <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
+            <!-- download button -->
+            <!-- <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button> -->
+            
             <button class='application-button application-button-red' @click='showModal = true'>Unmatch</button>
             <AreYouSureModal v-if='showModal' :profile='profile' :vacancyName='vacancyName' @close-modal='showModal = false' @unmatch='unmatch' />
         </div>

@@ -59,9 +59,11 @@
         currentApplication.value = nextApplication;
     }
 
+    //download button
+    /*
     const download_button = () => {
         alert('downloading all applications');
-    }
+    }*/
 </script>
 
 
@@ -74,7 +76,9 @@
             <div class='col-header'> 
                 <h3 class='col-title'>Matches ({{ matches.length }})</h3>
                 <div class='header-right'>
-                    <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button>
+                    <!-- download button -->
+                    <!-- <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button> -->
+                    
                     <div class='search-group'>
                         <i class="fas fa-search search-icon"></i>
                         <input class='search' placeholder='search' type='text'> 
