@@ -1,5 +1,8 @@
 <script setup>
+    import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
+    import validateForm from '@/assets/js/formValidator';
+    
     import { ref } from 'vue';
 
 	const email = ref('');
@@ -10,25 +13,34 @@
     };
 
 	const postForgot = async () => {
+        const schema = Joi.object({
+            'email': Joi.string().email({ tlds: { allow: false } }).max(254).required()
+        });
+
+        const formData = {
+            email: email.value,
+        }; 
+
+        if(!validateForm(schema, formData)) {
+            return;
+        }
+
         const response = await api({
             url: '/forgot/',
             method: 'post',
             withCredentials: true,
-			data: {
-				'email': email.value
-			},
+			data: formData,
             responseType: 'json'
         }).catch(apiCatchError)
 
-        if (!response)
-            return false;
+        const data = response?.data ?? false;
 
-        const { data = {} } = response;
+        if(!data)
+            return;
 
-		submit()
+		submit();
 
-		return data
-        
+		return data;
     }
 </script>
 
@@ -38,15 +50,15 @@
 			<p class='logo'>Vacansee</p>
             <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to a reset form</p>
 			<form @submit.prevent='postForgot'>
-			<input v-model='email' type='email' placeholder='Email' id='email' required />
-			<button class='submit'>Submit</button>
+			    <input v-model='email' type='text' name='email' placeholder='Email' id='email' />
+			    <button class='submit'>Submit</button>
 			</form>
             <router-link to='/login' class='return-link'>Return to log in page</router-link>
 		</section>
         <section class='container' v-if='isSubmitted'>
         	<p class='logo'>Vacansee</p>
             <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to a reset form</p>
-			<div class='submitted-info'><p>You have been sent a password reset form. Please check your email inbox.</p></div>
+			<div class='submitted-info'><p>You have been sent an email if an account with the provided email was found. Please check your email inbox.</p></div>
             <router-link to='/login' class='return-link'>Return to log in page</router-link>
         </section>
     </main>
@@ -76,13 +88,21 @@
 		line-height: 24px;
 		display: block;
 		padding: 5px 10px;
-		margin: 0 0 10px 0;
+		margin: 10px 0 0 0;
 		width: calc(100% - 21px);
 	}
 
     .info {
         text-align: left;
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 22px;
     }
+
+    .invalid-input {
+        border: 3px solid var(--red) !important;
+    }
+
 
 	.logo {
 		color: var(--blue);
@@ -98,6 +118,7 @@
         margin: 10px;
         color: var(--red);
         text-decoration: none;
+        font-size: 12px;
     }
 
     .return-link:hover {
@@ -116,6 +137,7 @@
 		line-height: 24px;
 		padding: 5px 0;
 		width: 100%;
+        margin: 25px 0 10px 0;
 	}
 
     .submit:active, .submit:focus, .submit:hover {

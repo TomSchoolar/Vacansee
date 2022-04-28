@@ -51,8 +51,7 @@ class postEmailTests(TestCase):
         invalidEmail = 'test@test.com'
         response = self.client.post(f'/forgot/', data={'email': invalidEmail})
 
-        self.assertEqual(response.data['status'], 401)
-        self.assertEqual(response.data['message'], 'Unauthorised request.')
+        self.assertEqual(response.data['status'], 200)
 
 class getResetTests(TestCase):
 

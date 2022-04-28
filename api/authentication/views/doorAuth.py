@@ -2,10 +2,13 @@ from copy import copy
 from rest_framework import status
 from ..models import RefreshToken, User
 from ..serializers import UserSerializer
+from employer.models import EmployerDetails
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.contrib.auth.hashers import check_password
+from django.core.exceptions import ValidationError
 from ..helpers import jwt as jwtHelper, auth as authHelper
+from django.contrib.auth.hashers import make_password, check_password
+
 
 
 @api_view(['POST'])
@@ -41,21 +44,24 @@ def postLogin(request):
         print(err)
         return Response(data={'code': 500, 'message': 'Server error while finding user details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    try:
+        # remove private fields from user object
+        userData = copy(user)
+        userData = { **userData, **extraDetails }
+        toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
 
-    # remove private fields from user object
-    userData = copy(user)
-    userData = { **userData, **extraDetails }
-    toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
+        for key in toRemove:
+            del userData[key]
 
-    for key in toRemove:
-        del userData[key]
+        # generate auth tokens
+        accessToken = jwtHelper.createAccessToken(user['UserId'])
+        refreshToken = jwtHelper.createRefreshToken(user['UserId'])
 
-    # generate auth tokens
-    accessToken = jwtHelper.createAccessToken(user['UserId'])
-    refreshToken = jwtHelper.createRefreshToken(user['UserId'])
-
-    # save refresh token in the db
-    jwtHelper.saveRefreshToken(newJwt = refreshToken)
+        # save refresh token in the db
+        jwtHelper.saveRefreshToken(newJwt = refreshToken)
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while generating login data' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # return auth tokens and user data
     responseData = {
@@ -65,6 +71,88 @@ def postLogin(request):
     }
 
     return Response(data=responseData, status=status.HTTP_200_OK)
+
+
+
+@api_view(['POST'])
+def postRegister(request):
+    body = request.data       
+
+    try:
+        User.objects.get(Email__exact=body['email'])
+
+        return Response(data={'code': 409, 'message': 'account already exists for given email'}, status=status.HTTP_409_CONFLICT)
+    except KeyError as err:
+        return Response(data={'code': 400, 'message': f'incomplete form data: { err }'}, status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+        # we expect this, means that the user does not exist
+        pass
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while finding user account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        newUser = User(Email = body['email'], Password = make_password(body['password']), IsEmployer = body['isEmployer'])
+
+        newUser.full_clean()
+        newUser.save()
+
+        user = UserSerializer(newUser).data
+        
+        if body['isEmployer']:
+            employerDetails = EmployerDetails(UserId = newUser, CompanyName = body['companyName'], PhoneNumber = body['phoneNumber'])
+            employerDetails.full_clean()
+            employerDetails.save()
+
+    except KeyError as err:
+        failure = Response(data={'code': 400, 'message': f'incomplete form data: { err }'}, status=status.HTTP_400_BAD_REQUEST)
+    except ValidationError as err:
+        failure = Response(data={'code': 400, 'message': f'invalid form data: { err }'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as err:
+        print(err)
+        failure = Response(data={'code': 500, 'message': 'Server error while creating user account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    finally:
+        if 'failure' in locals():
+            try:
+                if 'newUser' in locals():
+                    newUser.delete()
+            except:
+                pass
+
+            return failure
+
+    try:
+        # remove private fields from user object
+        userData = copy(user)
+        userData = { **userData }
+        toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
+
+        for key in toRemove:
+            del userData[key]
+
+        if body['isEmployer']:
+            userData['CompanyName'] = employerDetails.CompanyName
+            userData['PhoneNumber'] = employerDetails.PhoneNumber
+
+        # generate auth tokens
+        accessToken = jwtHelper.createAccessToken(newUser.UserId)
+        refreshToken = jwtHelper.createRefreshToken(newUser.UserId)
+
+        # save refresh token in the db
+        jwtHelper.saveRefreshToken(newJwt = refreshToken)
+
+    except Exception as err:
+        print(err)
+        return Response(data={'code': 500, 'message': 'Server error while generating login data' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # return auth tokens and user data
+    responseData = {
+        'userData': userData,
+        'accessToken': accessToken,
+        'refreshToken': refreshToken,
+    }
+
+    return Response(responseData, status=status.HTTP_201_CREATED)
 
 
 
