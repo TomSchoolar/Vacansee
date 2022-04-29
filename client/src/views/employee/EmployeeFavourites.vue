@@ -9,7 +9,7 @@
     // vars init
     const tagsLim = 6;
     const extraTags = '';
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const vacancies = ref([]);
 
     // dropdown values
@@ -145,7 +145,8 @@
 </script>
 
 <template>
-    <EmployeeNavbar page='favourites' :numNotifs='notifs'></EmployeeNavbar>
+    <!-- <EmployeeNavbar page='favourites' :numNotifs='notifs'></EmployeeNavbar> -->
+    <EmployeeNavbar page='favourites' ></EmployeeNavbar>
 
     <div class='container'>
         <div class='main'>

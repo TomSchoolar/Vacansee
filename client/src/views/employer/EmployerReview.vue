@@ -69,7 +69,8 @@
 
 
 <template>
-    <EmployerNavbar :numNotifs='notifs'></EmployerNavbar>
+    <!-- <EmployerNavbar :numNotifs='notifs'></EmployerNavbar> -->
+    <EmployerNavbar ></EmployerNavbar>
 
     <div class='container'>
         <div class='col col-left'>

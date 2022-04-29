@@ -18,7 +18,7 @@
 
     const page = ref(1);
     const limit = ref(5);
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const numPages = ref(1);
     const filter = ref('all');
     const modalStats = ref({});
@@ -220,7 +220,8 @@
 
 
 <template>
-    <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>
+    <!-- <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>-->
+    <EmployeeNavbar page='applications' ></EmployeeNavbar>
 
     <main class='container'>
         <section class='applications-section'>
@@ -291,8 +292,8 @@
         </section>
     </main>
 
-    <button @click='notifs++'>Add notification</button>
-    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
+    <!-- <button @click='notifs++'>Add notification</button>
+    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>-->
 
 </template>
 

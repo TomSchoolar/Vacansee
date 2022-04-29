@@ -17,7 +17,7 @@
 
     let pages;
     const formData = ref([]);
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const currentPageNum = ref(0);
 
     // get company name
@@ -60,7 +60,8 @@
 </script>
 
 <template>
-    <EmployerNavbar page='newVacancy' :numNotifs='notifs' />
+    <!-- <EmployerNavbar page='newVacancy' :numNotifs='notifs' /> -->
+    <EmployerNavbar page='newVacancy' />
 
     <main class='container'>
         <div class='header'>

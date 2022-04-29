@@ -18,7 +18,7 @@
         rejectedApplications: '...'
     });
 
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const vacancies = ref(null);
 
     // dropdown values
@@ -191,7 +191,8 @@
 
 
 <template>
-    <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
+<!-- <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar> -->
+    <EmployerNavbar page='home' ></EmployerNavbar>
 
     <main class='container'>
         <EmployerStatBar :stats='stats' />
@@ -266,8 +267,8 @@
         </section>
     </main>
 
-    <button @click='notifs++'>Add notification</button>
-    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
+    <!-- <button @click='notifs++'>Add notification</button>
+    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>-->
 
 </template>
 

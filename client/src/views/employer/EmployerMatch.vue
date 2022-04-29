@@ -13,7 +13,7 @@
         currentProfile.value = nextProfile.value;
     }
     
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const currentProfile = ref();
     const selectedVacancy = ref();
     const selectedVacancyName = ref();
@@ -29,7 +29,8 @@
 </script>
 
 <template>
-    <EmployerNavbar page='matches' :numNotifs='notifs'></EmployerNavbar>
+    <!-- <EmployerNavbar page='matches' :numNotifs='notifs'></EmployerNavbar> -->
+    <EmployerNavbar page='matches' ></EmployerNavbar>
 
     <header class='header'>
         <h1 class='title'>{{companyName}} - Matches</h1>
