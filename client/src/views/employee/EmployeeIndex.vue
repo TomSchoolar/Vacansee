@@ -4,7 +4,7 @@
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
 
-    import { ref, watch, onMounted, onUpdated } from 'vue';
+    import { computed, onMounted, ref, watch } from 'vue';
 
     // vars init
     const tagsLim = 6;
@@ -13,9 +13,15 @@
     const vacancies = ref([]);
 
     // dropdown values
-        const limit = ref(3);
+    const emptyCards = ref(0);
+    const cardsPerRow = ref(1);
     const filter = ref('active');
     const sort = ref('dateDesc');
+    const limitMultiplier = ref(1);
+
+    const limit = computed(() => {
+        return limitMultiplier.value * cardsPerRow.value;
+    });
 
     // pagination
     const page = ref(1);
@@ -55,7 +61,7 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = 3, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
 
         const response = await api({
             method: 'get',
@@ -69,32 +75,39 @@
             }
         }).catch(apiCatchError);
 
-        if(!response || !response.data)
+        if(!response?.data)
             return false;
 
-        const { data } = response;
-
-        if(!data)
-            return false;
 
         const { 
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
             numVacancies: total = 0,
-        } = data;
+        } = response.data;
 
 
-        while((page.value - 1) * limit.value >= total) page.value--;
+        while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
-        numPages.value = pages;
+        console.log(newVacancies)
+        console.log(pages)
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        currentVacancy.value = vacancies.value[0];
+        currentVacancy.value = vacancies.value[0] ?? {};
+
+        emptyCards.value = limit.value - vacancies.value.length;
+
         return true;
     }
 
     // vacancy api request
     onMounted(async () => {
+        const resizeFunc = () => {
+            cardsPerRow.value = Math.floor(document.querySelector('.vacancy-container').offsetWidth / 449);
+        }
+
+        resizeFunc();
+        window.addEventListener("resize", resizeFunc);  
+
         await getVacancies({ });
     });
 
@@ -132,10 +145,7 @@
 
     watch(limit, async (newLimit) => {
         // change number of vacancies per page
-        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
-
-        if(page.value < 0)
-            page.value = 0;
+        while((page.value - 1) * limit.value >= numVacancies.value && pageNum > 1) page.value--;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
@@ -171,11 +181,11 @@
 
 
             <div class='select-group'>
-                <select v-model='limit' aria-label='set page size' id='limit'>
-                    <option value=3 selected>3 per page</option>
-                    <option value=6>6 per page</option>
-                    <option value=9>9 per page</option>
-                    <option value=12>12 per page</option>
+                <select v-model='limitMultiplier' aria-label='set page size' id='limit'>
+                    <option value='1'>{{ cardsPerRow }} per page</option>
+                    <option value='2'>{{ cardsPerRow * 2 }} per page</option>
+                    <option value='3'>{{ cardsPerRow * 3 }} per page</option>
+                    <option value='4'>{{ cardsPerRow * 4 }} per page</option>
                 </select>
             </div>
 
@@ -197,10 +207,10 @@
                     </div>
             </div>
 
-
             <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>
                 <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
+                <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
                     
 
@@ -277,6 +287,11 @@
         background-color:#D3D3D3;
     }
 
+    .card-placeholder {
+        width: 449px;
+        height: 1px;
+    }
+
     .container {
         display: flex;
         justify-content: center;
@@ -304,7 +319,8 @@
         top: 5px;
         margin-bottom: 5px;
         padding: 7px 20px;
-        border-radius: 15px;
+        border-radius: 7px;
+        margin: 10px 0 25px 0;
     }
 
     .left {
@@ -340,6 +356,7 @@
 
     .search-group {
         position: relative;
+        bottom: 2px;
     }
 
     .select-group {
@@ -359,11 +376,15 @@
         border-bottom: 1px solid;
     }
 
-    .vacancy-container {
-        width: 100%; 
-        text-align: center; 
+    .vacancy-container { 
         display: flex; 
-        justify-content: space-between; 
+        flex-direction: row;
+        justify-content: center;
         flex-wrap: wrap;
+        padding-left: 25px;
+    }
+
+    .vacancy-container:deep(.card) {
+        margin: 12px 25px 12px 0;
     }
 </style>

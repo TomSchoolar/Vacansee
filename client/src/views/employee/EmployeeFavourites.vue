@@ -3,7 +3,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
     
-    import { computed, ref, watch, onMounted } from 'vue';
+    import { computed, onMounted, ref, watch } from 'vue';
 
 
     // vars init
@@ -20,7 +20,7 @@
 
     const limit = computed(() => {
         return limitMultiplier.value * cardsPerRow.value;
-    })
+    });
 
     // pagination
     const page = ref(1);
@@ -94,8 +94,7 @@
         vacancies.value = newVacancies;
 
         emptyCards.value = limit.value - vacancies.value.length;
-        console.log(limit.value)
-        console.log(vacancies.value.length)
+
         return true;
     }
 
@@ -354,13 +353,4 @@
         justify-content: center;
         flex-wrap: wrap;
     }
-
-    /* .vacancy-inner-container {
-        margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        padding-left: 25px;
-        align-self: center
-    } */
 </style>
