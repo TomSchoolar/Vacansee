@@ -296,8 +296,8 @@
                         <div class='vacancy-button-container'>
                             <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
                             <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue'>Review</router-link>
-                            <button class='vacancy-button vacancy-button-red' @click='showModal = true; currentModalVacancy = vacancy.VacancyName' v-if='vacancy.IsOpen'>Close</button>
-                            <button class='vacancy-button vacancy-button-red' @click='showDeleteModal = true; currentModalVacancy = vacancy.VacancyName' v-else>Delete</button>
+                            <button class='vacancy-button vacancy-button-red' @click='showModal = true; currentModalVacancy = vacancy.VacancyName; selectedVacancy = vacancy.VacancyId' v-if='vacancy.IsOpen'>Close</button>
+                            <button class='vacancy-button vacancy-button-red' @click='showDeleteModal = true; currentModalVacancy = vacancy.VacancyName; selectedVacancy = vacancy.VacancyId' v-else>Delete</button>
                         </div>
                         <DeleteVacancyModal v-if='showDeleteModal' :vacancyName='currentModalVacancy' @close-modal='showDeleteModal = false' @deleteVacancy='deleteVacancy' />
                         <CloseApplicationModal v-if='showModal' :vacancyName='currentModalVacancy' @close-modal='showModal = false' @closeApplications='closeVacancy' />
