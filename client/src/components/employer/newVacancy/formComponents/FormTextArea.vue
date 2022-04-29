@@ -2,11 +2,11 @@
     import { ref } from 'vue';
 
     const props = defineProps(['name', 'label', 'placeholder', 'value', 'rows'])
-    const areaValue = ref(props.value);
 </script>
 
 <template>
     <div class='form-group'>
+        
         <label :for='name' class='label'>{{ label }}:</label>
         <textarea 
             :name='name' 
@@ -14,8 +14,7 @@
             :id='name' 
             :placeholder='placeholder ? placeholder : "" ' 
             :rows='rows ? rows : 5'
-            v-model='areaValue' 
-        ></textarea>
+        >{{ value }}</textarea>
     </div>
 </template>
 

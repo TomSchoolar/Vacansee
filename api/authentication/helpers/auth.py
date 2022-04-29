@@ -1,5 +1,7 @@
 from employee.models import Profile
 from employer.models import EmployerDetails
+from random import randint
+from ..models import User
 
 
 def getEmployeeDetails(userId):
@@ -13,4 +15,3 @@ def getEmployerDetails(userId):
         'CompanyName': details.CompanyName,
         'PhoneNumber': details.PhoneNumber
     }
-

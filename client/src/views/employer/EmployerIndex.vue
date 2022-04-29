@@ -5,6 +5,12 @@
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
     import IndexModal from '@/components/employer/index/IndexModal.vue';
+    import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
+    import DeleteVacancyModal from '../../components/employer/index/DeleteVacancyModal.vue';
+
+    const showModal = ref(false);
+    const showDeleteModal = ref(false);
+    const currentModalVacancy = ref('');
 
     import { ref, watch, onMounted } from 'vue';
     
@@ -226,6 +232,11 @@
 		displayModal.value = false;
         window.location.reload();
     }
+
+    const updateModalVacancy = async (vacanacyName) => {
+        currentModalVacancy = vacanacyName;
+        showModal = true;
+    } 
 </script>
 
 
@@ -285,7 +296,10 @@
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>No vacancies to display</h3>
                 <div class='vacancy' v-for='vacancy in vacancies' :key='vacancy.id'>
                     <div class='vacancy-left'>
-                        <h5 class='vacancy-title' :title='vacancy.title'>{{ vacancy.VacancyName }}</h5>
+                        <h5 class='vacancy-title' :title='vacancy.title'>
+                            <span v-if='!vacancy.IsOpen' class='vacancy-closed'>(closed)</span>
+                            {{ vacancy.VacancyName }}
+                        </h5>
                         <h5 class='vacancy-new' v-if='vacancy.NewApplications'>{{ vacancy.NewApplications }} New Applications!</h5>
                         <p class='vacancy-new' v-else>No New Applications</p>
                     </div>
@@ -296,6 +310,15 @@
                         <button class='vacancy-button vacancy-button-red' @click='showDeletion(vacancy.VacancyId)' v-else>Delete</button>
                         <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
                         <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
+
+                        <div class='vacancy-button-container'>
+                            <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
+                            <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue'>Review</router-link>
+                            <button class='vacancy-button vacancy-button-red' @click='showModal = true; currentModalVacancy = vacancy.VacancyName' v-if='vacancy.IsOpen'>Close</button>
+                            <button class='vacancy-button vacancy-button-red' @click='showDeleteModal = true; currentModalVacancy = vacancy.VacancyName' v-else>Delete</button>
+                        </div>
+                        <DeleteVacancyModal v-if='showDeleteModal' :vacancyName='currentModalVacancy' @close-modal='showDeleteModal = false' @deleteVacancy='deleteVacancy' />
+                        <CloseApplicationModal v-if='showModal' :vacancyName='currentModalVacancy' @close-modal='showModal = false' @closeApplications='closeVacancy' />
                     </div>
                 </div>
             </div>
@@ -442,7 +465,7 @@
         border: 2.2px solid #333;
         width: 150px;
         height: 32px;
-        margin-left: 15px;
+        margin-left: 10px;
         font-size: 13px;
         text-decoration: none;
         display: flex;
@@ -458,7 +481,14 @@
     .vacancy-button-blue:hover, .vacancy-button-blue:focus, .vacancy-button-blue:active {
         background: var(--blue-focus);
         cursor: pointer;
-  } 
+    } 
+
+    .vacancy-button-container {
+        display: flex;
+        flex-direction: row;
+        width: 290px;
+        justify-content: space-between;
+    }
 
     .vacancy-button-grey {
         background: var(--slate);
@@ -477,6 +507,10 @@
         background: var(--red-focus);
         cursor: pointer;
     } 
+
+    .vacancy-closed {
+        font-weight: bold;
+    }
 
     .vacancy-decisions {
         width: 250px;

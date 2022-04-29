@@ -164,7 +164,8 @@
         "model" : "employer.Tag",
         "pk" : 1,
         "fields" : {
-            "TagName" : "Development"
+            "TagName" : "Development",
+            "TagStyle" : "fa-solid fa-database"
         }
     },
 
@@ -172,7 +173,8 @@
         "model" : "employer.Tag",
         "pk" : 2,
         "fields" : {
-            "TagName" : "Coding"
+            "TagName" : "Coding",
+            "TagStyle" : "fa-solid fa-code"
         }
     },
 
@@ -180,7 +182,8 @@
         "model" : "employer.Tag",
         "pk" : 3,
         "fields" : {
-            "TagName" : "Python"
+            "TagName" : "Construction",
+            "TagStyle" : "fa-solid fa-helmet-safety"
         }
     },
 
@@ -188,7 +191,8 @@
         "model" : "employer.Tag",
         "pk" : 4,
         "fields" : {
-            "TagName" : "Entry-Level"
+            "TagName" : "Entry-Level",
+            "TagStyle" : "fa-solid fa-school"
         }
     },
 
@@ -196,7 +200,143 @@
         "model" : "employer.Tag",
         "pk" : 5,
         "fields" : {
-            "TagName" : "Management"
+            "TagName" : "Management",
+            "TagStyle" : "fa-solid fa-briefcase"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 6,
+        "fields" : {
+            "TagName" : "Customer Service",
+            "TagStyle" : "fa-solid fa-phone"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 7,
+        "fields" : {
+            "TagName" : "Education",
+            "TagStyle" : "fa-solid fa-person-chalkboard"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 8,
+        "fields" : {
+            "TagName" : "Retail",
+            "TagStyle" : "fa-solid fa-cart-shopping"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 9,
+        "fields" : {
+            "TagName" : "Catering",
+            "TagStyle" : "fa-solid fa-utensils"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 10,
+        "fields" : {
+            "TagName" : "Medicine",
+            "TagStyle" : "fa-solid fa-stethoscope"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 11,
+        "fields" : {
+            "TagName" : "Engineering",
+            "TagStyle" : "fa-solid fa-wrench"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 12,
+        "fields" : {
+            "TagName" : "Law",
+            "TagStyle" : "fa-solid fa-scale-balanced"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 13,
+        "fields" : {
+            "TagName" : "Television",
+            "TagStyle" : "fa-solid fa-tv"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 14,
+        "fields" : {
+            "TagName" : "Radio",
+            "TagStyle" : "fa-solid fa-radio"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 15,
+        "fields" : {
+            "TagName" : "Hairdressing",
+            "TagStyle" : "fa-solid fa-scissors"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 16,
+        "fields" : {
+            "TagName" : "Research",
+            "TagStyle" : "fa-solid fa-book-bookmark"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 17,
+        "fields" : {
+            "TagName" : "IT",
+            "TagStyle" : "fa-solid fa-computer"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 18,
+        "fields" : {
+            "TagName" : "Bus Driver",
+            "TagStyle" : "fa-solid fa-bus"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 19,
+        "fields" : {
+            "TagName" : "Train Driver",
+            "TagStyle" : "fa-solid fa-train-subway"
+        }
+    },
+
+    {
+        "model" : "employer.Tag",
+        "pk" : 20,
+        "fields" : {
+            "TagName" : "Vet",
+            "TagStyle" : "fa-solid fa-paw"
         }
     },
 
