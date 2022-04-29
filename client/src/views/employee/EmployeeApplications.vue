@@ -27,7 +27,7 @@
     const filter = ref('all');
     const modalStats = ref({});
     const applications = ref([]);
-    const numApps = ref(0);
+    const numApps = ref(1);
     const sort = ref('dateDesc');
     const displayModal = ref(false);
 
@@ -274,6 +274,8 @@
             <hr />
 
             <MatchModal :display='displayModal' :stats='modalStats' @close='displayModal = false' />
+            
+            <h3 class='no-applications' v-if='numApps == 0'>No applications yet...</h3>
 
             <div class='applications' v-for='application in applications' :key='application.id'>
                 <div class='application'>
@@ -300,9 +302,6 @@
             </div>
         </section>
     </main>
-
-    <button @click='notifs++'>Add notification</button>
-    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
 
 </template>
 
@@ -393,6 +392,16 @@
         display: flex;
         align-items: center;
         flex-shrink: 1;
+    }
+
+    .no-applications {
+        color: var(--jet);
+        font-weight: 500;
+        position: relative;
+        top: 25px;
+        font-size: 18px;
+        font-style: italic;
+        margin: 0 auto;
     }
 
     .right {
