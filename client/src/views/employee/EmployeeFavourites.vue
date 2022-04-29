@@ -3,7 +3,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
     
-    import { ref, watch, onMounted } from 'vue';
+    import { computed, ref, watch, onMounted } from 'vue';
 
 
     // vars init
@@ -11,10 +11,15 @@
     const extraTags = '';
     const notifs = ref(2);
     const vacancies = ref([]);
+    const cardsPerRow = ref(1);
 
     // dropdown values
-    const limit = ref(3);
     const sort = ref('dateDesc');
+    const limitMultiplier = ref(1);
+
+    const limit = computed(() => {
+        return limitMultiplier.value * cardsPerRow.value;
+    })
 
     // pagination
     const page = ref(1);
@@ -73,7 +78,7 @@
 
         if(!data)
             return false;
-
+        console.log(data)
         const { 
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
@@ -91,6 +96,13 @@
 
     // vacancy api request
     onMounted(async () => {
+        const resizeFunc = () => {
+            cardsPerRow.value = Math.floor(document.querySelector('.vacancy-container').offsetWidth / 449);
+        }
+
+        resizeFunc();
+        window.addEventListener("resize", resizeFunc);     
+
         const result = await getFavourites({ });
 
         if(!result) {
@@ -125,7 +137,7 @@
 
     watch(limit, async (newLimit) => {
         // change number of vacancies per page
-        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
+        while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
         if(page.value < 0)
             page.value = 0;
@@ -136,8 +148,6 @@
             alert('uh oh! something went wrong :(');
             return;
         }
-
-        limit.value = newLimit;
     });
 
     watch(sort, sortVacancies);
@@ -159,22 +169,24 @@
                 <input name='searchbar' class='search' type='text' placeholder='Search..'/> 
             </div>
 
-            <div class='select-group'>
-                <select v-model='limit' aria-label='set page size' id='limit'>
-                    <option value=3 selected>3 per page</option>
-                    <option value=6>6 per page</option>
-                    <option value=9>9 per page</option>
-                    <option value=12>12 per page</option>
-                </select>
-            </div>
+            <div class="select-row">
+                <div class='select-group'>
+                    <select v-model='limitMultiplier' aria-label='set page size' id='limit'>
+                        <option :value='1' selected>{{ cardsPerRow }} per page</option>
+                        <option :value='2'>{{ cardsPerRow * 2 }} per page</option>
+                        <option :value='3'>{{ cardsPerRow * 3 }} per page</option>
+                        <option :value='4'>{{ cardsPerRow * 4 }} per page</option>
+                    </select>
+                </div>
 
-            <div class='select-group'>
-                <select v-model='sort' aria-label='sort vacancies' id='sort'>
-                    <option value='dateDesc' selected>latest first</option>
-                    <option value='dateAsc'>oldest first</option>
-                    <option value='titleAsc'>title (a-z)</option>
-                    <option value='titleDesc'>title (z-a)</option>
-                </select>
+                <div class='select-group'>
+                    <select v-model='sort' aria-label='sort vacancies' id='sort'>
+                        <option value='dateDesc' selected>latest first</option>
+                        <option value='dateAsc'>oldest first</option>
+                        <option value='titleAsc'>title (a-z)</option>
+                        <option value='titleDesc'>title (z-a)</option>
+                    </select>
+                </div>
             </div>
 
             <div class='filter-tags-row'>
@@ -184,8 +196,10 @@
                     </div>
             </div>
 
-           <div class='vacancy-container'>
-                <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' :favourited=true @deleteFavourite='updatePage'/>
+            <div class="vacancy-container">
+                <!-- <div class='vacancy-inner-container'> -->
+                    <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
+                <!-- </div> -->
             </div>
 
             <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
@@ -207,7 +221,6 @@
 
     select {
         border: 2px solid;
-        float:right;
         font-size:12px;
         margin: 1px;
         padding: 3px;
@@ -281,11 +294,11 @@
         align-items: center;
         border: 1px solid black;
         width: calc(100% - 40px);
-        position: relative;
-        top: 5px;
-        margin-bottom: 5px;
+        /* position: relative; */
+        /* top: 5px; */
+        margin: 10px 0 25px 0;
         padding: 7px 20px;
-        border-radius: 15px;
+        border-radius: 7px;
     }
 
     .search {
@@ -306,10 +319,14 @@
 
     .search-group {
         position: relative;
+        margin-left: 2px;
     }
 
-    .select-group {
-        flex-direction: column;
+    .select-row {
+        display: flex;
+        flex-grow: 1;
+        justify-content: flex-end;
+        padding-right: 2px;
     }
 
     .tags-header {
@@ -328,9 +345,16 @@
     .vacancy-container { 
         display: flex; 
         flex-direction: row;
-        justify-content: center; 
+        justify-content: center;
         flex-wrap: wrap;
-
-
     }
+
+    /* .vacancy-inner-container {
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        padding-left: 25px;
+        align-self: center
+    } */
 </style>
