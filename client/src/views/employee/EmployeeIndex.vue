@@ -19,6 +19,7 @@
         const limit = ref(3);
     const filter = ref('active');
     const sort = ref('dateDesc');
+    const tagsFilter = ref("null");
 
     // pagination
     const page = ref(1);
@@ -28,14 +29,11 @@
     const currentVacancy = ref({});
 
     const getTags = async () => {
-        console.log("before");
         const response = await api({
             method: 'get',
             url: '/vacancy/tags/',
             responseType: 'json',
         }).catch(apiCatchError);
-
-        console.log("after");
 
         if(!response || !response.data)
             return false;
@@ -44,6 +42,7 @@
 
         if(!data)
             return false;
+
 
         return true;
     }
@@ -79,7 +78,7 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = 3, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
+        const { count = 3, pageNum = 1, sort = 'dateDesc', filter = 'active', tagsFilter = "null" } = options;
 
         const response = await api({
             method: 'get',
@@ -89,7 +88,8 @@
                 sort,
                 count,
                 filter,
-                pageNum
+                pageNum,
+                tagsFilter
             }
         }).catch(apiCatchError);
 
@@ -127,7 +127,7 @@
 
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
-        const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
+        const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
         
         if(!result) {
             return;
@@ -137,7 +137,7 @@
 
     // pagination: change page
     const changePage = async (newPage) => {
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value });
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value, tagsFilter: tagsFilter.value });
 
         if(!result) {
             return;
@@ -146,10 +146,34 @@
         page.value = newPage;   
     }
 
+    const tagSearch = async (value) => {
+
+        let i = 0;
+
+        tagsFilter.value = "";
+
+        for(i = 0; i < value.length; i++){
+            tagsFilter.value = tagsFilter.value + (value[i].toString());
+            if(i != value.length-1){
+                tagsFilter.value = tagsFilter.value + ",";
+            }
+        }
+
+        if(value.length == 0) {
+            tagsFilter.value = "null";
+        }
+
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
+
+        if(!result) {
+            return;
+        }
+    }
+
     // dropdown watchers
     watch(filter, async (filterValue) => {
         // change which vacancies are display based on isOpen
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue, tagsFilter: tagsFilter.value });
 
         if(!result) {
             return;
@@ -164,7 +188,7 @@
         if(page.value < 0)
             page.value = 0;
 
-        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
+        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
 
         if(!result) {
             return;
@@ -226,7 +250,7 @@
                     </div> -->
             </div>
 
-            <TagSearchModal v-show='showModal' @close-modal='showModal = false' />
+            <TagSearchModal v-show='showModal' @search='tagSearch' @close-modal='showModal = false' />
 
             <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>

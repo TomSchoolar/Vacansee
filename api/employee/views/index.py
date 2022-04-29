@@ -26,8 +26,13 @@ def getIndex(request):
         filter = params['filter']
         count = int(params['count'])
         pageNum = int(params['pageNum'])
+        tags = params['tagsFilter']
     except:
         return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    tagList = tags.split(',')
+
+    print(tagList)
 
     # parse sort parameter into django sort parameter
     if sort == 'dateDesc':
@@ -204,11 +209,13 @@ def getTags(request):
         tagSerializer = TagSerializer(tagSet, many=True)
         tags = tagSerializer.data
 
+        tagDictList = []
+
         for tag in tags:
-            print(tag)
+            tagDictList.append({ 'id':tag['TagId'], 'value':tag['TagId'], 'text':tag['TagName'], 'icon':tag['TagStyle'] })
 
     except Exception as err:
         print(f'uh oh: { err }')
         return Response(data={'status': 500, 'message': 'Server error fetching vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return Response("hb", status=status.HTTP_200_OK)
+    return Response(tagDictList, status=status.HTTP_200_OK)
