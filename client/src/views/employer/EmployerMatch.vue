@@ -10,7 +10,7 @@
     document.title = 'Matches | Vacansee';
 
     const updateCard = (nextProfile) => {
-        currentProfile.value = nextProfile.value;
+        currentProfile.value = nextProfile;
     }
     
     const notifs = ref(2);

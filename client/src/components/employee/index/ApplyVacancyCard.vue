@@ -3,8 +3,8 @@
 
     import { ref } from 'vue';    
 
-    const { tags = [], vacancy = {} } = defineProps(['vacancy', 'tags']);
-    const emit = defineEmits(['newVacancy']);
+    const { tags = [], vacancy = {}, favourited = false } = defineProps(['vacancy', 'tags', 'favourited']);
+    const emit = defineEmits(['newVacancy', 'deleteFavourite']);
 
     const favourite = async (vID) => {
         const response = await api({
@@ -20,6 +20,21 @@
 
         if(data)
             emit('newVacancy', data);
+    }
+
+    const unfavourite = async (vID) => {
+        const response = await api({
+            url: '/vacancy/unfav/',
+            method: 'delete',
+            responseType: 'json',
+            data: { 
+                VacancyId: vID 
+            }
+        }).catch(apiCatchError);
+
+        const { data = false } = response;
+
+        emit('deleteFavourite');
     }
 
     const apply = async (vID) => {
@@ -110,7 +125,8 @@
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
             <button type='button' class='reject' @click='reject(vacancy.VacancyId)'><i class='fas fa-multiply'></i></button>
-            <button class='favourite' @click='favourite(vacancy.VacancyId)'><i class='fas fa-star'></i></button>
+            <button class='favourite' @click='unfavourite(vacancy.VacancyId)' v-if='favourited == true'><i class='far fa-star'></i></button>
+            <button class='favourite' @click='favourite(vacancy.VacancyId)' v-if="favourited == false"><i class='fas fa-star'></i></button>
             <button class='apply' @click='apply(vacancy.VacancyId)'><i class='fas fa-check'></i></button>
         </div>
     </div>

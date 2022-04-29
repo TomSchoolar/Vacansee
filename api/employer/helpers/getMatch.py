@@ -5,11 +5,11 @@ from employer.models import Vacancy
 
 def getDetails(userId):
     
-    profileSet = Profile.objects.filter(
+    profileSet = Profile.objects.get(
         UserId__exact = userId
     )    
 
-    profileSerializer = ProfileSerializer(profileSet, many=True)
+    profileSerializer = ProfileSerializer(profileSet)
     profile = profileSerializer.data
 
     return profile

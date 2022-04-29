@@ -27,7 +27,7 @@ class Vacancy(models.Model):
     IsOpen = models.BooleanField(default=True)
     PhoneNumber = models.CharField(max_length=30)
     Email = models.EmailField(max_length=254)
-    Created = models.DateField(auto_now_add=True)
+    Created = models.DateTimeField(auto_now_add=True)
     Location = models.CharField(max_length=30)
 
 

@@ -91,7 +91,7 @@ def getIndex(request):
     else:
         # sort by regular sort param
         vacanciesSet = Vacancy.objects.filter(
-            UserId__exact=4,
+            UserId__exact = jwt['id'],
             IsOpen__in = filterParam
         ).order_by(sortParam)[skip:limit]
 
@@ -162,7 +162,47 @@ def postIndex(request, jwt):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['PUT'])
+def putIndexCloseVacancy(request, vacancyId):
 
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    # check vacancyId is valid for that user
+    try:
+        vacancy = indexHelper.checkUserOwnsVacancy(vacancyId, jwt)
+    except Vacancy.DoesNotExist:
+        return Response(data={'status': 401, 'message': 'You do not have access to that vacancy.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        vacancy.IsOpen = False
+        vacancy.save()
+        return Response(status=status.HTTP_200_OK)
+    except Exception as err:
+        return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['DELETE'])
+def deleteIndexDeleteVacancy(request, vacancyId):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    # check vacancyId is valid for that user
+    try:
+        vacancy = indexHelper.checkUserOwnsVacancy(vacancyId, jwt)
+    except Vacancy.DoesNotExist:
+        return Response(data={'status': 401, 'message': 'You do not have access to that vacancy.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        vacancy.delete()
+        return Response(status=status.HTTP_200_OK)
+
+    except Exception as err:
+        return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET', 'PUT'])
 def editVacancy(request, vacancyId):
@@ -171,7 +211,6 @@ def editVacancy(request, vacancyId):
 
     if type(jwt) is not dict:
         return jwt
-
     try:
         vacancySet = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True, UserId__exact = jwt['id'])
         vacancy = VacancySerializer(vacancySet).data

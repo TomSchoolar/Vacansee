@@ -4,6 +4,7 @@
     import relativeTime from 'dayjs/plugin/relativeTime';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
+    import IndexModal from '@/components/employer/index/IndexModal.vue';
     import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
     import DeleteVacancyModal from '../../components/employer/index/DeleteVacancyModal.vue';
 
@@ -26,6 +27,9 @@
 
     const notifs = ref(2);
     const vacancies = ref(null);
+    const displayModal = ref(false);
+    const modalType = ref(0);
+    const selectedVacancy = ref(0);
 
     // dropdown values
     const limit = ref(5);
@@ -185,12 +189,48 @@
 
     // vacancy button actions
 
-    const closeVacancy = async () => {
-        alert('you are about the close the vacancy: '+ currentModalVacancy.value);
+    const showClosure = (vacId) => {
+        selectedVacancy.value = vacId;
+        modalType.value = 0;
+        displayModal.value = true;
     }
 
-    const deleteVacancy = () => {
-        alert('are you sure you want to delete this vacancy?');
+    const closeVacancy = async () => {
+        const response = await api({
+            method: 'put',
+            url: `/e/vacancy/close/${ selectedVacancy.value }/`,
+            responseType: 'json'
+        }).catch(apiCatchError);
+
+        if (!response)
+            return false;
+
+        const { data = {} } = response;
+
+		displayModal.value = false;
+        window.location.reload();
+    }
+
+    const showDeletion = (vacId) => {
+        selectedVacancy.value = vacId;
+        modalType.value = 1;
+        displayModal.value = true;
+    }
+
+    const deleteVacancy = async () => {
+        const response = await api({
+            method: 'delete',
+            url: `/e/vacancy/delete/${ selectedVacancy.value }/`,
+            responseType: 'json'
+        }).catch(apiCatchError);
+
+        if (!response)
+            return false;
+
+        const { data = {} } = response;
+
+		displayModal.value = false;
+        window.location.reload();
     }
 
     const updateModalVacancy = async (vacanacyName) => {
@@ -204,9 +244,10 @@
 <template>
     <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
 
+    <IndexModal :display='displayModal' :type='modalType' @close='displayModal = false' @closeVacancy='closeVacancy' @deleteVacancy='deleteVacancy' />
+
     <main class='container'>
         <EmployerStatBar :stats='stats' />
-
         <section class='vacancies-section'>
             <div class='title-bar'>
                 <div class='title-bar-left'>
@@ -265,6 +306,10 @@
                     <div class='vacancy-right'>
                         <div class='vacancy-decisions'>{{ vacancy.AcceptedApplications }} Accepted / {{ vacancy.RejectedApplications }} Rejected</div>
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
+                        <button class='vacancy-button vacancy-button-red' @click='showClosure(vacancy.VacancyId)' v-if='vacancy.IsOpen'>Close Applications</button>
+                        <button class='vacancy-button vacancy-button-red' @click='showDeletion(vacancy.VacancyId)' v-else>Delete</button>
+                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
+                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
 
                         <div class='vacancy-button-container'>
                             <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
