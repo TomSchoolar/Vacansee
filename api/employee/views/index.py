@@ -30,9 +30,16 @@ def getIndex(request):
     except:
         return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
-    tagList = tags.split(',')
+    tagListInt = []
 
-    print(tagList)
+    if len(tags) < 1:
+        tags = "null"
+
+    if tags != "null":
+        tagList = tags.split(',')
+
+        for tag in tagList:
+            tagListInt.append(int(tag))
 
     # parse sort parameter into django sort parameter
     if sort == 'dateDesc':
@@ -53,6 +60,9 @@ def getIndex(request):
     else:
         # 'all'
         filterParam = [True, False]
+
+    usingTags = False
+    triedTags = False
 
     try:
         # get number of pages
@@ -80,11 +90,25 @@ def getIndex(request):
         for app in applicationSet:
             vacancyList.append(app.VacancyId.VacancyId)
 
-        numVacancies = Vacancy.objects.filter(
-            IsOpen__in = filterParam
-        ).exclude(
-            VacancyId__in = vacancyList
-        ).count()
+        if tags != "null":
+            numVacancies = Vacancy.objects.filter(
+                IsOpen__in = filterParam,
+                Tags__contains = tagListInt
+            ).exclude(
+                VacancyId__in = vacancyList
+            ).count()
+
+            if numVacancies > 0:
+                usingTags = True
+            else:
+                triedTags = True
+
+        if tags == "null" or usingTags == False:
+            numVacancies = Vacancy.objects.filter(
+                IsOpen__in = filterParam
+            ).exclude(
+                VacancyId__in = vacancyList
+            ).count()
 
         pages = int(ceil(numVacancies / int(params['count'])))
         
@@ -100,12 +124,21 @@ def getIndex(request):
     limit = count * pageNum
 
     try:
-        # get vacancies
-        vacanciesSet = Vacancy.objects.filter(
-            IsOpen__in = filterParam
-        ).exclude(
-            VacancyId__in = vacancyList
-        ).order_by(sortParam)[skip:limit]
+
+        if usingTags == False:
+            # get vacancies
+            vacanciesSet = Vacancy.objects.filter(
+                IsOpen__in = filterParam
+            ).exclude(
+                VacancyId__in = vacancyList
+            ).order_by(sortParam)[skip:limit]
+        else:
+            vacanciesSet = Vacancy.objects.filter(
+                IsOpen__in = filterParam,
+                Tags__contains = tagListInt
+            ).exclude(
+                VacancyId__in = vacancyList
+            ).order_by(sortParam)[skip:limit]
 
         vacancySerializer = VacancySerializer(vacanciesSet, many=True)
         vacancies = vacancySerializer.data
@@ -133,7 +166,8 @@ def getIndex(request):
     returnData = {
         'numPages': pages,
         'vacancies': vacancies,
-        'numVacancies': numVacancies
+        'numVacancies': numVacancies,
+        'triedTags': triedTags
     }
 
     return Response(returnData, status=status.HTTP_200_OK)

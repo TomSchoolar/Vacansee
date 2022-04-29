@@ -1,51 +1,20 @@
 <script setup>
-    import ListBox from '@/components/employee/index/ListBox.vue';
-    import { ref } from 'vue';
-
-    const emit = defineEmits(['search', 'close-modal']);
-
-    const search = (values) => {
-        emit('close-modal');
-        emit('search', values);
-    };
-
-    const options = [
-        {
-            value: '0',
-            text: 'book'
-        },
-        {
-            value: '1',
-            text: 'code'
-        },
-        {
-            value: '2',
-            text: 'python'
-        },
-        {
-            value: '3',
-            text: 'school'
-        },
-        {
-            value: '4',
-            text: 'briefcase'
-        },
-        {
-            value: '5',
-            text: 'database'
-        },
-    ]
-
+    const emit = defineEmits(['unmatch', 'close-modal']);
 </script>
 
 <template>
     <div class='modal-overlay'>
         <div class='modal'>
-            <i class='desc-bold'>Tag Search</i>
+            <div class="warning-circle">!</div>
+            
             <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
 
             <div class="modal-body">
-                <ListBox label='tags' name='tagsInput' :multiple='true' :multipleValue='true' :options='options' @search='search' @close-modal='emit("close-modal")' />
+                <p class='desc desc-bold'>There are no vacancies to display with the given search fields.</p>
+            </div>
+
+            <div class="button-row">
+                <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
             </div>
         </div>
     </div>
@@ -124,8 +93,7 @@
         background-color: white;
         min-height: 200px;
         max-width: min(425px, 90%);
-        min-width: min(250px, 40%);
-        padding: 20px 20px 40px 20px;
+        padding: 25px 20px 40px 20px;
         border-radius: 20px;
         display: flex;
         flex-direction: column;
@@ -135,8 +103,8 @@
     }
 
     .modal-body {
-        width: 100%;
-        margin: 25px 0px;
+        width: 75%;
+        margin: 25px 0;
     }
 
     .modal-overlay {

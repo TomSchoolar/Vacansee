@@ -4,9 +4,11 @@
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
     import TagSearchModal from '@/components/employee/index/TagSearchModal.vue';
+    import NoCardsModal from '@/components/employee/index/NoCardsModal.vue';
 
     import { ref, watch, onMounted, onUpdated } from 'vue';
 
+    const showModalNoCards = ref(false);
     const showModal = ref(false);
 
     // vars init
@@ -105,6 +107,7 @@
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
             numVacancies: total = 0,
+            triedTags: haveTriedTags = triedTags.value
         } = data;
 
 
@@ -115,7 +118,9 @@
         vacancies.value = newVacancies;
         currentVacancy.value = vacancies.value[0];
 
-        getTags();
+        if(haveTriedTags){
+            showModalNoCards.value = true;
+        }
 
         return true;
     }
@@ -123,6 +128,7 @@
     // vacancy api request
     onMounted(async () => {
         await getVacancies({ });
+        await getTags();
     });
 
     // get vacancies in new order
@@ -245,10 +251,15 @@
                     <button type='button' class='button arrow-btn' @click='showModal = true'>
                         <th>Select Tags</th>
                     </button>
+                    <button type='button' class='button arrow-btn' @click='tagSearch("")'>
+                        <th>Remove Tags</th>
+                    </button>
                     <!-- <div class='filter-tag'>
                         <i class='fa-solid fa-book tag'></i> 
                     </div> -->
             </div>
+
+            <NoCardsModal v-show='showModalNoCards' @close-modal='showModalNoCards = false' />
 
             <TagSearchModal v-show='showModal' @search='tagSearch' @close-modal='showModal = false' />
 
