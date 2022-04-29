@@ -1,3 +1,4 @@
+from inspect import trace
 from math import ceil
 from rest_framework import status
 from employee.models import Application
@@ -243,6 +244,9 @@ def deleteApplication(request, applicationId):
             pk=applicationId,
             UserId__exact = jwt['id']
         )
+
+        if application.ApplicationStatus == 'REJECTED':
+            return Response({ 'status': 403, 'message': 'You cannot delete an application that has already been rejected' }, status=status.HTTP_403_FORBIDDEN)
 
         application.delete()
         return Response(status=status.HTTP_200_OK)

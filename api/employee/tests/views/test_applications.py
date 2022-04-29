@@ -298,6 +298,14 @@ class deleteApplicationTests(TestCase):
 
         self.assertEqual(response.status_code, 401)
 
+    
+    def test_rejectedApplication(self):
+        applicationId = 1040
+
+        response = self.client.delete(f'/applications/delete/{ applicationId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(response.status_code, 403)
+
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')

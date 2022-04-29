@@ -288,8 +288,11 @@
                     </div>
                     <div class='right'>
                         <div class='applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
-                        <button class='button button-red' @click='showModal = true; currentModalApplication = application'>Delete Application</button>
-                        <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
+                        <div class='button-container'>
+                            <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
+                            <button class='button button-red' @click='showModal = true; currentModalApplication = application' v-if='application.ApplicationStatus != "REJECTED"'>Delete Application</button>
+                            <button class='button button-disabled' title='You cannot delete rejected applications' v-else>Delete Application</button>
+                        </div>
                     </div>
                 </div>
                 <AreYouSureModal v-if='showModal' :name='currentModalApplication.CompanyName' :vacancyName='currentModalApplication.VacancyName' :employer='false' @close-modal='showModal = false' @unmatch='deleteApplication(currentModalApplication.ApplicationId)' />
@@ -339,7 +342,7 @@
 
     .button {
         font-weight: 500; /* required for some reason */
-        border-radius: 12px;
+        border-radius: 7px;
         color: #fff;
         border: 2.2px solid #333;
         width: 150px;
@@ -351,6 +354,18 @@
         justify-content: center;
         font-family: var(--font);
         padding: 2px 6px;
+    }
+
+    .button-container {
+        display: flex;
+        width: 330px;
+        justify-content: flex-end;
+    }
+
+    .button-disabled {
+        border-color: #999999;
+        background-color: #cccccc;
+        color: #666666;
     }
 
     .button-green {
