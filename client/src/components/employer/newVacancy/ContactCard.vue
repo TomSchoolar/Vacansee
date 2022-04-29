@@ -15,7 +15,7 @@
         </div>
         <div class='contact'>
             <i class="fa-solid fa-clock"></i>
-            {{ TimeZone }}
+            GMT {{ TimeZone }}
         </div>
     </div>
 </template>

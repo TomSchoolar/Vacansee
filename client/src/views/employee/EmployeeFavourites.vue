@@ -142,6 +142,10 @@
 
     watch(sort, sortVacancies);
 
+    const updatePage = () => {
+        window.location.reload();
+    }
+
 </script>
 
 <template>
@@ -182,7 +186,7 @@
             </div>
 
            <div class='vacancy-container'>
-                <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
+                <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' :favourited=true @deleteFavourite='updatePage'/>
             </div>
 
             <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>

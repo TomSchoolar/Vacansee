@@ -23,6 +23,9 @@ const refreshAuthLogic = async (failedRequest) => {
 
             if(status == 401 || status == 403) {
                 // authorisation error
+                if(['login', 'register', 'forgot', 'reset'].includes(window.location.pathname.split('/')[1])) {
+                    return false;
+                }
 
                 if(refreshToken != null) {
                     // refresh token available, can make logout request

@@ -93,7 +93,7 @@ def getApplications(request):
 
 
 
-    return Response({ 'applications': pairedApplications, 'numPages': numPages, 'pageNum': pageNum }, status=status.HTTP_200_OK)
+    return Response({ 'applications': pairedApplications, 'numPages': numPages, 'pageNum': pageNum, 'numApps': numApps }, status=status.HTTP_200_OK)
 
 
 

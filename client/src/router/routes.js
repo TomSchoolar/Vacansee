@@ -10,6 +10,8 @@ const landingRoute = {
 
 
 import LogIn from '@/views/auth/LogIn.vue';
+import Register from '@/views/auth/Register.vue';
+import Forgot from '@/views/auth/Forgot.vue';
 import Reset from '@/views/auth/Reset.vue';
 
 const authRoutes = [
@@ -22,10 +24,26 @@ const authRoutes = [
         }
     },
     {
-        path: '/reset',
+        path: '/register',
+        name: 'Register',
+        component: Register,
+        meta: {
+            middleware: [isNotLoggedIn]
+        }
+    },
+    {
+        path: '/forgot',
+        name: 'Forgot',
+        component: Forgot,
+        meta: {
+            middleware: [isNotLoggedIn]
+        }
+    },
+    {
+        path: '/reset/:token',
         name: 'Reset',
         component: Reset,
-        meta: {
+        meta : {
             middleware: [isNotLoggedIn]
         }
     }
@@ -80,6 +98,7 @@ import EmployerMatch from '../views/employer/EmployerMatch.vue';
 import EmployerReview from '../views/employer/EmployerReview.vue';
 import EmployerAccount from '../views/employer/EmployerAccount.vue';
 import EmployerNewVacancy from '../views/employer/EmployerNewVacancy.vue';
+import EmployerEditVacancy from '../views/employer/EmployerEditVacancy.vue';
 
 const employerRoutes = [
     {
@@ -118,6 +137,14 @@ const employerRoutes = [
         path: '/e/vacancy/new',
         name: 'EmployerNewVacancy',
         component: EmployerNewVacancy,
+        meta: {
+            middleware: [isLoggedIn, isEmployer]
+        }
+    },
+    {
+        path: '/e/vacancy/edit/:vacancyId',
+        name: 'EmployerEditVacancy',
+        component: EmployerEditVacancy,
         meta: {
             middleware: [isLoggedIn, isEmployer]
         }

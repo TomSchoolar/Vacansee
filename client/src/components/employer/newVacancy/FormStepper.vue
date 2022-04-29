@@ -1,15 +1,27 @@
 <script setup>
+<<<<<<< HEAD
     import { watch } from 'vue';
     import { toRef } from 'vue';
     
     const props = defineProps(['stepNum', 'headings']);
+=======
+    import { watch, onMounted } from 'vue';
+>>>>>>> 34e237b17324f2f34cd224ff99097f5254074f42
 
     let notifs = toRef(props, 'headings');
 
     let name = 'John';
     document.getElementById('header1').innerHTML = "<div class='label'> Review </div>";
 
-    let oldStep = props.stepNum
+    let oldStep = props.stepNum;
+
+    onMounted(() => {
+        let circles = document.querySelectorAll('.circle');
+        circles.forEach((circle) => circle.classList.remove('circle-colour'));
+
+        let line = document.querySelector('.line-colour');
+        line.style.width = 0;
+    })
 
     watch(props, (props) => {
         let { stepNum: newStep } = props;

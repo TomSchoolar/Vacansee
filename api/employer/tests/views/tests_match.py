@@ -155,8 +155,8 @@ class getCardTests(TestCase):
     def test_validRequest(self):
         response = self.client.get('/e/match/card/', { 'applicantId': self.applicantId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
-        detailsSet = Profile.objects.filter(UserId__exact = self.applicantId)
-        details = ProfileSerializer(detailsSet, many=True).data
+        detailsSet = Profile.objects.get(UserId__exact = self.applicantId)
+        details = ProfileSerializer(detailsSet, many=False).data
 
         expectedData = { 'details': details }
 
