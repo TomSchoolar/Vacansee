@@ -81,8 +81,6 @@ def getIndex(request):
             VacancyId__in = vacancyList
         ).count()
 
-        print(numVacancies)
-
         pages = int(ceil(numVacancies / int(params['count'])))
         
         # deals with a lower number of pages than the current page
@@ -97,7 +95,6 @@ def getIndex(request):
     limit = count * pageNum
 
     try:
-        print(skip, limit)
         # get vacancies
         vacanciesSet = Vacancy.objects.filter(
             IsOpen__in = filterParam
@@ -133,7 +130,7 @@ def getIndex(request):
         'vacancies': vacancies,
         'numVacancies': numVacancies
     }
-    print(vacancies)
+
     return Response(returnData, status=status.HTTP_200_OK)
 
 
