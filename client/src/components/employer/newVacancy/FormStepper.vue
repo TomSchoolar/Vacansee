@@ -1,17 +1,7 @@
 <script setup>
-<<<<<<< HEAD
-    import { watch } from 'vue';
-    import { toRef } from 'vue';
-    
-    const props = defineProps(['stepNum', 'headings']);
-=======
     import { watch, onMounted } from 'vue';
->>>>>>> 34e237b17324f2f34cd224ff99097f5254074f42
 
-    let notifs = toRef(props, 'headings');
-
-    let name = 'John';
-    document.getElementById('header1').innerHTML = "<div class='label'> Review </div>";
+    const props = defineProps(['stepNum']);
 
     let oldStep = props.stepNum;
 
@@ -42,8 +32,6 @@
 
         oldStep = props.stepNum;
     });
-
-    
 </script>
 
 <template>
@@ -56,16 +44,29 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
-            <span id='header1'> </span>
+            <div class='label'>
+                Basic Details
+            </div>
         </div>
 
         <div class='spacer'></div>
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div class='label'>
+                More Details
+            </div>
+        </div>
+        
+        <div class='spacer'></div>
+        
+        <div class='form-page'>
+            <div class='circle'>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
                 Contact Details
@@ -76,10 +77,10 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
-                Location
+                Logistics
             </div>
         </div>
         
@@ -87,10 +88,10 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
-                Soft Skills
+                Tags
             </div>
         </div>
         
@@ -98,29 +99,7 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
-            </div>
-            <div class='label'>
-                Experience
-            </div>
-        </div>
-
-        <div class='spacer'></div>
-        
-        <div class='form-page'>
-            <div class='circle'>
-                <i class='fa-solid fa-check'></i>
-            </div>
-            <div class='label'>
-                Qualifications
-            </div>
-        </div>
-        
-        <div class='spacer'></div>
-        
-        <div class='form-page'>
-            <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
                 Review
