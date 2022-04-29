@@ -14,11 +14,11 @@ def postProfile(request):
         return jwt
 
     try:
-        if request.data is not dict:
-            data = dict(request.data)
-        else:
-            data = request.data
+        data = request.data
+    except:
+        return Response({ 'status': 400 }, status=status.HTTP_400_BAD_REQUEST)
 
+    try:
         data['UserId'] = User.objects.get(pk = jwt['id'])
 
         newProfile = Profile(**data)
@@ -29,5 +29,7 @@ def postProfile(request):
     except ValidationError as err:
         return Response({ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
+        import traceback
+        traceback.print_exc()
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
