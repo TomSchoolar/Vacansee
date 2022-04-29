@@ -10,6 +10,7 @@
     const tagsLim = 6;
     const extraTags = '';
     const notifs = ref(2);
+    const emptyCards = ref(0);
     const vacancies = ref([]);
     const cardsPerRow = ref(1);
 
@@ -57,7 +58,7 @@
 
         // api request function
     const getFavourites = async (options) => {
-        const { count = 3, pageNum = 1, sort = 'dateDesc' } = options;
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc' } = options;
 
 
         const response = await api({
@@ -78,7 +79,7 @@
 
         if(!data)
             return false;
-        console.log(data)
+
         const { 
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
@@ -91,6 +92,10 @@
         numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
+
+        emptyCards.value = limit.value - vacancies.value.length;
+        console.log(limit.value)
+        console.log(vacancies.value.length)
         return true;
     }
 
@@ -195,11 +200,9 @@
                         <i class='fa-solid fa-book tag'></i> 
                     </div>
             </div>
-
             <div class="vacancy-container">
-                <!-- <div class='vacancy-inner-container'> -->
-                    <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
-                <!-- </div> -->
+                <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :favourited='true' :tags='tags' />
+                <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
 
             <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
@@ -272,6 +275,11 @@
         background-color:#D3D3D3;
     }
 
+    .card-placeholder {
+        width: 449px;
+        height: 1px;
+    }
+
     .container {
         padding: 0 40px;
         width: calc(100vw - 80px);
@@ -294,8 +302,6 @@
         align-items: center;
         border: 1px solid black;
         width: calc(100% - 40px);
-        /* position: relative; */
-        /* top: 5px; */
         margin: 10px 0 25px 0;
         padding: 7px 20px;
         border-radius: 7px;
