@@ -100,7 +100,7 @@
     // vacancy api request
     onMounted(async () => {
         const resizeFunc = () => {
-            cardsPerRow.value = Math.floor(document.querySelector('.vacancy-container').offsetWidth / 449);
+            cardsPerRow.value = Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449);
         }
 
         resizeFunc();
