@@ -58,7 +58,8 @@ class applicationTestCase(TestCase):
         expectedData = {
             'numPages': ceil(numVacancies / 5),
             'vacancies': vacancies,
-            'numVacancies': numVacancies
+            'numVacancies': numVacancies,
+            'triedTags': False
         }
 
         self.assertEqual(response.status_code, 200)
@@ -81,7 +82,8 @@ class applicationTestCase(TestCase):
         expectedData = {
             'numPages': ceil(numVacancies / 5),
             'vacancies': vacancies,
-            'numVacancies': numVacancies
+            'numVacancies': numVacancies,
+            'triedTags': False
         }
 
         self.assertEqual(response.status_code, 200)
@@ -104,7 +106,8 @@ class applicationTestCase(TestCase):
         expectedData = {
             'numPages': ceil(numVacancies / 5),
             'vacancies': vacancies,
-            'numVacancies': numVacancies
+            'numVacancies': numVacancies,
+            'triedTags': False
         }
 
         self.assertEqual(response.status_code, 200)
@@ -127,7 +130,8 @@ class applicationTestCase(TestCase):
         expectedData = {
             'numPages': ceil(numVacancies / 5),
             'vacancies': vacancies,
-            'numVacancies': numVacancies
+            'numVacancies': numVacancies,
+            'triedTags': False
         }
 
         self.assertEqual(response.status_code, 200)
