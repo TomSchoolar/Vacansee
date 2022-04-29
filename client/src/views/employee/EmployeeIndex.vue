@@ -254,6 +254,7 @@
                     <button type='button' class='button arrow-btn' @click='tagSearch("")'>
                         <th>Remove Tags</th>
                     </button>
+                    
                     <!-- <div class='filter-tag'>
                         <i class='fa-solid fa-book tag'></i> 
                     </div> -->
@@ -306,7 +307,7 @@
         background-color: white;
         border:none;
         float: right;
-        font-size: 20px;
+        font-size: 10px;
         padding: 2px;
     }
 
@@ -322,7 +323,7 @@
         color: black;
         cursor: pointer;
         display: inline-block;
-        font-size: 35px;
+        font-size: 10px;
         margin: 2px;
         padding-left: 30px;
         padding-right: 30px;
@@ -330,12 +331,10 @@
         padding-bottom: 10px;
         text-align: center;
         text-decoration: none;
-        transition-duration: 0.4s;
     }
 
     .button:active {
         background-color:#D3D3D3;
-        font-size: 50%;
     }
 
     .button:hover {
