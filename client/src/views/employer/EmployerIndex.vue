@@ -188,8 +188,6 @@
 
     // vacancy button actions
 
-
-
     const closeVacancy = async () => {
         const response = await api({
             method: 'put',
@@ -233,8 +231,6 @@
 
 <template>
     <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
-
-    <IndexModal :display='displayModal' :type='modalType' @close='displayModal = false' @closeVacancy='closeVacancy' @deleteVacancy='deleteVacancy' />
 
     <main class='container'>
         <EmployerStatBar :stats='stats' />
