@@ -85,7 +85,7 @@
             numVacancies: total = 0,
         } = response.data;
 
-        // while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
+        while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
         numVacancies.value = total;
         vacancies.value = newVacancies;
@@ -140,7 +140,7 @@
 
     watch(limit, async (newLimit) => {
         // change number of vacancies per page
-        // while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
+        while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
