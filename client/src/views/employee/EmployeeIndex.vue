@@ -205,7 +205,6 @@
                     </div>
             </div>
 
-            <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>
                 <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
