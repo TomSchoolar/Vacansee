@@ -2,9 +2,13 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
+    import TagSearchModal from '@/components/employee/index/TagSearchModal.vue';
+    import NoCardsModal from '@/components/employee/index/NoCardsModal.vue';
     
     import { ref, watch, onMounted } from 'vue';
 
+    const showModalNoCards = ref(false);
+    const showModal = ref(false);
 
     // vars init
     const tagsLim = 6;
@@ -16,43 +20,42 @@
     const limit = ref(3);
     const sort = ref('dateDesc');
 
+    const tagsFilter = ref("null");
+    const tagsFilterRaw = ref([]);
+    const haveTriedTags = ref();
+
     // pagination
     const page = ref(1);
     const numPages = ref(1);
     const numVacancies = ref(0);
 
-    const tags = [
-        {
-            id: 0,
-            icon: 'fa-solid fa-book'
-        },
-        {
-            id: 1,
-            icon: 'fa-solid fa-code'
-        },
-        {
-            id: 2,
-            icon: 'fa-brands fa-python'
-        },
-        {
-            id: 3,
-            icon: 'fa-solid fa-school'
-        },
-        {
-            id: 4,
-            icon: 'fa-solid fa-briefcase'
-        },
-        {
-            id: 5,
-            icon: 'fa-solid fa-database'
-        },
-    ]
+    const getTags = async () => {
+        const response = await api({
+            method: 'get',
+            url: '/vacancy/tags/',
+            responseType: 'json',
+        }).catch(apiCatchError);
+
+        if(!response || !response.data)
+            return false;
+
+        const { data } = response;
+
+        if(!data)
+            return false;
+
+        tags.value = response.data;
+
+        return true;
+    }
+
+    const tags = ref([]);
 
     document.title = 'Favourites | Vacansee';
 
         // api request function
     const getFavourites = async (options) => {
-        const { count = 3, pageNum = 1, sort = 'dateDesc' } = options;
+        const { count = 3, pageNum = 1, sort = 'dateDesc', tagsFilter = 'null' } = options;
 
 
         const response = await api({
@@ -62,7 +65,8 @@
             params: {
                 sort,
                 count,
-                pageNum
+                pageNum,
+                tagsFilter
             }
         }).catch(apiCatchError);
 
@@ -78,6 +82,7 @@
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
             numVacancies: total = 0,
+            triedTags: haveTriedTags = triedTags.value
         } = data;
 
 
@@ -86,14 +91,22 @@
         numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
+
+        if(haveTriedTags){
+            showModalNoCards.value = true;
+            tagSearch([]);
+        }
+
         return true;
     }
 
     // vacancy api request
     onMounted(async () => {
-        const result = await getFavourites({ });
+        getTags();
 
-        if(!result) {
+        const result2 = await getFavourites({ });
+
+        if(!result2) {
             alert('uh oh! something went wrong :(');
             return;
         }
@@ -101,7 +114,7 @@
 
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
-        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value });
+        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value });
         
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -113,7 +126,7 @@
 
     // pagination: change page
     const changePage = async (newPage) => {
-        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage });
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage, tagsFilter: tagsFilter.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -130,7 +143,7 @@
         if(page.value < 0)
             page.value = 0;
 
-        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.value });
+        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.valu, tagsFilter: tagsFilter.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -139,6 +152,34 @@
 
         limit.value = newLimit;
     });
+
+
+    const tagSearch = async (value) => {
+
+        tagsFilterRaw.value = value;
+
+        let i = 0;
+
+        tagsFilter.value = "";
+
+        for(i = 0; i < value.length; i++){
+            tagsFilter.value = tagsFilter.value + (value[i].toString());
+            if(i != value.length-1){
+                tagsFilter.value = tagsFilter.value + ",";
+            }
+        }
+
+        if(value.length == 0) {
+            tagsFilter.value = "null";
+            tagsFilterRaw.value = [];
+        }
+
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value });
+
+        if(!result) {
+            return;
+        }
+    }
 
     watch(sort, sortVacancies);
 
@@ -178,11 +219,31 @@
             </div>
 
             <div class='filter-tags-row'>
-                    <th class='filter-tags-header'> Selected Tags </th>
-                    <div class='filter-tag'>
-                        <i class='fa-solid fa-book tag'></i> 
+                    <button type='button' class='button arrow-btn' @click='showModal = true'>
+                        <th>Select Tags</th>
+                    </button>
+                    <button type='button' class='button arrow-btn' @click='tagSearch("")'>
+                        <th>Remove Tags</th>
+                    </button>
+
+                    <div v-if='tagsFilter != "null"'>
+                        <p>            :            </p>
                     </div>
+
+                    <div v-if='tagsFilter != "null"' class='filter-tag'>
+                        <i class='tag' v-for='tag in tagsFilterRaw' v-bind:key='tag.id' :class='tags[parseInt(tag)-1]["icon"]' :title='tag.text'></i>
+                    </div>
+                    
+                    <!-- <div class='filter-tag'>
+                        <i class='fa-solid fa-book tag'></i> 
+                    </div> -->
             </div>
+
+            <NoCardsModal v-show='showModalNoCards' @close-modal='showModalNoCards = false' />
+
+            <TagSearchModal v-show='showModal' @search='tagSearch' @close-modal='showModal = false' />
+
+
 
            <div class='vacancy-container'>
                 <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' :favourited=true @deleteFavourite='updatePage'/>
@@ -239,7 +300,7 @@
         color: black;
         cursor: pointer;
         display: inline-block;
-        font-size: 35px;
+        font-size: 10px;
         margin: 2px;
         padding-left: 30px;
         padding-right: 30px;
@@ -247,12 +308,10 @@
         padding-bottom: 10px;
         text-align: center;
         text-decoration: none;
-        transition-duration: 0.4s;
     }
 
     .button:active {
         background-color:#D3D3D3;
-        font-size: 50%;
     }
 
     .button:hover {

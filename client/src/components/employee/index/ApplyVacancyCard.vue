@@ -114,9 +114,9 @@
             </table>
         </div>
         <span class='card-section' v-if='vacancy.Tags'>Requirements:</span>
-        <div v-if='vacancy.Tags'>
-            <i class='tag' v-for='tag in vacancy.Tags.slice(0, tagsLim)' v-bind:key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
-            <th v-if='tags.length > 6' class='tag tags-overflow' :title='extraTags'>
+        <div v-if='vacancy.Tags && tags.length > 0'>
+            <i class='tag' v-for='tag in vacancy.Tags' v-bind:key='tag.id' :class='tags[tag].icon' :title='tag.text'></i>
+            <th v-if='vacancy.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
                 <div class='tags-num' ref='extra-tags'>+{{ tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
             </th>

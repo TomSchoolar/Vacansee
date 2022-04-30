@@ -1,6 +1,7 @@
 <script setup>
+    import api, { apiCatchError } from '@/assets/js/api';
     import ListBox from '@/components/employee/index/ListBox.vue';
-    import { ref } from 'vue';
+    import { ref, onMounted } from 'vue';
 
     const emit = defineEmits(['search', 'close-modal']);
 
@@ -9,32 +10,24 @@
         emit('search', values);
     };
 
-    const options = [
-        {
-            value: '0',
-            text: 'book'
-        },
-        {
-            value: '1',
-            text: 'code'
-        },
-        {
-            value: '2',
-            text: 'python'
-        },
-        {
-            value: '3',
-            text: 'school'
-        },
-        {
-            value: '4',
-            text: 'briefcase'
-        },
-        {
-            value: '5',
-            text: 'database'
-        },
-    ]
+    const getTags = async () => {
+        const response = await api({
+            method: 'get',
+            url: '/vacancy/tags',
+            responseType: 'json',
+        }).catch(apiCatchError);
+
+        options.value = response.data;
+
+        return true;
+    }
+
+    // vacancy api request
+    onMounted(async () => {
+        await getTags();
+    });
+
+    const options = ref([]);
 
 </script>
 

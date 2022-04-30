@@ -22,6 +22,7 @@
     const filter = ref('active');
     const sort = ref('dateDesc');
     const tagsFilter = ref("null");
+    const tagsFilterRaw = ref([]);
 
     // pagination
     const page = ref(1);
@@ -45,36 +46,12 @@
         if(!data)
             return false;
 
+        options.value = response.data;
 
         return true;
     }
 
-    const tags = [
-        {
-            id: 0,
-            icon: 'fa-solid fa-book'
-        },
-        {
-            id: 1,
-            icon: 'fa-solid fa-code'
-        },
-        {
-            id: 2,
-            icon: 'fa-brands fa-python'
-        },
-        {
-            id: 3,
-            icon: 'fa-solid fa-school'
-        },
-        {
-            id: 4,
-            icon: 'fa-solid fa-briefcase'
-        },
-        {
-            id: 5,
-            icon: 'fa-solid fa-database'
-        },
-    ]
+    const options = ref([]);
 
     document.title = 'Home | Vacansee';
 
@@ -120,6 +97,7 @@
 
         if(haveTriedTags){
             showModalNoCards.value = true;
+            tagSearch([]);
         }
 
         return true;
@@ -127,8 +105,8 @@
 
     // vacancy api request
     onMounted(async () => {
-        await getVacancies({ });
         await getTags();
+        await getVacancies({ });
     });
 
     // get vacancies in new order
@@ -154,6 +132,8 @@
 
     const tagSearch = async (value) => {
 
+        tagsFilterRaw.value = value;
+
         let i = 0;
 
         tagsFilter.value = "";
@@ -167,6 +147,7 @@
 
         if(value.length == 0) {
             tagsFilter.value = "null";
+            tagsFilterRaw.value = [];
         }
 
         const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
@@ -254,6 +235,14 @@
                     <button type='button' class='button arrow-btn' @click='tagSearch("")'>
                         <th>Remove Tags</th>
                     </button>
+
+                    <div v-if='tagsFilter != "null"'>
+                        <p>            :            </p>
+                    </div>
+
+                    <div v-if='tagsFilter != "null"' class='filter-tag'>
+                        <i class='tag' v-for='tag in tagsFilterRaw' v-bind:key='tag.id' :class='options[tag-1]["icon"]' :title='tag.text'></i>
+                    </div>
                     
                     <!-- <div class='filter-tag'>
                         <i class='fa-solid fa-book tag'></i> 
@@ -266,7 +255,7 @@
 
             <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>
-                <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
+                <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='options' />
             </div>
                     
 
@@ -280,7 +269,7 @@
         </div>
 
         <div class='right'>
-            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' />
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='options' :favourited='false' />
         </div>
     </div>
     
