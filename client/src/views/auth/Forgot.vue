@@ -2,104 +2,67 @@
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
     import validateForm from '@/assets/js/formValidator';
-    import DefaultNavbar from '@/components/partials/DefaultNavbar.vue';
+    
+    import { ref } from 'vue';
 
-    import { ref, onMounted } from 'vue';
-
-    const url = window.location.pathname;
-    const token = url.substring(url.lastIndexOf('/') + 1);
-
-	const password = ref('');
-    const passwordVerify = ref('');
-    const alert = ref('');
+	const email = ref('');
     const isSubmitted = ref(false);
 
     const submit = () => {
         isSubmitted.value = !isSubmitted.value;
     };
 
-    const getReset = async () => {
-        const response = await api({
-            url: `/reset/${ token }/`,
-            method: 'get',
-            responseType: 'json'
-        }).catch(apiCatchError)
-
-        if (!response)
-            return false;
-
-        const { data = {} } = response;
-
-        return data
-    }
-
-    const postReset = async () => {
+	const postForgot = async () => {
         const schema = Joi.object({
-            'password': Joi.string().min(8).required(),
-            'confirmPassword': Joi.ref('password')
+            'email': Joi.string().email({ tlds: { allow: false } }).max(254).required()
         });
 
         const formData = {
-            password: password.value,
-            confirmPassword: passwordVerify.value
-        };
+            email: email.value,
+        }; 
 
         if(!validateForm(schema, formData)) {
             return;
         }
 
         const response = await api({
-            url: '/reset/',
+            url: '/forgot/',
             method: 'post',
-            data: {
-                password: password.value,
-                token: token
-            },
+            withCredentials: true,
+			data: formData,
             responseType: 'json'
-        }).catch(apiCatchError => {
-            alert.value = apiCatchError.message;   
-        })
+        }).catch(apiCatchError)
 
-        if (!response)
-            return false;
+        const data = response?.data ?? false;
 
-        const { data = {} } = response;
-
-        window.location.href = '/login/'
-        
-    }
-
-    onMounted(async () => {
-        const result = await getReset({ });
-
-        if(!result) {
+        if(!data)
             return;
-        }
-    });
 
+		submit();
+
+		return data;
+    }
 </script>
 
 <template>
     <main class='main'>
-        <DefaultNavbar />
         <section class='container' v-if='!isSubmitted'>
-            <p class='logo'>Reset Password</p>
-
-            <form @submit.prevent="postReset">
-                <label>
-                    New password:
-                    <input type="password" name='password' v-model="password" />
-                </label>
-                <label>
-                    Re-type new password:
-                    <input type="password" name='confirmPassword' v-model="passwordVerify" />
-                </label>
-                <button type="submit" class='submit'>Reset password</button>
-            </form>
+			<p class='logo'>Vacansee</p>
+            <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to a reset form</p>
+			<form @submit.prevent='postForgot'>
+			    <input v-model='email' type='text' name='email' placeholder='Email' id='email' />
+			    <button class='submit'>Submit</button>
+			</form>
+            <router-link to='/login' class='return-link'>Return to log in page</router-link>
 		</section>
+        <section class='container' v-if='isSubmitted'>
+        	<p class='logo'>Vacansee</p>
+            <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to a reset form</p>
+			<div class='submitted-info'><p>You have been sent an email if an account with the provided email was found. Please check your email inbox.</p></div>
+            <router-link to='/login' class='return-link'>Return to log in page</router-link>
+        </section>
     </main>
 </template>
-
 
 <style scoped>
 	.main {
@@ -125,17 +88,21 @@
 		line-height: 24px;
 		display: block;
 		padding: 5px 10px;
-		margin: 0 0 10px 0;
+		margin: 10px 0 0 0;
 		width: calc(100% - 21px);
 	}
 
     .info {
         text-align: left;
+        font-size: 14px;
+        text-align: center;
+        margin-bottom: 22px;
     }
 
     .invalid-input {
         border: 3px solid var(--red) !important;
     }
+
 
 	.logo {
 		color: var(--blue);
@@ -151,6 +118,7 @@
         margin: 10px;
         color: var(--red);
         text-decoration: none;
+        font-size: 12px;
     }
 
     .return-link:hover {
@@ -169,6 +137,7 @@
 		line-height: 24px;
 		padding: 5px 0;
 		width: 100%;
+        margin: 25px 0 10px 0;
 	}
 
     .submit:active, .submit:focus, .submit:hover {

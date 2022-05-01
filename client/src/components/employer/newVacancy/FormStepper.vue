@@ -1,9 +1,17 @@
 <script setup>
-    import { watch } from 'vue';
-    
+    import { watch, onMounted } from 'vue';
+
     const props = defineProps(['stepNum']);
 
-    let oldStep = props.stepNum
+    let oldStep = props.stepNum;
+
+    onMounted(() => {
+        let circles = document.querySelectorAll('.circle');
+        circles.forEach((circle) => circle.classList.remove('circle-colour'));
+
+        let line = document.querySelector('.line-colour');
+        line.style.width = 0;
+    })
 
     watch(props, (props) => {
         let { stepNum: newStep } = props;

@@ -1,19 +1,10 @@
 <script setup>
-    const props = defineProps(['name', 'vacancyName', 'employer']);
-    const emit = defineEmits(['unmatch', 'close-modal']);
+    const props = defineProps(['vacancyName']);
+    const emit = defineEmits(['closeApplications', 'close-modal'])
 
-    const func = (value) => {
-        if(value)
-            return "You will not be able to rematch with them and they will be notified.";
-        else
-        {
-            return "You will be able to rematch with them but they will be notified.";
-        }
-    }
-
-    const unmatched = () => {
+    const closeAppliation = () => {
         emit('close-modal');
-        emit('unmatch');
+        emit('closeApplications');
     };
 </script>
 
@@ -25,17 +16,16 @@
             <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
 
             <div class="modal-body">
-                <p class='desc'>You are about to unmatch with</p>
-                <p class='desc desc-bold'>{{ name }}</p>
-                <p class='desc'>for the role:</p>
-                <p class="desc desc-bold">{{ vacancyName }}</p>
-                <p class="desc">{{ func(employer) }}</p>
-                <p class="desc">Are you sure you want to do this?</p>
+                <p class='desc'>You are about to close the job advert for:</p>
+                <p class='desc desc-bold'>{{ vacancyName }}</p>
+                <p class='desc'>After closing this advert you will not be able to reopen it and applicants will not be able to apply.</p>
+                <p class='desc'>You will still be able to view the applicants that you have matched with.</p>
+                <p class='desc'>Are you sure you want to do this?</p>
             </div>
 
             <div class="button-row">
                 <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
-                <button class='button button-red' @click='unmatched'>Unmatch</button>
+                <button class='button button-red' @click='closeAppliation'>Close Application</button>
             </div>
         </div>
     </div>
@@ -112,7 +102,7 @@
 
     .modal {
         background-color: white;
-        min-height: 380px;
+        min-height: 200px;
         max-width: min(425px, 90%);
         padding: 25px 20px 40px 20px;
         border-radius: 20px;
@@ -138,7 +128,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #000000c9;
+        background-color: #00000040;
     }
 
     .warning-circle {

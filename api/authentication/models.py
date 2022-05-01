@@ -11,8 +11,8 @@ class User(models.Model):
     Email = models.EmailField(max_length=254, blank=False, unique=True)
     IsEmployer = models.BooleanField(default=False, blank=False)
     Password = models.CharField(max_length=100, blank=False)
-    PasswordResetToken = models.CharField(max_length=100, null=True)
-    PasswordResetExpiration = models.DateField(null=True)
+    PasswordResetToken = models.CharField(max_length=100, null=True, blank=True)
+    PasswordResetExpiration = models.DateTimeField(null=True, blank=True)
 
 
 class RefreshToken(models.Model):

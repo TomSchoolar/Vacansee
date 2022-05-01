@@ -4,6 +4,7 @@ from .views import applications, favourites, index, account, profile
 urlpatterns = [
     path('vacancy/', index.getIndex),
     path('vacancy/fav/', favourites.postFavourite),
+    path('vacancy/unfav/', favourites.deleteFavourite),
     path('vacancy/apply/', applications.postApplication),
     path('vacancy/reject/', index.postReject),
     path('applications/', applications.getApplications),

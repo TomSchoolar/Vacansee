@@ -214,7 +214,7 @@
         </div>
 
         <div class='right'>
-            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' />
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' />
         </div>
     </div>
     
