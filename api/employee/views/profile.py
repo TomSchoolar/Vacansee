@@ -33,3 +33,29 @@ def postProfile(request):
         traceback.print_exc()
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def postProfileEdit(request):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    try:
+        data = request.data
+    except:
+        return Response({ 'status': 400 }, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        profile = Profile.objects.filter(pk = jwt['id']).update(**data)
+        profile.full_clean()
+        profile.save()
+
+        return Response({ 'status': 200 }, status=status.HTTP_200_OK)
+    except ValidationError as err:
+        return Response({ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as err:
+        import traceback
+        traceback.print_exc()
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
