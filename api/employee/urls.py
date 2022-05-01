@@ -13,5 +13,7 @@ urlpatterns = [
     path('favourites/', favourites.getFavourites),
     path('account/', account.getAccount),
     path('account/update/', account.putAccount),
-    path('account/delete/', account.deleteAccount)
+    path('account/delete/', account.deleteAccount),
+    path('account/profile/', account.getProfile),
+    path('profile/', profile.postProfile)
 ]
