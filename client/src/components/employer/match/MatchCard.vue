@@ -138,6 +138,7 @@
         text-decoration: none;
         padding: 2px 4px;
         font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+        margin: 2px;
     }
 
     .application-button-grey {
@@ -169,8 +170,9 @@
         display: flex;
         flex-direction: column;
         height: calc(100% - 4px);
-        justify-content: space-between;
+        justify-content: flex-start;
         padding: 2px 0;
+        
     }
 
     .contact {
