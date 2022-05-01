@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from authentication.helpers import jwt as jwtHelper
 from employer.helpers import getAccount as accountHelper
+from employee.models import Profile
+from employee.serializers import ProfileSerializer
 
 @api_view(['GET'])
 def getAccount(request):
@@ -66,3 +68,21 @@ def deleteAccount(request):
     except Exception as err:
         print(f'uh oh: { err }')
         return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def getProfile(request):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    try:
+        profileObj = Profile.objects.get(UserId__exact = jwt['id'])
+        profile = ProfileSerializer(profileObj, many=False).data
+
+        returnData = { 'details': profile }
+
+        return Response(data=returnData, status=status.HTTP_200_OK)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
