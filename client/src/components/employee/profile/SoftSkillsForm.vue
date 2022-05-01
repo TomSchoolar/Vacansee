@@ -7,6 +7,7 @@
     import FormExpandingText from '@/components/employer/newVacancy/formComponents/FormExpandingText.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
 
+    const props = defineProps(['Description', 'NotableSkills'])
     const emit = defineEmits(['next', 'back']);
 
     const validate = () => {
@@ -38,8 +39,8 @@
         First impressions count! Enter a brief sentence to describe yourself and up to three of your most relevant skills
     </FormHeader>
 
-    <FormTextArea label='profile description' name='TopicSentence' rows='4' />
-    <FormExpandingText label='notable skills' name='NotableSkills' :max='3' />
+    <FormTextArea label='profile description' name='TopicSentence' rows='4' :value='props.Description' />
+    <FormExpandingText label='notable skills' name='NotableSkills' :max='3' :value='props.NotableSkills' />
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 
