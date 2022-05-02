@@ -105,9 +105,8 @@
         }
 
         setTimeout(() => {
-            console.log(`secondary div width: ${document.querySelector('.vacancy-container').offsetWidth}`);
-            console.log(`cards per row: ${Math.max(Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449), 1)}`);
             resizeFunc();
+            window.addEventListener("resize", resizeFunc);
             getVacancies({ });
         }, 50);
     });
@@ -150,7 +149,7 @@
             initialReq = false;
             return;
         }
-        console.log(123)
+
         while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
