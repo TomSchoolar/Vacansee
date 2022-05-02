@@ -89,7 +89,7 @@
 
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        currentVacancy.value = vacancies.value[0] ?? {};
+        // currentVacancy.value = vacancies.value[0] ?? {};
 
         emptyCards.value = limit.value - vacancies.value.length;
 
@@ -103,8 +103,10 @@
             cardsPerRow.value = Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449);
         }
 
-        resizeFunc();
-        window.addEventListener("resize", resizeFunc);  
+        setTimeout(() => {
+            resizeFunc();
+            window.addEventListener("resize", resizeFunc);
+        }, 10);
     });
 
     // get vacancies in new order
@@ -148,7 +150,6 @@
         if(!result) {
             return;
         }
-
     });
 
     watch(sort, sortVacancies);
