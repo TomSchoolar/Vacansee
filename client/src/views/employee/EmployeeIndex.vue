@@ -106,7 +106,7 @@
         setTimeout(() => {
             resizeFunc();
             window.addEventListener("resize", resizeFunc);
-        }, 10);
+        }, 2);
     });
 
     // get vacancies in new order
