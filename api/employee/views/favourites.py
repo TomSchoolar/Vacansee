@@ -1,4 +1,3 @@
-from ctypes.wintypes import tagSIZE
 from math import ceil
 from rest_framework import status
 from employee.models import Favourite
@@ -25,22 +24,8 @@ def getFavourites(request):
         sort = params['sort']
         count = int(params['count'])
         pageNum = int(params['pageNum'])
-        tags = params['tagsFilter']
     except:
         return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
-
-    tagListInt = []
-
-    if len(tags) < 1:
-        tags = "null"
-
-    if tags != "null":
-        tagList = tags.split(',')
-
-        for tag in tagList:
-            tagListInt.append(int(tag))
-    
-    print(tagListInt)
 
     # parse sort parameter into django sort parameter
     if sort == 'dateDesc':
@@ -53,35 +38,15 @@ def getFavourites(request):
         # 'titleDesc'
         sortParam = '-VacancyName'
 
-    usingTags = False
-    triedTags = False
-
     try:
-        if tags != "null":
-            favouriteSet = Favourite.objects.filter(
-                UserId__exact = jwt['id'],
-                VacancyId__Tags__contains = tagListInt
-            )
-
-            VacancyIds = []
-
-            for fav in favouriteSet:
-                VacancyIds.append(int(fav.VacancyId.VacancyId))
-
-            if len(VacancyIds) > 0:
-                usingTags = True
-            else:
-                triedTags = True
-
-        if tags == "null" or usingTags == False:
-            favouriteSet = Favourite.objects.filter(
+        favouriteSet = Favourite.objects.filter(
                 UserId__exact = jwt['id']
-            )
+        )
 
-            VacancyIds = []
+        VacancyIds = []
 
-            for fav in favouriteSet:
-                VacancyIds.append(int(fav.VacancyId.VacancyId))
+        for fav in favouriteSet:
+            VacancyIds.append(int(fav.VacancyId.VacancyId))
 
         # get number of pages
         numVacancies = len(VacancyIds)
@@ -99,16 +64,10 @@ def getFavourites(request):
     limit = count * pageNum
 
     try:
-        if usingTags == False:
-            # get vacancies
-            vacanciesSet = Vacancy.objects.filter(
-                VacancyId__in = VacancyIds
-            ).order_by(sortParam)[skip:limit]
-        else:
-            vacanciesSet = Vacancy.objects.filter(
-                VacancyId__in = VacancyIds,
-                Tags__contains = tagListInt
-            ).order_by(sortParam)[skip:limit]
+        # get vacancies
+        vacanciesSet = Vacancy.objects.filter(
+            VacancyId__in = VacancyIds
+        ).order_by(sortParam)[skip:limit]
 
         vacancySerializer = VacancySerializer(vacanciesSet, many=True)
         vacancies = vacancySerializer.data
@@ -136,8 +95,7 @@ def getFavourites(request):
     returnData = {
         'numPages': pages,
         'vacancies': vacancies,
-        'numVacancies': numVacancies,
-        'triedTags': triedTags
+        'numVacancies': numVacancies
     }
 
     return Response(returnData, status=status.HTTP_200_OK)

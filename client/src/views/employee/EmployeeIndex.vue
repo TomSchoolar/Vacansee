@@ -3,13 +3,8 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
-    import TagSearchModal from '@/components/employee/index/TagSearchModal.vue';
-    import NoCardsModal from '@/components/employee/index/NoCardsModal.vue';
 
     import { computed, onMounted, ref, watch } from 'vue';
-
-    const showModalNoCards = ref(false);
-    const showModal = ref(false);
 
     // vars init
     const tagsLim = 6;
@@ -22,8 +17,11 @@
     const cardsPerRow = ref(1);
     const filter = ref('active');
     const sort = ref('dateDesc');
-    const tagsFilter = ref("null");
-    const tagsFilterRaw = ref([]);
+    const limitMultiplier = ref(1);
+
+    const limit = computed(() => {
+        return limitMultiplier.value * cardsPerRow.value;
+    });
 
     // pagination
     const page = ref(1);
@@ -32,34 +30,39 @@
 
     const currentVacancy = ref({});
 
-    const getTags = async () => {
-        const response = await api({
-            method: 'get',
-            url: '/vacancy/tags/',
-            responseType: 'json',
-        }).catch(apiCatchError);
-
-        if(!response || !response.data)
-            return false;
-
-        const { data } = response;
-
-        if(!data)
-            return false;
-
-        options.value = response.data;
-
-        return true;
-    }
-
-    const options = ref([]);
+    const tags = [
+        {
+            id: 0,
+            icon: 'fa-solid fa-book'
+        },
+        {
+            id: 1,
+            icon: 'fa-solid fa-code'
+        },
+        {
+            id: 2,
+            icon: 'fa-brands fa-python'
+        },
+        {
+            id: 3,
+            icon: 'fa-solid fa-school'
+        },
+        {
+            id: 4,
+            icon: 'fa-solid fa-briefcase'
+        },
+        {
+            id: 5,
+            icon: 'fa-solid fa-database'
+        },
+    ]
 
     document.title = 'Home | Vacansee';
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = 3, pageNum = 1, sort = 'dateDesc', filter = 'active', tagsFilter = "null" } = options;
-
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
+        
         const response = await api({
             method: 'get',
             url: '/vacancy/',
@@ -68,8 +71,7 @@
                 sort,
                 count,
                 filter,
-                pageNum,
-                tagsFilter
+                pageNum
             }
         }).catch(apiCatchError);
 
@@ -81,32 +83,32 @@
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
             numVacancies: total = 0,
-            triedTags: haveTriedTags = triedTags.value
-        } = data;
+        } = response.data;
 
         while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        currentVacancy.value = vacancies.value[0];
+        currentVacancy.value = vacancies.value[0] ?? {};
 
-        if(haveTriedTags){
-            showModalNoCards.value = true;
-            tagSearch([]);
-        }
+        emptyCards.value = limit.value - vacancies.value.length;
 
         return true;
     }
 
     // vacancy api request
     onMounted(async () => {
-        await getTags();
-        await getVacancies({ });
+        const resizeFunc = () => {
+            cardsPerRow.value = Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449);
+        }
+
+        resizeFunc();
+        window.addEventListener("resize", resizeFunc);  
     });
 
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
-        const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
         
         if(!result) {
             return;
@@ -116,7 +118,7 @@
 
     // pagination: change page
     const changePage = async (newPage) => {
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value });
 
         if(!result) {
             return;
@@ -125,37 +127,10 @@
         page.value = newPage;   
     }
 
-    const tagSearch = async (value) => {
-
-        tagsFilterRaw.value = value;
-
-        let i = 0;
-
-        tagsFilter.value = "";
-
-        for(i = 0; i < value.length; i++){
-            tagsFilter.value = tagsFilter.value + (value[i].toString());
-            if(i != value.length-1){
-                tagsFilter.value = tagsFilter.value + ",";
-            }
-        }
-
-        if(value.length == 0) {
-            tagsFilter.value = "null";
-            tagsFilterRaw.value = [];
-        }
-
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
-
-        if(!result) {
-            return;
-        }
-    }
-
     // dropdown watchers
     watch(filter, async (filterValue) => {
         // change which vacancies are display based on isOpen
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue });
 
         if(!result) {
             return;
@@ -167,7 +142,7 @@
         // change number of vacancies per page
         while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
-        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
         if(!result) {
             return;
@@ -221,33 +196,16 @@
 
 
             <div class='filter-tags-row'>
-                    <button type='button' class='button arrow-btn' @click='showModal = true'>
-                        <th>Select Tags</th>
-                    </button>
-                    <button type='button' class='button arrow-btn' @click='tagSearch("")'>
-                        <th>Remove Tags</th>
-                    </button>
-
-                    <div v-if='tagsFilter != "null"'>
-                        <p>            :            </p>
-                    </div>
-
-                    <div v-if='tagsFilter != "null"' class='filter-tag'>
-                        <i class='tag' v-for='tag in tagsFilterRaw' v-bind:key='tag.id' :class='options[tag-1]["icon"]' :title='tag.text'></i>
-                    </div>
-                    
-                    <!-- <div class='filter-tag'>
+                    <th class='filter-tags-header'> Selected Tags </th>
+                    <div class='filter-tag'>
                         <i class='fa-solid fa-book tag'></i> 
-                    </div> -->
+                    </div>
             </div>
 
-            <NoCardsModal v-show='showModalNoCards' @close-modal='showModalNoCards = false' />
-
-            <TagSearchModal v-show='showModal' @search='tagSearch' @close-modal='showModal = false' />
-
-            <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>
-                <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='options' />
+                <h3 class='no-vacancies' v-if='numVacancies == 0'>There are no vacancies currently accepting applications</h3>
+                <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
+                <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
                     
 
@@ -261,7 +219,7 @@
         </div>
 
         <div class='right'>
-            <ApplyVacancyCard :vacancy='currentVacancy' :tags='options' :favourited='false' />
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' />
         </div>
     </div>
     
@@ -288,7 +246,7 @@
         background-color: white;
         border:none;
         float: right;
-        font-size: 10px;
+        font-size: 20px;
         padding: 2px;
     }
 
@@ -304,7 +262,7 @@
         color: black;
         cursor: pointer;
         display: inline-block;
-        font-size: 10px;
+        font-size: 35px;
         margin: 2px;
         padding-left: 30px;
         padding-right: 30px;
@@ -312,10 +270,12 @@
         padding-bottom: 10px;
         text-align: center;
         text-decoration: none;
+        transition-duration: 0.4s;
     }
 
     .button:active {
         background-color:#D3D3D3;
+        font-size: 50%;
     }
 
     .button:hover {
