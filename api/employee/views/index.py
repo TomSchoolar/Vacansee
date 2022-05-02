@@ -3,10 +3,10 @@ from rest_framework import status
 from ..serializers import RejectSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from employer.serializers import VacancySerializer
 from authentication.helpers import jwt as jwtHelper
-from employer.models import EmployerDetails, Vacancy
+from employer.models import EmployerDetails, Vacancy, Tag
 from employee.models import Application, Favourite, Reject
+from employer.serializers import VacancySerializer, TagSerializer
 
 
 
@@ -26,8 +26,22 @@ def getIndex(request):
         filter = params['filter']
         count = int(params['count'])
         pageNum = int(params['pageNum'])
+        tags = params['tagsFilter']
     except:
         return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    tagListInt = []
+
+    if len(tags) < 1:
+        tags = "null"
+
+    if tags != "null":
+        tagList = tags.split(',')
+
+        for tag in tagList:
+            tagListInt.append(int(tag))
+
 
     # parse sort parameter into django sort parameter
     if sort == 'dateDesc':
@@ -48,6 +62,10 @@ def getIndex(request):
     else:
         # 'all'
         filterParam = [True, False]
+
+
+    usingTags = False
+    triedTags = False
 
     try:
         # get number of pages
@@ -75,11 +93,26 @@ def getIndex(request):
         for app in applicationSet:
             vacancyList.append(app.VacancyId.VacancyId)
 
-        numVacancies = Vacancy.objects.filter(
-            IsOpen__in = filterParam
-        ).exclude(
-            VacancyId__in = vacancyList
-        ).count()
+        if tags != "null":
+            numVacancies = Vacancy.objects.filter(
+                IsOpen__in = filterParam,
+                Tags__contains = tagListInt
+            ).exclude(
+                VacancyId__in = vacancyList
+            ).count()
+
+            if numVacancies > 0:
+                usingTags = True
+            else:
+                triedTags = True
+
+        if tags == "null" or usingTags == False:
+            numVacancies = Vacancy.objects.filter(
+                IsOpen__in = filterParam
+            ).exclude(
+                VacancyId__in = vacancyList
+            ).count()
+
 
         pages = int(ceil(numVacancies / int(params['count'])))
         
@@ -96,11 +129,20 @@ def getIndex(request):
 
     try:
         # get vacancies
-        vacanciesSet = Vacancy.objects.filter(
-            IsOpen__in = filterParam
-        ).exclude(
-            VacancyId__in = vacancyList
-        ).order_by(sortParam)[skip:limit]
+        if usingTags == False:
+            # get vacancies
+            vacanciesSet = Vacancy.objects.filter(
+                IsOpen__in = filterParam
+            ).exclude(
+                VacancyId__in = vacancyList
+            ).order_by(sortParam)[skip:limit]
+        else:
+            vacanciesSet = Vacancy.objects.filter(
+                IsOpen__in = filterParam,
+                Tags__contains = tagListInt
+            ).exclude(
+                VacancyId__in = vacancyList
+            ).order_by(sortParam)[skip:limit]
 
         vacancySerializer = VacancySerializer(vacanciesSet, many=True)
         vacancies = vacancySerializer.data
@@ -108,7 +150,6 @@ def getIndex(request):
     except Exception as err:
         print(f'uh oh: { err }')
         return Response(data={'status': 500, 'message': 'Server error fetching vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
     
 
     try:
@@ -128,7 +169,8 @@ def getIndex(request):
     returnData = {
         'numPages': pages,
         'vacancies': vacancies,
-        'numVacancies': numVacancies
+        'numVacancies': numVacancies,
+        'triedTags': triedTags
     }
 
     return Response(returnData, status=status.HTTP_200_OK)
@@ -189,4 +231,32 @@ def postReject(request):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
     return Response(newVacancy, status=status.HTTP_201_CREATED)
+
+
+
+@api_view(['GET'])
+def getTags(request):
+    jwt = jwtHelper.extractJwt(request)
+
+    if type(jwt) is not dict:
+        return jwt
+
+    try:
+        tagSet = Tag.objects.all()
+        print(tagSet.first().TagStyle)
+        tagSerializer = TagSerializer(tagSet, many=True)
+        tags = tagSerializer.data
+
+        tagDictList = []
+
+        for tag in tags:
+            print(tag)
+            tagDictList.append({ 'id': tag['TagId'], 'text': tag['TagName'], 'icon': tag['TagStyle'] })
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status': 500, 'message': 'Server error fetching vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response(tagDictList, status=status.HTTP_200_OK)

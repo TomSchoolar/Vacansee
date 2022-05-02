@@ -11,10 +11,10 @@
         tagsLim.value = 5;
 
         tags.slice(5,-1).forEach((tag) => {
-            extraTags.value += `${ tag.title }, `;
+            extraTags.value += `${ tag.text }, `;
         });
 
-        extraTags.value += tags[tags.length - 1].title;
+        extraTags.value += tags[tags.length - 1].text;
     }
 </script>
 
@@ -45,9 +45,9 @@
                 <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
             </div>
         </div>
-        <span v-if='vacancy?.Tags' class='card-section'>Requirements:</span>
-        <div class='tags-row' v-if='vacancy?.Tags'>
-            <i class='tag' v-for='tag in vacancy?.Tags.slice(0,tagsLim)' v-bind:key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
+        <span v-if='vacancy.Tags' class='card-section'>Requirements:</span>
+        <div v-if='vacancy.Tags && tags.length > 0'>
+            <i v-for='tag in vacancy.Tags' v-bind:key='tag.id' :class='`tag ${ tags[tag-1].icon }`' :title='tag.text'></i>
             <div v-if='vacancy?.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
                 <div class='tags-num' ref='extra-tags'>+{{ vacancy?.Tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
