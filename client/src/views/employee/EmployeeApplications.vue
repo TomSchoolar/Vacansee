@@ -27,7 +27,7 @@
     const filter = ref('all');
     const modalStats = ref({});
     const applications = ref([]);
-    const numApps = ref(0);
+    const numApps = ref(1);
     const sort = ref('dateDesc');
     const displayModal = ref(false);
 
@@ -274,6 +274,8 @@
             <hr />
 
             <MatchModal :display='displayModal' :stats='modalStats' @close='displayModal = false' />
+            
+            <h3 class='no-applications' v-if='numApps == 0'>No applications yet...</h3>
 
             <div class='applications' v-for='application in applications' :key='application.id'>
                 <div class='application'>
@@ -286,8 +288,11 @@
                     </div>
                     <div class='right'>
                         <div class='applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
-                        <button class='button button-red' @click='showModal = true; currentModalApplication = application'>Delete Application</button>
-                        <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
+                        <div class='button-container'>
+                            <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
+                            <button class='button button-red' @click='showModal = true; currentModalApplication = application' v-if='application.ApplicationStatus != "REJECTED"'>Delete Application</button>
+                            <button class='button button-disabled' title='You cannot delete rejected applications' v-else>Delete Application</button>
+                        </div>
                     </div>
                 </div>
                 <AreYouSureModal v-if='showModal' :name='currentModalApplication.CompanyName' :vacancyName='currentModalApplication.VacancyName' :employer='false' @close-modal='showModal = false' @unmatch='deleteApplication(currentModalApplication.ApplicationId)' />
@@ -300,9 +305,6 @@
             </div>
         </section>
     </main>
-
-    <button @click='notifs++'>Add notification</button>
-    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
 
 </template>
 
@@ -340,7 +342,7 @@
 
     .button {
         font-weight: 500; /* required for some reason */
-        border-radius: 12px;
+        border-radius: 7px;
         color: #fff;
         border: 2.2px solid #333;
         width: 150px;
@@ -352,6 +354,18 @@
         justify-content: center;
         font-family: var(--font);
         padding: 2px 6px;
+    }
+
+    .button-container {
+        display: flex;
+        width: 330px;
+        justify-content: flex-end;
+    }
+
+    .button-disabled {
+        border-color: #999999;
+        background-color: #cccccc;
+        color: #666666;
     }
 
     .button-green {
@@ -393,6 +407,16 @@
         display: flex;
         align-items: center;
         flex-shrink: 1;
+    }
+
+    .no-applications {
+        color: var(--jet);
+        font-weight: 500;
+        position: relative;
+        top: 25px;
+        font-size: 18px;
+        font-style: italic;
+        margin: 0 auto;
     }
 
     .right {

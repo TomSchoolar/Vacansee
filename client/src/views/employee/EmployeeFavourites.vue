@@ -25,7 +25,7 @@
     // pagination
     const page = ref(1);
     const numPages = ref(1);
-    const numVacancies = ref(0);
+    const numVacancies = ref(1);
 
     const tags = [
         {
@@ -93,7 +93,7 @@
         numVacancies.value = total;
         vacancies.value = newVacancies;
 
-        emptyCards.value = limit.value - vacancies.value.length;
+        emptyCards.value = numVacancies > 0 ? limit.value - vacancies.value.length : 0;
 
         return true;
     }
@@ -200,6 +200,7 @@
                     </div>
             </div>
             <div class="vacancy-container">
+                <h3 class='no-vacancies' v-if='numVacancies == 0'>You haven't got any favourites atm...</h3>
                 <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :favourited='true' :tags='tags' />
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
@@ -304,6 +305,15 @@
         margin: 10px 0 25px 0;
         padding: 7px 20px;
         border-radius: 7px;
+    }
+
+    .no-vacancies {
+        color: var(--jet);
+        font-weight: 500;
+        position: relative;
+        top: 25px;
+        font-size: 18px;
+        font-style: italic;
     }
 
     .search {

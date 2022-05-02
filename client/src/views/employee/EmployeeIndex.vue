@@ -26,7 +26,7 @@
     // pagination
     const page = ref(1);
     const numPages = ref(1);
-    const numVacancies = ref(0);
+    const numVacancies = ref(1);
 
     const currentVacancy = ref({});
 
@@ -62,7 +62,7 @@
     // api request function
     const getVacancies = async (options) => {
         const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
-
+        
         const response = await api({
             method: 'get',
             url: '/vacancy/',
@@ -85,7 +85,6 @@
             numVacancies: total = 0,
         } = response.data;
 
-
         while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
         numVacancies.value = total;
@@ -100,13 +99,11 @@
     // vacancy api request
     onMounted(async () => {
         const resizeFunc = () => {
-            cardsPerRow.value = Math.floor(document.querySelector('.vacancy-container').offsetWidth / 449);
+            cardsPerRow.value = Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449);
         }
 
         resizeFunc();
         window.addEventListener("resize", resizeFunc);  
-
-        await getVacancies({ });
     });
 
     // get vacancies in new order
@@ -143,7 +140,7 @@
 
     watch(limit, async (newLimit) => {
         // change number of vacancies per page
-        while((page.value - 1) * limit.value >= numVacancies.value && pageNum > 1) page.value--;
+        while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
@@ -205,8 +202,8 @@
                     </div>
             </div>
 
-            <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>
+                <h3 class='no-vacancies' v-if='numVacancies == 0'>There are no vacancies currently accepting applications</h3>
                 <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
@@ -325,6 +322,15 @@
         height: 100%;
         padding: 10px 50px 0 50px;
         width: 70%;       
+    }
+
+    .no-vacancies {
+        color: var(--jet);
+        font-weight: 500;
+        position: relative;
+        top: 25px;
+        font-size: 18px;
+        font-style: italic;
     }
 
     .right {
