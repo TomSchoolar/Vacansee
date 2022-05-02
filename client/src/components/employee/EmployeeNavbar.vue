@@ -1,13 +1,11 @@
 <script setup>
     import { toRef } from 'vue';
     import { logout } from '@/assets/js/jwt';
-    
     const props = defineProps(['page']);
 
-    //notifications alerts
-    /*const props = defineProps(['page', 'numNotifs']);
+    //const props = defineProps(['page', 'numNotifs']);
 
-    let notifs = toRef(props, 'numNotifs');
+    /*let notifs = toRef(props, 'numNotifs');
 
     const notification = () => {
         alert("notification!");
@@ -31,12 +29,12 @@
         </span>
 
         <div class='navbar-link-block'>
-            
-            <!-- Notification bar -->
+            <!-- Notification Bar -->
             <!-- <a href='#' class='navbar-link' id='navbar-notif-container'>
                 <i @click='notification' id='navbar-notif' class='fas fa-bell'></i>
                 <span id='navbar-notif-alert' v-if='notifs'>{{ numNotifs }}</span>
-            <span class='navbar-divider'></span>
+            </a>
+            <span class='navbar-divider'></span> -->
             <router-link to='/account' class='navbar-link' :class='{"navbar-active-link": (page == "account")}'>
                 <i class='fas fa-user' id='navbar-user'></i>
             </router-link>
