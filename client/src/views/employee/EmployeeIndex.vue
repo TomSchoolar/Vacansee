@@ -89,7 +89,7 @@
 
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        // currentVacancy.value = vacancies.value[0] ?? {};
+        currentVacancy.value = vacancies.value[0] ?? {};
 
         emptyCards.value = limit.value - vacancies.value.length;
 
