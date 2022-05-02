@@ -1,6 +1,7 @@
 <script setup>
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
+	import ProfileCard from '@/components/employee/account/ProfileCard.vue';
 
 	import { logout } from '@/assets/js/jwt';
     import api, { apiCatchError } from '@/assets/js/api';
@@ -10,8 +11,10 @@
 
 	const notifs = ref(2);
 	const saved = ref(false);
-	const details = ref({});
+	const accountDetails = ref({});	
+	const details = ref({})
 	const displayModal = ref(false);
+	const profile = ref({});
 
 	document.title = 'Account | Vacansee'
 
@@ -39,7 +42,7 @@
 			email: apiEmail = ''
 		} = data;
 
-		details.value.Email = apiEmail;
+		accountDetails.value.Email = apiEmail;
 
 		return true;
 	}
@@ -67,7 +70,7 @@
 
 	const deleteAccount = async () => {
 		const response = await api({
-			url: '/e/account/delete/',
+			url: '/account/delete/',
 			method: 'delete',
 			responseType: 'json'
 		}).catch(apiCatchError);
@@ -82,10 +85,32 @@
 		logout();
 	}
 
+	const getProfile = async () => {
+		const response = await api({
+			url: '/account/profile',
+			method: 'get',
+			responseType: 'json'
+		}).catch(apiCatchError);
+
+		if (!response) {
+			return false;
+		}
+
+		const { data } = response;
+
+		const {
+			details: newDetails = accountDetails.value,
+		} = data;
+
+		profile.value = newDetails;
+		return true;
+	}
+
 	onMounted(async () => {
 		const result = await getAccount({ });
+		const response = await getProfile({});
 
-		if(!result) {
+		if(!result || !response) {
 			return;
 		};
 	})
@@ -105,12 +130,17 @@
         <EmployeeNavbar page='account' :numNotifs='notifs'></EmployeeNavbar>
         <section class='container'>
 			<AccountModal :display='displayModal' @close='displayModal = false' @delete='deleteAccount' />
+			<div>
+				<p class='logo'>Account Profile</p>
+				<ProfileCard class='card' :profile='profile' />
+				<router-link to='/profile/edit' class='profileBtn' >Edit Profile</router-link>
+			</div>
 			<p class='logo'>Account Details</p>
 			<label for='email'>Current Email Address:</label>
-			<input type='text' placeholder='...' v-model='details.Email' required/>
+			<input type='text' placeholder='...' v-model='accountDetails.Email' required/>
 			<div class='button-container'>
 				<button class='delete-account' @click=showDeletion>Delete Account</button>
-				<button class='save' @click="updateAccount(details.Email)">Save</button>
+				<button class='save' @click="updateAccount(accountDetails.Email)">Save</button>
 			</div>
 			<div class='saved-indicator' v-show='saved'>
 				<p>Saved!</p>
@@ -132,6 +162,12 @@
 	.button-container {
 		display: flex;
 		gap: 0.2vw;
+	}
+
+	.card {
+		margin-left : auto; 
+        margin-right : auto;
+        min-width: 350px;
 	}
 
 	.container {
@@ -179,6 +215,26 @@
 		line-height: 1;
 		text-transform: uppercase;
 		margin: 0 0 25px 0;
+	}
+
+	.profileBtn{
+		background: var(--red);
+		color: #ffffff;
+		border: 0;
+		border-radius: 5px;
+		display: block;
+		cursor: pointer;
+		font-family: var(--fonts);
+		font-size: 16px;
+		font-weight: bold;
+		text-decoration: none;
+		line-height: 24px;
+		padding: 5px 0;
+		margin-bottom: 1vw;
+	}
+
+	.profileBtn:active .profileBtn:focus .profileBtn:hover {
+		background: var(--red-focus);
 	}
 
 

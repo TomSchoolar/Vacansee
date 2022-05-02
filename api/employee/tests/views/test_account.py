@@ -146,3 +146,35 @@ class deleteAccountTests(TestCase):
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
         
+class getProfileTests(TestCase):
+
+    fixtures = ['authentication/fixtures/fixtures.json']
+
+    userId = 3 # Cavan
+    jwt = createAccessToken(userId)
+    
+    # TESTS:
+    # Valid Request
+    # Expired JWT
+    # Invalid JWT
+
+    def test_validRequest(self):
+        # DELETE request to delete data
+        getResponse = self.client.get(f'/account/profile/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        # Assert response code 200
+        self.assertEquals(getResponse.status_code, 200)
+
+    def test_expiredJwt(self):
+        jwt = createAccessToken(self.userId, 'now')
+        response = self.client.get(f'/account/profile/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+
+        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['message'], 'Expired auth token')
+
+    def test_invalidJwt(self):
+        jwt = self.jwt[:-1]
+        response = self.client.get(f'/account/profile/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+
+        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['message'], 'Invalid auth token')

@@ -1,17 +1,9 @@
 <script setup>
-    import { watch, onMounted } from 'vue';
+    import { watch } from 'vue';
 
     const props = defineProps(['stepNum']);
 
-    let oldStep = props.stepNum;
-
-    onMounted(() => {
-        let circles = document.querySelectorAll('.circle');
-        circles.forEach((circle) => circle.classList.remove('circle-colour'));
-
-        let line = document.querySelector('.line-colour');
-        line.style.width = 0;
-    })
+    let oldStep = props.stepNum
 
     watch(props, (props) => {
         let { stepNum: newStep } = props;
@@ -41,12 +33,13 @@
             <div class='line-colour'></div>
         </div>
         
+        
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
-                Basic Details
+                Personal Details
             </div>
         </div>
         
@@ -54,10 +47,10 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
-                More Details
+                Location
             </div>
         </div>
         
@@ -65,10 +58,10 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
-                Contact Details
+                Soft Skills
             </div>
         </div>
         
@@ -76,10 +69,21 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
-                Logistics
+                Experience
+            </div>
+        </div>
+
+        <div class='spacer'></div>
+
+        <div class='form-page'>
+            <div class='circle'>
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div class='label'>
+                Qualifications
             </div>
         </div>
         
@@ -87,18 +91,7 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class='fa-solid fa-check'></i>
-            </div>
-            <div class='label'>
-                Tags
-            </div>
-        </div>
-        
-        <div class='spacer'></div>
-        
-        <div class='form-page'>
-            <div class='circle'>
-                <i class='fa-solid fa-check'></i>
+                <i class="fa-solid fa-check"></i>
             </div>
             <div class='label'>
                 Review

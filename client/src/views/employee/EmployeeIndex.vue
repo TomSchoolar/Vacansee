@@ -6,7 +6,7 @@
     import TagSearchModal from '@/components/employee/index/TagSearchModal.vue';
     import NoCardsModal from '@/components/employee/index/NoCardsModal.vue';
 
-    import { ref, watch, onMounted, onUpdated } from 'vue';
+    import { computed, onMounted, ref, watch } from 'vue';
 
     const showModalNoCards = ref(false);
     const showModal = ref(false);
@@ -18,7 +18,8 @@
     const vacancies = ref([]);
 
     // dropdown values
-        const limit = ref(3);
+    const emptyCards = ref(0);
+    const cardsPerRow = ref(1);
     const filter = ref('active');
     const sort = ref('dateDesc');
     const tagsFilter = ref("null");
@@ -27,7 +28,7 @@
     // pagination
     const page = ref(1);
     const numPages = ref(1);
-    const numVacancies = ref(0);
+    const numVacancies = ref(1);
 
     const currentVacancy = ref({});
 
@@ -72,13 +73,9 @@
             }
         }).catch(apiCatchError);
 
-        if(!response || !response.data)
+        if(!response?.data)
             return false;
 
-        const { data } = response;
-
-        if(!data)
-            return false;
 
         const { 
             vacancies: newVacancies = vacancies.value, 
@@ -87,10 +84,8 @@
             triedTags: haveTriedTags = triedTags.value
         } = data;
 
+        while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
-        while((page.value - 1) * limit.value >= total) page.value--;
-
-        numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
         currentVacancy.value = vacancies.value[0];
@@ -170,10 +165,7 @@
 
     watch(limit, async (newLimit) => {
         // change number of vacancies per page
-        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
-
-        if(page.value < 0)
-            page.value = 0;
+        while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
 
@@ -209,11 +201,11 @@
 
 
             <div class='select-group'>
-                <select v-model='limit' aria-label='set page size' id='limit'>
-                    <option value=3 selected>3 per page</option>
-                    <option value=6>6 per page</option>
-                    <option value=9>9 per page</option>
-                    <option value=12>12 per page</option>
+                <select v-model='limitMultiplier' aria-label='set page size' id='limit'>
+                    <option value='1'>{{ cardsPerRow }} per page</option>
+                    <option value='2'>{{ cardsPerRow * 2 }} per page</option>
+                    <option value='3'>{{ cardsPerRow * 3 }} per page</option>
+                    <option value='4'>{{ cardsPerRow * 4 }} per page</option>
                 </select>
             </div>
 
@@ -330,6 +322,11 @@
         background-color:#D3D3D3;
     }
 
+    .card-placeholder {
+        width: 449px;
+        height: 1px;
+    }
+
     .container {
         display: flex;
         justify-content: center;
@@ -357,13 +354,23 @@
         top: 5px;
         margin-bottom: 5px;
         padding: 7px 20px;
-        border-radius: 15px;
+        border-radius: 7px;
+        margin: 10px 0 25px 0;
     }
 
     .left {
         height: 100%;
         padding: 10px 50px 0 50px;
         width: 70%;       
+    }
+
+    .no-vacancies {
+        color: var(--jet);
+        font-weight: 500;
+        position: relative;
+        top: 25px;
+        font-size: 18px;
+        font-style: italic;
     }
 
     .right {
@@ -393,6 +400,7 @@
 
     .search-group {
         position: relative;
+        bottom: 2px;
     }
 
     .select-group {
@@ -412,11 +420,15 @@
         border-bottom: 1px solid;
     }
 
-    .vacancy-container {
-        width: 100%; 
-        text-align: center; 
+    .vacancy-container { 
         display: flex; 
-        justify-content: space-between; 
+        flex-direction: row;
+        justify-content: center;
         flex-wrap: wrap;
+        padding-left: 25px;
+    }
+
+    .vacancy-container:deep(.card) {
+        margin: 12px 25px 12px 0;
     }
 </style>
