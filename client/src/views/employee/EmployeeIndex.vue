@@ -10,6 +10,7 @@
     const tagsLim = 6;
     const extraTags = '';
     const notifs = ref(2);
+    let initialReq = true;
     const vacancies = ref([]);
 
     // dropdown values
@@ -107,7 +108,7 @@
             console.log(`secondary div width: ${document.querySelector('.vacancy-container').offsetWidth}`);
             console.log(`cards per row: ${Math.max(Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449), 1)}`);
             resizeFunc();
-            window.addEventListener("resize", resizeFunc);
+            getVacancies({ });
         }, 50);
     });
 
@@ -145,6 +146,11 @@
 
     watch(limit, async (newLimit) => {
         // change number of vacancies per page
+        if(initialReq) {
+            initialReq = false;
+            return;
+        }
+        console.log(123)
         while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
