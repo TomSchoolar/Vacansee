@@ -95,9 +95,10 @@
 
         return true;
     }
-
+    
     // vacancy api request
     onMounted(async () => {
+        console.log(document.querySelector('.vacancy-container').offsetWidth)
         const resizeFunc = () => {
             cardsPerRow.value = Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449);
         }
@@ -207,7 +208,8 @@
                 <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
-                    
+
+                  
 
             <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
             <i class="fa-solid fa-circle-arrow-right"></i>
@@ -225,7 +227,6 @@
     
     
 </template>
-
 
 <style scoped>
     select {
