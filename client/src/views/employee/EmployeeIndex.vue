@@ -98,12 +98,14 @@
     
     // vacancy api request
     onMounted(async () => {
-        console.log(document.querySelector('.vacancy-container').offsetWidth)
+        console.log(`initial div width: ${document.querySelector('.vacancy-container').offsetWidth}`);
         const resizeFunc = () => {
-            cardsPerRow.value = Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449);
+            cardsPerRow.value = Math.max(Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449), 1);
         }
 
         setTimeout(() => {
+            console.log(`secondary div width: ${document.querySelector('.vacancy-container').offsetWidth}`);
+            console.log(`cards per row: ${Math.max(Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449), 1)}`);
             resizeFunc();
             window.addEventListener("resize", resizeFunc);
         }, 50);
