@@ -1,5 +1,6 @@
 <script setup>
     import VacancyCard from '@/components/auth/VacancyCard.vue';
+    import Footer from '@/components/partials/Footer.vue';
 
     let vacancies = [
         {
@@ -93,6 +94,8 @@
         </section>
 
     </main>
+
+    <Footer></Footer>
 </template>
 
 <style scoped>
