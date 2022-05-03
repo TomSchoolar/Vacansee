@@ -6,11 +6,11 @@
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     
     // form pages
-    import PersonalDetailsFormEdit from '@/components/employee/profile/edit/PersonalDetailsFormEdit.vue';
+    import PersonalDetailsForm from '@/components/employee/profile/edit/PersonalDetailsFormEdit.vue';
     import LocationForm from '@/components/employee/profile/LocationForm.vue';
-    import SoftSkillsForm from '@/components/employee/profile/SoftSkillsForm.vue';
-    import ExperienceForm from '@/components/employee/profile/ExperienceForm.vue';
-    import QualificationsForm from '@/components/employee/profile/QualificationsForm.vue';
+    import SoftSkillsForm from '@/components/employee/profile/edit/SoftSkillsFormEdit.vue';
+    import ExperienceForm from '@/components/employee/profile/edit/ExperienceFormEdit.vue';
+    import QualificationsForm from '@/components/employee/profile/edit/QualificationsFormEdit.vue';
     import ReviewFormEdit from '@/components/employee/profile/edit/ReviewFormEdit.vue';
 
     import { onMounted, ref } from 'vue';
@@ -91,7 +91,7 @@
 
     <form class='form-pane'>
         <div class='form-page-container'>
-            <PersonalDetailsFormEdit @next='changePage(1)' :FirstName='profile.FirstName' :LastName='profile.LastName' :Pronouns='profile.Pronouns' :PhoneNumber='profile.PhoneNumber' />
+            <PersonalDetailsForm @next='changePage(1)' :FirstName='profile.FirstName' :LastName='profile.LastName' :Pronouns='profile.Pronouns' :PhoneNumber='profile.PhoneNumber' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
             <LocationForm @next='changePage(1)' @back='changePage(-1)' :Location='profile.Location' :TimeZone='profile.TimeZone' />
