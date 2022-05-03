@@ -111,6 +111,7 @@
 
 	const resetTutorial = () => {
         window.localStorage.removeItem('newUserEmployeeAccount');
+		window.localStorage.removeItem('newUserFavourites');
 		window.localStorage.removeItem('newUserEmployeeIndex');
 
         isNewUser.value = true;
