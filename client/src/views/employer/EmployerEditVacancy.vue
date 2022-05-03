@@ -3,6 +3,7 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
+    import Footer from '@/components/partials/Footer.vue';
     
     // form pages
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
@@ -107,6 +108,8 @@
         </div>
         
     </form>
+
+    <Footer></Footer>
 
 </template>
 
