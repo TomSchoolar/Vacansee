@@ -1,6 +1,7 @@
 <script setup>
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
+    import Footer from '@/components/partials/Footer.vue';
 
 	import { logout } from '@/assets/js/jwt';
     import api, { apiCatchError } from '@/assets/js/api';
@@ -124,6 +125,7 @@
 				<p>Saved!</p>
 			</div>
 		</section>
+		<Footer></Footer>
     </main>
 </template>
 
