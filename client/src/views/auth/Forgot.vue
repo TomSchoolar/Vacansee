@@ -26,7 +26,7 @@
         }
 
         const response = await api({
-            url: '/forgot/',
+            url: '/v1/forgot/',
             method: 'post',
             withCredentials: true,
 			data: formData,

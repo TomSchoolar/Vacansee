@@ -20,15 +20,14 @@
 
     // api request function
     const getMatches = async (options) => {
-        const { sort = 'LastNameAsc', vID = selected.value  } = options;
+        const { sort = 'LastNameAsc', vacancyId = selected.value  } = options;
 
         const response = await api({
             method: 'get',
-            url: '/e/match/matches/',
+            url: `/v1/e/matches/matches/${ vacancyId }`,
             responseType: 'json',
             params: {
-                vID,
-                sort,
+                sort
             }
         }).catch(apiCatchError);
 

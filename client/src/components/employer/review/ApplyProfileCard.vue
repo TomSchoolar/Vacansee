@@ -8,7 +8,7 @@
 
     const updateStatus = async (newStatus, applicationId) => {
         const response = await api({
-            url: `/e/review/${ vacancyId }/updatestatus/${ applicationId }/`,
+            url: `/v1/e/reviews/${ vacancyId }/updatestatus/${ applicationId }/`,
             method: 'put',
             data: {
                 setStatus: newStatus

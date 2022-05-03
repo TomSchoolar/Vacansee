@@ -19,7 +19,7 @@
 
     const getApplicants = async () => {
         const response = await api({
-            url: `/e/review/${ vacancyId }/`,
+            url: `/v1/e/reviews/${ vacancyId }/`,
             method: 'get',
             responseType: 'json'
         }).catch(apiCatchError);

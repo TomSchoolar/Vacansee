@@ -49,7 +49,7 @@
 
         const response = await api({
             method: 'get',
-            url: '/e/vacancy/',
+            url: '/v1/e/vacancies/',
             responseType: 'json',
             params: {
                 sort,
@@ -104,7 +104,7 @@
         // TODO: fix this spaghetti code and get show application working on matches again
         const response = await api({
             method: 'get',
-            url: '/e/vacancy/stats/',
+            url: '/v1/e/vacancies/stats/',
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -198,7 +198,7 @@
     const closeVacancy = async () => {
         const response = await api({
             method: 'put',
-            url: `/e/vacancy/close/${ selectedVacancy.value }/`,
+            url: `/v1/e/vacancies/close/${ selectedVacancy.value }/`,
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -220,7 +220,7 @@
     const deleteVacancy = async () => {
         const response = await api({
             method: 'delete',
-            url: `/e/vacancy/delete/${ selectedVacancy.value }/`,
+            url: `/v1/e/vacancies/delete/${ selectedVacancy.value }/`,
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -306,10 +306,6 @@
                     <div class='vacancy-right'>
                         <div class='vacancy-decisions'>{{ vacancy.AcceptedApplications }} Accepted / {{ vacancy.RejectedApplications }} Rejected</div>
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
-                        <button class='vacancy-button vacancy-button-red' @click='showClosure(vacancy.VacancyId)' v-if='vacancy.IsOpen'>Close Applications</button>
-                        <button class='vacancy-button vacancy-button-red' @click='showDeletion(vacancy.VacancyId)' v-else>Delete</button>
-                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
-                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
 
                         <div class='vacancy-button-container'>
                             <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
