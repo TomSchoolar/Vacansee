@@ -29,7 +29,7 @@ class postProfileTests(TestCase):
         profile = Profile.objects.get(UserId__exact = self.userId)
         profile.delete()
 
-        response = self.client.post('/profile/', data=self.userData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post('/v1/profiles/', data=self.userData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 200)
 
@@ -37,14 +37,14 @@ class postProfileTests(TestCase):
         profile = Profile.objects.get(UserId__exact = self.userId)
         profile.delete()
 
-        response = self.client.post(f'/profile/', data={ }, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/profiles/', data={ }, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response.data['status'], 400)
 
     def test_expiredJwt(self):
         jwt = createAccessToken(self.userId, 'now')
         response = self.client.post(
-            f'/profile/',
+            f'/v1/profiles/',
             data=self.userData,
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'}
@@ -56,7 +56,7 @@ class postProfileTests(TestCase):
     def test_invalidJwt(self):
         jwt = self.jwt[:-1]
         response = self.client.post(
-            f'/profile/',
+            f'/v1/profiles/',
             data=self.userData,
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'}
