@@ -2,6 +2,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
 	import ProfileCard from '@/components/employee/account/ProfileCard.vue';
+    import Footer from '@/components/partials/Footer.vue';
 
 	import { logout } from '@/assets/js/jwt';
     import api, { apiCatchError } from '@/assets/js/api';
@@ -147,6 +148,8 @@
 			</div>
 		</section>
     </main>
+
+	<Footer></Footer>
 </template>
 
 <style scoped>
