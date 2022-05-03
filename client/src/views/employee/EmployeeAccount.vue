@@ -2,6 +2,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
 	import ProfileCard from '@/components/employee/account/ProfileCard.vue';
+	import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue'
 
 	import { logout } from '@/assets/js/jwt';
     import api, { apiCatchError } from '@/assets/js/api';
@@ -15,6 +16,8 @@
 	const details = ref({})
 	const displayModal = ref(false);
 	const profile = ref({});
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployeeAccount') == null);
+
 
 	document.title = 'Account | Vacansee'
 
@@ -106,6 +109,17 @@
 		return true;
 	}
 
+	const resetTutorial = () => {
+        window.localStorage.removeItem('newUserEmployeeAccount');
+
+        isNewUser.value = true;
+    }
+
+	const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployeeAccount', false);
+        isNewUser.value = false;
+    }
+
 	onMounted(async () => {
 		const result = await getAccount({ });
 		const response = await getProfile({});
@@ -142,11 +156,33 @@
 				<button class='delete-account' @click=showDeletion>Delete Account</button>
 				<button class='save' @click="updateAccount(accountDetails.Email)">Save</button>
 			</div>
+			<button class ='button button-red' @click='resetTutorial'> Reset tutorial</button>
 			<div class='saved-indicator' v-show='saved'>
 				<p>Saved!</p>
 			</div>
 		</section>
     </main>
+	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employee account</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On the account page, you can edit your profile by clicking edit profile and complete the forms afterwards.
+                </p>
+				<p class='desc'>
+					You can edit your email by changing it just below the profile section.
+				</p>
+                <p class='desc'>
+                    You can also delete your account should you wish so by clicking the delete button.
+                </p>
+                <p class='desc'>
+                    In addition, the ability to restart tutorials for each page is provided by clicking the reset tutorial button.
+                </p>
+            </div>
+        </template>
+    </TutorialModal>
 </template>
 
 <style scoped>
@@ -159,10 +195,34 @@
 		height: 100vh;
 	}
 
+	.button {
+        color: #ffffff;
+		border: 0;
+		border-radius: 5px;
+		display: block;
+		cursor: pointer;
+		font-family: var(--fonts);
+		font-size: 16px;
+		font-weight: bold;
+		line-height: 24px;
+		padding: 5px 0;
+        flex: 1 1 0;
+        margin-top: 15px;
+    }
+
 	.button-container {
 		display: flex;
 		gap: 0.2vw;
 	}
+
+	
+    .button-red {
+        background: var(--red);
+    }
+
+    .button-red:active, .button-red:focus, .button-red:hover {
+        background: var(--red-focus);
+    }
 
 	.card {
 		margin-left : auto; 
