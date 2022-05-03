@@ -234,7 +234,7 @@ class postApplicationTests(TestCase):
     def test_invalidVacancy(self):
         response = self.client.post(f'/v1/vacancies/apply/{ 2 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 400)
 
     def test_closedVacancy(self):
         response = self.client.post(f'/v1/vacancies/apply/{ 1001 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
@@ -298,7 +298,7 @@ class deleteApplicationTests(TestCase):
     def test_rejectedApplication(self):
         applicationId = 1040
 
-        response = self.client.delete(f'/applications/delete/{ applicationId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.delete(f'/v1/applications/delete/{ applicationId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 403)
 
