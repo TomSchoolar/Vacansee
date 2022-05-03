@@ -113,7 +113,7 @@
                 </tr>
             </table>
         </div>
-        <span class='card-section' v-if='vacancy.Tags'>Requirements:</span>
+        <span class='card-section' v-if='vacancy.Tags'>Tags:</span>
 
         <div v-if='vacancy.Tags && tags.length > 0'>
             <i v-for='tag in vacancy.Tags' v-bind:key='tag.id' :class='`tag ${ tags[tag].icon} `' :title='tag.text'></i>

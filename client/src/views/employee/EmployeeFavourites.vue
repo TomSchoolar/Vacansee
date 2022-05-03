@@ -241,18 +241,11 @@
                     <th>Remove Tags</th>
                 </button>
 
-                <div v-if='tagsFilter != "null"'>
-                    <p> : </p>
+                <div class='selected-tags'>
+                    <h4 class='tags-title'>Selected Tags:</h4>
+                    <span class='no-tags' v-if='tagsFilter == "null"'>None</span>
+                    <i class='tag' v-for='tag in tagsFilterRaw' v-bind:key='tag.id' :class='tags[parseInt(tag-1)]["icon"]' :title='tag.text'></i>
                 </div>
-
-                <div v-if='tagsFilter != "null"' class='filter-tag'>
-                    <i class='tag' v-for='tag in tagsFilterRaw' v-bind:key='tag.id' :class='tags[parseInt(tag)-1]["icon"]' :title='tag.text'></i>
-                </div>
-                
-                <!-- <div class='filter-tag'>
-                    <i class='fa-solid fa-book tag'></i> 
-                </div> -->
-
             </div>
 
             <NoCardsModal v-show='showModalNoCards' @close-modal='showModalNoCards = false' />
@@ -311,26 +304,19 @@
 
     .button {
         border: 2px solid;
-        border-radius: 15px;
+        border-radius: 7px;
         color: black;
         cursor: pointer;
         display: inline-block;
-        font-size: 10px;
-        margin: 2px;
-        padding-left: 30px;
-        padding-right: 30px;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        font-size: 13px;
+        margin: 2px 4px;
+        padding: 7px 15px;
         text-align: center;
         text-decoration: none;
     }
 
-    .button:active {
-        background-color:#D3D3D3;
-    }
-
-    .button:hover {
-        background-color:#D3D3D3;
+    .button:active, .button:focus, .button:hover {
+        background-color:#eee;
     }
 
     .card-placeholder {
@@ -341,10 +327,6 @@
     .container {
         padding: 0 40px;
         width: calc(100vw - 80px);
-    }
-
-    .filter-tag {
-        font-size: 32px;
     }
 
     .filter-tags-header {
@@ -372,6 +354,11 @@
         top: 25px;
         font-size: 18px;
         font-style: italic;
+    }
+
+    .no-tags {
+        position: relative;
+        top: 1.5px;
     }
 
     .search {
@@ -402,10 +389,27 @@
         padding-right: 2px;
     }
 
+    .selected-tags {
+        display: flex;
+        align-items: center;
+        margin-left: 12px;
+        height: 45px;
+    }
+
+    .selected-tags .tag {
+        font-size: 22px;
+        margin: 0 7px;
+    }
+
     .tags-header {
         border-right: 2px solid; 
         width: 10%; 
         padding-right: 10px; 
+        font-size: 18px;
+    }
+
+    .tags-title {
+        margin: 0 10px 0 0;
         font-size: 18px;
     }
 

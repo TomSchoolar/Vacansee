@@ -35,12 +35,17 @@
 <template>
     <div class='modal-overlay'>
         <div class='modal'>
-            <i class='desc-bold'>Tag Search</i>
+            <i class='title'>Tag Search</i>
             <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
 
             <div class="modal-body">
                 <ListBox label='tags' name='tagsInput' :multiple='true' :multipleValue='true' :options='options' @search='search' @close-modal='emit("close-modal")' />
             </div>
+
+                <div class="button-row">
+                    <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
+                    <button class='button button-red' @click='search'>Search</button>
+                </div>
         </div>
     </div>
 </template>
@@ -105,20 +110,10 @@
         color: var(--red);
     }
 
-    .desc {
-        margin: 10px 0;
-        font-size: 14px;
-    }
-
-    .desc-bold {
-        font-weight: bold;
-    }
-
     .modal {
         background-color: white;
         min-height: 200px;
-        max-width: min(425px, 90%);
-        min-width: min(250px, 40%);
+        width: 320px;
         padding: 20px 20px 40px 20px;
         border-radius: 20px;
         display: flex;
@@ -129,8 +124,8 @@
     }
 
     .modal-body {
-        width: 100%;
-        margin: 25px 0px;
+        width: 90%;
+        margin: 20px 0px 25px 0;
     }
 
     .modal-overlay {
@@ -146,18 +141,10 @@
         background-color: #000000c9;
     }
 
-    .warning-circle {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background: var(--red);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 60px;
+    .title {
+        font-style: normal;
         font-weight: bold;
-        color: white;
+        font-size: 23px;
+        margin-top: 15px;
     }
-
-
 </style>

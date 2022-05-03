@@ -45,7 +45,7 @@
                 <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
             </div>
         </div>
-        <span v-if='vacancy.Tags' class='card-section'>Requirements:</span>
+        <span v-if='vacancy.Tags' class='card-section'>Tags:</span>
         <div v-if='vacancy.Tags && tags.length > 0'>
             <i v-for='tag in vacancy.Tags' v-bind:key='tag.id' :class='`tag ${ tags[tag-1].icon }`' :title='tag.text'></i>
             <div v-if='vacancy?.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>

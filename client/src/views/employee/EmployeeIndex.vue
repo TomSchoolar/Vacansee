@@ -250,17 +250,12 @@
                     <th>Remove Tags</th>
                 </button>
 
-                <div v-if='tagsFilter != "null"'>
-                    <p>            :            </p>
-                </div>
-
-                <div v-if='tagsFilter != "null"' class='filter-tag'>
+                <div class='selected-tags'>
+                    <h4 class='tags-title'>Selected Tags:</h4>
+                    <span class='no-tags' v-if='tagsFilter == "null"'>None</span>
                     <i class='tag' v-for='tag in tagsFilterRaw' v-bind:key='tag.id' :class='options[tag-1]["icon"]' :title='tag.text'></i>
                 </div>
-                
-                <!-- <div class='filter-tag'>
-                    <i class='fa-solid fa-book tag'></i> 
-                </div> -->
+                    
             </div>
 
             <NoCardsModal v-show='showModalNoCards' @close-modal='showModalNoCards = false' />
@@ -282,6 +277,8 @@
             </button>
             
         </div>
+
+        <div class='divider'></div>
 
         <div class='right'>
             <ApplyVacancyCard :vacancy='currentVacancy' :tags='options' :favourited='false' />
@@ -322,26 +319,19 @@
 
     .button {
         border: 2px solid;
-        border-radius: 15px;
+        border-radius: 7px;
         color: black;
         cursor: pointer;
         display: inline-block;
-        font-size: 10px;
-        margin: 2px;
-        padding-left: 30px;
-        padding-right: 30px;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        font-size: 13px;
+        margin: 2px 4px;
+        padding: 7px 15px;
         text-align: center;
         text-decoration: none;
     }
 
-    .button:active {
-        background-color:#D3D3D3;
-    }
-
-    .button:hover {
-        background-color:#D3D3D3;
+    .button:active, .button:focus, .button:hover {
+        background-color:#eee;
     }
 
     .card-placeholder {
@@ -352,11 +342,6 @@
     .container {
         display: flex;
         justify-content: center;
-        margin-bottom: 30px;
-    }
-
-    .filter-tag {
-        font-size: 32px;
     }
 
     .filter-tags-header {
@@ -383,7 +368,10 @@
     .left {
         height: 100%;
         padding: 10px 50px 0 50px;
-        width: 70%;       
+        width: calc(70vw - 120px);  
+        border-right: 3px solid black;
+        min-height: calc(100vh - 130px);
+        margin-bottom: 30px;
     }
 
     .no-vacancies {
@@ -395,13 +383,23 @@
         font-style: italic;
     }
 
+    .no-tags {
+        position: relative;
+        top: 0.5px;
+    }
+
     .right {
-        border-left: 3px solid;
         padding-top: 20px;
-        width: 30%;
+        width: 30vw;
         display: flex;
+        height: calc(100vh - 130px);
         flex-direction: column;
         align-items: center;
+    }
+
+    .right div {
+        position: relative;
+        top: 100px;
     }
 
     .search {
@@ -429,10 +427,27 @@
         flex-direction: column;
     }
 
+    .selected-tags {
+        display: flex;
+        align-items: center;
+        margin-left: 12px;
+        height: 45px;
+    }
+
+    .selected-tags .tag {
+        font-size: 22px;
+        margin: 0 7px;
+    }
+
     .tags-header {
         border-right: 2px solid; 
         width: 10%; 
         padding-right: 10px; 
+        font-size: 18px;
+    }
+
+    .tags-title {
+        margin: 0 10px 0 0;
         font-size: 18px;
     }
 
