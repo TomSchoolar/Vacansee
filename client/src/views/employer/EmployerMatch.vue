@@ -3,7 +3,8 @@
     import ProfileCard from '@/components/employer/match/ProfileCard.vue';
     import MatchesColumn from '@/components/employer/match/MatchesColumn.vue';
     import VacanciesColumn from '@/components/employer/match/VacanciesColumn.vue';
-    
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+
     
     import { ref } from 'vue';
 
@@ -17,6 +18,8 @@
     const currentProfile = ref();
     const selectedVacancy = ref();
     const selectedVacancyName = ref();
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployerMatch') == null);
+
 
     const updateVacancyId = (vacancy) => {
         selectedVacancy.value = vacancy.VacancyId;
@@ -26,6 +29,11 @@
     let session = window.localStorage.getItem('session') ?? '{}'
     const { CompanyName: cn = 'Vacancy Stats' } = JSON.parse(session);
     const companyName = ref(cn);
+
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployerMatch', false);
+        isNewUser.value = false;
+    }
 </script>
 
 <template>
@@ -46,6 +54,23 @@
             </div>
         </section>
     </main>
+
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employer Match</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On this page you can view all of the matches made on every vacancy you have listed. 
+                </p>
+                <p class='desc'>
+                    If you have any matches, you can select a vacancy in the first column, and an applicant in the second to view their profile card.
+                </p>
+            </div>
+
+        </template>
+    </TutorialModal>
 </template>
 
 <style scoped>

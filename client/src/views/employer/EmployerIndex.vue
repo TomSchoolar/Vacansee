@@ -6,15 +6,16 @@
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
     import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
     import DeleteVacancyModal from '../../components/employer/index/DeleteVacancyModal.vue';
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
 
     const showModal = ref(false);
     const showDeleteModal = ref(false);
     const currentModalVacancy = ref('');
 
     import { ref, watch, onMounted } from 'vue';
-    
+
     dayjs.extend(relativeTime);
-    
+
     // vars init
     const stats = ref({
         activeAdverts: '...',
@@ -29,6 +30,9 @@
     const displayModal = ref(false);
     const modalType = ref(0);
     const selectedVacancy = ref(0);
+
+    //tutorial values
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployerIndex') == null);
 
     // dropdown values
     const limit = ref(5);
@@ -70,10 +74,10 @@
         if(!data)
             return false;
 
-        const { 
-            numPages: pages = 1, 
+        const {
+            numPages: pages = 1,
             numVacancies: total = 0,
-            vacancies: newVacancies = vacancies.value, 
+            vacancies: newVacancies = vacancies.value,
         } = data;
 
 
@@ -118,7 +122,7 @@
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
         const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
-        
+
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
@@ -137,7 +141,7 @@
             return;
         }
 
-        page.value = newPage;   
+        page.value = newPage;
     }
 
 
@@ -224,7 +228,13 @@
     const updateModalVacancy = async (vacanacyName) => {
         currentModalVacancy = vacanacyName;
         showModal = true;
-    } 
+    }
+
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployerIndex', false);
+        isNewUser.value = false;
+    }
+
 </script>
 
 
@@ -314,7 +324,23 @@
 
     <button @click='notifs++'>Add notification</button>
     <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
+    
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employer index</h3>
+        </template>
+        <template #modal-body>
+            <div class='modal-body'>
+                <p class='desc'>The index page displays general statistics about your company's vacancies. These can be seen in the stat bar, just below the nav bar.
+                    The list of vacancies are shown under the stat bar.
+                </p>
+                <p class='desc'>
+                    You can also close listed vacancies and delete closed ones by clicking the buttons on the vacancy record. Vacancies can be sorted using the filters on the top right.
+                </p>
+            </div> 
 
+        </template>
+    </TutorialModal>
 </template>
 
 
@@ -479,7 +505,7 @@
     .vacancy-button-grey:hover, .vacancy-button-grey:focus, .vacancy-button-grey:active {
         background: var(--slate-focus);
         cursor: pointer;
-  } 
+  }
 
     .vacancy-button-red {
         background: var(--red);
@@ -488,7 +514,7 @@
     .vacancy-button-red:hover, .vacancy-button-red:focus, .vacancy-button-red:active {
         background: var(--red-focus);
         cursor: pointer;
-    } 
+    }
 
     .vacancy-closed {
         font-weight: bold;
