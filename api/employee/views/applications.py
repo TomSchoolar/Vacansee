@@ -1,3 +1,4 @@
+from inspect import trace
 from math import ceil
 from rest_framework import status
 from employee.models import Application
@@ -179,6 +180,15 @@ def postApplication(request, vacancyId):
         return Response({ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
+        existingApplications = Application.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
+
+        if existingApplications > 0:
+            return Response({ 'status': 400, 'message': 'Application to that vacancy already exists' }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Server error checking request validity' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
         newApplication = {
             'VacancyId': vacancy.VacancyId,
             'UserId': jwt['id'],
@@ -230,6 +240,9 @@ def deleteApplication(request, applicationId):
             pk=applicationId,
             UserId__exact = jwt['id']
         )
+
+        if application.ApplicationStatus == 'REJECTED':
+            return Response({ 'status': 403, 'message': 'You cannot delete an application that has already been rejected' }, status=status.HTTP_403_FORBIDDEN)
 
         application.delete()
         return Response(status=status.HTTP_200_OK)

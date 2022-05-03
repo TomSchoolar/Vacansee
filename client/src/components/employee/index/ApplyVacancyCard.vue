@@ -79,7 +79,7 @@
     <div class='card'>
         <div class='company-info'>
             <div class='company-name'>{{ vacancy.CompanyName }}<i id='favourite' class='fas fa-star' title='favourited' v-if='vacancy.Favourited'></i></div>
-            <p class='job-title'>{{ vacancy.VacancyName }} - {{ vacancy.Salary }}</p>
+            <p class='job-title'>{{ vacancy?.VacancyName }}{{ vacancy?.Salary ? ` - ${ vacancy.Salary }` : '' }}</p>
             <p class='location' v-if='vacancy.Location'>Based in {{ vacancy.Location }}</p>
         </div>
         <div class='description' v-if='vacancy.Description'>

@@ -51,18 +51,18 @@
 
 <template>
 	<div class='auth-page'>
-		<div class='auth-page-container'>
+		<form class='auth-page-container' @submit.prevent='login'>
 			<p class='auth-page-logo'>Vacansee</p>
 			<input v-model='email' type='text' name='email' placeholder='Email' />
 			<input v-model='password' type='password' name='password' placeholder='Password' id='password' />
 
-			<button type='button' class='submit' @click='login()'>Log In</button>
+			<button class='submit'>Log In</button>
 
             <div class='links'>
 			    <router-link to='/register' class='reset-link'>New user? Register here</router-link>
 			    <router-link to='/forgot' class='reset-link'>Forgot your password?</router-link>
             </div>
-		</div>
+		</form>
 	</div>
 </template>
 

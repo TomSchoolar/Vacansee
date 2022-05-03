@@ -40,6 +40,7 @@ class getApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
+
     # Sort: dateDesc, Filter: matched
     def test_validRequestSortDateDescFilterMatched(self):
         response = self.client.get('/v1/applications/', { 'sort': 'dateDesc', 'count': 5, 'pageNum': 1, 'filter': 'matched' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
@@ -66,6 +67,7 @@ class getApplicationTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
+
 
     # Filter: pending, Incorrect Large Page Num
     def test_incorrectlyLargePageNumFilterPending(self):
@@ -94,6 +96,7 @@ class getApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
+
     # Filter: rejected
     def test_validRequestFilterRejected(self):
         response = self.client.get('/v1/applications/', { 'sort': 'dateAsc', 'count': 5, 'pageNum': 1, 'filter': 'rejected' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
@@ -103,10 +106,12 @@ class getApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['applications']), len(applicationSet))
 
+
     def test_missingParameters(self):
         response = self.client.get('/v1/applications/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 400)
+
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
@@ -116,6 +121,7 @@ class getApplicationTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
 
+
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
@@ -123,6 +129,8 @@ class getApplicationTests(TestCase):
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')
+
+
 
 class getApplicationStatsTests(TestCase):
 
@@ -142,6 +150,7 @@ class getApplicationStatsTests(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEqual(response.data['total'], numApps)
 
+
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
 
@@ -150,6 +159,7 @@ class getApplicationStatsTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
 
+
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
@@ -157,6 +167,8 @@ class getApplicationStatsTests(TestCase):
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')
+
+
 
 class getApplicationDetailsTests(TestCase):
 
@@ -171,17 +183,20 @@ class getApplicationDetailsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+
     def test_unmatchedApplication(self):
         response = self.client.get(f'/v1/applications/{ 1039 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.data['status'], 400)
         self.assertEqual(response.data['message'], 'You have not matched with that vacancy.')
 
+
     def test_noApplicationExists(self):
         response = self.client.get(f'/v1/applications/{ 9999 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'You do not have access to that application')
+
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
@@ -191,6 +206,7 @@ class getApplicationDetailsTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
 
+
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
@@ -199,10 +215,12 @@ class getApplicationDetailsTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')
 
+
+
 class postApplicationTests(TestCase):
 
     userId = 2 # Adam
-    vacancyId = 1
+    vacancyId = 1003
     jwt = createAccessToken(userId)
     applicationId = 1002
     fixtures = ['authentication/fixtures/testseed.json']
@@ -216,7 +234,17 @@ class postApplicationTests(TestCase):
     def test_invalidVacancy(self):
         response = self.client.post(f'/v1/vacancies/apply/{ 2 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
+        self.assertEqual(response.status_code, 201)
+
+    def test_closedVacancy(self):
+        response = self.client.post(f'/v1/vacancies/apply/{ 1001 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
         self.assertEqual(response.status_code, 400)
+
+    def test_duplicateRequest(self):
+        firstResponse = self.client.post(f'/v1/vacancies/apply/{ 1002 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(firstResponse.status_code, 400)
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
@@ -226,6 +254,7 @@ class postApplicationTests(TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
 
+
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
@@ -233,6 +262,8 @@ class postApplicationTests(TestCase):
 
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')
+
+
 
 class deleteApplicationTests(TestCase):
     
@@ -256,11 +287,21 @@ class deleteApplicationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(originalSet - 1, newSet)
 
+
     def test_invalidRequest(self):
         applicationId = 1017
         response = self.client.delete(f'/v1/applications/delete/{ applicationId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 401)
+
+    
+    def test_rejectedApplication(self):
+        applicationId = 1040
+
+        response = self.client.delete(f'/applications/delete/{ applicationId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(response.status_code, 403)
+
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
@@ -269,6 +310,7 @@ class deleteApplicationTests(TestCase):
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
+
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
