@@ -3,6 +3,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
+    import Footer from '@/components/partials/Footer.vue';
 
     import { computed, onMounted, ref, watch } from 'vue';
 
@@ -233,6 +234,7 @@
         </div>
     </div>
     
+    <Footer></Footer>
     
 </template>
 
