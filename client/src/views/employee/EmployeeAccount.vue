@@ -2,7 +2,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
 	import ProfileCard from '@/components/employee/account/ProfileCard.vue';
-	import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue'
+	import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
 
 	import { logout } from '@/assets/js/jwt';
     import api, { apiCatchError } from '@/assets/js/api';
@@ -111,6 +111,7 @@
 
 	const resetTutorial = () => {
         window.localStorage.removeItem('newUserEmployeeAccount');
+		window.localStorage.removeItem('newUserEmployeeIndex');
 
         isNewUser.value = true;
     }
