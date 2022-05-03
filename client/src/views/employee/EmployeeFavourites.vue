@@ -57,7 +57,7 @@
 
         const response = await api({
             method: 'get',
-            url: '/favourites/',
+            url: '/v1/favourites/',
             responseType: 'json',
             params: {
                 sort,

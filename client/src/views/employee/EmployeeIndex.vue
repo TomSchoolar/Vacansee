@@ -59,7 +59,7 @@
 
         const response = await api({
             method: 'get',
-            url: '/vacancy/',
+            url: '/v1/vacancies/',
             responseType: 'json',
             params: {
                 sort,

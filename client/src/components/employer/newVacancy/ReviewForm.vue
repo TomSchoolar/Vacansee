@@ -101,7 +101,7 @@
         }
         
         const response = await api({
-            url: (props.edit ? `/e/vacancy/edit/${ id }/` : '/e/vacancy/'),
+            url: (props.edit ? `/v1/e/vacancies/edit/${ id }/` : '/v1/e/vacancies/'),
             method: (props.edit ? 'put' : 'post'),
             data,
             contentType: 'json'
