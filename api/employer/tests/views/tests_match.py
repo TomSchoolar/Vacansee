@@ -113,7 +113,7 @@ class getMatchesTests(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_validRequest(self):
-        response = self.client.get(f'/v1/e/matches/matches/{ self.vacId }', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get(f'/v1/e/matches/matches/{ self.vacId }/', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         matchesSet = Application.objects.filter(
             VacancyId__exact = self.vacId,
@@ -127,21 +127,16 @@ class getMatchesTests(TestCase):
 
         self.assertDictEqual(expectedData, response.data)
 
-    def test_missingParameters(self):
-        response = self.client.get(f'/v1/e/matches/matches/{ None }', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
- 
-        self.assertEquals(response.status_code, 400)
-
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
-        response = self.client.get(f'/v1/e/matches/matches/{ self.vacId }', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.get(f'/v1/e/matches/matches/{ self.vacId }/', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
-        response = self.client.get(f'/v1/e/matches/matches/{ self.vacId }', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.get(f'/v1/e/matches/matches/{ self.vacId }/', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
@@ -153,7 +148,7 @@ class getCardTests(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_validRequest(self):
-        response = self.client.get(f'/v1/e/matches/card/{ self.applicantId }', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get(f'/v1/e/matches/cards/{ self.applicantId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         detailsSet = Profile.objects.get(UserId__exact = self.applicantId)
         details = ProfileSerializer(detailsSet, many=False).data
@@ -162,21 +157,16 @@ class getCardTests(TestCase):
 
         self.assertDictEqual(expectedData, response.data)
 
-    def test_missingParameters(self):
-        response = self.client.get(f'/v1/e/matches/card/{ None }', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
-
-        self.assertEquals(response.status_code, 400)
-
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
-        response = self.client.get(f'/v1/e/matches/card/{ self.applicantId }', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.get(f'/v1/e/matches/cards/{ self.applicantId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
-        response = self.client.get(f'/v1/e/matches/card/{ self.applicantId }', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.get(f'/v1/e/matches/cards/{ self.applicantId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')

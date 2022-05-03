@@ -17,7 +17,7 @@ class refreshTestCase(TestCase):
 
     def setUp(self):
         # login
-        loginResponse = self.client.post('/login/', { 'email': self.email, 'password': self.password })
+        loginResponse = self.client.post('/v1/login/', { 'email': self.email, 'password': self.password })
         self.assertEquals(loginResponse.status_code, 200)
         
         self.accessToken = loginResponse.data['accessToken']
@@ -33,7 +33,7 @@ class refreshTestCase(TestCase):
 
     def tearDown(self):
         # logout
-        logoutResponse = self.client.post('/logout/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.refreshToken }' })
+        logoutResponse = self.client.post('/v1/logout/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.refreshToken }' })
         self.assertEquals(logoutResponse.status_code, 200)
 
         numTokens = RefreshToken.objects.all().count()
@@ -43,7 +43,7 @@ class refreshTestCase(TestCase):
 
     def test_validRefresh(self):
         # valid refresh request
-        refreshResponse = self.client.post('/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.refreshToken }' })
+        refreshResponse = self.client.post('/v1/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.refreshToken }' })
         self.assertEquals(refreshResponse.status_code, 200)
 
         accessToken = refreshResponse.data['accessToken']
@@ -62,7 +62,7 @@ class refreshTestCase(TestCase):
 
     def test_useAccessToken(self):
         # pass access token as auth token in refresh request
-        refreshResponse = self.client.post('/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.accessToken }' })
+        refreshResponse = self.client.post('/v1/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.accessToken }' })
         self.assertEquals(refreshResponse.status_code, 401)
         self.assertEquals(refreshResponse.data['message'], 'provided refresh token is invalid')
 
@@ -70,7 +70,7 @@ class refreshTestCase(TestCase):
 
     def test_tokenReuse(self):
         # use same token for refresh twice to check token reuse detection
-        refreshResponse = self.client.post('/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.refreshToken }' })
+        refreshResponse = self.client.post('/v1/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.refreshToken }' })
         self.assertEquals(refreshResponse.status_code, 200)
 
         accessToken = refreshResponse.data['accessToken']
@@ -86,7 +86,7 @@ class refreshTestCase(TestCase):
         self.assertEquals(numTokens, 2)
 
         # make second request
-        secondRefreshResponse = self.client.post('/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.refreshToken }' })
+        secondRefreshResponse = self.client.post('/v1/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.refreshToken }' })
         self.assertEquals(secondRefreshResponse.status_code, 403)
         self.assertEquals(secondRefreshResponse.data['message'], 'Token reuse detected')
 
@@ -97,6 +97,6 @@ class refreshTestCase(TestCase):
 
     def test_invalidToken(self):
         refreshToken = 'potato123'
-        refreshResponse = self.client.post('/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { refreshToken }' })
+        refreshResponse = self.client.post('/v1/refreshtoken/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { refreshToken }' })
         self.assertEquals(refreshResponse.status_code, 401)
         self.assertEquals(refreshResponse.data['message'], 'Invalid auth token')

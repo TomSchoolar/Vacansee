@@ -209,24 +209,19 @@ class postApplicationTests(TestCase):
 
     # Valid Request
     def test_validRequest(self):
-        response = self.client.post('/vacancy/apply/', { 'VacancyId': self.vacancyId}, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/apply/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 201)
 
     def test_invalidVacancy(self):
-        response = self.client.post('/vacancy/apply/', { 'VacancyId': 2}, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
-
-        self.assertEqual(response.status_code, 400)
-
-    def test_missingParameters(self):
-        response = self.client.post('/vacancy/apply/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/apply/{ 2 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 400)
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
 
-        response = self.client.post('/vacancy/apply/', { 'VacancyId': self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.post(f'/v1/vacancies/apply/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
@@ -234,7 +229,7 @@ class postApplicationTests(TestCase):
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
-        response = self.client.post('/vacancy/apply/', { 'VacancyId': self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.post(f'/v1/vacancies/apply/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')

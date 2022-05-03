@@ -18,7 +18,7 @@ class getAccountTests(TestCase):
 
     def test_validRequestFullData(self):
         # make request
-        response = self.client.get(f'v1/e/accounts/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get(f'/v1/e/accounts/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         data = response.data
 
         # check account information is correct
@@ -37,7 +37,7 @@ class getAccountTests(TestCase):
 
     def test_expiredJwt(self):
         jwt = createAccessToken(self.userId, 'now')
-        response = self.client.get(f'v1/e/accounts/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.get(f'/v1/e/accounts/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')

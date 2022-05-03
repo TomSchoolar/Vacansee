@@ -12,7 +12,7 @@ class decisionTestCase(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_favouriting(self):
-        response = self.client.post(f'/v1/vacancies/favourite/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/favourite/{ 1000 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 201)
 
@@ -27,15 +27,10 @@ class decisionTestCase(TestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_invalidReject(self):
-        response = self.client.post(f'/v1/vacancies/reject/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/reject/{ 9999 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message'], 'That vacancy is not open for applications')
-
-    def test_missingParameters(self):
-        response = self.client.post(f'/v1/vacancies/reject/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
-
-        self.assertEqual(response.status_code, 400)
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
