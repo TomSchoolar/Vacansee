@@ -73,7 +73,7 @@ def getApplications(request):
         applications = ApplicationSerializer(applicationSet, many=True).data
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error retrieving applications from the database' })
+        return Response({ 'status': 500, 'message': 'Error retrieving applications from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     pairedApplications = []
     
@@ -86,10 +86,10 @@ def getApplications(request):
             pairedApplications.append(pair)
 
     except Vacancy.DoesNotExist:
-        return Response({ 'status': 500, 'message': 'Error retrieving vacancy details from the database, possible database corruption' })
+        return Response({ 'status': 500, 'message': 'Error retrieving vacancy details from the database, possible database corruption' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error retrieving vacancy details from the database' })
+        return Response({ 'status': 500, 'message': 'Error retrieving vacancy details from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -118,7 +118,7 @@ def getApplicationStats(request):
 
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error retrieving application stats from the database' })
+        return Response({ 'status': 500, 'message': 'Error retrieving application stats from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
     return Response(stats)
@@ -138,12 +138,12 @@ def getApplicationDetails(request, applicationId):
         application = ApplicationSerializer(applicationSet).data
 
         if application['ApplicationStatus'] != 'MATCHED':
-            return Response({ 'status': 400, 'message': 'You have not matched with that vacancy.' })
+            return Response({ 'status': 400, 'message': 'You have not matched with that vacancy.' }, status=status.HTTP_400_BAD_REQUEST)
     except Application.DoesNotExist:
-        return Response({ 'status': 401, 'message': 'You do not have access to that application' })
+        return Response({ 'status': 401, 'message': 'You do not have access to that application' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting application from the server' })
+        return Response({ 'status': 500, 'message': 'Error getting application from the server' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         vacancySet = Vacancy.objects.get(pk = application['VacancyId'])
@@ -153,10 +153,10 @@ def getApplicationDetails(request, applicationId):
         companyName = employerDetails.CompanyName
 
     except Application.DoesNotExist:
-        return Response({ 'status': 500, 'message': 'Couldn\'t find vacancy details' })
+        return Response({ 'status': 500, 'message': 'Couldn\'t find vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting vacancy from the server' })
+        return Response({ 'status': 500, 'message': 'Error getting vacancy from the server' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response({ **application, **vacancy, 'CompanyName': companyName }, status=status.HTTP_200_OK)
 
