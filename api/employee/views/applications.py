@@ -163,15 +163,13 @@ def getApplicationDetails(request, applicationId):
 
 
 @api_view(['POST'])
-def postApplication(request):
+def postApplication(request, vacancyId):
     jwt = jwtHelper.extractJwt(request)
     
     if type(jwt) is not dict:
         return jwt
 
     try:
-        vacancyId = request.data['VacancyId']
-
         vacancy = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True)
 
     except KeyError:
