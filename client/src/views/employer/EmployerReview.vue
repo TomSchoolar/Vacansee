@@ -4,6 +4,7 @@
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
+    import Footer from '@/components/partials/Footer.vue';
     
     import { ref, onMounted } from 'vue';    
 
@@ -125,6 +126,8 @@
             </main>
         </div>
     </div>
+
+    <Footer></Footer>
 
 </template>
 
