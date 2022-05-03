@@ -3,7 +3,8 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
-    
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+
     // form pages
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
     import MoreDetailsForm from '@/components/employer/newVacancy/MoreDetailsForm.vue';
@@ -19,6 +20,8 @@
     const formData = ref([]);
     const vacancyData = ref({});
     const currentPageNum = ref(0);
+    const isNewUser = ref(window.localStorage.getItem('newUserEditVacancy') == null);
+
 
     // get company name
     let session = window.localStorage.getItem('session') ?? '{}'
@@ -68,6 +71,11 @@
         }
     }
 
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEditVacancy', false);
+        isNewUser.value = false;
+    }
+
     onBeforeUnmount(() => {})
 
 </script>
@@ -107,6 +115,23 @@
         </div>
         
     </form>
+
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Edit vacancy</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On this page you can edit a vacancy by completing the same form you used to create it.           
+                </p>
+                <p class='desc'>
+                    Except this time the form is pre-populated with vacancy data.    
+                </p>
+            </div>
+
+        </template>
+    </TutorialModal>
 
 </template>
 

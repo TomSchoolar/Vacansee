@@ -3,7 +3,9 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
-        
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+
+    
     // form pages
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
     import MoreDetailsForm from '@/components/employer/newVacancy/MoreDetailsForm.vue';
@@ -18,6 +20,8 @@
     const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
+    const isNewUser = ref(window.localStorage.getItem('newUserCreateVacancy') == null);
+
 
     // get company name
     let session = window.localStorage.getItem('session') ?? '{}'
@@ -54,6 +58,11 @@
         } catch(e) {
             console.error(e)
         }
+    }
+
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserCreateVacancy', false);
+        isNewUser.value = false;
     }
 
 </script>
@@ -93,7 +102,22 @@
         </div>
         
     </form>
+	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Create new vacancy</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    You can create a new vacancy by completing this form.                
+                </p>
+                <p class='desc'>
+                    Notice you can always go to the previous step by clicking the back button, which will be shown after the first step.
+                </p>
+            </div>
 
+        </template>
+    </TutorialModal>
 </template>
 
 <style scoped>
