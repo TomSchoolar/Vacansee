@@ -227,7 +227,7 @@
 
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
-            <h3>Employee favoruites</h3>
+            <h3>Employee Favoruites</h3>
         </template>
         <template #modal-body> 
             <div class='modal-body'>
