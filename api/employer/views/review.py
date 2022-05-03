@@ -109,5 +109,5 @@ def putReviewApplication(request, vacancyId, applicationId):
 
     
     if nextApplication:
-        return Response({ 'application': richApp, 'nextApplication': nextApplication['application'], 'nextProfile': nextApplication['profile'] })
-    return Response({ 'application': richApp })
+        return Response({ 'application': richApp, 'nextApplication': nextApplication['application'], 'nextProfile': nextApplication['profile'] }, status=status.HTTP_200_OK)
+    return Response({ 'application': richApp }, status=status.HTTP_200_OK)
