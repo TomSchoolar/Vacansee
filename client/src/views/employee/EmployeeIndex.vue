@@ -90,10 +90,15 @@
 
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        currentVacancy.value = vacancies.value[0] ?? {};
+        numPages.value = pages;
+
+        if(currentVacancy?.value && Object.keys(currentVacancy.value).length === 0) {
+            // if initial fetch, then update current vacancy
+            currentVacancy.value = vacancies.value[0] ?? {};
+        }
 
         emptyCards.value = limit.value - vacancies.value.length;
-
+        
         return true;
     }
 
@@ -105,7 +110,6 @@
     
     // vacancy api request
     onMounted(async () => {
-        console.log(`initial div width: ${document.querySelector('.vacancy-container').offsetWidth}`);
         const resizeFunc = () => {
             cardsPerRow.value = Math.max(Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449), 1);
         }
