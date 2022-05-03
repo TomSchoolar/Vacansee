@@ -3,6 +3,7 @@
     import ProfileCard from '@/components/employer/match/ProfileCard.vue';
     import MatchesColumn from '@/components/employer/match/MatchesColumn.vue';
     import VacanciesColumn from '@/components/employer/match/VacanciesColumn.vue';
+    import Footer from '@/components/partials/Footer.vue';
     
     
     import { ref } from 'vue';
@@ -46,6 +47,8 @@
             </div>
         </section>
     </main>
+
+    <Footer></Footer>
 </template>
 
 <style scoped>
