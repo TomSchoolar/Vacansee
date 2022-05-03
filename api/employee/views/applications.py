@@ -1,13 +1,12 @@
-from inspect import trace
 from math import ceil
 from rest_framework import status
-from employee.models import Application
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from ..serializers import ApplicationSerializer
 from employer.serializers import VacancySerializer
 from authentication.helpers import jwt as jwtHelper
 from employer.models import EmployerDetails, Vacancy
+from employee.models import Application, Favourite, Reject
 
 
 
@@ -188,6 +187,11 @@ def postApplication(request):
 
         if existingApplications > 0:
             return Response({ 'status': 400, 'message': 'Application to that vacancy already exists' }, status=status.HTTP_400_BAD_REQUEST)
+
+        existingRejections = Reject.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
+
+        if existingRejections > 0:
+            return Response({ 'status': 400, 'message': 'Cannot apply to a vacancy that you\'ve already rejected' }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Server error checking request validity' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -205,6 +209,8 @@ def postApplication(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         serializer.save()
+
+        Favourite.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancy.VacancyId).delete()
 
     except Exception as err:
         print(f'uh oh: { err }')

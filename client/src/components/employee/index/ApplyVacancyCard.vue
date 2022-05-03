@@ -16,10 +16,8 @@
             }
         }).catch(apiCatchError);
 
-        const { data = false } = response;
-
-        if(data)
-            emit('newVacancy', data);
+        if(response?.data)
+            emit('newVacancy', response.data);
     }
 
     const unfavourite = async (vID) => {
@@ -31,8 +29,6 @@
                 VacancyId: vID 
             }
         }).catch(apiCatchError);
-
-        const { data = false } = response;
 
         emit('deleteFavourite');
     }
@@ -48,10 +44,8 @@
             }
         }).catch(apiCatchError);
 
-        const { data = false } = response;
-
-        if(data)
-            emit('newVacancy', data);
+        if(response?.data)
+            emit('newVacancy', response.data);
 
     }
 
@@ -65,10 +59,8 @@
             }
         }).catch(apiCatchError);
 
-        const { data = false } = response;
-
-        if(data)
-            emit('newVacancy', data);
+        if(response?.data)
+            emit('newVacancy', response.data);
 
     }
 
