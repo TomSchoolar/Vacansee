@@ -96,6 +96,12 @@
 
         return true;
     }
+
+
+    const updateData = (newData) => {
+        currentVacancy.value = newData;
+    }
+
     
     // vacancy api request
     onMounted(async () => {
@@ -229,7 +235,7 @@
         </div>
 
         <div class='right'>
-            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' />
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' @newVacancy='updateData' />
         </div>
     </div>
     
