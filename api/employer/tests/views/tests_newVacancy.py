@@ -31,7 +31,7 @@ class newVacancyTestCase(TestCase):
         testData = copy(self.vacancyData)
 
         initialVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count()        
-        response = self.client.post('/e/vacancy/', data=testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post('/v1/e/vacancies/', data=testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         finalVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count() 
 
         savedVacancySet = Vacancy.objects.get(VacancyName__exact = self.vacancyData['VacancyName'])
@@ -64,7 +64,7 @@ class newVacancyTestCase(TestCase):
         testData['ExperienceRequired'] = []
 
         initialVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count()        
-        response = self.client.post('/e/vacancy/', data=testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post('/v1/e/vacancies/', data=testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         finalVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count() 
 
         self.assertEquals(response.status_code, 200)
@@ -97,7 +97,7 @@ class newVacancyTestCase(TestCase):
         testData['Tags'] = dumps([el for el in range(15)])
 
         initialVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count()        
-        response = self.client.post('/e/vacancy/', testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post('/v1/e/vacancies/', testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         finalVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count() 
         
         self.assertEquals(response.status_code, 400)
@@ -110,7 +110,7 @@ class newVacancyTestCase(TestCase):
         del testData['VacancyName']
 
         initialVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count()        
-        response = self.client.post('/e/vacancy/', testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post('/v1/e/vacancies/', testData, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         finalVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count() 
 
         self.assertEquals(response.status_code, 400)
@@ -120,7 +120,7 @@ class newVacancyTestCase(TestCase):
 
     def test_missingAccessToken(self):
         initialVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count()        
-        response = self.client.post('/e/vacancy/', self.vacancyData, content_type='application/json')
+        response = self.client.post('/v1/e/vacancies/', self.vacancyData, content_type='application/json')
         finalVacancyCount = Vacancy.objects.filter(UserId__exact = self.userId).count() 
         
         self.assertEquals(response.status_code, 401)
