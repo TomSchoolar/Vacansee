@@ -1,10 +1,10 @@
 from rest_framework import status
+from employee.models import Profile
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from employee.serializers import ProfileSerializer
 from authentication.helpers import jwt as jwtHelper
 from employer.helpers import getAccount as accountHelper
-from employee.models import Profile
-from employee.serializers import ProfileSerializer
 
 @api_view(['GET'])
 def getAccount(request):

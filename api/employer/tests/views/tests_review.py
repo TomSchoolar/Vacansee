@@ -198,7 +198,7 @@ class putReviewInvalidTests(TestCase):
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
         )
         
-        self.assertEquals(response.data['status'], 401)
+        self.assertEquals(response.data['status'], 404)
         self.assertEquals(response.data['message'], 'invalid application id')
 
     
