@@ -5,7 +5,7 @@
 <template>
     <DefaultNavbar></DefaultNavbar>
 
-    <main class='container'>
+    <main class='error-container'>
         <section class='error'>
             <span class='fourOhFour'>404</span>
             <span class='notFound'>Page not found</span>
@@ -19,13 +19,6 @@
         display: block;
     }
 
-    .container {
-        width: 100vw;
-        height: calc(100vh - 100px);
-        margin: 0 auto;
-        position: relative;
-    }
-
     .error {
         text-align: center;
         position: absolute;
@@ -33,6 +26,13 @@
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+    }
+
+    .error-container {
+        width: 100vw;
+        height: calc(100vh - 100px);
+        margin: 0 auto;
+        position: relative;
     }
 
     .fourOhFour {
