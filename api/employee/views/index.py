@@ -136,15 +136,13 @@ def getIndex(request):
 
 
 @api_view(['POST'])
-def postReject(request):
+def postReject(request, vacancyId):
     jwt = jwtHelper.extractJwt(request)
     
     if type(jwt) is not dict:
         return jwt
 
     try:
-        vacancyId = request.data['VacancyId']
-
         vacancy = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True)
 
     except KeyError:

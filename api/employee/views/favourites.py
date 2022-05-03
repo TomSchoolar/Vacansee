@@ -103,15 +103,13 @@ def getFavourites(request):
 
 
 @api_view(['POST'])
-def postFavourite(request):
+def postFavourite(request, vacancyId):
     jwt = jwtHelper.extractJwt(request)
     
     if type(jwt) is not dict:
         return jwt
 
     try:
-        vacancyId = request.data['VacancyId']
-
         vacancy = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True)
 
     except KeyError:
@@ -159,7 +157,7 @@ def postFavourite(request):
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
 @api_view(['DELETE'])
-def deleteFavourite(request):
+def deleteFavourite(request, vacancyId):
     jwt = jwtHelper.extractJwt(request)
     
     if type(jwt) is not dict:
@@ -167,7 +165,6 @@ def deleteFavourite(request):
 
     # destructure params
     try:
-        vacancyId = request.data['VacancyId']
         userId = jwt['id']
 
         favourite = Favourite.objects.get(VacancyId__exact = vacancyId, UserId__exact = userId)
