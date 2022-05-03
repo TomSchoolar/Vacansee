@@ -47,7 +47,7 @@
         </div>
         <span v-if='vacancy.Tags' class='card-section'>Tags:</span>
         <div v-if='vacancy.Tags && tags.length > 0'>
-            <i v-for='tag in vacancy.Tags' v-bind:key='tag.id' :class='`tag ${ tags[tag-1].icon }`' :title='tag.text'></i>
+            <i v-for='tag in vacancy.Tags.splice(0, tagsLim)' v-bind:key='tag.id' :class='`tag ${ tags[tag-1].icon }`' :title='tag.text'></i>
             <div v-if='vacancy?.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
                 <div class='tags-num' ref='extra-tags'>+{{ vacancy?.Tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>

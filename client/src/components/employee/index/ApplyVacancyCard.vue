@@ -3,7 +3,7 @@
 
     import { ref } from 'vue';    
 
-    const { tags = [], vacancy = {}, favourited = false } = defineProps(['vacancy', 'tags', 'favourited']);
+    const { tags = [], vacancy = { }, favourited = false } = defineProps(['tags', 'vacancy', 'favourited']);
     const emit = defineEmits(['newVacancy', 'deleteFavourite']);
 
     const favourite = async (vID) => {
@@ -85,6 +85,10 @@
 
         extraTags.value += tags[tags.length - 1].title;
     }
+
+    const getTagsForPage = () => {
+        return vacancy.Tags;
+    }
 </script>
 
 <template>
@@ -113,15 +117,7 @@
                 </tr>
             </table>
         </div>
-        <span class='card-section' v-if='vacancy.Tags'>Tags:</span>
 
-        <div v-if='vacancy.Tags && tags.length > 0'>
-            <i v-for='tag in vacancy.Tags' v-bind:key='tag.id' :class='`tag ${ tags[tag].icon} `' :title='tag.text'></i>
-            <th v-if='vacancy.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
-                <div class='tags-num' ref='extra-tags'>+{{ tags.length - tagsLim }}</div>
-                <i class='fa-solid fa-tags'></i>
-            </th>
-        </div>
         <div class='spacing-block'></div>
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>

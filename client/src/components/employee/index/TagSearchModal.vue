@@ -41,11 +41,6 @@
             <div class="modal-body">
                 <ListBox label='tags' name='tagsInput' :multiple='true' :multipleValue='true' :options='options' @search='search' @close-modal='emit("close-modal")' />
             </div>
-
-                <div class="button-row">
-                    <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
-                    <button class='button button-red' @click='search'>Search</button>
-                </div>
         </div>
     </div>
 </template>

@@ -246,7 +246,7 @@
                 <button type='button' class='button arrow-btn' @click='showModal = true'>
                     <th>Select Tags</th>
                 </button>
-                <button type='button' class='button arrow-btn' @click='tagSearch("")'>
+                <button type='button' class='button arrow-btn' @click='tagSearch([])'>
                     <th>Remove Tags</th>
                 </button>
 

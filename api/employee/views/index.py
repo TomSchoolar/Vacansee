@@ -245,14 +245,12 @@ def getTags(request):
 
     try:
         tagSet = Tag.objects.all()
-        print(tagSet.first().TagStyle)
         tagSerializer = TagSerializer(tagSet, many=True)
         tags = tagSerializer.data
 
         tagDictList = []
 
         for tag in tags:
-            print(tag)
             tagDictList.append({ 'id': tag['TagId'], 'text': tag['TagName'], 'icon': tag['TagStyle'] })
 
     except Exception as err:

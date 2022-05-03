@@ -39,8 +39,6 @@ def getFavourites(request):
 
         for tag in tagList:
             tagListInt.append(int(tag))
-    
-    print(tagListInt)
 
     # parse sort parameter into django sort parameter
     if sort == 'dateDesc':
