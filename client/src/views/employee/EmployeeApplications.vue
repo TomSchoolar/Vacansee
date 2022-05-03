@@ -332,6 +332,7 @@
 
         </template>
     </TutorialModal>
+    
 </template>
 
 
