@@ -4,6 +4,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
+    import Footer from '@/components/partials/Footer.vue';
     
     // form pages
     import PersonalDetailsForm from '@/components/employee/profile/PersonalDetailsForm.vue';
@@ -87,6 +88,8 @@
         </div>
         
     </form>
+
+    <Footer></Footer>
 
 </template>
 
