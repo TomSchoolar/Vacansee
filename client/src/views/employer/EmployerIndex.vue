@@ -6,6 +6,7 @@
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
     import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
     import DeleteVacancyModal from '../../components/employer/index/DeleteVacancyModal.vue';
+    import Footer from '@/components/partials/Footer.vue';
 
     const showModal = ref(false);
     const showDeleteModal = ref(false);
@@ -314,6 +315,8 @@
 
     <button @click='notifs++'>Add notification</button>
     <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
+
+    <Footer></Footer>
 
 </template>
 
