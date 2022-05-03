@@ -145,8 +145,6 @@ def postReject(request, vacancyId):
     try:
         vacancy = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True)
 
-    except KeyError:
-        return Response({ 'status': 400, 'message': 'Missing vacancy id from request' }, status=status.HTTP_400_BAD_REQUEST)
     except Vacancy.DoesNotExist:
         return Response({ 'status': 400, 'message': 'That vacancy is not open for applications' }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
