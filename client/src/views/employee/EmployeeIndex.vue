@@ -27,6 +27,8 @@
     const limitMultiplier = ref(1);
     const tagsFilter = ref("null");
 
+    const searchBarValue = ref("");
+
     const limit = computed(() => {
         return limitMultiplier.value * cardsPerRow.value;
     });
@@ -62,7 +64,7 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active', tagsFilter = 'null' } = options;
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active', tagsFilter = 'null', searchValue = "" } = options;
         
         const response = await api({
             method: 'get',
@@ -73,7 +75,8 @@
                 count,
                 filter,
                 pageNum,
-                tagsFilter
+                tagsFilter,
+                searchValue
             }
         }).catch(apiCatchError);
 
@@ -122,7 +125,7 @@
 
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
-        const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
         
         if(!result) {
             return;
@@ -132,7 +135,7 @@
 
     // pagination: change page
     const changePage = async (newPage) => {
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: newPage, filter: filter.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             return;
@@ -162,7 +165,7 @@
             tagsFilterRaw.value = [];
         }
 
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             return;
@@ -173,7 +176,7 @@
     // dropdown watchers
     watch(filter, async (filterValue) => {
         // change which vacancies are display based on isOpen
-        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filterValue, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             return;
@@ -190,12 +193,22 @@
 
         while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
-        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value });
+        const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             return;
         }
     });
+
+    const searchBarValueUpdated = async (value) => {
+        searchBarValue.value = value;
+
+        const result = await getVacancies({ sort: sort.value, count: limit.value, pageNum: page.value, filter: filter.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+
+        if(!result) {
+            return;
+        }
+    }
 
     watch(sort, sortVacancies);
 
@@ -209,7 +222,7 @@
             <h1 class='title'>Vacancies</h1>
             <div class='search-group'>
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input name='searchbar' class='search' type='text' placeholder='Search..'> 
+                <input name='searchbar' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' class='search' type='text' placeholder='Search..'> 
             </div>
 
             

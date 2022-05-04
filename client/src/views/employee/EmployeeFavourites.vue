@@ -18,6 +18,8 @@
     const vacancies = ref([]);
     const cardsPerRow = ref(1);
 
+    const searchBarValue = ref("");
+
     // dropdown values
     const sort = ref('dateDesc');
     const limitMultiplier = ref(1);
@@ -61,7 +63,7 @@
 
         // api request function
     const getFavourites = async (options) => {
-        const { count = limit.value, pageNum = 1, sort = 'dateDesc', tagsFilter = 'null' } = options;
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc', tagsFilter = 'null', searchValue = "" } = options;
 
 
         const response = await api({
@@ -72,7 +74,8 @@
                 sort,
                 count,
                 pageNum,
-                tagsFilter
+                tagsFilter,
+                searchValue
             }
         }).catch(apiCatchError);
 
@@ -129,7 +132,7 @@
 
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
-        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value });
+        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
         
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -141,7 +144,7 @@
 
     // pagination: change page
     const changePage = async (newPage) => {
-        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage, tagsFilter: tagsFilter.value });
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -158,7 +161,7 @@
         if(page.value < 0)
             page.value = 0;
 
-        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.value, tagsFilter: tagsFilter.value });
+        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -187,7 +190,17 @@
             tagsFilterRaw.value = [];
         }
 
-        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value });
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+
+        if(!result) {
+            return;
+        }
+    }
+
+    const searchBarValueUpdated = async (value) => {
+        searchBarValue.value = value;
+
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             return;
@@ -210,7 +223,7 @@
             <h1 class='title'>Favourites</h1>
             <div class='search-group'>
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input name='searchbar' class='search' type='text' placeholder='Search..'/> 
+                <input name='searchbar' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' class='search' type='text' placeholder='Search..'/> 
             </div>
 
             <div class="select-row">

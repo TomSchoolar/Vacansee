@@ -27,9 +27,9 @@ def getIndex(request):
         count = int(params['count'])
         pageNum = int(params['pageNum'])
         tags = params['tagsFilter']
+        searchValue = params['searchValue']
     except:
         return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
-
 
     tagListInt = []
 
@@ -96,7 +96,8 @@ def getIndex(request):
         if tags != "null":
             numVacancies = Vacancy.objects.filter(
                 IsOpen__in = filterParam,
-                Tags__contains = tagListInt
+                Tags__contains = tagListInt,
+                VacancyName__contains = searchValue
             ).exclude(
                 VacancyId__in = vacancyList
             ).count()
@@ -108,7 +109,8 @@ def getIndex(request):
 
         if tags == "null" or usingTags == False:
             numVacancies = Vacancy.objects.filter(
-                IsOpen__in = filterParam
+                IsOpen__in = filterParam,
+                VacancyName__contains = searchValue
             ).exclude(
                 VacancyId__in = vacancyList
             ).count()
@@ -132,14 +134,16 @@ def getIndex(request):
         if usingTags == False:
             # get vacancies
             vacanciesSet = Vacancy.objects.filter(
-                IsOpen__in = filterParam
+                IsOpen__in = filterParam,
+                VacancyName__contains = searchValue
             ).exclude(
                 VacancyId__in = vacancyList
             ).order_by(sortParam)[skip:limit]
         else:
             vacanciesSet = Vacancy.objects.filter(
                 IsOpen__in = filterParam,
-                Tags__contains = tagListInt
+                Tags__contains = tagListInt,
+                VacancyName__contains = searchValue
             ).exclude(
                 VacancyId__in = vacancyList
             ).order_by(sortParam)[skip:limit]

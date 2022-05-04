@@ -60,15 +60,29 @@ def alphabeticalSort(applicationList, sortField):
     return returnList
 
 
-def getApplications(vacancyId, sortParam):
+def getApplications(vacancyId, sortParam, searchValue):
     # get the matches and pending applications for review page
+
+    profileLastSet = Profile.objects.filter(
+        LastName__contains = searchValue
+    )
+
+    UserIdList = []
+
+    for prof in profileLastSet:
+        UserIdList.append(prof.UserId.UserId)
+
+    totalCount = Application.objects.filter(
+        VacancyId__exact = vacancyId,
+        ApplicationStatus__exact = 'MATCHED'
+    ).count()
 
     matchesSet = Application.objects.filter(
         VacancyId__exact = vacancyId,
-        ApplicationStatus__exact = 'MATCHED'
+        ApplicationStatus__exact = 'MATCHED',
+        UserId__in = UserIdList
     )
 
-    matchesSet = Application.objects.filter(VacancyId__exact = vacancyId, ApplicationStatus__exact = 'MATCHED')
     matches = ApplicationSerializer(matchesSet, many = True).data
     populatedMatches = pairApplications(matches, SummaryProfileSerializer)
 
@@ -90,8 +104,8 @@ def getApplications(vacancyId, sortParam):
     populatedNew = getNewApplication(vacancyId)
 
     if populatedNew:
-        return { 'matches': populatedMatches, 'new': populatedNew }
-    return { 'matches': populatedMatches }
+        return { 'matches': populatedMatches, 'new': populatedNew, 'totalCount': totalCount }
+    return { 'matches': populatedMatches, 'totalCount': totalCount }
 
 
 

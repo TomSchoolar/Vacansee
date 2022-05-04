@@ -25,6 +25,7 @@ def getFavourites(request):
         count = int(params['count'])
         pageNum = int(params['pageNum'])
         tags = params['tagsFilter']
+        searchValue = params['searchValue']
     except:
         return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -59,7 +60,8 @@ def getFavourites(request):
         if tags != "null":
             favouriteSet = Favourite.objects.filter(
                 UserId__exact = jwt['id'],
-                VacancyId__Tags__contains = tagListInt
+                VacancyId__Tags__contains = tagListInt,
+                VacancyName__contains = searchValue
             )
 
             VacancyIds = []
@@ -102,7 +104,8 @@ def getFavourites(request):
         if usingTags == False:
             # get vacancies
             vacanciesSet = Vacancy.objects.filter(
-                VacancyId__in = VacancyIds
+                VacancyId__in = VacancyIds,
+                VacancyName__contains = searchValue
             ).order_by(sortParam)[skip:limit]
         else:
             vacanciesSet = Vacancy.objects.filter(
