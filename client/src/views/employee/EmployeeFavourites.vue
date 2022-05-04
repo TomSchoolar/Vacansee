@@ -1,8 +1,10 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
-    import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
-    import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
     import Footer from '@/components/partials/Footer.vue';
+    import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
+    import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
+
     
     import { computed, onMounted, ref, watch } from 'vue';
 
@@ -14,6 +16,9 @@
     const emptyCards = ref(0);
     const vacancies = ref([]);
     const cardsPerRow = ref(1);
+    
+    // tutorial values
+    const isNewUser = ref(window.localStorage.getItem('newUserFavourites') == null);
 
     // dropdown values
     const sort = ref('dateDesc');
@@ -161,6 +166,11 @@
         window.location.reload();
     }
 
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserFavourites', false);
+        isNewUser.value = false;
+    }
+
 </script>
 
 <template>
@@ -216,7 +226,26 @@
         </div>
     </div>
 
+
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employee Favourites</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    You can review vacancies which are added to your favourites here, and sort them using filters on the top right.
+                </p>
+				<p class='desc'>
+					You can also reject, unfavourite, and accept vacancies by clicking the corresponding buttons on each card.
+                </p>
+            </div>
+        </template>
+    </TutorialModal>
+
+
     <Footer></Footer>
+
 </template>
 
 
