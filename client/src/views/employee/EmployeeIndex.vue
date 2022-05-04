@@ -92,6 +92,7 @@
 
         while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
+        numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
         currentVacancy.value = vacancies.value[0] ?? {};
