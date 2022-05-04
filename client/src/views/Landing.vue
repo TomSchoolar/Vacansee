@@ -315,6 +315,6 @@
 
     @keyframes scroll {
         0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-370px * 10 - 10px))}
+        100% { transform: translateX(calc(-370px * 10 - 40px))}
     }
 </style>
