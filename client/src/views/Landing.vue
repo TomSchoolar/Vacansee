@@ -158,7 +158,7 @@
         padding: calc(25px + 1.0%) 0;
         background-color: #333;
         color: white;
-        min-height: 50vh;
+        min-height: 400px;
     }
 
     .mid-cards {
@@ -171,7 +171,7 @@
     .mid-slider {
         background: var(--jet);
         min-height: 100px;
-        margin: auto;
+        margin: 3vh auto 1vh auto;
         overflow:hidden;
         position: relative;
         width: 100vw;
@@ -218,8 +218,8 @@
     .top {
         color: black;
         position: relative;
-        min-height: 320px;
-        height: 60vh;
+        min-height: 400px;
+        height: 65vh;
     }
 
     .top::after {
