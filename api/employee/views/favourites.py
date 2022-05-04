@@ -113,19 +113,19 @@ def postFavourite(request, vacancyId):
         vacancy = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True)
 
     except Vacancy.DoesNotExist:
-        return Response({ 'status': 400, 'message': 'That vacancy is not open for applications' }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={ 'status': 400, 'message': 'That vacancy is not open for applications' }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         existingFavourites = Favourite.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
 
         if existingFavourites > 0:
-            return Response({ 'status': 400, 'message': 'User has already favourited that vacancy' }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={ 'status': 400, 'message': 'User has already favourited that vacancy' }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Server error checking request validity' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Server error checking request validity' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         newFavourite = {
@@ -142,7 +142,7 @@ def postFavourite(request, vacancyId):
     
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
     try:
@@ -159,7 +159,7 @@ def postFavourite(request, vacancyId):
         
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
@@ -177,14 +177,14 @@ def deleteFavourite(request, vacancyId):
         favourite = Favourite.objects.get(VacancyId__exact = vacancyId, UserId__exact = userId)
 
     except Favourite.DoesNotExist:
-        return Response({ 'status': 401, 'message': 'Unauthorised favourite deletion' }, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data={ 'status': 401, 'message': 'Unauthorised favourite deletion' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         favourite.delete()
 
         return Response(status=status.HTTP_200_OK)
     except Exception as err:
-        return Response({ 'status': 500, 'message': 'Error deleting favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error deleting favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
