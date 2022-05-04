@@ -25,7 +25,7 @@ class getReviewTests(TestCase):
 
         # check matches are correct
         matchesSet = Application.objects.filter(VacancyId__exact = self.vacancyId, ApplicationStatus__exact = 'MATCHED')
-        matches = ApplicationSerializer(matchesSet, many=True).data
+        matches = ApplicationSerializer(matchesSet, many=True).data['matches']
 
         expectedMatches = []
 

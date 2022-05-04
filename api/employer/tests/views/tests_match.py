@@ -14,7 +14,7 @@ class getVacanciesTests(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_validRequestSortMatchesDesc(self):
-        response = self.client.get('/e/match/', { 'sort': 'matchesDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get('/e/match/', { 'sort': 'matchesDesc', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         vacancies = Vacancy.objects.filter(UserId__exact = 6).annotate(MatchesCount = Count('application', filter = Q(
             application__ApplicationStatus__exact = 'MATCHED',
@@ -28,7 +28,7 @@ class getVacanciesTests(TestCase):
         self.assertEqual(expectedData['numVacancies'], response.data['numVacancies'])
 
     def test_validRequestSortDateDesc(self):
-        response = self.client.get('/e/match/', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get('/e/match/', { 'sort': 'dateDesc', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
         
         vacancies = Vacancy.objects.filter(UserId__exact = 6).annotate(
         MatchesCount = Count('application', filter = Q(
@@ -43,7 +43,7 @@ class getVacanciesTests(TestCase):
         self.assertEqual(expectedData['numVacancies'], response.data['numVacancies'])
 
     def test_validRequestSortDateAsc(self):
-        response = self.client.get('/e/match/', { 'sort': 'dateAsc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get('/e/match/', { 'sort': 'dateAsc', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         vacancies = Vacancy.objects.filter(UserId__exact = 6).annotate(
         MatchesCount = Count('application', filter = Q(
@@ -58,7 +58,7 @@ class getVacanciesTests(TestCase):
         self.assertEqual(expectedData['numVacancies'], response.data['numVacancies'])
 
     def test_validRequestSortTitleAsc(self):
-        response = self.client.get('/e/match/', { 'sort': 'titleAsc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get('/e/match/', { 'sort': 'titleAsc', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         vacancies = Vacancy.objects.filter(UserId__exact = 6).annotate(
         MatchesCount = Count('application', filter = Q(
@@ -73,7 +73,7 @@ class getVacanciesTests(TestCase):
         self.assertEqual(expectedData['numVacancies'], response.data['numVacancies'])
 
     def test_validRequestSortTitleDesc(self):
-        response = self.client.get('/e/match/', { 'sort': 'titleDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get('/e/match/', { 'sort': 'titleDesc', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         vacancies = Vacancy.objects.filter(UserId__exact = 6).annotate(
         MatchesCount = Count('application', filter = Q(
@@ -94,14 +94,14 @@ class getVacanciesTests(TestCase):
     
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
-        response = self.client.get('/e/match/', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.get('/e/match/', { 'sort': 'dateDesc', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
-        response = self.client.get('/e/match/', { 'sort': 'dateDesc' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.get('/e/match/', { 'sort': 'dateDesc', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
@@ -113,7 +113,7 @@ class getMatchesTests(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_validRequest(self):
-        response = self.client.get('/e/match/matches/', { 'sort': 'dateDesc', 'vID': self.vacId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get('/e/match/matches/', { 'sort': 'dateDesc', 'vID': self.vacId, 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         matchesSet = Application.objects.filter(
             VacancyId__exact = self.vacId,
