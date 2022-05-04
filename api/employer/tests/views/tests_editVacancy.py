@@ -18,7 +18,7 @@ class editVacancyGetTestCase(TestCase):
     # GET INDEX TESTS
 
     def test_validRequest(self):     
-        response = self.client.get(f'/v1/e/vacancies/edit/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/edit/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         savedVacancySet = Vacancy.objects.get(pk = self.vacancyId)
         savedVacancy = VacancySerializer(savedVacancySet).data
@@ -39,14 +39,14 @@ class editVacancyGetTestCase(TestCase):
 
 
     def test_invalidVacancyId(self):  
-        response = self.client.get(f'/v1/e/vacancies/edit/{ self.invalidVacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get(f'/v1/e/vacancies/{ self.invalidVacancyId }/edit/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         self.assertEquals(response.status_code, 401)
         self.assertEquals(response.data['message'], 'That vacancy is not available for editing.')
 
 
 
     def test_missingAccessToken(self):  
-        response = self.client.get(f'/v1/e/vacancies/edit/{ self.vacancyId }/')
+        response = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/edit/')
         self.assertEquals(response.status_code, 401)
 
     
@@ -79,7 +79,7 @@ class editVacancyPutTestCase(TestCase):
         modifiedVacancy['ExperienceRequired'] = dumps(modifiedVacancy['ExperienceRequired'])
         modifiedVacancy['Tags'] = dumps(modifiedVacancy['Tags'])
 
-        response = self.client.put(f'/v1/e/vacancies/edit/{ self.vacancyId }/', modifiedVacancy, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.put(f'/v1/e/vacancies/{ self.vacancyId }/', modifiedVacancy, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response.status_code, 200)
 
@@ -106,7 +106,7 @@ class editVacancyPutTestCase(TestCase):
         modifiedVacancy['ExperienceRequired'] = dumps(modifiedVacancy['ExperienceRequired'])
         modifiedVacancy['Tags'] = dumps(modifiedVacancy['Tags'])
 
-        response = self.client.put(f'/v1/e/vacancies/edit/{ self.vacancyId }/', modifiedVacancy, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.put(f'/v1/e/vacancies/{ self.vacancyId }/', modifiedVacancy, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response.status_code, 400)
         self.assertEquals(response.data['message'], 'Invalid vacancy data')

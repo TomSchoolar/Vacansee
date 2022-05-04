@@ -146,19 +146,19 @@ class postFavouritesTests(TestCase):
 
 
     def test_validRequest(self):
-        response = self.client.post(f'/v1/vacancies/favourite/{ self.vacId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ self.vacId }/favourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 201)      
 
 
     def test_invalidVacancy(self):
-        response = self.client.post(f'/v1/vacancies/favourite/{ 9999 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ 9999 }/favourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.data['status'], 400)
         self.assertEqual(response.data['message'], 'That vacancy is not open for applications')
     
     def test_repeatedFavourite(self):
-        response = self.client.post(f'/v1/vacancies/favourite/{ 1003 }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ 1003 }/favourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.data['status'], 400)
         self.assertEqual(response.data['message'], 'User has already favourited that vacancy')
@@ -166,7 +166,7 @@ class postFavouritesTests(TestCase):
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
 
-        response = self.client.post(f'/v1/vacancies/favourite/{ self.vacId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ self.vacId }/favourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
@@ -175,7 +175,7 @@ class postFavouritesTests(TestCase):
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
-        response = self.client.post(f'/v1/vacancies/favourite/{ self.vacId}/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ self.vacId}/favourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')
@@ -192,7 +192,7 @@ class deleteFavouriteTests(TestCase):
 
     def test_validRequest(self):
         response = self.client.delete(
-                    f'/v1/vacancies/unfavourite/{ self.vacId }/',
+                    f'/v1/vacancies/{ self.vacId }/unfavourite/',
                     **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 200)
@@ -201,7 +201,7 @@ class deleteFavouriteTests(TestCase):
         invalidVacancyId = 1000
 
         response = self.client.delete(
-                    f'/v1/vacancies/unfavourite/{ invalidVacancyId }/',
+                    f'/v1/vacancies/{ invalidVacancyId }/unfavourite/',
                     **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.data['status'], 401)
@@ -211,7 +211,7 @@ class deleteFavouriteTests(TestCase):
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
 
-        response = self.client.delete(f'/v1/vacancies/unfavourite/{ self.vacId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.delete(f'/v1/vacancies/{ self.vacId }/unfavourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
@@ -220,7 +220,7 @@ class deleteFavouriteTests(TestCase):
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
-        response = self.client.delete(f'/v1/vacancies/unfavourite/{ self.vacId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.delete(f'/v1/vacancies/{ self.vacId }/unfavourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')

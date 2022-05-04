@@ -59,7 +59,7 @@ class putAccountTests(TestCase):
 
         # PUT request to update data with vars
         putResponse = self.client.put(
-            f'/v1/accounts/update/',
+            f'/v1/accounts/',
             data={
                 'setEmail': newEmail
             },
@@ -78,7 +78,7 @@ class putAccountTests(TestCase):
 
     def test_missingRequestData(self):
         response = self.client.put(
-            f'/v1/accounts/update/',
+            f'/v1/accounts/',
             data={ },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
@@ -90,7 +90,7 @@ class putAccountTests(TestCase):
     def test_expiredJwt(self):
         jwt = createAccessToken(self.userId, 'now')
         response = self.client.put(
-            f'/v1/accounts/update/',
+            f'/v1/accounts/',
             data={
                 'setEmail': 'testing@email.com' 
             },
@@ -104,7 +104,7 @@ class putAccountTests(TestCase):
     def test_invalidJwt(self):
         jwt = self.jwt[:-1]
         response = self.client.put(
-            f'/v1/accounts/update/',
+            f'/v1/accounts/',
             data={
                 'setEmail': 'testing@email.com'
             },
@@ -126,7 +126,7 @@ class deleteAccountTests(TestCase):
 
     def test_validDelete(self):
         # DELETE request to delete data
-        deleteResponse = self.client.delete(f'/v1/accounts/delete/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        deleteResponse = self.client.delete(f'/v1/accounts/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         # Assert response code 200
         self.assertEquals(deleteResponse.status_code, 200)
@@ -134,14 +134,14 @@ class deleteAccountTests(TestCase):
 
     def test_expiredJwt(self):
         jwt = createAccessToken(self.userId, 'now')
-        response = self.client.delete(f'/v1/accounts/delete/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.delete(f'/v1/accounts/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
 
     def test_invalidJwt(self):
         jwt = self.jwt[:-1]
-        response = self.client.delete(f'/v1/accounts/delete/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.delete(f'/v1/accounts/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')

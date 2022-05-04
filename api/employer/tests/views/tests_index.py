@@ -245,27 +245,27 @@ class putIndexVacancyTests(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_validRequest(self):
-        response = self.client.put(f'/v1/e/vacancies/close/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.put(f'/v1/e/vacancies/{ self.vacancyId }/close/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         self.assertEqual(response.status_code, 200)
         
     def test_unauthorisedVacancy(self):
         invalidVacancy = 1002
-        response = self.client.put(f'/v1/e/vacancies/close/{ invalidVacancy }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.put(f'/v1/e/vacancies/{ invalidVacancy }/close/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'You do not have access to that vacancy.')
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
-        response = self.client.put(f'/v1/e/vacancies/close/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.put(f'/v1/e/vacancies/{ self.vacancyId }/close/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
-        response = self.client.put(f'/v1/e/vacancies/close/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.put(f'/v1/e/vacancies/{ self.vacancyId }/close/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
@@ -277,27 +277,27 @@ class deleteIndexVacancyTests(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_validRequest(self):
-        response = self.client.delete(f'/v1/e/vacancies/delete/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.delete(f'/v1/e/vacancies/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         self.assertEqual(response.status_code, 200)
 
     def test_unauthorisedVacancy(self):
         invalidVacancy = 1002
-        response = self.client.delete(f'/v1/e/vacancies/delete/{ invalidVacancy }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.delete(f'/v1/e/vacancies/{ invalidVacancy }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'You do not have access to that vacancy.')
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
-        response = self.client.delete(f'/v1/e/vacancies/delete/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.delete(f'/v1/e/vacancies/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
-        response = self.client.delete(f'/v1/e/vacancies/delete/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
+        response = self.client.delete(f'/v1/e/vacancies/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
