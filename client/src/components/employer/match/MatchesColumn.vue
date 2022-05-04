@@ -24,7 +24,7 @@
 
         const response = await api({
             method: 'get',
-            url: `/v1/e/matches/matches/${ vacancyId }`,
+            url: `/v1/e/matches/${ vacancyId }/`,
             responseType: 'json',
             params: {
                 sort
@@ -126,6 +126,7 @@
                 <MatchCard 
                     :stats='match'
                     :vacancyName='selectedVacancyName'
+                    :vacancy='selectedVacancy'
                     @showApplication='updateCard' 
                     @unmatch='onUnmatch' 
                 />

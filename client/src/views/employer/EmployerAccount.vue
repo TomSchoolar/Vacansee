@@ -48,7 +48,7 @@
 
 	const updateAccount = async (newCompanyName, newPhoneNumber, newEmail) => {
 		const response = await api({
-			url: '/v1/e/accounts/update/',
+			url: '/v1/e/accounts/',
 			method: 'put',
 			data: {
 				setCompanyName: newCompanyName,
@@ -71,7 +71,7 @@
 
 	const deleteAccount = async () => {
 		const response = await api({
-			url: '/v1/e/accounts/delete/',
+			url: '/v1/e/accounts/',
 			method: 'delete',
 			responseType: 'json'
 		}).catch(apiCatchError);

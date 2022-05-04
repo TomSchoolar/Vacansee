@@ -181,7 +181,7 @@
     const deleteApplication = async (applicationId) => {
 
         const response = await api({
-            url: `/v1/applications/delete/${ applicationId }/`,
+            url: `/v1/applications/${ applicationId }/`,
             method: 'delete',
             responseType: 'json'
         }).catch(apiCatchError);

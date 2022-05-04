@@ -4,7 +4,7 @@
     
     import { onMounted, ref } from 'vue';
 
-    const props = defineProps(['stats', 'vacancyName']);
+    const props = defineProps(['stats', 'vacancyName', 'vacancy']);
     const emit = defineEmits(["showApplication", "unmatch"]);
 
     const details = {};
@@ -17,7 +17,7 @@
 
     const unmatch = async () => {
         const response = await api({
-            url: `/v1/e/reviews/${ application.VacancyId }/updatestatus/${ application.ApplicationId }/`,
+            url: `/v1/e/vacancies/${ application.VacancyId }/review/${ application.ApplicationId }/`,
             method: 'put',
             data: {
                 setStatus: "reject"
@@ -42,7 +42,7 @@
 
         const response = await api({
             method: 'get',
-            url: `/v1/e/matches/cards/${ applicantId }`,
+            url: `/v1/e/matches/card/${ applicantId }/`,
             responseType: 'json',
         }).catch((err) => {
             console.log(`oops ${ err }`);

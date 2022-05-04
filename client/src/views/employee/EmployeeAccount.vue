@@ -49,7 +49,7 @@
 
 	const updateAccount = async (newEmail) => {
 		const response = await api({
-			url: '/v1/accounts/update/',
+			url: '/v1/accounts/',
 			method: 'put',
 			data: {
 				setEmail: newEmail
@@ -70,7 +70,7 @@
 
 	const deleteAccount = async () => {
 		const response = await api({
-			url: '/v1/accounts/delete/',
+			url: '/v1/accounts/',
 			method: 'delete',
 			responseType: 'json'
 		}).catch(apiCatchError);

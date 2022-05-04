@@ -191,7 +191,7 @@
     const closeVacancy = async () => {
         const response = await api({
             method: 'put',
-            url: `/v1/e/vacancies/close/${ selectedVacancy.value }/`,
+            url: `/v1/e/vacancies/${ selectedVacancy.value }/close/`,
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -208,7 +208,7 @@
     const deleteVacancy = async () => {
         const response = await api({
             method: 'delete',
-            url: `/v1/e/vacancies/delete/${ selectedVacancy.value }/`,
+            url: `/v1/e/vacancies/${ selectedVacancy.value }/`,
             responseType: 'json'
         }).catch(apiCatchError);
 

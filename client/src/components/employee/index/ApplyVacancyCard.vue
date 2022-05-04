@@ -8,7 +8,7 @@
 
     const favourite = async (vID) => {
         const response = await api({
-            url: `/v1/vacancies/favourite/${ vID }`,
+            url: `/v1/vacancies/${ vID }/favourite/`,
             method: 'post',
             responseType: 'json'
         }).catch(apiCatchError);
@@ -21,7 +21,7 @@
 
     const unfavourite = async (vID) => {
         const response = await api({
-            url: `/v1/vacancies/unfavourite/${ vID }`,
+            url: `/v1/vacancies/${ vID }/unfavourite/`,
             method: 'delete',
             responseType: 'json'
         }).catch(apiCatchError);
@@ -34,7 +34,7 @@
     const apply = async (vID) => {
 
         const response = await api({
-            url: `/v1/vacancies/apply/${ vID }`,
+            url: `/v1/vacancies/${ vID }/apply/`,
             method: 'post',
             responseType: 'json'
         }).catch(apiCatchError);
@@ -48,7 +48,7 @@
 
     const reject = async (vID) => {
         const response = await api({
-            url: `/v1/vacancies/reject/${ vID }`,
+            url: `/v1/vacancies/${ vID }/reject/`,
             method: 'post',
             responseType: 'json'
         }).catch(apiCatchError);
