@@ -22,7 +22,7 @@ def getIndex(request):
         try:
             noAuth = params['noAuth']
 
-            if not noAuth:
+            if not noAuth or noAuth != 'True':
                 return jwt
             else:
                 return getIndexNoAuth(request)
