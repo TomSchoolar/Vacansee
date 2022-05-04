@@ -348,7 +348,7 @@
     }
 
     .pag-active {
-        background: var(--blue) !important; /* important removes background color hover change */
+        background: var(--red) !important; /* important removes background color hover change */
         color: white;
     }
 
