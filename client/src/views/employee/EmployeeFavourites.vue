@@ -215,12 +215,11 @@
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
 
-            <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
-            <i class="fa-solid fa-circle-arrow-right"></i>
-            </button>
-            <button type='button' class='button arrow-btn' @click='page > 1 ? changePage(page - 1) : page'>
-                <i class="fa-solid fa-circle-arrow-left"></i>
-            </button>
+            <div class='pagination' v-if='numPages > 1'>
+                <div class='pag-block pag-start' @click='page > 1 ? changePage(page - 1) : page'><i class="fa-solid fa-angle-left"></i></div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            
+            </div>
             
         </div>
     </div>
@@ -342,6 +341,43 @@
         font-size: 18px;
         font-style: italic;
     }
+
+    .pagination {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin: 15px 0 30px 0;
+    }
+
+    .pag-active {
+        background: var(--red) !important; /* important removes background color hover change */
+        color: white;
+    }
+
+
+    .pag-block {
+        padding: 3px 6px;
+        border: 1px solid var(--jet);
+        border-left-width: 0;
+        min-width: 20px;
+    }
+
+    .pag-end {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    .pag-block:hover, .pag-block:focus, .pag-block:active {
+        cursor: pointer;
+        background: rgba(85, 85, 85, 0.1);
+    }
+
+    .pag-start {
+        border-width: 1px;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+
 
     .search {
         border-radius: 8px;
