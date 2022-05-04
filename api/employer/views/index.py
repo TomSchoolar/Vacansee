@@ -162,6 +162,8 @@ def postIndex(request, jwt):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
 @api_view(['PUT'])
 def putIndexCloseVacancy(request, vacancyId):
 
@@ -184,6 +186,7 @@ def putIndexCloseVacancy(request, vacancyId):
         return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
 @api_view(['DELETE'])
 def deleteIndexDeleteVacancy(request, vacancyId):
     jwt = jwtHelper.extractJwt(request)
@@ -203,6 +206,8 @@ def deleteIndexDeleteVacancy(request, vacancyId):
 
     except Exception as err:
         return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 @api_view(['GET', 'PUT'])
 def editVacancy(request, vacancyId):
