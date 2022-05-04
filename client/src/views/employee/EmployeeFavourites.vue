@@ -227,12 +227,12 @@
 
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
-            <h3>Employee Favoruites</h3>
+            <h3>Employee Favourites</h3>
         </template>
         <template #modal-body> 
             <div class='modal-body'>
                 <p class='desc'>
-                    You can review vacancies which are added to your favourite here, and sort them using filters on the top rigght.
+                    You can review vacancies which are added to your favourites here, and sort them using filters on the top right.
                 </p>
 				<p class='desc'>
 					You can also reject, unfavourite, and accept vacancies by clicking the corresponding buttons on each card.

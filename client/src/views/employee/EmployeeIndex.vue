@@ -166,7 +166,7 @@
     watch(sort, sortVacancies);
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployerIndex', false);
+        window.localStorage.setItem('newUserEmployeeIndex', false);
         isNewUser.value = false;
     }
 
@@ -253,7 +253,7 @@
                     Adverts can be sorted using the filters on the top right.
                 </p>
                 <p class='desc'>
-                    The second column allows you to perform actions to the first advert in the list. You can reject it, add it to your favourite, or accept it by using relevant buttons.
+                    The second column allows you to perform actions to the first advert in the list. You can reject it, add it to your favourites, or accept it by using relevant buttons.
                 </p>
             </div> 
 
