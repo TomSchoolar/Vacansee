@@ -9,7 +9,6 @@
 <template>
     <div class='card'>
         <div class='top'>
-            <img src='@/assets/69018130-p-1080.jpeg' alt='man' height='110' width='200' align='center' style= 'border-radius:15px 15px 0 0;' />
         </div>
         <div class='mid'>
             <div class='company-name'>{{ jobTitle }}</div>
