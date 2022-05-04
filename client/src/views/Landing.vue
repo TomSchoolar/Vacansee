@@ -73,7 +73,6 @@
                 <router-link :to='`/login`' class='button button-white'>Start Now</router-link>
             </div>
         </section>
-
     </main>
 </template>
 
@@ -84,7 +83,7 @@
 
     .bottom{
         padding: 20px;
-        height: 40vh;
+        height: 100vh;
         background-color: #08415c;
         color: white;
         display: flex;
@@ -150,15 +149,16 @@
 
     .desc {
         color: #bbb;
-        font-size: calc(13px + 0.25vw)
+        font-size: calc(18px + 0.25vw)
     }
 
     .mid {
         width: 100vw;
-        padding: calc(25px + 1.0%) 0;
+        padding: calc(25px + 2.0%) 0;
         background-color: #333;
         color: white;
         min-height: 400px;
+        height: 75vh;
     }
 
     .mid-cards {
@@ -210,16 +210,16 @@
     }
 
     .title {
-        font-size: calc(18px + 0.8vw);
+        font-size: calc(18px + 1.15vw);
         margin: 0;
-        margin-bottom: calc(15px + 1.0%);
+        margin-bottom: calc(15px + 1.25%);
     }
 
     .top {
         color: black;
         position: relative;
         min-height: 400px;
-        height: 65vh;
+        height: 100vh;
     }
 
     .top::after {

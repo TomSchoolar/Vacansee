@@ -43,12 +43,10 @@
     }
 
     .card {
-        font-size: 16px;
+        font-size: 18px;
         font-weight: normal;
-        min-height: 400px;
-        width: calc(100% / 3 - 56px);
-        max-width: 380px;
-        min-width: 310px;
+        min-height: 500px;
+        min-width: 380px;
         border: 2px solid #555;
         border-radius: 15px;
         margin: 12px 10px;
@@ -78,13 +76,13 @@
 
     .company-name { 
         font-weight: bold;
-        font-size: 24px;
+        font-size: 26px;
         margin: 0px;
         padding: 10px 0px 0px 0px;
     }
 
     .description p {
-        font-size: 16px;
+        font-size: 18px;
         margin: 10px 0 5px 0;
     }
     
