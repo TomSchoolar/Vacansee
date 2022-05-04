@@ -3,6 +3,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
+    	import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
 
     import { computed, onMounted, ref, watch } from 'vue';
 
@@ -12,6 +13,9 @@
     const notifs = ref(2);
     let initialReq = true;
     const vacancies = ref([]);
+
+    //tutorial values
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeIndex') == null);
 
     // dropdown values
     const emptyCards = ref(0);
@@ -161,6 +165,11 @@
 
     watch(sort, sortVacancies);
 
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployeeIndex', false);
+        isNewUser.value = false;
+    }
+
 </script>
 
 <template>
@@ -232,6 +241,24 @@
             <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' />
         </div>
     </div>
+    
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employee index</h3>
+        </template>
+        <template #modal-body>
+            <div class='modal-body'>
+                <p class='desc'>
+                    The index page displays a list of adverts posted by companies in the first column. These can be seen in the stat bar, just below the nav bar. 
+                    Adverts can be sorted using the filters on the top right.
+                </p>
+                <p class='desc'>
+                    The second column allows you to perform actions to the first advert in the list. You can reject it, add it to your favourites, or accept it by using relevant buttons.
+                </p>
+            </div> 
+
+        </template>
+    </TutorialModal>
     
     
 </template>
