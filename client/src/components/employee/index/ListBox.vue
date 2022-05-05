@@ -30,9 +30,9 @@
             <option v-for='option in options' :key='parseInt(option.id)' :value='parseInt(option.id)' :selected='value && ( multipleValue && value.includes(option.id) || option.id == value) ? true : false'>{{ (option.text) }}</option>
         </select>
 
-        <div class='container'>
-            <button class='btn btn-back' @click='emit("close-modal")'>Go Back</button>
-            <button class='btn btn-next' @click='emit("search", selectedValues)'>Search</button>
+        <div class='button-row'>
+            <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
+            <button class='button button-blue' @click='emit("search", selectedValues)'>Search</button>
         </div>
     </div>
 
@@ -40,48 +40,58 @@
 </template>
 
 <style scoped>
-    .container {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        max-width: 500px;
-        margin: auto;
-    }
-
-    .btn {
-        width: 85px;
-        padding: 5.5px 0;
-        color: white;
-        border: none;
-        font-family: var(--font-family);
-        font-weight: 500;
-        font-size: 16px;
-        margin: 10px auto 0 auto;
-        cursor: pointer;
-    }
-
-    .btn-back {
-        background: var(--slate);
-    }
-
-    .btn-back:active, .btn-back:focus, .btn-back:hover {
-        background: var(--slate-focus);
-    }
-
-    .btn-next {
-        background: var(--blue);
-    }
-
-    .btn-next:active, .btn-next:focus, .btn-next:hover {
-        background: var(--blue-focus);
+    option {
+        color: black;
     }
 
     select:required:invalid {
         color: var(--slate);
     }
 
-    option {
-        color: black;
+    .button {
+        color: white;
+        width: 150px;
+        font-weight: 500; /* required for some reason */
+        border: none;
+        color: #fff;
+        font-size: 14px;
+        text-decoration: none;
+        padding: 14px 4px;
+        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+        flex-grow: 1;
+        cursor: pointer;
+    }
+
+    .button:first-of-type {
+        border-bottom-left-radius: 20px;
+    }
+
+    .button:last-of-type {
+        border-bottom-right-radius: 20px;
+    }
+
+    .button-grey {
+        background: var(--slate);
+    }
+
+    .button-grey:active, .button-grey:focus, .button-grey:hover  {
+        background: var(--slate-focus);
+    } 
+
+    .button-blue {
+        background: var(--blue);
+    }
+
+    .button-blue:active, .button-blue:focus, .button-blue:hover {
+        background: var(--blue-focus);
+    } 
+
+    .button-row {
+        position: absolute;
+        display: flex;
+        bottom: 0;
+        left: 0;
+        width: 100%;
     }
 
     .form-group {

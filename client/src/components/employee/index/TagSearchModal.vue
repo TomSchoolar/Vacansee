@@ -47,50 +47,7 @@
 
 
 <style scoped>
-    .button {
-        color: white;
-        width: 150px;
-        font-weight: 500; /* required for some reason */
-        border: none;
-        color: #fff;
-        font-size: 14px;
-        text-decoration: none;
-        padding: 14px 4px;
-        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
-        flex-grow: 1;
-        cursor: pointer;
-    }
 
-    .button:first-of-type {
-        border-bottom-left-radius: 20px;
-    }
-
-    .button:last-of-type {
-        border-bottom-right-radius: 20px;
-    }
-
-    .button-grey {
-        background: var(--slate);
-    }
-
-    .button-grey:active, .button-grey:focus, .button-grey:hover  {
-        background: var(--slate-focus);
-    } 
-
-    .button-red {
-        background: var(--red);
-    }
-
-    .button-red:active, .button-red:focus, .button-red:hover {
-        background: var(--red-focus);
-    } 
-
-    .button-row {
-        position: absolute;
-        display: flex;
-        bottom: 0;
-        width: 100%;
-    }
 
     .close-icon {
         position: absolute;

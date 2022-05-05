@@ -10,7 +10,8 @@
             <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
 
             <div class="modal-body">
-                <p class='desc desc-bold'>There are no vacancies to display with the given search fields.</p>
+                <p class='desc'>There are no vacancies to display with the given search fields.</p>
+                <p class='desc'>Try searching with a different tag/set of tags.</p>
             </div>
 
             <div class="button-row">
@@ -52,14 +53,6 @@
         background: var(--slate-focus);
     } 
 
-    .button-red {
-        background: var(--red);
-    }
-
-    .button-red:active, .button-red:focus, .button-red:hover {
-        background: var(--red-focus);
-    } 
-
     .button-row {
         position: absolute;
         display: flex;
@@ -92,19 +85,20 @@
     .modal {
         background-color: white;
         min-height: 200px;
-        max-width: min(425px, 90%);
-        padding: 25px 20px 40px 20px;
+        max-width: min(300px, 90%);
+        padding: 25px 20px 50px 20px;
         border-radius: 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: flex-start;
         position: relative;
         bottom: 30px;
     }
 
     .modal-body {
-        width: 75%;
-        margin: 25px 0;
+        width: 85%;
+        margin: 15px 0;
     }
 
     .modal-overlay {
@@ -132,6 +126,4 @@
         font-weight: bold;
         color: white;
     }
-
-
 </style>
