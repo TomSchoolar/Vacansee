@@ -1,10 +1,13 @@
 <script setup>
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
+	import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+
 
 	import { logout } from '@/assets/js/jwt';
     import api, { apiCatchError } from '@/assets/js/api';
     import { ref, onMounted, watch } from 'vue';
+
 
 	const url = window.location.pathname;
 
@@ -12,6 +15,8 @@
 	const saved = ref(false);
 	const details = ref({});
 	const displayModal = ref(false);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployerAccount') == null);
+
 
 	document.title = 'Account | Vacansee'
 
@@ -86,6 +91,22 @@
 		logout();
 	}
 
+	const resetTutorial = () => {
+        window.localStorage.removeItem('newUserEmployerAccount');
+		window.localStorage.removeItem('newUserEditVacancy');
+		window.localStorage.removeItem('newUserEmployerIndex');
+		window.localStorage.removeItem('newUserEmployerMatch');
+		window.localStorage.removeItem('newUserCreateVacancy');
+		window.localStorage.removeItem('newUserReview');
+
+        isNewUser.value = true;
+    }
+
+	const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployerAccount', false);
+        isNewUser.value = false;
+    }
+
 	onMounted(async () => {
 		const result = await getAccount({ });
 
@@ -101,6 +122,7 @@
 	watch(saved, () => {
 		setTimeout(flipSaved, 3000);
 	});
+
 
 </script>
 
@@ -118,14 +140,34 @@
 			<label for='email'>Current Email Address:</label>
 			<input type='text' placeholder='...' v-model='details.Email' required/>
 			<div class='button-container'>
-				<button class='delete-account' @click=showDeletion>Delete Account</button>
-				<button class='save' @click="updateAccount(details.CompanyName, details.PhoneNumber, details.Email)">Save</button>
+				<button class='button button-red' @click=showDeletion>Delete Account</button>
+				<button class='button button-blue' @click="updateAccount(details.CompanyName, details.PhoneNumber, details.Email)">Save</button>
 			</div>
+            <button class ='button button-blue' @click='resetTutorial'> Reset tutorial</button>
 			<div class='saved-indicator' v-show='saved'>
 				<p>Saved!</p>
 			</div>
 		</section>
     </main>
+	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employer account</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On the account page, you can change your company's name and contact information by filling in the form and clicking
+                    the save button.
+                </p>
+                <p class='desc'>
+                    You can also delete your account should you wish so by clicking the delete button.
+                </p>
+                <p class='desc'>
+                    In addition, the ability to restart tutorials for each page is also provided by clicking the reset tutorial button.
+                </p>
+            </div>
+        </template>
+    </TutorialModal>
 </template>
 
 <style scoped>
@@ -133,15 +175,41 @@
 		font-size: 18px;
 	}
 
-	.main {
-		width: 100vw;
-		height: 100vh;
-	}
+    .button {
+        color: #ffffff;
+		border: 0;
+		border-radius: 5px;
+		display: block;
+		cursor: pointer;
+		font-family: var(--fonts);
+		font-size: 16px;
+		font-weight: bold;
+		line-height: 24px;
+		padding: 5px 0;
+        flex: 1 1 0;
+        margin-top: 15px;
+    }
+
+    .button-blue {
+        background: var(--blue);
+    }
+
+    .button-blue:active, .button-blue:focus, .button-blue:hover {
+        background: var(--blue-focus);
+    }
 
 	.button-container {
 		display: flex;
 		gap: 0.2vw;
 	}
+
+    .button-red {
+        background: var(--red);
+    }
+
+    .button-red:active, .button-red:focus, .button-red:hover {
+        background: var(--red-focus);
+    }
 
 	.container {
 		display: flex;
@@ -162,25 +230,6 @@
 		margin: 0 0 10px 0;
 	}
 
-	.delete-account{
-		background: var(--red);
-		color: #ffffff;
-		border: 0;
-		border-radius: 5px;
-		display: block;
-		cursor: pointer;
-		font-family: var(--fonts);
-		font-size: 16px;
-		font-weight: bold;
-		line-height: 24px;
-		padding: 5px 0;
-		width: 50%;
-	}
-
-	.delete-account:active .delete-account:focus .delete-account:hover {
-		background: var(--red-focus);
-	}
-
 	.logo {
 		color: var(--blue);
 		font-weight: bold;
@@ -190,20 +239,9 @@
 		margin: 0 0 25px 0;
 	}
 
-
-	.save {
-		background: var(--blue);
-		color: #ffffff;
-		border: 0;
-		border-radius: 5px;
-		display: block;
-		cursor: pointer;
-		font-family: var(--fonts);
-		font-size: 16px;
-		font-weight: bold;
-		line-height: 24px;
-		padding: 5px 0;
-		width: 50%;
+	.main {
+		width: 100vw;
+		height: 100vh;
 	}
 
 	.saved-indicator {

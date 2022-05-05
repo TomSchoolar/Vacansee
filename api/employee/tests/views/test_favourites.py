@@ -1,8 +1,8 @@
 from math import ceil
 from django.test import TestCase
+from employee.models import Favourite
 from employer.serializers import VacancySerializer
 from employer.models import Vacancy, EmployerDetails
-from employee.models import Favourite
 from authentication.tests.jwtFuncs import createAccessToken
 
 class getFavouritesTests(TestCase):
@@ -135,17 +135,21 @@ class getFavouritesTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')
 
+
+
 class postFavouritesTests(TestCase):
     
     vacId = 1000
     userId = 2
     jwt = createAccessToken(userId)
     fixtures = ['authentication/fixtures/testseed.json']
-    
+
+
     def test_validRequest(self):
         response = self.client.post('/vacancy/fav/', { 'VacancyId': self.vacId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 201)      
+
 
     def test_invalidVacancy(self):
         response = self.client.post('/vacancy/fav/', { 'VacancyId': 9999 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
@@ -153,10 +157,19 @@ class postFavouritesTests(TestCase):
         self.assertEqual(response.data['status'], 400)
         self.assertEqual(response.data['message'], 'That vacancy is not open for applications')
 
+    
+    def test_repeatedFavourite(self):
+        response = self.client.post('/vacancy/fav/', { 'VacancyId': 1003 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(response.data['status'], 400)
+        self.assertEqual(response.data['message'], 'User has already favourited that vacancy')
+
+
     def test_missingParameters(self):
         response = self.client.post('/vacancy/fav/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 400)
+
 
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
@@ -166,6 +179,7 @@ class postFavouritesTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
 
+
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
@@ -174,12 +188,15 @@ class postFavouritesTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')
 
+
+
 class deleteFavouriteTests(TestCase):
 
     vacId = 1002
     userId = 1
     jwt = createAccessToken(userId)
     fixtures = ['authentication/fixtures/testseed.json']
+
 
     def test_validRequest(self):
         response = self.client.delete(
@@ -190,6 +207,7 @@ class deleteFavouriteTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+
     def test_missingParameters(self):
         response = self.client.delete(
                     '/vacancy/unfav/',
@@ -199,6 +217,7 @@ class deleteFavouriteTests(TestCase):
                     
         self.assertEqual(response.data['status'], 400)
         self.assertEqual(response.data['message'], 'Missing vacancy id from request')
+
 
     def test_invalidFavourite(self):
         invalidVacancyId = 1000
@@ -212,6 +231,7 @@ class deleteFavouriteTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Unauthorised favourite deletion')
 
+
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
 
@@ -219,6 +239,7 @@ class deleteFavouriteTests(TestCase):
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
+
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]

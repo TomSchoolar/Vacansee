@@ -4,18 +4,18 @@
     import relativeTime from 'dayjs/plugin/relativeTime';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
-    import IndexModal from '@/components/employer/index/IndexModal.vue';
     import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
     import DeleteVacancyModal from '../../components/employer/index/DeleteVacancyModal.vue';
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
 
     const showModal = ref(false);
     const showDeleteModal = ref(false);
     const currentModalVacancy = ref('');
 
     import { ref, watch, onMounted } from 'vue';
-    
+
     dayjs.extend(relativeTime);
-    
+
     // vars init
     const stats = ref({
         activeAdverts: '...',
@@ -30,6 +30,9 @@
     const displayModal = ref(false);
     const modalType = ref(0);
     const selectedVacancy = ref(0);
+
+    //tutorial values
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployerIndex') == null);
 
     // dropdown values
     const limit = ref(5);
@@ -71,10 +74,10 @@
         if(!data)
             return false;
 
-        const { 
-            numPages: pages = 1, 
+        const {
+            numPages: pages = 1,
             numVacancies: total = 0,
-            vacancies: newVacancies = vacancies.value, 
+            vacancies: newVacancies = vacancies.value,
         } = data;
 
 
@@ -119,7 +122,7 @@
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
         const result = await getVacancies({ sort: sortParam, count: limit.value, pageNum: page.value, filter: filter.value });
-        
+
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
@@ -138,7 +141,7 @@
             return;
         }
 
-        page.value = newPage;   
+        page.value = newPage;
     }
 
 
@@ -189,12 +192,6 @@
 
     // vacancy button actions
 
-    const showClosure = (vacId) => {
-        selectedVacancy.value = vacId;
-        modalType.value = 0;
-        displayModal.value = true;
-    }
-
     const closeVacancy = async () => {
         const response = await api({
             method: 'put',
@@ -211,11 +208,6 @@
         window.location.reload();
     }
 
-    const showDeletion = (vacId) => {
-        selectedVacancy.value = vacId;
-        modalType.value = 1;
-        displayModal.value = true;
-    }
 
     const deleteVacancy = async () => {
         const response = await api({
@@ -236,7 +228,13 @@
     const updateModalVacancy = async (vacanacyName) => {
         currentModalVacancy = vacanacyName;
         showModal = true;
-    } 
+    }
+
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployerIndex', false);
+        isNewUser.value = false;
+    }
+
 </script>
 
 
@@ -244,8 +242,6 @@
 <template>
 <!-- <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar> -->
     <EmployerNavbar page='home' ></EmployerNavbar>
-
-    <IndexModal :display='displayModal' :type='modalType' @close='displayModal = false' @closeVacancy='closeVacancy' @deleteVacancy='deleteVacancy' />
 
     <main class='container'>
         <EmployerStatBar :stats='stats' />
@@ -307,16 +303,12 @@
                     <div class='vacancy-right'>
                         <div class='vacancy-decisions'>{{ vacancy.AcceptedApplications }} Accepted / {{ vacancy.RejectedApplications }} Rejected</div>
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
-                        <button class='vacancy-button vacancy-button-red' @click='showClosure(vacancy.VacancyId)' v-if='vacancy.IsOpen'>Close Applications</button>
-                        <button class='vacancy-button vacancy-button-red' @click='showDeletion(vacancy.VacancyId)' v-else>Delete</button>
-                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.NewApplications'>Review Applications</router-link>
-                        <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-grey' v-else>Reread Applications</router-link>
 
                         <div class='vacancy-button-container'>
                             <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
                             <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue'>Review</router-link>
-                            <button class='vacancy-button vacancy-button-red' @click='showModal = true; currentModalVacancy = vacancy.VacancyName' v-if='vacancy.IsOpen'>Close</button>
-                            <button class='vacancy-button vacancy-button-red' @click='showDeleteModal = true; currentModalVacancy = vacancy.VacancyName' v-else>Delete</button>
+                            <button class='vacancy-button vacancy-button-red' @click='showModal = true; currentModalVacancy = vacancy.VacancyName; selectedVacancy = vacancy.VacancyId' v-if='vacancy.IsOpen'>Close</button>
+                            <button class='vacancy-button vacancy-button-red' @click='showDeleteModal = true; currentModalVacancy = vacancy.VacancyName; selectedVacancy = vacancy.VacancyId' v-else>Delete</button>
                         </div>
                         <DeleteVacancyModal v-if='showDeleteModal' :vacancyName='currentModalVacancy' @close-modal='showDeleteModal = false' @deleteVacancy='deleteVacancy' />
                         <CloseApplicationModal v-if='showModal' :vacancyName='currentModalVacancy' @close-modal='showModal = false' @closeApplications='closeVacancy' />
@@ -333,7 +325,23 @@
 
     <!-- <button @click='notifs++'>Add notification</button>
     <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>-->
+    
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employer index</h3>
+        </template>
+        <template #modal-body>
+            <div class='modal-body'>
+                <p class='desc'>The index page displays general statistics about your company's vacancies. These can be seen in the stat bar, just below the nav bar.
+                    The list of vacancies are shown under the stat bar.
+                </p>
+                <p class='desc'>
+                    You can also close listed vacancies and delete closed ones by clicking the buttons on the vacancy record. Vacancies can be sorted using the filters on the top right.
+                </p>
+            </div> 
 
+        </template>
+    </TutorialModal>
 </template>
 
 
@@ -498,7 +506,7 @@
     .vacancy-button-grey:hover, .vacancy-button-grey:focus, .vacancy-button-grey:active {
         background: var(--slate-focus);
         cursor: pointer;
-  } 
+  }
 
     .vacancy-button-red {
         background: var(--red);
@@ -507,7 +515,7 @@
     .vacancy-button-red:hover, .vacancy-button-red:focus, .vacancy-button-red:active {
         background: var(--red-focus);
         cursor: pointer;
-    } 
+    }
 
     .vacancy-closed {
         font-weight: bold;
