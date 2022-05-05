@@ -25,7 +25,7 @@ class getReviewTests(TestCase):
 
         # check matches are correct
         matchesSet = Application.objects.filter(VacancyId__exact = self.vacancyId, ApplicationStatus__exact = 'MATCHED')
-        matches = ApplicationSerializer(matchesSet, many=True).data['matches']
+        matches = ApplicationSerializer(matchesSet, many=True).data
 
         expectedMatches = []
 
@@ -60,7 +60,8 @@ class getReviewTests(TestCase):
         expectedVacancy = { 'VacancyId': vacancy.VacancyId, 'VacancyName': vacancy.VacancyName, 'CompanyName': employerDetails.CompanyName }
         self.assertEqual(data['vacancy'], expectedVacancy)
         
-        numKeys = 3
+        numKeys = 4
+
         self.assertTrue(len(data.keys()) == numKeys)
     
 

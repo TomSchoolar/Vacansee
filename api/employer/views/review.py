@@ -36,7 +36,7 @@ def getReview(request, vacancyId):
     
 
     try:
-        applications = reviewHelper.getApplications(vacancyId, "FirstNameAsc")
+        applications = reviewHelper.getApplications(vacancyId, "FirstNameAsc", "")
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting applications' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
