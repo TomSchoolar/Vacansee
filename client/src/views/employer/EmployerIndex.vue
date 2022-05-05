@@ -2,11 +2,13 @@
     import dayjs from 'dayjs';
     import api, { apiCatchError } from '@/assets/js/api';
     import relativeTime from 'dayjs/plugin/relativeTime';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
-    import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
     import DeleteVacancyModal from '../../components/employer/index/DeleteVacancyModal.vue';
-    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+    import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
+
 
     const showModal = ref(false);
     const showDeleteModal = ref(false);
@@ -165,16 +167,12 @@
         // change number of vacancies per page
         while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
 
-        if(page.value < 0)
-        {
+        if(page.value < 0) {
             page.value = 0;
         }
 
-        newPage = 1;
-
-        currentFirstVacancy = page.value * limit;
-        newPage = currentFirstVacancy / newLimit;
-
+        let currentFirstVacancy = page.value * newLimit;
+        let newPage = currentFirstVacancy / newLimit;
         page.value = newPage;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
@@ -183,7 +181,7 @@
             alert('uh oh! something went wrong :(');
             return;
         }
-
+        console.log(newPage)
         limit.value = newLimit;
     });
 
@@ -342,6 +340,10 @@
 
         </template>
     </TutorialModal>
+
+
+    <Footer></Footer>
+
 </template>
 
 

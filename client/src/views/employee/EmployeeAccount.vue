@@ -1,11 +1,13 @@
 <script setup>
+	import api, { apiCatchError } from '@/assets/js/api';
+	import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
-	import AccountModal from '@/components/employer/account/AccountModal.vue';
 	import ProfileCard from '@/components/employee/account/ProfileCard.vue';
+	import AccountModal from '@/components/employer/account/AccountModal.vue';
 	import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
 
+
 	import { logout } from '@/assets/js/jwt';
-    import api, { apiCatchError } from '@/assets/js/api';
     import { ref, onMounted, watch } from 'vue';
 
 	const url = window.location.pathname;
@@ -169,6 +171,7 @@
 			</div>
 		</section>
     </main>
+
 	
 	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
@@ -191,6 +194,10 @@
             </div>
         </template>
     </TutorialModal>
+
+
+	<Footer></Footer>
+
 </template>
 
 <style scoped>
@@ -200,7 +207,7 @@
 
 	.main {
 		width: 100vw;
-		height: 100vh;
+		height: auto;
 	}
 
 	.button {

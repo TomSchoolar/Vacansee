@@ -1,7 +1,8 @@
 <script setup>
+	import Footer from '@/components/partials/Footer.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
-	import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+	import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
 
 
 	import { logout } from '@/assets/js/jwt';
@@ -148,6 +149,7 @@
 				<p>Saved!</p>
 			</div>
 		</section>
+		<Footer></Footer>
     </main>
 	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
@@ -241,7 +243,6 @@
 
 	.main {
 		width: 100vw;
-		height: 100vh;
 	}
 
 	.saved-indicator {

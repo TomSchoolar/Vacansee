@@ -1,11 +1,12 @@
 <script setup>
     import dayjs from 'dayjs';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import MatchModal from '@/components/employee/applications/MatchModal.vue';
-    import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
-    import AreYouSureModal from '../../components/employer/match/AreYouSureModal.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
+    import AreYouSureModal from '../../components/employer/match/AreYouSureModal.vue';
+    import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
 
 
     import { ref, watch, onMounted } from 'vue';
@@ -316,6 +317,7 @@
         </section>
     </main>
 
+
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Employee Applications</h3>
@@ -333,6 +335,9 @@
 
         </template>
     </TutorialModal>
+    
+
+    <Footer></Footer>
     
 </template>
 

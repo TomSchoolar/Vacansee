@@ -1,8 +1,9 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
-    import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
+    import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
 
     
     import { computed, onMounted, ref, watch } from 'vue';
@@ -225,6 +226,7 @@
         </div>
     </div>
 
+
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Employee Favourites</h3>
@@ -240,6 +242,9 @@
             </div>
         </template>
     </TutorialModal>
+
+
+    <Footer></Footer>
 
 </template>
 

@@ -1,10 +1,11 @@
 <script setup>
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
-    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
+    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
 
     
     // form pages
@@ -97,6 +98,7 @@
         
     </form>
 
+
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Edit vacancy</h3>
@@ -113,6 +115,9 @@
 
         </template>
     </TutorialModal>
+
+
+    <Footer></Footer>
 
 </template>
 

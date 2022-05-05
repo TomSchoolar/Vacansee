@@ -1,10 +1,11 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import MatchCard from '@/components/employer/match/MatchCard.vue';
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
-    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
 
     
     import { ref, onMounted } from 'vue';    
@@ -140,6 +141,7 @@
         </div>
     </div>
 
+    
 	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Review applications</h3>
@@ -162,6 +164,9 @@
 
         </template>
     </TutorialModal>
+
+
+    <Footer></Footer>
 
 </template>
 

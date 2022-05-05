@@ -1,9 +1,10 @@
 <script setup>
+    import Footer from '@/components/partials/CompactFooter.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ProfileCard from '@/components/employer/match/ProfileCard.vue';
     import MatchesColumn from '@/components/employer/match/MatchesColumn.vue';
     import VacanciesColumn from '@/components/employer/match/VacanciesColumn.vue';
-    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
 
     
     import { ref } from 'vue';
@@ -56,6 +57,7 @@
         </section>
     </main>
 
+
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Employer Match</h3>
@@ -72,6 +74,9 @@
 
         </template>
     </TutorialModal>
+
+    <Footer></Footer>
+
 </template>
 
 <style scoped>
