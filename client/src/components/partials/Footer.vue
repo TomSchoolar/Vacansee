@@ -45,5 +45,7 @@
         align-items: center;
         color: #ffffff;
         background: var(--jet);
+        position: absolute;
+        top: max(100vh, 100%);
     }
 </style>
