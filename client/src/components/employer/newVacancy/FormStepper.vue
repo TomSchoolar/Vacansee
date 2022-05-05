@@ -54,10 +54,7 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class="fa-solid fa-check"></i>
-            </div>
-            <div class='label'>
-                Basic Details
+                <i class='fa-solid fa-check'></i>
             </div>
             <div class='label'>
                 More Details
@@ -68,18 +65,7 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class="fa-solid fa-check"></i>
-            </div>
-            <div class='label'>
-                More Details
-            </div>
-        </div>
-        
-        <div class='spacer'></div>
-        
-        <div class='form-page'>
-            <div class='circle'>
-                <i class="fa-solid fa-check"></i>
+                <i class='fa-solid fa-check'></i>
             </div>
             <div class='label'>
                 Contact Details
@@ -90,7 +76,7 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class="fa-solid fa-check"></i>
+                <i class='fa-solid fa-check'></i>
             </div>
             <div class='label'>
                 Logistics
@@ -101,7 +87,7 @@
         
         <div class='form-page'>
             <div class='circle'>
-                <i class="fa-solid fa-check"></i>
+                <i class='fa-solid fa-check'></i>
             </div>
             <div class='label'>
                 Tags
