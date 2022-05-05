@@ -54,6 +54,7 @@ const authRoutes = [
 import EmployeeIndex from '../views/employee/EmployeeIndex.vue';
 import EmployeeApplications from '../views/employee/EmployeeApplications.vue';
 import EmployeeFavourites from '../views/employee/EmployeeFavourites.vue';
+import EmployeeProfile from '../views/employee/EmployeeProfile.vue';
 import EmployeeAccount from '../views/employee/EmployeeAccount.vue';
 
 const employeeRoutes = [
@@ -80,6 +81,15 @@ const employeeRoutes = [
         meta: {
             middleware: [isLoggedIn, isEmployee]
         }
+    },
+    {
+        path: '/profile',
+        name: 'EmployeeProfile',
+        component: EmployeeProfile,
+        meta: {
+            middleware: [isLoggedIn, isEmployee]
+        }
+
     },
     {
         path: '/account',
