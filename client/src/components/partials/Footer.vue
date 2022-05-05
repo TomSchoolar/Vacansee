@@ -40,11 +40,10 @@
         width: 60vw;
         height: 70px;
         padding: 0 20vw;
-        margin-top: 30px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         color: #ffffff;
-        background: var(--slate);
+        background: var(--jet);
     }
 </style>
