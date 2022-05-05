@@ -46,6 +46,6 @@
         color: #ffffff;
         background: var(--jet);
         position: absolute;
-        top: calc(max(calc(100vh - 120px), 100%) + 50px);
+        top: calc(max(calc(100vh - 70px), 100%));
     }
 </style>

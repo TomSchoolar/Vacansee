@@ -1,6 +1,6 @@
 <script setup>
     import VacancyCard from '@/components/auth/VacancyCard.vue';
-    import Footer from '@/components/partials/Footer.vue';
+    import Footer from '@/components/partials/CompactFooter.vue';
 
     let vacancies = [
         {
@@ -112,6 +112,7 @@
         height: 20vh;
         background-color: #08415c;
         color: white;
+
     }
 
     .cards {

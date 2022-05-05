@@ -1,6 +1,5 @@
 <script setup>
     import DefaultNavbar from '@/components/partials/DefaultNavbar.vue';
-    import Footer from '@/components/partials/Footer.vue';
 </script>
 
 
@@ -147,8 +146,6 @@
             </p>
         </section>
     </main>
-
-    <Footer></Footer>
 
 </template>
 
