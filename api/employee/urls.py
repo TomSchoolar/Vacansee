@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import applications, favourites, index, account, profile
-
 urlpatterns = [
     path('vacancy/', index.getIndex),
     path('vacancy/fav/', favourites.postFavourite),
@@ -17,4 +16,5 @@ urlpatterns = [
     path('account/delete/', account.deleteAccount),
     path('account/profile/', account.getProfile),
     path('profile/', profile.postProfile)
+
 ]

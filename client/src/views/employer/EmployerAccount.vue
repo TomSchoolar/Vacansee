@@ -11,7 +11,7 @@
 
 	const url = window.location.pathname;
 
-	const notifs = ref(2);
+	//const notifs = ref(2);
 	const saved = ref(false);
 	const details = ref({});
 	const displayModal = ref(false);
@@ -128,7 +128,8 @@
 
 <template>
     <main class='main'>
-        <EmployerNavbar page='account' :numNotifs='notifs'></EmployerNavbar>
+        <!-- <EmployerNavbar page='account' :numNotifs='notifs'></EmployerNavbar> -->
+		<EmployerNavbar page='account' ></EmployerNavbar>
         <section class='container'>
 			<AccountModal :display='displayModal' @close='displayModal = false' @delete='deleteAccount' />
 			<p class='logo'>Account Details</p>

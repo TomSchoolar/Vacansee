@@ -67,9 +67,11 @@
         currentApplication.value = nextApplication;
     }
 
+    //download button
+    /*
     const download_button = () => {
         alert('downloading all applications');
-    }
+    }*/
 
     const finishTutorial = () => {
         window.localStorage.setItem('newUserReview', false);
@@ -80,14 +82,17 @@
 
 
 <template>
-    <EmployerNavbar :numNotifs='notifs'></EmployerNavbar>
+    <!-- <EmployerNavbar :numNotifs='notifs'></EmployerNavbar> -->
+    <EmployerNavbar ></EmployerNavbar>
 
     <div class='container'>
         <div class='col col-left'>
             <div class='col-header'> 
                 <h3 class='col-title'>Matches ({{ matches.length }})</h3>
                 <div class='header-right'>
-                    <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button>
+                    <!-- download button -->
+                    <!-- <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button> -->
+                    
                     <div class='search-group'>
                         <i class="fas fa-search search-icon"></i>
                         <input class='search' placeholder='search' type='text'> 

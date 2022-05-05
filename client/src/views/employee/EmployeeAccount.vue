@@ -10,7 +10,7 @@
 
 	const url = window.location.pathname;
 
-	const notifs = ref(2);
+	//const notifs = ref(2);
 	const saved = ref(false);
 	const accountDetails = ref({});	
 	const details = ref({})
@@ -146,7 +146,9 @@
 
 <template>
     <main class='main'>
-        <EmployeeNavbar page='account' :numNotifs='notifs'></EmployeeNavbar>
+
+        <!-- <EmployeeNavbar page='account' :numNotifs='notifs'></EmployeeNavbar> -->
+		<EmployeeNavbar page='account' ></EmployeeNavbar>
         <section class='container'>
 			<AccountModal :display='displayModal' @close='displayModal = false' @delete='deleteAccount' />
 			<div>

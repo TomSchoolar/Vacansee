@@ -60,7 +60,8 @@
 </script>
 
 <template>
-    <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar>
+    <!-- <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar> -->
+    <EmployeeNavbar page='home'> </EmployeeNavbar>
 
     
     <main class='container'>

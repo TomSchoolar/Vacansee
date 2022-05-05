@@ -26,7 +26,7 @@
 
     const page = ref(1);
     const limit = ref(5);
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const numPages = ref(1);
     const filter = ref('all');
     const modalStats = ref({});
@@ -235,7 +235,8 @@
 
 
 <template>
-    <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>
+    <!-- <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>-->
+    <EmployeeNavbar page='applications' ></EmployeeNavbar>
 
     <main class='container'>
         <EmployeeStatBar :stats='stats' />
