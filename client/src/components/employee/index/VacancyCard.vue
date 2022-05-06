@@ -2,19 +2,18 @@
     import { ref } from 'vue';
 
     const props = defineProps(['vacancy', 'tags']);
-    const { tags } = props;
 
     let tagsLim = ref(6);
     let extraTags = ref('');
-
-    if(tags.length > 6) {
+    
+    if(props.tags.length > 6) {
         tagsLim.value = 5;
 
-        tags.slice(5,-1).forEach((tag) => {
+        props.tags.slice(5,-1).forEach((tag) => {
             extraTags.value += `${ tag.title }, `;
         });
 
-        extraTags.value += tags[tags.length - 1].title;
+        extraTags.value += tags[props.tags.length - 1].title;
     }
 </script>
 

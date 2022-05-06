@@ -1,19 +1,17 @@
 <script setup>
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
-    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
-    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
-
+    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     
     // form pages
-    import PersonalDetailsForm from '@/components/employee/profile/PersonalDetailsForm.vue';
+    import PersonalDetailsForm from '@/components/employee/profile/edit/PersonalDetailsFormEdit.vue';
     import LocationForm from '@/components/employee/profile/LocationForm.vue';
-    import SoftSkillsForm from '@/components/employee/profile/SoftSkillsForm.vue';
-    import ExperienceForm from '@/components/employee/profile/ExperienceForm.vue';
-    import QualificationsForm from '@/components/employee/profile/QualificationsForm.vue';
-    import ReviewForm from '@/components/employee/profile/ReviewForm.vue';
+    import SoftSkillsForm from '@/components/employee/profile/edit/SoftSkillsFormEdit.vue';
+    import ExperienceForm from '@/components/employee/profile/edit/ExperienceFormEdit.vue';
+    import QualificationsForm from '@/components/employee/profile/edit/QualificationsFormEdit.vue';
+    import ReviewFormEdit from '@/components/employee/profile/edit/ReviewFormEdit.vue';
 
     import { onMounted, ref } from 'vue';
 
@@ -21,12 +19,32 @@
     const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
+    const profile = ref({})
 
+	const getProfile = async () => {
+		const response = await api({
+			url: '/v1/accounts/profiles/',
+			method: 'get',
+			responseType: 'json'
+		}).catch(apiCatchError);
 
+		if (!response) {
+			return false;
+		}
 
-    onMounted(() => {
+		const { data } = response;
+
+		const {
+			details: newDetails = accountDetails.value,
+		} = data;
+
+		profile.value = newDetails;
+		return true;
+	}
+    onMounted(async () => {
         pages = document.querySelectorAll('.form-page-container');
+
+        const result = await getProfile({ });
     });
 
     const changePage = (incr) => {
@@ -48,22 +66,16 @@
             // review page, get form data
             const form = document.querySelector('form');
             formData.value = new FormData(form);
-            console.log('formData:');
-            console.log(formData.value);
         }
     }
 
-    const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployeeProfile', false);
-        isNewUser.value = false;
-    }
+    
 
 
 </script>
 
 <template>
-    <!-- <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar> -->
-    <EmployeeNavbar page='home'> </EmployeeNavbar>
+    <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar>
 
     
     <main class='container'>
@@ -79,46 +91,25 @@
 
     <form class='form-pane'>
         <div class='form-page-container'>
-            <PersonalDetailsForm @next='changePage(1)' />
+            <PersonalDetailsForm @next='changePage(1)' :FirstName='profile.FirstName' :LastName='profile.LastName' :Pronouns='profile.Pronouns' :PhoneNumber='profile.PhoneNumber' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <LocationForm @next='changePage(1)' @back='changePage(-1)' />
+            <LocationForm @next='changePage(1)' @back='changePage(-1)' :Location='profile.Location' :TimeZone='profile.TimeZone' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <SoftSkillsForm @next='changePage(1)' @back='changePage(-1)' />
+            <SoftSkillsForm @next='changePage(1)' @back='changePage(-1)' :Description='profile.TopicSentence' :NotableSkills='profile.NotableSkills' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ExperienceForm @next='changePage(1)' @back='changePage(-1)' />
+            <ExperienceForm @next='changePage(1)' @back='changePage(-1)' :Experience='profile.Experience' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <QualificationsForm @next='changePage(1)' @back='changePage(-1)' />
+            <QualificationsForm @next='changePage(1)' @back='changePage(-1)' :Qualifications='profile.Qualifications' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' />
+            <ReviewFormEdit @next='changePage(1)' @back='changePage(-1)' :formData='formData' />
         </div>
         
     </form>
-
-
-    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
-        <template #modal-header>
-            <h3>Edit vacancy</h3>
-        </template>
-        <template #modal-body> 
-            <div class='modal-body'>
-                <p class='desc'>
-                    On this page you can edit your personal profile by completing the same form you used to register your account.           
-                </p>
-                <p class='desc'>
-                    Except this time the form is pre-populated with profile data.    
-                </p>
-            </div>
-
-        </template>
-    </TutorialModal>
-
-
-    <Footer></Footer>
 
 </template>
 
@@ -126,7 +117,7 @@
     *:deep(.invalid-input) {
         border: 3px solid var(--red) !important;
     }
-    
+
     hr {
         width: 100%;
         margin: 8px 0 12px 0;

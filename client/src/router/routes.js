@@ -55,6 +55,7 @@ import EmployeeIndex from '../views/employee/EmployeeIndex.vue';
 import EmployeeApplications from '../views/employee/EmployeeApplications.vue';
 import EmployeeFavourites from '../views/employee/EmployeeFavourites.vue';
 import EmployeeProfile from '../views/employee/EmployeeProfile.vue';
+import EmployeeProfileEdit from '../views/employee/EmployeeProfileEdit.vue';
 import EmployeeAccount from '../views/employee/EmployeeAccount.vue';
 
 const employeeRoutes = [
@@ -90,6 +91,14 @@ const employeeRoutes = [
             middleware: [isLoggedIn, isEmployee]
         }
 
+    },
+    {
+        path: '/profile/edit',
+        name: 'EmployeeProfileEdit',
+        component: EmployeeProfileEdit,
+        meta: {
+            middleware: [isLoggedIn, isEmployee]
+        }
     },
     {
         path: '/account',

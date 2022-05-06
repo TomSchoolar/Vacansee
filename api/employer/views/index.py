@@ -201,6 +201,8 @@ def deleteIndexDeleteVacancy(request, vacancyId, jwt):
     except Exception as err:
         return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def editVacancy(request, vacancyId):
 
@@ -237,6 +239,7 @@ def editVacancy(request, vacancyId):
 
         data['IsOpen'] = True
         data['Tags'] = loads(data['Tags'])
+        data['Created'] = vacancySet.Created
         data['UserId'] = User.objects.get(pk = jwt['id'])
         data['SkillsRequired'] = loads(data['SkillsRequired'])
         data['ExperienceRequired'] = loads(data['ExperienceRequired'])
@@ -247,7 +250,7 @@ def editVacancy(request, vacancyId):
                 updatedVacancy.save()
                 return Response(data={ 'status': 200 }, status=status.HTTP_200_OK)
             else:
-                return Response(data={ 'status': 400, 'message': 'Invalid vacancy data' }, status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={ 'status': 400, 'message': f'Invalid vacancy data: { updatedVacancy.errors }' }, status=status.HTTP_400_BAD_REQUEST)
             
         except Exception as err:
             print(f'uh oh: { err }')

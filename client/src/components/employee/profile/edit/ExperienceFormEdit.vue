@@ -40,7 +40,7 @@
         Include up to three of your most relevant or most recent jobs/placements/internships below
     </FormHeader>
 
-    <FormExpandingText label='experience' name='Experience' :max='3' :value='props.Experience' />
+    <FormExpandingText label='experience' name='Experience' :max='3' :value='props.Experience' :expectValue='true' />
     
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 </template>

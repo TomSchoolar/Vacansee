@@ -14,5 +14,6 @@ urlpatterns = [
     path('accounts/', account.putAccount),
     path('accounts/', account.deleteAccount),
     path('accounts/profiles/', account.getProfile),
-    path('profiles/', profile.postProfile)
+    path('profiles/', profile.postProfile),
+    path('profiles/edit/', profile.postProfileEdit)
 ]
