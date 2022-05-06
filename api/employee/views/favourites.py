@@ -163,6 +163,8 @@ def postFavourite(request, vacancyId):
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
+
+
 @api_view(['DELETE'])
 def deleteFavourite(request, vacancyId):
     jwt = jwtHelper.extractJwt(request)
