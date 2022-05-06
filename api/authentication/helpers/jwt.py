@@ -73,7 +73,7 @@ def getRefreshExpiry():
 
 def getAccessExpiry():
     # function to create date object extended to 10 mins from now
-    return datetime.now(tz=timezone.utc) + timedelta(seconds=10)
+    return datetime.now(tz=timezone.utc) + timedelta(minutes=10)
 
 
 
