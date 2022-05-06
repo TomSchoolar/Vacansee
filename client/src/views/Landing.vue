@@ -11,7 +11,7 @@
     onMounted(async () => {
         const response = await axios({
             baseURL: process.env.VUE_APP_API_ENDPOINT,
-            url: '/vacancy/',
+            url: '/v1/vacancies/',
             method: 'get',
             responseType: 'json',
             timeout: 3000,
