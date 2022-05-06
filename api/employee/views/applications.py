@@ -73,7 +73,7 @@ def getApplications(request):
         applications = ApplicationSerializer(applicationSet, many=True).data
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error retrieving applications from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error retrieving applications from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     pairedApplications = []
     
@@ -86,14 +86,14 @@ def getApplications(request):
             pairedApplications.append(pair)
 
     except Vacancy.DoesNotExist:
-        return Response({ 'status': 500, 'message': 'Error retrieving vacancy details from the database, possible database corruption' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error retrieving vacancy details from the database, possible database corruption' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error retrieving vacancy details from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error retrieving vacancy details from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
-    return Response({ 'applications': pairedApplications, 'numPages': numPages, 'pageNum': pageNum, 'numApps': numApps }, status=status.HTTP_200_OK)
+    return Response(data={ 'applications': pairedApplications, 'numPages': numPages, 'pageNum': pageNum, 'numApps': numApps }, status=status.HTTP_200_OK)
 
 
 
@@ -118,14 +118,14 @@ def getApplicationStats(request):
 
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error retrieving application stats from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error retrieving application stats from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
     return Response(stats)
 
 
 
-@api_view(['GET'])
+@api_view(['GET', 'DELETE'])
 def getApplicationDetails(request, applicationId):
     # test jwt
     jwt = jwtHelper.extractJwt(request)
@@ -133,17 +133,20 @@ def getApplicationDetails(request, applicationId):
     if type(jwt) is not dict:
         return jwt
 
+    if request.method == 'DELETE':
+        return deleteApplication(request, applicationId, jwt)
+
     try:
         applicationSet = Application.objects.get(pk = applicationId, UserId__exact = jwt['id'])
         application = ApplicationSerializer(applicationSet).data
 
         if application['ApplicationStatus'] != 'MATCHED':
-            return Response({ 'status': 400, 'message': 'You have not matched with that vacancy.' }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={ 'status': 400, 'message': 'You have not matched with that vacancy.' }, status=status.HTTP_400_BAD_REQUEST)
     except Application.DoesNotExist:
-        return Response({ 'status': 401, 'message': 'You do not have access to that application' }, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data={ 'status': 401, 'message': 'You do not have access to that application' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting application from the server' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting application from the server' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         vacancySet = Vacancy.objects.get(pk = application['VacancyId'])
@@ -153,48 +156,45 @@ def getApplicationDetails(request, applicationId):
         companyName = employerDetails.CompanyName
 
     except Application.DoesNotExist:
-        return Response({ 'status': 500, 'message': 'Couldn\'t find vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Couldn\'t find vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting vacancy from the server' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting vacancy from the server' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return Response({ **application, **vacancy, 'CompanyName': companyName }, status=status.HTTP_200_OK)
+    return Response(data={ **application, **vacancy, 'CompanyName': companyName }, status=status.HTTP_200_OK)
 
 
 
 @api_view(['POST'])
-def postApplication(request):
+def postApplication(request, vacancyId):
     jwt = jwtHelper.extractJwt(request)
     
     if type(jwt) is not dict:
         return jwt
 
     try:
-        vacancyId = request.data['VacancyId']
-
         vacancy = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True)
 
-    except KeyError:
-        return Response({ 'status': 400, 'message': 'Missing vacancy id from request' }, status=status.HTTP_400_BAD_REQUEST)
     except Vacancy.DoesNotExist:
-        return Response({ 'status': 400, 'message': 'That vacancy is not open for applications' }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={ 'status': 400, 'message': 'That vacancy is not open for applications' }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         existingApplications = Application.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
 
         if existingApplications > 0:
-            return Response({ 'status': 400, 'message': 'Application to that vacancy already exists' }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={ 'status': 400, 'message': 'Application to that vacancy already exists' }, status=status.HTTP_400_BAD_REQUEST)
 
         existingRejections = Reject.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
 
         if existingRejections > 0:
-            return Response({ 'status': 400, 'message': 'Cannot apply to a vacancy that you\'ve already rejected' }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={ 'status': 400, 'message': 'Cannot apply to a vacancy that you\'ve already rejected' }, status=status.HTTP_400_BAD_REQUEST)
+
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Server error checking request validity' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Server error checking request validity' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         newApplication = {
@@ -214,7 +214,7 @@ def postApplication(request):
 
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
     try:
@@ -232,14 +232,12 @@ def postApplication(request):
         
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)
 
 
-
-@api_view(['DELETE'])
-def deleteApplication(request, applicationId):
+def deleteApplication(request, applicationId, jwt):
     jwt = jwtHelper.extractJwt(request)
 
     if type(jwt) is not dict:
@@ -252,12 +250,12 @@ def deleteApplication(request, applicationId):
         )
 
         if application.ApplicationStatus == 'REJECTED':
-            return Response({ 'status': 403, 'message': 'You cannot delete an application that has already been rejected' }, status=status.HTTP_403_FORBIDDEN)
+            return Response(data={ 'status': 403, 'message': 'You cannot delete an application that has already been rejected' }, status=status.HTTP_403_FORBIDDEN)
 
         application.delete()
         return Response(status=status.HTTP_200_OK)
     except Application.DoesNotExist:
-        return Response({'status': 401, 'message': 'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data={'status': 401, 'message': 'Application not owned by user'}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: {err}')
-        return Response({'status': 500, 'message': 'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={'status': 500, 'message': 'Server error while finding and deleting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

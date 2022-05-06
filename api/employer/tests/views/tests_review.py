@@ -20,7 +20,7 @@ class getReviewTests(TestCase):
 
     def test_validRequestFullData(self):
         # make request
-        response = self.client.get(f'/e/review/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         data = response.data
 
         # check matches are correct
@@ -67,7 +67,7 @@ class getReviewTests(TestCase):
     def test_otherUsersVacancy(self):
         vacancyId = 1010
 
-        response = self.client.get(f'/e/review/{ vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get(f'/v1/e/vacancies/{ vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'You do not have access to that vacancy')
@@ -76,7 +76,7 @@ class getReviewTests(TestCase):
     def test_invalidVacancy(self):
         vacancyId = 1030
 
-        response = self.client.get(f'/e/review/{ vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get(f'/v1/e/vacancies/{ vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'You do not have access to that vacancy')
@@ -84,7 +84,7 @@ class getReviewTests(TestCase):
 
     def test_expiredJwt(self):
         jwt = createAccessToken(self.userId, 'now')
-        response = self.client.get(f'/e/review/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
         
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
@@ -92,7 +92,7 @@ class getReviewTests(TestCase):
 
     def test_invalidJwt(self):
         jwt = self.jwt[:-1]
-        response = self.client.get(f'/e/review/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
@@ -111,28 +111,28 @@ class putReviewValidTests(TransactionTestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_validAccept(self):
-        getPreResponse = self.client.get(f'/e/review/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        getPreResponse = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         putResponse = self.client.put(
-            f'/e/review/{ self.vacancyId }/updatestatus/{ self.applicationId }/',
+            f'/v1/e/vacancies/{ self.vacancyId }/review/{ self.applicationId }/',
             data={ 'setStatus': 'accept' },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
         )
-        getPostResponse = self.client.get(f'/e/review/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        getPostResponse = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(putResponse.status_code, 200)
         self.assertGreater(len(getPostResponse.data['matches']), len(getPreResponse.data['matches']))
     
 
     def test_validDefer(self):
-        getPreResponse = self.client.get(f'/e/review/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        getPreResponse = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         putResponse = self.client.put(
-            f'/e/review/{ self.vacancyId }/updatestatus/{ self.applicationId }/',
+            f'/v1/e/vacancies/{ self.vacancyId }/review/{ self.applicationId }/',
             data={ 'setStatus': 'defer' },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
         )
-        getPostResponse = self.client.get(f'/e/review/{ self.vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        getPostResponse = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         
         self.assertEquals(putResponse.status_code, 200)
         self.assertFalse(getPreResponse.data['new'] == getPostResponse.data['new'])
@@ -141,7 +141,7 @@ class putReviewValidTests(TransactionTestCase):
     def test_validReject(self):
         preAppCount = Application.objects.filter(VacancyId__exact = self.vacancyId, ApplicationStatus__exact = 'PENDING').count()
         putResponse = self.client.put(
-            f'/e/review/{ self.vacancyId }/updatestatus/{ self.applicationId }/',
+            f'/v1/e/vacancies/{ self.vacancyId }/review/{ self.applicationId }/',
             data={ 'setStatus': 'reject' },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
@@ -166,7 +166,7 @@ class putReviewInvalidTests(TestCase):
 
     def test_missingParameter(self):
         response = self.client.put(
-            f'/e/review/{ self.vacancyId }/updatestatus/{ self.applicationId }/',
+            f'/v1/e/vacancies/{ self.vacancyId }/review/{ self.applicationId }/',
             data={  },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
@@ -178,7 +178,7 @@ class putReviewInvalidTests(TestCase):
 
     def test_invalidParameter(self):
         response = self.client.put(
-            f'/e/review/{ self.vacancyId }/updatestatus/{ self.applicationId }/',
+            f'/v1/e/vacancies/{ self.vacancyId }/review/{ self.applicationId }/',
             data={ 'setStatus': 'potato' },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
@@ -192,7 +192,7 @@ class putReviewInvalidTests(TestCase):
         applicationId = 10000
 
         response = self.client.put(
-            f'/e/review/{ self.vacancyId }/updatestatus/{ applicationId }/',
+            f'/v1/e/vacancies/{ self.vacancyId }/review/{ applicationId }/',
             data={ 'setStatus': 'reject' },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
@@ -206,7 +206,7 @@ class putReviewInvalidTests(TestCase):
         vacancyId = 1010
 
         response = self.client.put(
-            f'/e/review/{ vacancyId }/updatestatus/{ self.applicationId }/',
+            f'/v1/e/vacancies/{ vacancyId }/review/{ self.applicationId }/',
             data={ 'setStatus': 'reject' },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'}
@@ -219,7 +219,7 @@ class putReviewInvalidTests(TestCase):
     def test_invalidVacancy(self):
         vacancyId = 1030
 
-        response = self.client.get(f'/e/review/{ vacancyId }/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get(f'/v1/e/vacancies/{ vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'You do not have access to that vacancy')
@@ -228,7 +228,7 @@ class putReviewInvalidTests(TestCase):
     def test_expiredJwt(self):
         jwt = createAccessToken(self.userId, 'now')
         response = self.client.put(
-            f'/e/review/{ self.vacancyId }/updatestatus/{ self.applicationId }/',
+            f'/v1/e/vacancies/{ self.vacancyId }/review/{ self.applicationId }/',
             data={ 'setStatus': 'reject' },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'}
@@ -241,7 +241,7 @@ class putReviewInvalidTests(TestCase):
     def test_invalidJwt(self):
         jwt = self.jwt[:-1]
         response = self.client.put(
-            f'/e/review/{ self.vacancyId }/updatestatus/{ self.applicationId }/',
+            f'/v1/e/vacancies/{ self.vacancyId }/review/{ self.applicationId }/',
             data={ 'setStatus': 'reject' },
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'}

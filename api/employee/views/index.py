@@ -201,24 +201,20 @@ def getIndexNoAuth(request):
 
 
 @api_view(['POST'])
-def postReject(request):
+def postReject(request, vacancyId):
     jwt = jwtHelper.extractJwt(request)
     
     if type(jwt) is not dict:
         return jwt
 
     try:
-        vacancyId = request.data['VacancyId']
-
         vacancy = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True)
 
-    except KeyError:
-        return Response({ 'status': 400, 'message': 'Missing vacancy id from request' }, status=status.HTTP_400_BAD_REQUEST)
     except Vacancy.DoesNotExist:
-        return Response({ 'status': 400, 'message': 'That vacancy is not open for applications' }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={ 'status': 400, 'message': 'That vacancy is not open for applications' }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         existingRejection = Reject.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
@@ -252,7 +248,7 @@ def postReject(request):
     
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
     try:
@@ -269,6 +265,6 @@ def postReject(request):
         
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(newVacancy, status=status.HTTP_201_CREATED)

@@ -11,7 +11,7 @@ let api = axios.create({
 // axios interceptor function that will be called to refresh authorisation if axios request fails with 401 status
 const refreshAuthLogic = async (failedRequest) => {
     const tokenRefreshResponse = await api({
-        url: '/refreshtoken/',
+        url: '/v1/refreshtoken/',
         method: 'post',
         skipAuthRefresh: true,
         responseType: 'json'
@@ -31,7 +31,7 @@ const refreshAuthLogic = async (failedRequest) => {
                 if(refreshToken != null) {
                     // refresh token available, can make logout request
                     await api({
-                        url: '/logout/',
+                        url: 'v1/logout/',
                         method: 'post',
                         skipAuthRefresh: true,
                     }).catch((err) => { console.error(err) })
@@ -67,7 +67,7 @@ createAuthRefreshInterceptor(api, refreshAuthLogic);
 // custom interceptor to make sure that queued requests use the new access token
 api.interceptors.request.use((request) => {
     // array contains urls of all routes that use refresh token instead of access token
-    if(['/logout/', '/refreshtoken/'].includes(request.url)) {
+    if(['v1/logout/', 'v1/refreshtoken/'].includes(request.url)) {
         request.headers['Authorization'] = `Bearer: ${ localStorage.getItem('refreshToken') }`;
     } else {
         request.headers['Authorization'] = `Bearer: ${ localStorage.getItem('accessToken') }`;

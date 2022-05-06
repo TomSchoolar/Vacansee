@@ -28,7 +28,7 @@
 	const getAccount = async () => {
 
 		const response = await api({
-			url: `/e/account/`,
+			url: `/v1/e/accounts/`,
 			method: 'get',
 			responseType: 'json'
 		}).catch(apiCatchError);
@@ -54,7 +54,7 @@
 
 	const updateAccount = async (newCompanyName, newPhoneNumber, newEmail) => {
 		const response = await api({
-			url: '/e/account/update/',
+			url: '/v1/e/accounts/',
 			method: 'put',
 			data: {
 				setCompanyName: newCompanyName,
@@ -77,7 +77,7 @@
 
 	const deleteAccount = async () => {
 		const response = await api({
-			url: '/e/account/delete/',
+			url: '/v1/e/accounts/',
 			method: 'delete',
 			responseType: 'json'
 		}).catch(apiCatchError);

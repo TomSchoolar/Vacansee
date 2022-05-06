@@ -59,7 +59,7 @@ def getMatchVacancies(request):
 
 
 @api_view(['GET'])
-def getMatches(request):
+def getMatches(request, vacancyId):
 
     jwt = jwtHelper.extractJwt(request)
 
@@ -69,17 +69,16 @@ def getMatches(request):
     params = request.query_params
 
     try:
-        vID = params['vID']
         sort = params['sort']
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
     # add sorting
 
-    matches = reviewHelper.getApplications(vID, sort)
+    matches = reviewHelper.getApplications(vacancyId, sort)
 
     numMatches = Application.objects.filter(
-        VacancyId__exact = vID,
+        VacancyId__exact = vacancyId,
         ApplicationStatus__exact = 'MATCHED'
     ).count()
 
@@ -93,18 +92,12 @@ def getMatches(request):
 
 
 @api_view(['GET'])
-def getCard(request):
+def getCard(request, applicantId):
 
     jwt = jwtHelper.extractJwt(request)
 
     if type(jwt) is not dict:
         return jwt
-
-    try:
-        params = request.query_params
-        applicantId = params['applicantId']
-    except:
-        return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
     # add sorting
 

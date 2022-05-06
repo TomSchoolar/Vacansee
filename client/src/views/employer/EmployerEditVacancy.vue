@@ -36,7 +36,7 @@
         let id = window.location.pathname.split('/').pop()
 
         const vacancy = await api({
-            url: `/e/vacancy/edit/${ id }`,
+            url: `/v1/e/vacancies/${ id }/edit/`,
             method: 'get',
             responseType: 'json'
         }).catch(apiCatchError);

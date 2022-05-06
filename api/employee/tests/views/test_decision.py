@@ -12,8 +12,8 @@ class decisionTestCase(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
     def test_favouriting(self):
-        vacancyId = 1000
-        response = self.client.post('/vacancy/fav/', { "VacancyId": vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ 1000 }/favourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
         self.assertEqual(response.status_code, 201)
 
         Favourite.objects.filter(UserId__exact = self.userId, VacancyId__exact = self.vacancyId).delete()
@@ -21,7 +21,8 @@ class decisionTestCase(TestCase):
 
 
     def test_apply(self):
-        response = self.client.post('/vacancy/apply/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ self.vacancyId }/apply/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
         self.assertEqual(response.status_code, 201)
 
         Application.objects.filter(UserId__exact = self.userId, VacancyId__exact = self.vacancyId).delete()
@@ -29,10 +30,10 @@ class decisionTestCase(TestCase):
 
 
     def test_applyToFavouritedVacancy(self):
-        response1 = self.client.post('/vacancy/fav/', { 'VacancyId': self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response1 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/favourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         self.assertEqual(response1.status_code, 201)      
 
-        response2 = self.client.post('/vacancy/apply/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response2 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/apply/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         self.assertEqual(response2.status_code, 201)
 
         favCount = Favourite.objects.filter(UserId__exact = self.userId, VacancyId__exact = self.vacancyId).count()
@@ -43,11 +44,11 @@ class decisionTestCase(TestCase):
 
 
     def test_repeatedApply(self):
-        response1 = self.client.post('/vacancy/apply/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response1 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/apply/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response1.status_code, 201)
 
-        response2 = self.client.post('/vacancy/apply/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response2 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/apply/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response2.status_code, 400)
         self.assertEquals(response2.data['message'], 'Application to that vacancy already exists')
@@ -57,11 +58,11 @@ class decisionTestCase(TestCase):
     
 
     def test_applyToRejectedVacancy(self):
-        response1 = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response1 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response1.status_code, 201)
 
-        response2 = self.client.post('/vacancy/apply/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response2 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/apply/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response2.status_code, 400)
         self.assertEquals(response2.data['message'], 'Cannot apply to a vacancy that you\'ve already rejected')
@@ -71,7 +72,7 @@ class decisionTestCase(TestCase):
 
 
     def test_validReject(self):
-        response = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ self.vacancyId }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 201)
         
@@ -80,10 +81,10 @@ class decisionTestCase(TestCase):
 
 
     def test_rejectFavouritedVacancy(self):
-        response1 = self.client.post('/vacancy/fav/', { 'VacancyId': self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response1 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/favourite/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         self.assertEqual(response1.status_code, 201)      
 
-        response2 = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response2 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         self.assertEqual(response2.status_code, 201)
 
         favCount = Favourite.objects.filter(UserId__exact = self.userId, VacancyId__exact = self.vacancyId).count()
@@ -94,11 +95,11 @@ class decisionTestCase(TestCase):
 
 
     def test_repeatedReject(self):
-        response1 = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response1 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         
         self.assertEqual(response1.status_code, 201)
 
-        response2 = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response2 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response2.status_code, 400)
         self.assertEquals(response2.data['message'], 'User has already rejected that vacancy')
@@ -108,11 +109,11 @@ class decisionTestCase(TestCase):
 
 
     def test_rejectAppliedToVacancy(self):
-        response1 = self.client.post('/vacancy/apply/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response1 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/apply/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response1.status_code, 201)
 
-        response2 = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response2 = self.client.post(f'/v1/vacancies/{ self.vacancyId }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response2.status_code, 400)
         self.assertEquals(response2.data['message'], 'Cannot reject a vacancy that you have already applied to')
@@ -122,24 +123,17 @@ class decisionTestCase(TestCase):
 
 
     def test_invalidReject(self):
-        response = self.client.post('/vacancy/reject/', { "VacancyId": 9999 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ 9999 }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message'], 'That vacancy is not open for applications')
 
 
 
-    def test_missingParameters(self):
-        response = self.client.post('/vacancy/reject/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
-
-        self.assertEqual(response.status_code, 400)
-
-
-
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
 
-        response = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ self.vacancyId }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
@@ -149,7 +143,7 @@ class decisionTestCase(TestCase):
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
-        response = self.client.post('/vacancy/reject/', { "VacancyId": self.vacancyId }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.post(f'/v1/vacancies/{ self.vacancyId }/reject/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')

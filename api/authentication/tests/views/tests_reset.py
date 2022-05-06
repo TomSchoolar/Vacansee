@@ -28,7 +28,7 @@ class postEmailTests(TestCase):
         noResetToken = preUser.PasswordResetToken
         noExpiration = preUser.PasswordResetExpiration
         
-        response = self.client.post(f'/forgot/', data={'email': self.email})
+        response = self.client.post(f'/v1/forgot/', data={'email': self.email})
 
         postUser = User.objects.get(Email__exact=self.email)
         resetToken = postUser.PasswordResetToken
@@ -41,7 +41,7 @@ class postEmailTests(TestCase):
 
     # Missing Data
     def test_missingData(self):
-        response = self.client.post(f'/forgot/')
+        response = self.client.post(f'/v1/forgot/')
 
         self.assertEqual(response.data['status'], 400)
         self.assertEqual(response.data['message'], 'incomplete form data')
@@ -49,7 +49,7 @@ class postEmailTests(TestCase):
     # Invalid Email
     def test_invalidEmail(self):
         invalidEmail = 'test@test.com'
-        response = self.client.post(f'/forgot/', data={'email': invalidEmail})
+        response = self.client.post(f'/v1/forgot/', data={'email': invalidEmail})
 
         self.assertEqual(response.data['status'], 200)
 
@@ -62,7 +62,7 @@ class getResetTests(TestCase):
     # Valid Request
     def test_validRequest(self):
         token = createNewToken(self.email)
-        response = self.client.get(f'/reset/{token}/')
+        response = self.client.get(f'/v1/reset/{token}/')
 
         self.assertEqual(response.status_code, 200)
 
@@ -74,7 +74,7 @@ class getResetTests(TestCase):
         user.PasswordResetExpiration = oldTime
         user.save(update_fields=['PasswordResetExpiration'])
 
-        response = self.client.get(f'/reset/{token}/')
+        response = self.client.get(f'/v1/reset/{token}/')
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired reset token.')
@@ -82,7 +82,7 @@ class getResetTests(TestCase):
     # Invalid Token
     def test_invalidToken(self):
         invalidToken = 'a'
-        response = self.client.get(f'/reset/{invalidToken}/')
+        response = self.client.get(f'/v1/reset/{invalidToken}/')
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Unauthorised request.')
@@ -98,14 +98,14 @@ class postResetTests(TestCase):
         newPassword = 'testingPassword'
         token = createNewToken(self.email)
 
-        response = self.client.post(f'/reset/', data={'password': newPassword, 'token': token})
+        response = self.client.post(f'/v1/reset/', data={'password': newPassword, 'token': token})
 
         self.assertEqual(response.data['status'], 200)
         self.assertEqual(response.data['message'], 'Update successful.')
 
     # Missing Data
     def test_missingData(self):
-        response = self.client.post(f'/reset/')
+        response = self.client.post(f'/v1/reset/')
 
         self.assertEqual(response.data['status'], 400)
         self.assertEqual(response.data['message'], 'incomplete request data')
@@ -118,7 +118,7 @@ class postResetTests(TestCase):
         user.PasswordResetExpiration = oldTime
         user.save(update_fields=['PasswordResetExpiration'])
 
-        response = self.client.post(f'/reset/', data={'password': 'testing', 'token': token})
+        response = self.client.post(f'/v1/reset/', data={'password': 'testing', 'token': token})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired reset token.')
@@ -126,7 +126,7 @@ class postResetTests(TestCase):
     # Invalid Token
     def test_invalidToken(self):
         invalidToken = 'a'
-        response = self.client.post(f'/reset/', data={'password': 'testing', 'token': invalidToken})
+        response = self.client.post(f'/v1/reset/', data={'password': 'testing', 'token': invalidToken})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Unauthorised request.')
