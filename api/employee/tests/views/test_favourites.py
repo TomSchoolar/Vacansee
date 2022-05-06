@@ -9,10 +9,14 @@ class getFavouritesTests(TestCase):
 
     userId = 2
     jwt = createAccessToken(userId)
+
     fixtures = ['authentication/fixtures/testseed.json']
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7346962 (Update data set and fix tests)
     def test_validRequestSortDateDesc(self):
         response = self.client.get('/v1/favourites/', { 'sort': 'dateDesc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
@@ -153,6 +157,7 @@ class getFavouritesTests(TestCase):
 
 
 
+<<<<<<< HEAD
     def test_validRequestSearchBar(self):
         response = self.client.get('/v1/favourites/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': 't' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
@@ -160,6 +165,8 @@ class getFavouritesTests(TestCase):
 
 
 
+=======
+>>>>>>> 7346962 (Update data set and fix tests)
     def test_missingParameters(self):
         response = self.client.get('/v1/favourites/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
@@ -189,9 +196,10 @@ class getFavouritesTests(TestCase):
 
 class postFavouritesTests(TestCase):
     
-    vacId = 1000
+    vacId = 1002
     userId = 2
     jwt = createAccessToken(userId)
+
     fixtures = ['authentication/fixtures/testseed.json']
 
 
@@ -240,9 +248,10 @@ class postFavouritesTests(TestCase):
 
 class deleteFavouriteTests(TestCase):
 
-    vacId = 1002
+    vacId = 1007
     userId = 1
     jwt = createAccessToken(userId)
+    
     fixtures = ['authentication/fixtures/testseed.json']
 
 
