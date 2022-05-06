@@ -96,7 +96,7 @@ class postProfileEditTests(TestCase):
         modifiedProfile['Experience'] = dumps(modifiedProfile['Experience'])
         modifiedProfile['Qualifications'] = dumps(modifiedProfile['Qualifications'])
 
-        response = self.client.post(f'/profile/edit/', data=modifiedProfile, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/profiles/edit/', data=modifiedProfile, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEqual(response.status_code, 200)
 
@@ -119,7 +119,7 @@ class postProfileEditTests(TestCase):
         modifiedProfile['Experience'] = dumps(modifiedProfile['Experience'])
         modifiedProfile['Qualifications'] = dumps(modifiedProfile['Qualifications'])
 
-        response = self.client.post(f'/profile/edit/', data=modifiedProfile, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.post(f'/v1/profiles/edit/', data=modifiedProfile, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response.data['status'], 400)
         self.assertEquals(response.data['message'], 'Invalid profile data')
@@ -134,7 +134,7 @@ class postProfileEditTests(TestCase):
     def test_expiredJwt(self):
         jwt = createAccessToken(self.userId, 'now')
         response = self.client.post(
-            f'/profile/edit/',
+            f'/v1/profiles/edit/',
             data=self.userData,
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'}
@@ -146,7 +146,7 @@ class postProfileEditTests(TestCase):
     def test_invalidJwt(self):
         jwt = self.jwt[:-1]
         response = self.client.post(
-            f'/profile/edit/',
+            f'/v1/profiles/edit/',
             data=self.userData,
             content_type='application/json',
             **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'}

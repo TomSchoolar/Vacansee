@@ -29,8 +29,6 @@
         parseExpandingList(object, 'Experience', 1);
         parseExpandingList(object, 'Qualifications', 1);
 
-        console.log(object);
-
         return object;
     });
 
@@ -70,7 +68,7 @@
         data.Experience = JSON.stringify(data.Experience);
 
         const response = await api({
-            url: 'v1/profiles/edit/',
+            url: '/v1/profiles/edit/',
             method: 'post',
             data,
             contentType: 'json'

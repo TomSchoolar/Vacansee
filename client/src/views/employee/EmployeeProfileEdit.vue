@@ -23,7 +23,7 @@
 
 	const getProfile = async () => {
 		const response = await api({
-			url: 'v1/accounts/profile/',
+			url: '/v1/accounts/profiles/',
 			method: 'get',
 			responseType: 'json'
 		}).catch(apiCatchError);
@@ -64,8 +64,6 @@
             // review page, get form data
             const form = document.querySelector('form');
             formData.value = new FormData(form);
-            console.log('formData:');
-            console.log(formData.value);
         }
     }
 

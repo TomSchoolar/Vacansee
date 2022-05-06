@@ -29,8 +29,6 @@
         parseExpandingList(object, 'Experience', 1);
         parseExpandingList(object, 'Qualifications', 1);
 
-        console.log(object);
-
         return object;
     });
 
