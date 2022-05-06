@@ -842,14 +842,6 @@
     },
     {
         "model": "employee.Favourite",
-        "pk": 1024,
-        "fields": {
-            "UserId": 1,
-            "VacancyId": 1006
-        }
-    },
-    {
-        "model": "employee.Favourite",
         "pk": 1025,
         "fields": {
             "UserId": 2,

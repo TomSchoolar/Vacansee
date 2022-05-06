@@ -1,13 +1,12 @@
-from inspect import trace
 from math import ceil
 from rest_framework import status
-from employee.models import Application
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from ..serializers import ApplicationSerializer
 from employer.serializers import VacancySerializer
 from authentication.helpers import jwt as jwtHelper
 from employer.models import EmployerDetails, Vacancy
+from employee.models import Application, Favourite, Reject
 
 
 
@@ -74,7 +73,7 @@ def getApplications(request):
         applications = ApplicationSerializer(applicationSet, many=True).data
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response(data={ 'status': 500, 'message': 'Error retrieving applications from the database' })
+        return Response(data={ 'status': 500, 'message': 'Error retrieving applications from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     pairedApplications = []
     
@@ -87,14 +86,14 @@ def getApplications(request):
             pairedApplications.append(pair)
 
     except Vacancy.DoesNotExist:
-        return Response(data={ 'status': 500, 'message': 'Error retrieving vacancy details from the database, possible database corruption' })
+        return Response(data={ 'status': 500, 'message': 'Error retrieving vacancy details from the database, possible database corruption' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response(data={ 'status': 500, 'message': 'Error retrieving vacancy details from the database' })
+        return Response(data={ 'status': 500, 'message': 'Error retrieving vacancy details from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
-    return Response({ 'applications': pairedApplications, 'numPages': numPages, 'pageNum': pageNum, 'numApps': numApps }, status=status.HTTP_200_OK)
+    return Response(data={ 'applications': pairedApplications, 'numPages': numPages, 'pageNum': pageNum, 'numApps': numApps }, status=status.HTTP_200_OK)
 
 
 
@@ -119,7 +118,7 @@ def getApplicationStats(request):
 
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response(data={ 'status': 500, 'message': 'Error retrieving application stats from the database' })
+        return Response(data={ 'status': 500, 'message': 'Error retrieving application stats from the database' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
     return Response(stats)
@@ -142,12 +141,12 @@ def getApplicationDetails(request, applicationId):
         application = ApplicationSerializer(applicationSet).data
 
         if application['ApplicationStatus'] != 'MATCHED':
-            return Response(data={ 'status': 400, 'message': 'You have not matched with that vacancy.' })
+            return Response(data={ 'status': 400, 'message': 'You have not matched with that vacancy.' }, status=status.HTTP_400_BAD_REQUEST)
     except Application.DoesNotExist:
-        return Response(data={ 'status': 401, 'message': 'You do not have access to that application' })
+        return Response(data={ 'status': 401, 'message': 'You do not have access to that application' }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response(data={ 'status': 500, 'message': 'Error getting application from the server' })
+        return Response(data={ 'status': 500, 'message': 'Error getting application from the server' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         vacancySet = Vacancy.objects.get(pk = application['VacancyId'])
@@ -157,10 +156,10 @@ def getApplicationDetails(request, applicationId):
         companyName = employerDetails.CompanyName
 
     except Application.DoesNotExist:
-        return Response(data={ 'status': 500, 'message': 'Couldn\'t find vacancy details' })
+        return Response(data={ 'status': 500, 'message': 'Couldn\'t find vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response(data={ 'status': 500, 'message': 'Error getting vacancy from the server' })
+        return Response(data={ 'status': 500, 'message': 'Error getting vacancy from the server' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(data={ **application, **vacancy, 'CompanyName': companyName }, status=status.HTTP_200_OK)
 
@@ -187,6 +186,12 @@ def postApplication(request, vacancyId):
 
         if existingApplications > 0:
             return Response(data={ 'status': 400, 'message': 'Application to that vacancy already exists' }, status=status.HTTP_400_BAD_REQUEST)
+
+        existingRejections = Reject.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
+
+        if existingRejections > 0:
+            return Response(data={ 'status': 400, 'message': 'Cannot apply to a vacancy that you\'ve already rejected' }, status=status.HTTP_400_BAD_REQUEST)
+
     except Exception as err:
         print(f'uh oh: { err }')
         return Response(data={ 'status': 500, 'message': 'Server error checking request validity' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -204,6 +209,8 @@ def postApplication(request, vacancyId):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         serializer.save()
+
+        Favourite.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancy.VacancyId).delete()
 
     except Exception as err:
         print(f'uh oh: { err }')

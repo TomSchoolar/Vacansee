@@ -138,7 +138,7 @@ def getIndexStats(request):
     except Exception as e:
         return Response(data={'code': 500, 'message': e.__str__}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
    
-    return Response({ 'stats': stats })
+    return Response({ 'stats': stats }, status=status.HTTP_200_OK)
 
 
 
@@ -161,6 +161,8 @@ def postIndex(request, jwt):
     except Exception as err:
         print(f'uh oh: { err }')
         return Response(data={ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 @api_view(['PUT'])
 def putIndexCloseVacancy(request, vacancyId):
