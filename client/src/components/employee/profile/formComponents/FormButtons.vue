@@ -11,7 +11,7 @@
         <button type='button' class='btn btn-next' @click='emit("next")' v-if='next'>
             Next
         </button>
-        <button type='button' class='btn btn-nexts' @click='emit("publish")' v-if='publish'>
+        <button type='button' class='btn btn-next' @click='emit("publish")' v-if='publish'>
             Submit
         </button>
     </div>
@@ -39,16 +39,18 @@
     }
 
     .btn-next {
-        background: var(--blue);
+        background: var(--red);
     }
 
     .btn-next:active, .btn-next:focus, .btn-next:hover {
-        background: var(--blue-focus);
+        background: var(--red-focus);
     }
     
     .container {
         display: flex;
         flex-direction: row;
         width: 100%;
+        max-width: 500px;
+        margin: auto;
     }
 </style>

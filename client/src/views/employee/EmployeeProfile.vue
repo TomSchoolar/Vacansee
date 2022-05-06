@@ -5,7 +5,6 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
-    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
 
     
     // form pages
@@ -31,15 +30,17 @@
     });
 
     const changePage = (incr) => {
-        const maxPage = pages.length - 1;
+        const maxPage = pages.length;
         const oldPage = currentPageNum.value;
         const newPage = currentPageNum.value + incr;
 
         if(newPage > maxPage || newPage < 0)
             return;
 
-        pages[oldPage].classList.add('form-page-container-hidden');
-        pages[newPage].classList.remove('form-page-container-hidden');
+        if(newPage < maxPage) {
+            pages[oldPage].classList.add('form-page-container-hidden');
+            pages[newPage].classList.remove('form-page-container-hidden');
+        }
 
         currentPageNum.value += incr;
 
@@ -93,7 +94,7 @@
             <QualificationsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ReviewForm :formData='formData' @back='changePage(-1)' />
+            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' />
         </div>
         
     </form>
@@ -122,6 +123,10 @@
 </template>
 
 <style scoped>
+    *:deep(.invalid-input) {
+        border: 3px solid var(--red) !important;
+    }
+    
     hr {
         width: 100%;
         margin: 8px 0 12px 0;

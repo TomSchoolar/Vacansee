@@ -3,7 +3,7 @@
     import validateForm from '@/assets/js/formValidator';
     import FormText from '@/components/employer/newVacancy/formComponents/FormText.vue';
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
-    import FormButtons from '@/components/employer/newVacancy/formComponents/FormButtons.vue';
+    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     import FormSelect from '@/components/employer/newVacancy/formComponents/FormSelect.vue';
 
     const props = defineProps(['Location', 'TimeZone']);
