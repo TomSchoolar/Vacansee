@@ -144,24 +144,7 @@ def postFavourite(request, vacancyId):
         print(f'uh oh: { err }')
         return Response(data={ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    
-    try:
-        newVacancySet = Vacancy.objects.filter(IsOpen__exact = True)
-        newVacancy = False
-
-        for vac in newVacancySet:
-            if vac.VacancyId != vacancy.VacancyId:
-                newVacancy = VacancySerializer(vac).data
-                break
-
-        employerDetails = EmployerDetails.objects.get(UserId__exact = newVacancy['UserId'])
-        newVacancy['CompanyName'] = employerDetails.CompanyName
-        
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response(data={ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    return Response(newVacancy, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_201_CREATED)
 
 
 

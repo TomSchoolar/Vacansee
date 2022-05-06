@@ -4,52 +4,46 @@
     import { ref } from 'vue';    
 
     const { tags = [], vacancy = {}, favourited = false } = defineProps(['vacancy', 'tags', 'favourited']);
-    const emit = defineEmits(['newVacancy', 'deleteFavourite']);
+    const emit = defineEmits(['update']);
 
     const favourite = async (vID) => {
-        const response = await api({
+        await api({
             url: `/v1/vacancies/${ vID }/favourite/`,
             method: 'post',
             responseType: 'json'
         }).catch(apiCatchError);
 
-        if(response?.data)
-            emit('newVacancy', response.data);
+        emit('update');
     }
 
     const unfavourite = async (vID) => {
-        const response = await api({
+        await api({
             url: `/v1/vacancies/${ vID }/unfavourite/`,
             method: 'delete',
             responseType: 'json'
         }).catch(apiCatchError);
 
-        emit('deleteFavourite');
+        emit('update');
     }
 
     const apply = async (vID) => {
-
-        const response = await api({
+        await api({
             url: `/v1/vacancies/${ vID }/apply/`,
             method: 'post',
             responseType: 'json'
         }).catch(apiCatchError);
 
-        if(response?.data)
-            emit('newVacancy', response.data);
-
+        emit('update');
     }
 
     const reject = async (vID) => {
-        const response = await api({
+        await api({
             url: `/v1/vacancies/${ vID }/reject/`,
             method: 'post',
             responseType: 'json'
         }).catch(apiCatchError);
 
-        if(response?.data)
-            emit('newVacancy', response.data);
-
+        emit('update');
     }
 
 
@@ -104,8 +98,8 @@
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
             <button type='button' class='reject' @click='reject(vacancy.VacancyId)'><i class='fas fa-multiply'></i></button>
-            <button class='favourite' @click='unfavourite(vacancy.VacancyId)' v-if='favourited == true'><i class='far fa-star'></i></button>
-            <button class='favourite' @click='favourite(vacancy.VacancyId)' v-if="favourited == false"><i class='fas fa-star'></i></button>
+            <button class='favourite' @click='unfavourite(vacancy.VacancyId)' v-if='favourited == true'><i class='fas fa-star'></i></button>
+            <button class='favourite' @click='favourite(vacancy.VacancyId)' v-if="favourited == false"><i class='far fa-star'></i></button>
             <button class='apply' @click='apply(vacancy.VacancyId)'><i class='fas fa-check'></i></button>
         </div>
     </div>

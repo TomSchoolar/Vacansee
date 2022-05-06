@@ -68,7 +68,7 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active', newCard = false } = options;
         
         const response = await api({
             method: 'get',
@@ -99,7 +99,7 @@
         vacancies.value = newVacancies;
         numPages.value = pages;
 
-        if(currentVacancy?.value && Object.keys(currentVacancy.value).length === 0) {
+        if(currentVacancy?.value && Object.keys(currentVacancy.value).length === 0 || newCard) {
             // if initial fetch, then update current vacancy
             currentVacancy.value = vacancies.value[0] ?? {};
         }
@@ -110,8 +110,8 @@
     }
 
 
-    const updateData = (newData) => {
-        currentVacancy.value = newData;
+    const updateData = async (newData) => {
+        await getVacancies({ pageNum: page.value, sort: sort.value, filter: filter.value, newCard: true });
     }
 
     
@@ -250,7 +250,7 @@
         </div>
 
         <div class='right'>
-            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' @newVacancy='updateData' />
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' @update='updateData' />
         </div>
     </div>
     
