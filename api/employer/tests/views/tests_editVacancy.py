@@ -109,7 +109,7 @@ class editVacancyPutTestCase(TestCase):
         response = self.client.put(f'/v1/e/vacancies/{ self.vacancyId }/', modifiedVacancy, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response.status_code, 400)
-        self.assertEquals(response.data['message'], 'Invalid vacancy data')
+        self.assertEquals(response.data['message'], 'Invalid vacancy data: <ul class="errorlist"><li>SkillsRequired<ul class="errorlist"><li>List contains 4 items, it should contain no more than 3.</li></ul></li></ul>')
 
         updatedVacancySet = Vacancy.objects.get(pk = self.vacancyId)
         updatedVacancy = VacancySerializer(updatedVacancySet).data
