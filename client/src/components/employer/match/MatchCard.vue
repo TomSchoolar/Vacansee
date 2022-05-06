@@ -4,7 +4,7 @@
     
     import { onMounted, ref } from 'vue';
 
-    const props = defineProps(['stats', 'vacancyName']);
+    const props = defineProps(['stats', 'vacancyName', 'vacancy']);
     const emit = defineEmits(["showApplication", "unmatch"]);
 
     const details = {};
@@ -19,7 +19,7 @@
 
     const unmatch = async () => {
         const response = await api({
-            url: `/e/review/${ application.VacancyId }/updatestatus/${ application.ApplicationId }/`,
+            url: `/v1/e/vacancies/${ application.VacancyId }/review/${ application.ApplicationId }/`,
             method: 'put',
             data: {
                 setStatus: "reject"
@@ -40,16 +40,12 @@
     };
 
     const getDetails = async (options) => {
-        const { uID = application.UserId } = options;
+        const { applicantId = application.UserId } = options;
 
         const response = await api({
             method: 'get',
-            url: '/e/match/card',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            url: `/v1/e/matches/card/${ applicantId }/`,
             responseType: 'json',
-            params: {
-                'applicantId':uID
-            }
         }).catch((err) => {
             console.log(`oops ${ err }`);
         });
@@ -72,7 +68,7 @@
     };
 
     onMounted(async () => {
-        const result = getDetails({ uID: application.UserId });
+        const result = getDetails({ applicantId: application.UserId });
 
         if(!result) {
             alert('uh oh! something went wrong :(');

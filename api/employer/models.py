@@ -1,6 +1,6 @@
 import imp
 from telnetlib import AUTHENTICATION
-from time import timezone
+from django.utils import timezone
 from django.db import models
 from django.apps import apps
 from django.contrib.postgres.fields import ArrayField
@@ -27,7 +27,7 @@ class Vacancy(models.Model):
     IsOpen = models.BooleanField(default=True)
     PhoneNumber = models.CharField(max_length=30)
     Email = models.EmailField(max_length=254)
-    Created = models.DateTimeField(auto_now_add=True)
+    Created = models.DateTimeField(default=timezone.now)
     Location = models.CharField(max_length=30)
 
 

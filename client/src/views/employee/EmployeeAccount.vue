@@ -30,7 +30,7 @@
 	const getAccount = async () => {
 
 		const response = await api({
-			url: `/account/`,
+			url: `/v1/accounts/`,
 			method: 'get',
 			responseType: 'json'
 		}).catch(apiCatchError);
@@ -54,7 +54,7 @@
 
 	const updateAccount = async (newEmail) => {
 		const response = await api({
-			url: '/account/update/',
+			url: '/v1/accounts/',
 			method: 'put',
 			data: {
 				setEmail: newEmail
@@ -75,7 +75,7 @@
 
 	const deleteAccount = async () => {
 		const response = await api({
-			url: '/account/delete/',
+			url: '/v1/accounts/',
 			method: 'delete',
 			responseType: 'json'
 		}).catch(apiCatchError);
@@ -92,7 +92,7 @@
 
 	const getProfile = async () => {
 		const response = await api({
-			url: '/account/profile',
+			url: '/v1/accounts/profiles',
 			method: 'get',
 			responseType: 'json'
 		}).catch(apiCatchError);

@@ -44,7 +44,7 @@
 
         const response = await api({
             method: 'get',
-            url: '/applications/',
+            url: '/v1/applications/',
             responseType: 'json',
             params: {
                 sort,
@@ -89,7 +89,7 @@
     onMounted(async () => {
         const response = await api({
             method: 'get',
-            url: '/applications/stats/',
+            url: '/v1/applications/stats/',
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -137,7 +137,7 @@
 
     const showMatch = async (matchId) => {
         const response = await api({
-            url: `/applications/${ matchId }/`,
+            url: `/v1/applications/${ matchId }/`,
             method: 'get',
             responseType: 'json'
         }).catch(apiCatchError);
@@ -186,7 +186,7 @@
     const deleteApplication = async (applicationId) => {
 
         const response = await api({
-            url: `/applications/delete/${ applicationId }`,
+            url: `/v1/applications/${ applicationId }/`,
             method: 'delete',
             responseType: 'json'
         }).catch(apiCatchError);

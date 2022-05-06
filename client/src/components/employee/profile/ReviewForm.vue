@@ -70,7 +70,7 @@
         data.Experience = JSON.stringify(data.Experience);
 
         const response = await api({
-            url: '/profile/',
+            url: '/v1/profiles/',
             method: 'post',
             data,
             contentType: 'json'

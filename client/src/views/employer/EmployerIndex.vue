@@ -54,7 +54,7 @@
 
         const response = await api({
             method: 'get',
-            url: '/e/vacancy/',
+            url: '/v1/e/vacancies/',
             responseType: 'json',
             params: {
                 sort,
@@ -109,7 +109,7 @@
         // TODO: fix this spaghetti code and get show application working on matches again
         const response = await api({
             method: 'get',
-            url: '/e/vacancy/stats/',
+            url: '/v1/e/vacancies/stats/',
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -193,7 +193,7 @@
     const closeVacancy = async () => {
         const response = await api({
             method: 'put',
-            url: `/e/vacancy/close/${ selectedVacancy.value }/`,
+            url: `/v1/e/vacancies/${ selectedVacancy.value }/close/`,
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -210,7 +210,7 @@
     const deleteVacancy = async () => {
         const response = await api({
             method: 'delete',
-            url: `/e/vacancy/delete/${ selectedVacancy.value }/`,
+            url: `/v1/e/vacancies/${ selectedVacancy.value }/`,
             responseType: 'json'
         }).catch(apiCatchError);
 

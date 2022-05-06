@@ -34,6 +34,22 @@ New packages installed for the client should be added to package.json automatica
 To install the dependencies for the client, navigate into the client directory and run ```npm i```, for the api navigate into the api directory and run ```pip install -r requirements.txt && pip install psycopg2-binary``` removing the -binary if necessary (i.e. if on Windows).
 
 
+## Pipeline Replication
+
+In order to replicate the pipeline that we have in operation in this repository, follow the steps below:
+
+1. Create a new ssh key pair. Copy the public key into the /root/.ssh/authorized_keys file.
+2. Create the following GitLab CI/CD Variables:
+    - SERVER_IP (Variable): the ip of the hosting server
+    - SSH_PRIVATE_KEY (Variable): the value of the private key generated in the previous step
+    - ENV_FILE (File): contains all of the secret key value pairs from the api for use in production
+    - TEST_ENV_FILE (File): contains all of the secret key value pairs from the api for use in testing (same as above but we use a separate db for testing)
+    - PRODUCTION_CLIENT_ENV_FILE (File): contains the api endpoint for use by the client in production
+3. ssh into the server and create a directory ~/code (at the same level as /home, /usr etc)
+4. create a directory ~/code/client
+5. assuming you are using the same .gitlab-ci file as is in this repository, you should be good to go
+
+
 ## Making requests to the api
 
 The client has a package called axios installed to send and receive requests/responses to/from the api. The docs can be found here:

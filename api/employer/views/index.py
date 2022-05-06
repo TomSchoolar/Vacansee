@@ -138,7 +138,7 @@ def getIndexStats(request):
     except Exception as e:
         return Response(data={'code': 500, 'message': e.__str__}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
    
-    return Response({ 'stats': stats })
+    return Response({ 'stats': stats }, status=status.HTTP_200_OK)
 
 
 
@@ -155,12 +155,14 @@ def postIndex(request, jwt):
         newVacancy.full_clean()
         newVacancy.save()
 
-        return Response({ 'status': 200 }, status=status.HTTP_200_OK)
+        return Response(data={ 'status': 200 }, status=status.HTTP_200_OK)
     except ValidationError as err:
-        return Response({ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={ 'status': 400, 'message': str(err) }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 @api_view(['PUT'])
 def putIndexCloseVacancy(request, vacancyId):
@@ -184,12 +186,7 @@ def putIndexCloseVacancy(request, vacancyId):
         return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['DELETE'])
-def deleteIndexDeleteVacancy(request, vacancyId):
-    jwt = jwtHelper.extractJwt(request)
-
-    if type(jwt) is not dict:
-        return jwt
+def deleteIndexDeleteVacancy(request, vacancyId, jwt):
 
     # check vacancyId is valid for that user
     try:
@@ -204,23 +201,27 @@ def deleteIndexDeleteVacancy(request, vacancyId):
     except Exception as err:
         return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def editVacancy(request, vacancyId):
 
     jwt = jwtHelper.extractJwt(request)
 
     if type(jwt) is not dict:
         return jwt
+
+    if request.method == 'DELETE':
+        return deleteIndexDeleteVacancy(request, vacancyId, jwt)
+
     try:
         vacancySet = Vacancy.objects.get(pk = vacancyId, IsOpen__exact = True, UserId__exact = jwt['id'])
         vacancy = VacancySerializer(vacancySet).data
 
         
     except Vacancy.DoesNotExist:
-        return Response({ 'message': 'That vacancy is not available for editing.', 'status': 401 }, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data={ 'message': 'That vacancy is not available for editing.', 'status': 401 }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data={ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if request.method == 'GET':
         # get edit form data
@@ -244,10 +245,10 @@ def editVacancy(request, vacancyId):
             updatedVacancy = VacancyForm(data, instance=vacancySet)
             if updatedVacancy.is_valid():
                 updatedVacancy.save()
-                return Response({ 'status': 200 }, status=status.HTTP_200_OK)
+                return Response(data={ 'status': 200 }, status=status.HTTP_200_OK)
             else:
-                return Response({ 'status': 400, 'message': 'Invalid vacancy data' }, status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={ 'status': 400, 'message': 'Invalid vacancy data' }, status=status.HTTP_400_BAD_REQUEST)
             
         except Exception as err:
             print(f'uh oh: { err }')
-            return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data={ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

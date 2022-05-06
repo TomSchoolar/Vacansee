@@ -72,7 +72,7 @@
         
         const response = await api({
             method: 'get',
-            url: '/vacancy/',
+            url: '/v1/vacancies/',
             responseType: 'json',
             params: {
                 sort,
@@ -97,12 +97,23 @@
         numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        currentVacancy.value = vacancies.value[0] ?? {};
+        numPages.value = pages;
+
+        if(currentVacancy?.value && Object.keys(currentVacancy.value).length === 0) {
+            // if initial fetch, then update current vacancy
+            currentVacancy.value = vacancies.value[0] ?? {};
+        }
 
         emptyCards.value = limit.value - vacancies.value.length;
-
+        
         return true;
     }
+
+
+    const updateData = (newData) => {
+        currentVacancy.value = newData;
+    }
+
     
     // vacancy api request
     onMounted(async () => {
@@ -239,7 +250,7 @@
         </div>
 
         <div class='right'>
-            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' />
+            <ApplyVacancyCard :vacancy='currentVacancy' :tags='tags' :favourited='false' @newVacancy='updateData' />
         </div>
     </div>
     

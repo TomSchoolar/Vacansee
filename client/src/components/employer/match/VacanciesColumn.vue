@@ -24,7 +24,7 @@
 
         const response = await api({
             method: 'get',
-            url: '/e/match/',
+            url: '/v1/e/matches/',
             responseType: 'json',
             params: {
                 sort

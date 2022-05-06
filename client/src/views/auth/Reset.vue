@@ -20,7 +20,7 @@
 
     const getReset = async () => {
         const response = await api({
-            url: `/reset/${ token }/`,
+            url: `/v1/reset/${ token }/`,
             method: 'get',
             responseType: 'json'
         }).catch(apiCatchError)

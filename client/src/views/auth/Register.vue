@@ -44,7 +44,7 @@
 
         const response = await api({
             method: 'post',
-            url: '/register/',
+            url: '/v1/register/',
             withCredentials: true,
             data: formData
         }).catch(apiCatchError);

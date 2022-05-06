@@ -13,7 +13,7 @@ class logoutTestCase(TestCase):
     fixtures = ['authentication/fixtures/fixtures.json']
 
     def test_validLogout(self):
-        loginResponse = self.client.post('/login/', { 'email': self.email, 'password': self.password })
+        loginResponse = self.client.post('/v1/login/', { 'email': self.email, 'password': self.password })
         self.assertEquals(loginResponse.status_code, 200)
         
         refreshToken = loginResponse.data['refreshToken']
@@ -21,7 +21,7 @@ class logoutTestCase(TestCase):
         numTokens = RefreshToken.objects.all().count()
         self.assertEquals(numTokens, 1)
 
-        logoutResponse = self.client.post('/logout/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { refreshToken }' })
+        logoutResponse = self.client.post('/v1/logout/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { refreshToken }' })
 
         self.assertEquals(logoutResponse.status_code, 200)
 
@@ -36,7 +36,7 @@ class logoutTestCase(TestCase):
         numTokens = RefreshToken.objects.all().count()
         self.assertEquals(numTokens, 0)
 
-        logoutResponse = self.client.post('/logout/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { refreshToken }' })
+        logoutResponse = self.client.post('/v1/logout/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { refreshToken }' })
 
         self.assertEquals(logoutResponse.status_code, 200)
 
@@ -46,7 +46,7 @@ class logoutTestCase(TestCase):
 
     
     def test_refreshTokenMissing(self):
-        logoutResponse = self.client.post('/logout/')
+        logoutResponse = self.client.post('/v1/logout/')
 
         self.assertEquals(logoutResponse.status_code, 401)
         self.assertEquals(logoutResponse.data['message'], 'Missing auth token')
@@ -55,7 +55,7 @@ class logoutTestCase(TestCase):
 
     def test_invalidRefreshToken(self):
         invalidToken = 'potato123'
-        logoutResponse = self.client.post('/logout/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { invalidToken }' })
+        logoutResponse = self.client.post('/v1/logout/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { invalidToken }' })
 
         self.assertEquals(logoutResponse.status_code, 401)
         self.assertEquals(logoutResponse.data['message'], 'Invalid auth token')

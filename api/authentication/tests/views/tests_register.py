@@ -18,7 +18,7 @@ class RegisterPostTestClass(TestCase):
 
 
     def test_validEmployeeRequest(self):
-        response = self.client.post('/register/', { 'email': self.employeeEmail, 'password': self.password, 'isEmployer': False }, content_type='application/json')
+        response = self.client.post('/v1/register/', { 'email': self.employeeEmail, 'password': self.password, 'isEmployer': False }, content_type='application/json')
         
         expectedUserData = {
             'IsEmployer': False,
@@ -56,7 +56,7 @@ class RegisterPostTestClass(TestCase):
             'phoneNumber': '01924 596952' 
         }
 
-        response = self.client.post('/register/', userData, content_type='application/json')
+        response = self.client.post('/v1/register/', userData, content_type='application/json')
         
         expectedUserData = {
             'IsEmployer': True,
@@ -88,11 +88,11 @@ class RegisterPostTestClass(TestCase):
     
 
     def test_duplicateEmailRequest(self):
-        responseOne = self.client.post('/register/', { 'email': self.employeeEmail, 'password': self.password, 'isEmployer': False }, content_type='application/json')
+        responseOne = self.client.post('/v1/register/', { 'email': self.employeeEmail, 'password': self.password, 'isEmployer': False }, content_type='application/json')
         self.assertEquals(responseOne.status_code, 201)
 
         initialUsersCount = User.objects.all().count()
-        responseTwo = self.client.post('/register/', { 'email': self.employeeEmail, 'password': self.password, 'isEmployer': False }, content_type='application/json')
+        responseTwo = self.client.post('/v1/register/', { 'email': self.employeeEmail, 'password': self.password, 'isEmployer': False }, content_type='application/json')
         finalUsersCount = User.objects.all().count()
 
         self.assertEquals(responseTwo.status_code, 409)
@@ -103,7 +103,7 @@ class RegisterPostTestClass(TestCase):
 
     def test_missingEmailRequest(self):
         initialUsersCount = User.objects.all().count()
-        response = self.client.post('/register/', { 'password': self.password, 'isEmployer': False }, content_type='application/json')
+        response = self.client.post('/v1/register/', { 'password': self.password, 'isEmployer': False }, content_type='application/json')
         finalUsersCount = User.objects.all().count()
 
         self.assertEquals(response.status_code, 400)
@@ -114,7 +114,7 @@ class RegisterPostTestClass(TestCase):
 
     def test_missingPasswordRequest(self):
         initialUsersCount = User.objects.all().count()
-        response = self.client.post('/register/', { 'email': 'fake@email.com', 'isEmployer': False }, content_type='application/json')
+        response = self.client.post('/v1/register/', { 'email': 'fake@email.com', 'isEmployer': False }, content_type='application/json')
         finalUsersCount = User.objects.all().count()
 
         self.assertEquals(response.status_code, 400)
@@ -133,7 +133,7 @@ class RegisterPostTestClass(TestCase):
         }
 
         initialUsersCount = User.objects.all().count()
-        response = self.client.post('/register/', userData, content_type='application/json')
+        response = self.client.post('/v1/register/', userData, content_type='application/json')
         finalUsersCount = User.objects.all().count()
 
         self.assertEquals(response.status_code, 400)

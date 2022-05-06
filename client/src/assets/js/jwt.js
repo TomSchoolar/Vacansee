@@ -5,7 +5,7 @@ export const logout = async () => {
     // send logout request to api and on success, remove tokens from storage
 
     const response = await api({
-        url: '/logout/',
+        url: '/v1/logout/',
         method: 'post'
     }).catch(apiCatchError);
 

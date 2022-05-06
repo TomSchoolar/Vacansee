@@ -95,7 +95,7 @@ def putReviewApplication(request, vacancyId, applicationId):
         applicationSerializer = ApplicationSerializer(application)
         richApp = reviewHelper.pairApplications([applicationSerializer.data], SummaryProfileSerializer)[0]
     except Application.DoesNotExist:
-        return Response(data={'status': 401, 'message': 'invalid application id'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data={'status': 404, 'message': 'invalid application id'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as err:
         print(f'uh oh: { err }')
         return Response(data={'status': 500, 'message': 'server error getting application'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -109,5 +109,5 @@ def putReviewApplication(request, vacancyId, applicationId):
 
     
     if nextApplication:
-        return Response({ 'application': richApp, 'nextApplication': nextApplication['application'], 'nextProfile': nextApplication['profile'] })
-    return Response({ 'application': richApp })
+        return Response({ 'application': richApp, 'nextApplication': nextApplication['application'], 'nextProfile': nextApplication['profile'] }, status=status.HTTP_200_OK)
+    return Response({ 'application': richApp }, status=status.HTTP_200_OK)
