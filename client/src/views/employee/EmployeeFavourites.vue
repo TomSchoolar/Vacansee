@@ -214,7 +214,6 @@
             <div class="vacancy-container">
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>You haven't got any favourites atm...</h3>
                 <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :favourited='true' :tags='tags' @update='updatePage' />
-                {{ emptyCards }}
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
 
