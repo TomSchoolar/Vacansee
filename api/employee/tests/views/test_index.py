@@ -125,7 +125,9 @@ class indexTestCase(TestCase):
 
         numVacancies = Vacancy.objects.filter(IsOpen__in = [True, False]).exclude(VacancyId__in = vacancyList).count()
 
-        vacanciesSet = Vacancy.objects.filter(IsOpen__in = [True, False]).exclude(VacancyId__in = vacancyList).order_by('Created')[:5] 
+        skip = min(20, (numVacancies // 5) * 5)
+
+        vacanciesSet = Vacancy.objects.filter(IsOpen__in = [True, False]).exclude(VacancyId__in = vacancyList).order_by('Created')[skip:skip+5] 
         vacancies = VacancySerializer(vacanciesSet, many=True).data
 
         for vacancy in vacancies:

@@ -42,6 +42,7 @@ class indexTestCase(TestCase):
         self.assertDictEqual(expectedData, response.data)
 
 
+
     def test_validRequestSortDateAsc(self):
         # User: Sabah
         response = self.client.get('/v1/e/vacancies/', { 'sort': 'dateAsc', 'filter': 'all', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
@@ -66,6 +67,7 @@ class indexTestCase(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
+
 
 
     def test_incorrectlyLargePageNumSortDateDesc(self):
@@ -118,6 +120,7 @@ class indexTestCase(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
+
     
     def test_onlyClosedSortTitleDesc(self):
         # User: Sabah
@@ -145,6 +148,7 @@ class indexTestCase(TestCase):
         self.assertDictEqual(expectedData, response.data)
 
 
+
     def test_noVacanciesIncorrectlyLargePageNum(self):
         # User: empty
         jwt = createAccessToken(7)
@@ -160,12 +164,13 @@ class indexTestCase(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
-    
+
     def test_missingParameters(self):
         # User: Sabah
         response = self.client.get('/v1/e/vacancies/', { 'sort': 'newApps' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         self.assertEquals(response.status_code, 400)
+
 
 
     # GET STATS TESTS
@@ -175,11 +180,11 @@ class indexTestCase(TestCase):
         response = self.client.get('/v1/e/vacancies/stats/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         expectedStats = { 
-            'activeAdverts': 3, 
-            'totalApplications': 20, 
-            'newApplications': 8, 
+            'activeAdverts': 5, 
+            'totalApplications': 24, 
+            'newApplications': 13, 
             'acceptedApplications': 4, 
-            'rejectedApplications': 8, 
+            'rejectedApplications': 7, 
         } 
 
         self.assertEquals(response.status_code, 200)
@@ -224,12 +229,14 @@ class indexTestCase(TestCase):
 
         self.assertEquals(response.status_code, 401)
 
+
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
         response = self.client.get('/v1/e/vacancies/', { 'sort': 'newApps', 'filter': 'all', 'pageNum': 1, 'count': '10' }, **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
+
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
@@ -238,17 +245,22 @@ class indexTestCase(TestCase):
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
 
+
+
 class putIndexVacancyTests(TestCase):
     userId = 6 # Victoria
-    vacancyId = 1007 # Paramedic
+    vacancyId = 1009 # Arts development officer 
     jwt = createAccessToken(userId)
+
     fixtures = ['authentication/fixtures/testseed.json']
+
 
     def test_validRequest(self):
         response = self.client.put(f'/v1/e/vacancies/{ self.vacancyId }/close/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         self.assertEqual(response.status_code, 200)
         
+
     def test_unauthorisedVacancy(self):
         invalidVacancy = 1002
         response = self.client.put(f'/v1/e/vacancies/{ invalidVacancy }/close/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
@@ -256,12 +268,14 @@ class putIndexVacancyTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'You do not have access to that vacancy.')
 
+
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
         response = self.client.put(f'/v1/e/vacancies/{ self.vacancyId }/close/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
+
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
@@ -270,16 +284,21 @@ class putIndexVacancyTests(TestCase):
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Invalid auth token')
 
+
+
 class deleteIndexVacancyTests(TestCase):
     userId = 6 # Victoria
-    vacancyId = 1007 # Paramedic
+    vacancyId = 1009 # Arts development officer
     jwt = createAccessToken(userId)
+
     fixtures = ['authentication/fixtures/testseed.json']
+
 
     def test_validRequest(self):
         response = self.client.delete(f'/v1/e/vacancies/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         self.assertEqual(response.status_code, 200)
+
 
     def test_unauthorisedVacancy(self):
         invalidVacancy = 1002
@@ -288,12 +307,14 @@ class deleteIndexVacancyTests(TestCase):
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'You do not have access to that vacancy.')
 
+
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
         response = self.client.delete(f'/v1/e/vacancies/{ self.vacancyId }/', **{ 'HTTP_AUTHORIZATION': f'Bearer: { jwt }' })
 
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
+
 
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]

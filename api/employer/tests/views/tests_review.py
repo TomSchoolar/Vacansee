@@ -12,8 +12,8 @@ class getReviewTests(TestCase):
 
     # user: Sabah
     userId = 4
-    # vacancy: Senior Developer (Facebook)
-    vacancyId = 1002
+    # vacancy: Surveyor, rural practice (Facebook)
+    vacancyId = 1001
     jwt = createAccessToken(userId)
 
     # GET TESTS
@@ -53,7 +53,6 @@ class getReviewTests(TestCase):
 
         self.assertDictEqual(data['new'], expectedNew)
 
-        
         # check vacancy is correct
         vacancy = Vacancy.objects.get(pk = self.vacancyId)
         employerDetails = EmployerDetails.objects.get(UserId__exact = self.userId)
@@ -64,6 +63,7 @@ class getReviewTests(TestCase):
         self.assertTrue(len(data.keys()) == numKeys)
     
 
+
     def test_otherUsersVacancy(self):
         vacancyId = 1010
 
@@ -71,6 +71,7 @@ class getReviewTests(TestCase):
         
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'You do not have access to that vacancy')
+
 
 
     def test_invalidVacancy(self):
@@ -82,12 +83,14 @@ class getReviewTests(TestCase):
         self.assertEquals(response.data['message'], 'You do not have access to that vacancy')
 
 
+
     def test_expiredJwt(self):
         jwt = createAccessToken(self.userId, 'now')
         response = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
         
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
+
 
 
     def test_invalidJwt(self):
@@ -103,12 +106,13 @@ class getReviewTests(TestCase):
 class putReviewValidTests(TransactionTestCase):
     
     userId = 4 # Sabah
-    vacancyId = 2 # Senior Developer (Facebook)
-    applicationId = 1006 # Adam to Senior Developer
+    vacancyId = 1001 # Surveyor, rural practice (Facebook)
+    applicationId = 1018 # Carlos to Surveyor, rural practice
     jwt = createAccessToken(userId)
     reset_sequences = True
 
     fixtures = ['authentication/fixtures/testseed.json']
+
 
     def test_validAccept(self):
         getPreResponse = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
@@ -124,6 +128,7 @@ class putReviewValidTests(TransactionTestCase):
         self.assertGreater(len(getPostResponse.data['matches']), len(getPreResponse.data['matches']))
     
 
+
     def test_validDefer(self):
         getPreResponse = self.client.get(f'/v1/e/vacancies/{ self.vacancyId }/review/', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         putResponse = self.client.put(
@@ -136,6 +141,7 @@ class putReviewValidTests(TransactionTestCase):
         
         self.assertEquals(putResponse.status_code, 200)
         self.assertFalse(getPreResponse.data['new'] == getPostResponse.data['new'])
+
 
 
     def test_validReject(self):
@@ -157,8 +163,8 @@ class putReviewValidTests(TransactionTestCase):
 class putReviewInvalidTests(TestCase):
     
     userId = 4 # Sabah
-    vacancyId = 2 # Senior Developer (Facebook)
-    applicationId = 1005 # Christopher to Senior Developer
+    vacancyId = 1001 # Surveyor, rural practice (Facebook)
+    applicationId = 1018 # Carlos to Surveyor, rural practice
     jwt = createAccessToken(userId)
 
     fixtures = ['authentication/fixtures/testseed.json']
@@ -176,6 +182,7 @@ class putReviewInvalidTests(TestCase):
         self.assertEquals(response.data['message'], 'incomplete request data')
 
 
+
     def test_invalidParameter(self):
         response = self.client.put(
             f'/v1/e/vacancies/{ self.vacancyId }/review/{ self.applicationId }/',
@@ -186,6 +193,7 @@ class putReviewInvalidTests(TestCase):
 
         self.assertEquals(response.data['status'], 400)
         self.assertEquals(response.data['message'], 'invalid setStatus, must be one of "defer", "accept" or "reject"')
+
 
 
     def test_invalidApplication(self):
@@ -202,6 +210,7 @@ class putReviewInvalidTests(TestCase):
         self.assertEquals(response.data['message'], 'invalid application id')
 
     
+
     def test_otherUsersVacancy(self):
         vacancyId = 1010
 
@@ -216,6 +225,7 @@ class putReviewInvalidTests(TestCase):
         self.assertEquals(response.data['message'], 'You do not have access to that vacancy')
 
 
+
     def test_invalidVacancy(self):
         vacancyId = 1030
 
@@ -223,6 +233,7 @@ class putReviewInvalidTests(TestCase):
         
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'You do not have access to that vacancy')
+
 
 
     def test_expiredJwt(self):
@@ -236,6 +247,7 @@ class putReviewInvalidTests(TestCase):
         
         self.assertEquals(response.data['status'], 401)
         self.assertEquals(response.data['message'], 'Expired auth token')
+
 
 
     def test_invalidJwt(self):
