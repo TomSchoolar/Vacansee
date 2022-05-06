@@ -1,5 +1,6 @@
 from math import ceil
 from rest_framework import status
+from django.db.models import Count, Q
 from ..serializers import RejectSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -12,13 +13,24 @@ from employee.models import Application, Favourite, Reject
 
 @api_view(['GET'])
 def getIndex(request):
+
+    params = request.query_params
+
     jwt = jwtHelper.extractJwt(request)
 
     if type(jwt) is not dict:
-        return jwt
+        try:
+            noAuth = params['noAuth']
+
+            if not noAuth or noAuth.lower() != 'true':
+                return jwt
+            else:
+                return getIndexNoAuth(request)
+        except:
+            return jwt
+
 
     # get query params: sort, count, filter, pageNum
-    params = request.query_params
 
     # destructure params and typecast
     try:
@@ -132,6 +144,59 @@ def getIndex(request):
     }
 
     return Response(returnData, status=status.HTTP_200_OK)
+
+
+
+def getIndexNoAuth(request):
+    # get requested number of the most popular vacancies without auth
+
+    # destructure params and typecast
+    try:
+        count = int(request.query_params['count'])
+    except:
+        return Response(data={'status': 400, 'message': 'request params missing valid count value'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # sort by the number of applications referencing vacancy
+        vacanciesSet = Vacancy.objects.filter(
+            IsOpen__exact = True
+        ).annotate(
+            applicationCount = Count('application', filter=Q(application__ApplicationStatus__exact='PENDING'))
+        ).order_by(
+            '-applicationCount'
+        )[:count]
+
+        vacancySerializer = VacancySerializer(vacanciesSet, many=True)
+        vacancies = vacancySerializer.data
+
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'status': 500, 'message': 'Server error fetching vacancies'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+    try:
+        # get company name
+        for vacancy in vacancies:
+            employerDetails = EmployerDetails.objects.get(UserId__exact = vacancy['UserId'])
+            vacancy['CompanyName'] = employerDetails.CompanyName
+
+    except EmployerDetails.DoesNotExist:
+        return Response(data={'code': 500, 'message': 'error getting company name for vacancy'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response(data={'code': 500, 'message': 'Server error getting company name and stats'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+    returnData = {
+        'vacancies': vacancies
+    }
+
+    if len(vacancies) < count:
+        returnData['message'] = 'There are not the requested number of vacancies open for applications.'
+
+    return Response(returnData, status=status.HTTP_200_OK)
+
+
 
 
 
