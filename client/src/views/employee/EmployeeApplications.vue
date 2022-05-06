@@ -1,10 +1,13 @@
 <script setup>
     import dayjs from 'dayjs';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import MatchModal from '@/components/employee/applications/MatchModal.vue';
-    import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
+    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
     import AreYouSureModal from '../../components/employer/match/AreYouSureModal.vue';
+    import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
+
 
     import { ref, watch, onMounted } from 'vue';
     
@@ -18,16 +21,18 @@
 
 
     const showModal = ref(false);
-    const currentModalApplication = ref()
+    const currentModalApplication = ref();
+    const isNewUser = ref(window.localStorage.getItem('newUserApplications') == null);
+
 
     const page = ref(1);
     const limit = ref(5);
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const numPages = ref(1);
     const filter = ref('all');
     const modalStats = ref({});
     const applications = ref([]);
-    const numApps = ref(0);
+    const numApps = ref(1);
     const sort = ref('dateDesc');
     const displayModal = ref(false);
 
@@ -221,12 +226,18 @@
             application.formattedDate = dayjs(application.LastUpdated).format("DD/MM/YYYY")
         });
     }
+
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserApplications', false);
+        isNewUser.value = false;
+    }
 </script>
 
 
 
 <template>
-    <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>
+    <!-- <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>-->
+    <EmployeeNavbar page='applications' ></EmployeeNavbar>
 
     <main class='container'>
         <EmployeeStatBar :stats='stats' />
@@ -274,6 +285,8 @@
             <hr />
 
             <MatchModal :display='displayModal' :stats='modalStats' @close='displayModal = false' />
+            
+            <h3 class='no-applications' v-if='numApps == 0'>No applications yet...</h3>
 
             <div class='applications' v-for='application in applications' :key='application.id'>
                 <div class='application'>
@@ -286,8 +299,11 @@
                     </div>
                     <div class='right'>
                         <div class='applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
-                        <button class='button button-red' @click='showModal = true; currentModalApplication = application'>Delete Application</button>
-                        <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
+                        <div class='button-container'>
+                            <button @click='showMatch(application.ApplicationId)' class='button button-green' v-if='application.ApplicationStatus == "MATCHED"'>Match Details</button>
+                            <button class='button button-red' @click='showModal = true; currentModalApplication = application' v-if='application.ApplicationStatus != "REJECTED"'>Delete Application</button>
+                            <button class='button button-disabled' title='You cannot delete rejected applications' v-else>Delete Application</button>
+                        </div>
                     </div>
                 </div>
                 <AreYouSureModal v-if='showModal' :name='currentModalApplication.CompanyName' :vacancyName='currentModalApplication.VacancyName' :employer='false' @close-modal='showModal = false' @unmatch='deleteApplication(currentModalApplication.ApplicationId)' />
@@ -301,9 +317,28 @@
         </section>
     </main>
 
-    <button @click='notifs++'>Add notification</button>
-    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
 
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employee Applications</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On this page you can view all of the applications made on every vacancy you have applied for. 
+                </p>
+                <p class='desc'>
+                    If you have any applications, you can sort them using filters on the top right,
+                    and delete applications by clicking delete application on the relevant entry.
+                </p>
+            </div>
+
+        </template>
+    </TutorialModal>
+    
+
+    <Footer></Footer>
+    
 </template>
 
 
@@ -340,7 +375,7 @@
 
     .button {
         font-weight: 500; /* required for some reason */
-        border-radius: 12px;
+        border-radius: 7px;
         color: #fff;
         border: 2.2px solid #333;
         width: 150px;
@@ -352,6 +387,18 @@
         justify-content: center;
         font-family: var(--font);
         padding: 2px 6px;
+    }
+
+    .button-container {
+        display: flex;
+        width: 330px;
+        justify-content: flex-end;
+    }
+
+    .button-disabled {
+        border-color: #999999;
+        background-color: #cccccc;
+        color: #666666;
     }
 
     .button-green {
@@ -393,6 +440,16 @@
         display: flex;
         align-items: center;
         flex-shrink: 1;
+    }
+
+    .no-applications {
+        color: var(--jet);
+        font-weight: 500;
+        position: relative;
+        top: 25px;
+        font-size: 18px;
+        font-style: italic;
+        margin: 0 auto;
     }
 
     .right {

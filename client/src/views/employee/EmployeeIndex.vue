@@ -1,26 +1,39 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
+    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
 
-    import { ref, watch, onMounted, onUpdated } from 'vue';
+
+    import { computed, onMounted, ref, watch } from 'vue';
 
     // vars init
     const tagsLim = 6;
     const extraTags = '';
-    const notifs = ref(2);
+    //const notifs = ref(2);
+    let initialReq = true;
     const vacancies = ref([]);
 
+    //tutorial values
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeIndex') == null);
+
     // dropdown values
-        const limit = ref(3);
+    const emptyCards = ref(0);
+    const cardsPerRow = ref(1);
     const filter = ref('active');
     const sort = ref('dateDesc');
+    const limitMultiplier = ref(1);
+
+    const limit = computed(() => {
+        return limitMultiplier.value * cardsPerRow.value;
+    });
 
     // pagination
     const page = ref(1);
     const numPages = ref(1);
-    const numVacancies = ref(0);
+    const numVacancies = ref(1);
 
     const currentVacancy = ref({});
 
@@ -55,8 +68,8 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = 3, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
-
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active' } = options;
+        
         const response = await api({
             method: 'get',
             url: '/vacancy/',
@@ -69,33 +82,39 @@
             }
         }).catch(apiCatchError);
 
-        if(!response || !response.data)
+        if(!response?.data)
             return false;
 
-        const { data } = response;
-
-        if(!data)
-            return false;
 
         const { 
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
             numVacancies: total = 0,
-        } = data;
+        } = response.data;
 
-
-        while((page.value - 1) * limit.value >= total) page.value--;
+        while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
         numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        currentVacancy.value = vacancies.value[0];
+        currentVacancy.value = vacancies.value[0] ?? {};
+
+        emptyCards.value = limit.value - vacancies.value.length;
+
         return true;
     }
-
+    
     // vacancy api request
     onMounted(async () => {
-        await getVacancies({ });
+        const resizeFunc = () => {
+            cardsPerRow.value = Math.max(Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449), 1);
+        }
+
+        setTimeout(() => {
+            resizeFunc();
+            window.addEventListener("resize", resizeFunc);
+            getVacancies({ });
+        }, 50);
     });
 
     // get vacancies in new order
@@ -132,25 +151,32 @@
 
     watch(limit, async (newLimit) => {
         // change number of vacancies per page
-        while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
+        if(initialReq) {
+            initialReq = false;
+            return;
+        }
 
-        if(page.value < 0)
-            page.value = 0;
+        while((page.value - 1) * limit.value >= numVacancies.value && page.value > 1) page.value--;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
 
         if(!result) {
             return;
         }
-
     });
 
     watch(sort, sortVacancies);
 
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployeeIndex', false);
+        isNewUser.value = false;
+    }
+
 </script>
 
 <template>
-    <EmployeeNavbar page='home' :numNotifs='notifs'></EmployeeNavbar>
+    <!-- <EmployeeNavbar page='home' :numNotifs='notifs'></EmployeeNavbar> -->
+    <EmployeeNavbar page='home' ></EmployeeNavbar>
 
     <div class='container'>
         <div class='left'>
@@ -171,11 +197,11 @@
 
 
             <div class='select-group'>
-                <select v-model='limit' aria-label='set page size' id='limit'>
-                    <option value=3 selected>3 per page</option>
-                    <option value=6>6 per page</option>
-                    <option value=9>9 per page</option>
-                    <option value=12>12 per page</option>
+                <select v-model='limitMultiplier' aria-label='set page size' id='limit'>
+                    <option value='1'>{{ cardsPerRow }} per page</option>
+                    <option value='2'>{{ cardsPerRow * 2 }} per page</option>
+                    <option value='3'>{{ cardsPerRow * 3 }} per page</option>
+                    <option value='4'>{{ cardsPerRow * 4 }} per page</option>
                 </select>
             </div>
 
@@ -197,19 +223,18 @@
                     </div>
             </div>
 
-
-            <!-- table below in place of vacancy cards -->
             <div class='vacancy-container'>
+                <h3 class='no-vacancies' v-if='numVacancies == 0'>There are no vacancies currently accepting applications</h3>
                 <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='tags' />
+                <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
-                    
 
-            <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
-            <i class="fa-solid fa-circle-arrow-right"></i>
-            </button>
-            <button type='button' class='button arrow-btn' @click='page > 1 ? changePage(page - 1) : page'>
-                <i class="fa-solid fa-circle-arrow-left"></i>
-            </button>
+                  
+            <div class='pagination' v-if='numPages > 1'>
+                <div class='pag-block pag-start' @click='page > 1 ? changePage(page - 1) : page'><i class="fa-solid fa-angle-left"></i></div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            
+            </div>
             
         </div>
 
@@ -218,9 +243,29 @@
         </div>
     </div>
     
+
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employee index</h3>
+        </template>
+        <template #modal-body>
+            <div class='modal-body'>
+                <p class='desc'>
+                    The index page displays a list of adverts posted by companies in the first column. These can be seen in the stat bar, just below the nav bar. 
+                    Adverts can be sorted using the filters on the top right.
+                </p>
+                <p class='desc'>
+                    The second column allows you to perform actions to the first advert in the list. You can reject it, add it to your favourites, or accept it by using relevant buttons.
+                </p>
+            </div> 
+
+        </template>
+    </TutorialModal>
+    
+    
+    <Footer></Footer>
     
 </template>
-
 
 <style scoped>
     select {
@@ -277,6 +322,11 @@
         background-color:#D3D3D3;
     }
 
+    .card-placeholder {
+        width: 449px;
+        height: 1px;
+    }
+
     .container {
         display: flex;
         justify-content: center;
@@ -304,13 +354,60 @@
         top: 5px;
         margin-bottom: 5px;
         padding: 7px 20px;
-        border-radius: 15px;
+        border-radius: 7px;
+        margin: 10px 0 25px 0;
     }
 
     .left {
         height: 100%;
         padding: 10px 50px 0 50px;
         width: 70%;       
+    }
+
+    .no-vacancies {
+        color: var(--jet);
+        font-weight: 500;
+        position: relative;
+        top: 25px;
+        font-size: 18px;
+        font-style: italic;
+    }
+
+    
+    .pagination {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin: 15px 0 30px 0;
+    }
+
+    .pag-active {
+        background: var(--red) !important; /* important removes background color hover change */
+        color: white;
+    }
+
+
+    .pag-block {
+        padding: 3px 6px;
+        border: 1px solid var(--jet);
+        border-left-width: 0;
+        min-width: 20px;
+    }
+
+    .pag-end {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    .pag-block:hover, .pag-block:focus, .pag-block:active {
+        cursor: pointer;
+        background: rgba(85, 85, 85, 0.1);
+    }
+
+    .pag-start {
+        border-width: 1px;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
     }
 
     .right {
@@ -340,6 +437,7 @@
 
     .search-group {
         position: relative;
+        bottom: 2px;
     }
 
     .select-group {
@@ -359,11 +457,15 @@
         border-bottom: 1px solid;
     }
 
-    .vacancy-container {
-        width: 100%; 
-        text-align: center; 
+    .vacancy-container { 
         display: flex; 
-        justify-content: space-between; 
+        flex-direction: row;
+        justify-content: center;
         flex-wrap: wrap;
+        padding-left: 25px;
+    }
+
+    .vacancy-container:deep(.card) {
+        margin: 12px 25px 12px 0;
     }
 </style>
