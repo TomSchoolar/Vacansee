@@ -99,7 +99,7 @@
         numVacancies.value = total;
         vacancies.value = newVacancies;
 
-        emptyCards.value = numVacancies > 0 ? limit.value - vacancies.value.length : 0;
+        emptyCards.value = numVacancies.value > 0 ? limit.value - vacancies.value.length : 0;
 
         return true;
     }
@@ -162,8 +162,8 @@
 
     watch(sort, sortVacancies);
 
-    const updatePage = () => {
-        window.location.reload();
+    const updatePage = async () => {
+        await getFavourites({ sort: sort.value, pageNum: page.value })
     }
 
     const finishTutorial = () => {
@@ -213,7 +213,8 @@
             </div>
             <div class="vacancy-container">
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>You haven't got any favourites atm...</h3>
-                <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :favourited='true' :tags='tags' />
+                <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :favourited='true' :tags='tags' @update='updatePage' />
+                {{ emptyCards }}
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
 
