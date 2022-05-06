@@ -188,7 +188,7 @@ class indexNoAuthTestCase(TestCase):
 
 
     def test_validNoAuth(self):
-        response = self.client.get('/vacancy/', { 'noAuth': True, 'count': self.numVacancies })
+        response = self.client.get('/v1/vacancies/', { 'noAuth': True, 'count': self.numVacancies })
 
         self.assertEquals(response.status_code, 200)
         self.assertTrue('message' not in response.data)
@@ -196,7 +196,7 @@ class indexNoAuthTestCase(TestCase):
 
 
     def test_noAuthCountTooLarge(self):
-        response = self.client.get('/vacancy/', { 'noAuth': True, 'count': self.numVacancies + 1 })
+        response = self.client.get('/v1/vacancies/', { 'noAuth': True, 'count': self.numVacancies + 1 })
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(response.data['vacancies']), self.numVacancies)
@@ -204,21 +204,21 @@ class indexNoAuthTestCase(TestCase):
 
     
     def test_noAuthMissingCount(self):
-        response = self.client.get('/vacancy/', { 'noAuth': True })
+        response = self.client.get('/v1/vacancies/', { 'noAuth': True })
 
         self.assertEquals(response.status_code, 400)
         self.assertEquals(response.data['message'], 'request params missing valid count value')
 
     
     def test_noAuthMissingNoAuthBool(self):
-        response = self.client.get('/vacancy/', { 'count': self.numVacancies })
+        response = self.client.get('/v1/vacancies/', { 'count': self.numVacancies })
 
         self.assertEquals(response.status_code, 401)
         self.assertEquals(response.data['message'], 'Missing auth token')
 
     
     def test_noAuthFalseAuthBool(self):
-        response = self.client.get('/vacancy/', { 'noAuth': False, 'count': self.numVacancies })
+        response = self.client.get('/v1/vacancies/', { 'noAuth': False, 'count': self.numVacancies })
 
         self.assertEquals(response.status_code, 401)
         self.assertEquals(response.data['message'], 'Missing auth token')
