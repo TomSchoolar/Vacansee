@@ -13,8 +13,8 @@
             :multiple='(multiple ? multiple : false)'
             :style='(multiple ? "height: 150px;" : "")'
         >
-            <option value='' :selected='!props.value ? true : false' hidden disabled>{{ placeholder }}</option>
-            <option v-for='option in options' :key='option.value' :value='option.value' :selected='props.value && ( props.multipleValue && props.value.includes(option.value) || option.value == props.value) ? true : false'>{{ option.text }}</option>
+            <option value='' :selected='!props.value && props.value !== 0 ? true : false' hidden disabled>{{ placeholder }}</option>
+            <option v-for='option in options' :key='option.value' :value='option.value' :selected='(props.value || props.value === 0) && ( props.multipleValue && props.value.includes(option.value) || option.value == props.value) ? true : false'>{{ option.text }}</option>
         </select>
     </div>
 </template>

@@ -16,10 +16,8 @@
             }
         }).catch(apiCatchError);
 
-        const { data = false } = response;
-
-        if(data)
-            emit('newVacancy', data);
+        if(response?.data)
+            emit('newVacancy', response.data);
     }
 
     const unfavourite = async (vID) => {
@@ -31,8 +29,6 @@
                 VacancyId: vID 
             }
         }).catch(apiCatchError);
-
-        const { data = false } = response;
 
         emit('deleteFavourite');
     }
@@ -48,10 +44,8 @@
             }
         }).catch(apiCatchError);
 
-        const { data = false } = response;
-
-        if(data)
-            emit('newVacancy', data);
+        if(response?.data)
+            emit('newVacancy', response.data);
 
     }
 
@@ -65,10 +59,8 @@
             }
         }).catch(apiCatchError);
 
-        const { data = false } = response;
-
-        if(data)
-            emit('newVacancy', data);
+        if(response?.data)
+            emit('newVacancy', response.data);
 
     }
 
@@ -106,12 +98,11 @@
             </table>
         </div>
         <span class='card-section' v-if='vacancy.ExperienceRequired'>Experience:</span>
-        <div class='experience' v-for='xp in vacancy.ExperienceRequired' v-bind:key='xp'>
-            <table>
-                <tr>
-                    <th>- {{ xp }}</th>
-                </tr>
-            </table>
+        <div class='experience'>
+            <div class='exp-container' v-for='xp in vacancy?.ExperienceRequired' v-bind:key='xp'>
+                <span class='exp-position'>- {{ xp.split('&&')[0] }}</span>
+                <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
+            </div>
         </div>
         <span class='card-section' v-if='vacancy.Tags'>Requirements:</span>
         <div v-if='vacancy.Tags'>
@@ -225,6 +216,17 @@
 
     .divider hr {
         margin: 10px 5px;
+    }
+
+    .exp-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .exp-time {
+        color: var(--slate);
+        font-style: italic;
+        font-size: 13px;
     }
 
     .job-title {

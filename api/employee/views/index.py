@@ -156,6 +156,21 @@ def postReject(request):
         return Response({ 'status': 500, 'message': 'Error getting vacancy details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
+        existingRejection = Reject.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
+
+        if existingRejection > 0:
+            return Response({ 'status': 400, 'message': 'User has already rejected that vacancy' }, status=status.HTTP_400_BAD_REQUEST)
+
+        existingApplications = Application.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancyId).count()
+
+        if existingApplications > 0:
+            return Response({ 'status': 400, 'message': 'Cannot reject a vacancy that you have already applied to' }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as err:
+        print(f'uh oh: { err }')
+        return Response({ 'status': 500, 'message': 'Server error checking request validity' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    try:
         newReject = {
             'VacancyId': vacancy.VacancyId,
             'UserId': jwt['id']
@@ -166,7 +181,9 @@ def postReject(request):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        serializer.save()        
+        serializer.save()       
+
+        Favourite.objects.filter(UserId__exact = jwt['id'], VacancyId__exact = vacancy.VacancyId).delete() 
     
     except Exception as err:
         print(f'uh oh: { err }')
