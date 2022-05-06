@@ -1,9 +1,12 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import MatchCard from '@/components/employer/match/MatchCard.vue';
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
+
     
     import { ref, onMounted } from 'vue';    
 
@@ -15,7 +18,9 @@
     const matches = ref([]);
     const vacancy = ref({});
     const currentProfile = ref({});
-    const currentApplication = ref({});    
+    const currentApplication = ref({});
+    const isNewUser = ref(window.localStorage.getItem('newUserReview') == null);
+    
 
     const getApplicants = async () => {
         const response = await api({
@@ -63,22 +68,32 @@
         currentApplication.value = nextApplication;
     }
 
+    //download button
+    /*
     const download_button = () => {
         alert('downloading all applications');
+    }*/
+
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserReview', false);
+        isNewUser.value = false;
     }
 </script>
 
 
 
 <template>
-    <EmployerNavbar :numNotifs='notifs'></EmployerNavbar>
+    <!-- <EmployerNavbar :numNotifs='notifs'></EmployerNavbar> -->
+    <EmployerNavbar ></EmployerNavbar>
 
     <div class='container'>
         <div class='col col-left'>
             <div class='col-header'> 
                 <h3 class='col-title'>Matches ({{ matches.length }})</h3>
                 <div class='header-right'>
-                    <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button>
+                    <!-- download button -->
+                    <!-- <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button> -->
+                    
                     <div class='search-group'>
                         <i class="fas fa-search search-icon"></i>
                         <input class='search' placeholder='search' type='text'> 
@@ -125,6 +140,33 @@
             </main>
         </div>
     </div>
+
+    
+	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Review applications</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On this page you can review all the applications made to a vacancy one by one on the right.
+                </p>
+                <p class='desc'>
+                    You can either reject the current application, skip it, or match with it by clicking the green (left), yellow (up) or red (right) buttons at the bottom of the card or by using the relevant (arrow keys).
+                </p>
+                <p class='desc'>
+                    A Rejection will prevent the same applicant from appearing again and notify the applicant, while skipping puts them to the bottom of the deck.
+                </p>
+                <p class='desc'>
+                    Accepting an application will form a match, which will be displayed along with existing matches on the left.
+                </p>
+            </div>
+
+        </template>
+    </TutorialModal>
+
+
+    <Footer></Footer>
 
 </template>
 

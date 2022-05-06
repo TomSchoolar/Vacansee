@@ -1,17 +1,23 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
+    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
+
 
     import { computed, onMounted, ref, watch } from 'vue';
 
     // vars init
     const tagsLim = 6;
     const extraTags = '';
-    const notifs = ref(2);
+    //const notifs = ref(2);
     let initialReq = true;
     const vacancies = ref([]);
+
+    //tutorial values
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeIndex') == null);
 
     // dropdown values
     const emptyCards = ref(0);
@@ -88,6 +94,7 @@
 
         while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
+        numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
         currentVacancy.value = vacancies.value[0] ?? {};
@@ -99,7 +106,6 @@
     
     // vacancy api request
     onMounted(async () => {
-        console.log(`initial div width: ${document.querySelector('.vacancy-container').offsetWidth}`);
         const resizeFunc = () => {
             cardsPerRow.value = Math.max(Math.floor((document.querySelector('.vacancy-container').offsetWidth - 25) / 449), 1);
         }
@@ -161,10 +167,16 @@
 
     watch(sort, sortVacancies);
 
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployeeIndex', false);
+        isNewUser.value = false;
+    }
+
 </script>
 
 <template>
-    <EmployeeNavbar page='home' :numNotifs='notifs'></EmployeeNavbar>
+    <!-- <EmployeeNavbar page='home' :numNotifs='notifs'></EmployeeNavbar> -->
+    <EmployeeNavbar page='home' ></EmployeeNavbar>
 
     <div class='container'>
         <div class='left'>
@@ -218,13 +230,11 @@
             </div>
 
                   
-
-            <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
-            <i class="fa-solid fa-circle-arrow-right"></i>
-            </button>
-            <button type='button' class='button arrow-btn' @click='page > 1 ? changePage(page - 1) : page'>
-                <i class="fa-solid fa-circle-arrow-left"></i>
-            </button>
+            <div class='pagination' v-if='numPages > 1'>
+                <div class='pag-block pag-start' @click='page > 1 ? changePage(page - 1) : page'><i class="fa-solid fa-angle-left"></i></div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            
+            </div>
             
         </div>
 
@@ -233,6 +243,27 @@
         </div>
     </div>
     
+
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employee index</h3>
+        </template>
+        <template #modal-body>
+            <div class='modal-body'>
+                <p class='desc'>
+                    The index page displays a list of adverts posted by companies in the first column. These can be seen in the stat bar, just below the nav bar. 
+                    Adverts can be sorted using the filters on the top right.
+                </p>
+                <p class='desc'>
+                    The second column allows you to perform actions to the first advert in the list. You can reject it, add it to your favourites, or accept it by using relevant buttons.
+                </p>
+            </div> 
+
+        </template>
+    </TutorialModal>
+    
+    
+    <Footer></Footer>
     
 </template>
 
@@ -340,6 +371,43 @@
         top: 25px;
         font-size: 18px;
         font-style: italic;
+    }
+
+    
+    .pagination {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin: 15px 0 30px 0;
+    }
+
+    .pag-active {
+        background: var(--red) !important; /* important removes background color hover change */
+        color: white;
+    }
+
+
+    .pag-block {
+        padding: 3px 6px;
+        border: 1px solid var(--jet);
+        border-left-width: 0;
+        min-width: 20px;
+    }
+
+    .pag-end {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    .pag-block:hover, .pag-block:focus, .pag-block:active {
+        cursor: pointer;
+        background: rgba(85, 85, 85, 0.1);
+    }
+
+    .pag-start {
+        border-width: 1px;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
     }
 
     .right {

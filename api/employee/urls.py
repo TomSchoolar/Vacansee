@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import applications, favourites, index, account, profile
-
 urlpatterns = [
     path('vacancies/', index.getIndex),
     path('vacancies/<int:vacancyId>/favourite/', favourites.postFavourite),

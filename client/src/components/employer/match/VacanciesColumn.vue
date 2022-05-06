@@ -86,7 +86,8 @@
             <div class='header-row'>
                 <h2 class='header-title'> Vacancies ({{vacancies.length}}) </h2>
                 
-                <button type='button' class='button download-button' @click='download'>Download Report</button>
+                <!-- download button -->
+                <!-- <button type='button' class='button download-button' @click='download'>Download Report</button> -->
             </div>
 
             <div class='header-row'>

@@ -4,7 +4,8 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh';
 // create shared axios instance with some common defaults
 let api = axios.create({
     baseURL: process.env.VUE_APP_API_ENDPOINT,
-    timeout: 3000
+    timeout: 30000
+    //timeout: 3000
 });
 
 // axios interceptor function that will be called to refresh authorisation if axios request fails with 401 status
@@ -40,7 +41,7 @@ const refreshAuthLogic = async (failedRequest) => {
                 window.localStorage.removeItem('refreshToken');
                 window.localStorage.removeItem('session');
                 window.location.href = '/login'
-            
+
             }
 
             console.error(`oops: ${ status }: ${ message }`);
@@ -52,7 +53,7 @@ const refreshAuthLogic = async (failedRequest) => {
 
     if(!tokenRefreshResponse?.data)
         return;
-    
+
     localStorage.setItem('accessToken', tokenRefreshResponse.data.accessToken);
     localStorage.setItem('refreshToken', tokenRefreshResponse.data.refreshToken);
     failedRequest.response.config.headers['Authorization'] = `Bearer: ${ tokenRefreshResponse.data.accessToken }`;
