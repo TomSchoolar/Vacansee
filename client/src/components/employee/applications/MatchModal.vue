@@ -68,11 +68,13 @@
         left: 0;
         height: 100vh;
         width: 100vw;
-        background: rgba(51, 51, 51, 0.6);
+        background: 00000040;
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 100;
+        min-height: 100vh;
+        min-width: 100vw;
     }
 
     .description {

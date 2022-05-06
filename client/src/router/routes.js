@@ -54,8 +54,8 @@ const authRoutes = [
 import EmployeeIndex from '../views/employee/EmployeeIndex.vue';
 import EmployeeApplications from '../views/employee/EmployeeApplications.vue';
 import EmployeeFavourites from '../views/employee/EmployeeFavourites.vue';
-import EmployeeAccount from '../views/employee/EmployeeAccount.vue';
 import EmployeeProfile from '../views/employee/EmployeeProfile.vue';
+import EmployeeAccount from '../views/employee/EmployeeAccount.vue';
 
 const employeeRoutes = [
     {

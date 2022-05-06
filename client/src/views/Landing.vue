@@ -1,8 +1,10 @@
 <script setup>
     import axios from 'axios';
     import VacancyCard from '@/components/auth/VacancyCard.vue';
-    
+    import Footer from '@/components/partials/CompactFooter.vue';
+
     import { onMounted, ref } from 'vue';
+
 
     const vacancies = ref([]);
 
@@ -74,6 +76,8 @@
             </div>
         </section>
     </main>
+
+    <Footer></Footer>
 </template>
 
 <style scoped>

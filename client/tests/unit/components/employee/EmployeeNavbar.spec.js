@@ -13,7 +13,7 @@ const router = createRouter({
 const mountSettings = {
     propsData: {
         page: 'favourites',
-        numNotifs: 3
+        //numNotifs: 3
     },
     attachTo: document.body,
     global: {
@@ -33,16 +33,16 @@ describe('EmployeeNavbar.vue', () => {
         wrapper = shallowMount(EmployeeNavbar, mountSettings);
     });
 
-    it('renders number of notifications when component is created', () => {
-        // check that the number of notifs is correct
-        const notifBubble = wrapper.find('#navbar-notif-alert');
-        expect(notifBubble.text()).toBe('3');
-    });
-
     it('highlights the correct navbar link as the active page', () => {
         // check that the home link is highlighted        
         const favouritesLink = wrapper.findAll('.navbar-link').at(1);
         expect(favouritesLink.classes()).toContain('navbar-active-link');
+    });
+
+    /*it('renders number of notifications when component is created', () => {
+        // check that the number of notifs is correct
+        const notifBubble = wrapper.find('#navbar-notif-alert');
+        expect(notifBubble.text()).toBe('3');
     });
 
     it('shows the notification bubble if there is notif >= 1', () => {
@@ -56,5 +56,5 @@ describe('EmployeeNavbar.vue', () => {
         
         const notifBubble = wrapper.find('#navbar-notif-alert');
         expect(notifBubble.exists()).toBe(false);
-    });
+    });*/
 });

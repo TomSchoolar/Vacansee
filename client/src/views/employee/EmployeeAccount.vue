@@ -1,20 +1,25 @@
 <script setup>
+	import api, { apiCatchError } from '@/assets/js/api';
+	import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
-	import AccountModal from '@/components/employer/account/AccountModal.vue';
 	import ProfileCard from '@/components/employee/account/ProfileCard.vue';
+	import AccountModal from '@/components/employer/account/AccountModal.vue';
+	import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
+
 
 	import { logout } from '@/assets/js/jwt';
-    import api, { apiCatchError } from '@/assets/js/api';
     import { ref, onMounted, watch } from 'vue';
 
 	const url = window.location.pathname;
 
-	const notifs = ref(2);
+	//const notifs = ref(2);
 	const saved = ref(false);
 	const accountDetails = ref({});	
 	const details = ref({})
 	const displayModal = ref(false);
 	const profile = ref({});
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployeeAccount') == null);
+
 
 	document.title = 'Account | Vacansee'
 
@@ -106,6 +111,22 @@
 		return true;
 	}
 
+	const resetTutorial = () => {
+        window.localStorage.removeItem('newUserEmployeeAccount');
+		window.localStorage.removeItem('newUserApplications');
+		window.localStorage.removeItem('newUserFavourites');
+		window.localStorage.removeItem('newUserEmployeeIndex');
+		window.localStorage.removeItem('newUserEmployeeProfile');
+
+
+        isNewUser.value = true;
+    }
+
+	const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployeeAccount', false);
+        isNewUser.value = false;
+    }
+
 	onMounted(async () => {
 		const result = await getAccount({ });
 		const response = await getProfile({});
@@ -127,7 +148,9 @@
 
 <template>
     <main class='main'>
-        <EmployeeNavbar page='account' :numNotifs='notifs'></EmployeeNavbar>
+
+        <!-- <EmployeeNavbar page='account' :numNotifs='notifs'></EmployeeNavbar> -->
+		<EmployeeNavbar page='account' ></EmployeeNavbar>
         <section class='container'>
 			<AccountModal :display='displayModal' @close='displayModal = false' @delete='deleteAccount' />
 			<div>
@@ -142,11 +165,39 @@
 				<button class='delete-account' @click=showDeletion>Delete Account</button>
 				<button class='save' @click="updateAccount(accountDetails.Email)">Save</button>
 			</div>
+			<button class ='button button-red' @click='resetTutorial'> Reset tutorial</button>
 			<div class='saved-indicator' v-show='saved'>
 				<p>Saved!</p>
 			</div>
 		</section>
     </main>
+
+	
+	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employee Account</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On the account page, you can edit your profile by clicking edit profile and complete the forms afterwards.
+                </p>
+				<p class='desc'>
+					You can edit your email by changing it just below the profile section.
+				</p>
+                <p class='desc'>
+                    You can also delete your account should you wish so by clicking the delete button.
+                </p>
+                <p class='desc'>
+                    In addition, the ability to restart tutorials for each page is provided by clicking the reset tutorial button.
+                </p>
+            </div>
+        </template>
+    </TutorialModal>
+
+
+	<Footer></Footer>
+
 </template>
 
 <style scoped>
@@ -156,13 +207,37 @@
 
 	.main {
 		width: 100vw;
-		height: 100vh;
+		height: auto;
 	}
+
+	.button {
+        color: #ffffff;
+		border: 0;
+		border-radius: 5px;
+		display: block;
+		cursor: pointer;
+		font-family: var(--fonts);
+		font-size: 16px;
+		font-weight: bold;
+		line-height: 24px;
+		padding: 5px 0;
+        flex: 1 1 0;
+        margin-top: 15px;
+    }
 
 	.button-container {
 		display: flex;
 		gap: 0.2vw;
 	}
+
+	
+    .button-red {
+        background: var(--red);
+    }
+
+    .button-red:active, .button-red:focus, .button-red:hover {
+        background: var(--red-focus);
+    }
 
 	.card {
 		margin-left : auto; 

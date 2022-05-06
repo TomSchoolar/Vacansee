@@ -14,9 +14,11 @@
     const sort = ref('LastNameAsc');
     const selected = toRef(props, 'selectedVacancy');
 
+    //download button
+    /*
     const download = () => {
         alert("downloaded!");
-    }
+    }*/
 
     // api request function
     const getMatches = async (options) => {
@@ -97,8 +99,9 @@
         <div class='header'>
             <div class='header-row'>
                 <h2 class='header-title'> Matches ({{ matches.length }})</h2>
-
-                <button type='button' class='button match-download-button' id='download-button' @click='download'>Download All</button>
+                
+                <!-- download button -->
+                <!-- <button type='button' class='button match-download-button' id='download-button' @click='download'>Download All</button> -->
             </div>
 
             <div class='header-row'>

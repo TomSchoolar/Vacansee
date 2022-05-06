@@ -11,9 +11,11 @@
     const showModal = ref(false);
     const { application = {}, profile = {} } = props.stats;
 
+    //download button
+    /*
     const downloadApplication = () => {
         alert('download application');
-    };
+    };*/
 
     const unmatch = async () => {
         const response = await api({
@@ -107,7 +109,9 @@
 
         <div class='application-right'>
             <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show'>Show Application</button>
-            <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
+            <!-- download button -->
+            <!-- <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button> -->
+            
             <button class='application-button application-button-red' @click='showModal = true'>Unmatch</button>
             <AreYouSureModal v-if='showModal' :name='profile.FirstName + " " + profile.LastName' :vacancyName='vacancyName' :employer='true' @close-modal='showModal = false' @unmatch='unmatch' />
         </div>
@@ -134,6 +138,7 @@
         text-decoration: none;
         padding: 2px 4px;
         font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+        margin: 2px;
     }
 
     .application-button-grey {
@@ -165,8 +170,9 @@
         display: flex;
         flex-direction: column;
         height: calc(100% - 4px);
-        justify-content: space-between;
+        justify-content: flex-start;
         padding: 2px 0;
+        
     }
 
     .contact {

@@ -1,9 +1,12 @@
 <script setup>
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
+    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
+
     
     // form pages
     import PersonalDetailsForm from '@/components/employee/profile/PersonalDetailsForm.vue';
@@ -19,6 +22,9 @@
     const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
+
+
 
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
@@ -46,13 +52,17 @@
         }
     }
 
-    
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployeeProfile', false);
+        isNewUser.value = false;
+    }
 
 
 </script>
 
 <template>
-    <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar>
+    <!-- <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar> -->
+    <EmployeeNavbar page='home'> </EmployeeNavbar>
 
     
     <main class='container'>
@@ -87,6 +97,27 @@
         </div>
         
     </form>
+
+
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Edit vacancy</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On this page you can edit your personal profile by completing the same form you used to register your account.           
+                </p>
+                <p class='desc'>
+                    Except this time the form is pre-populated with profile data.    
+                </p>
+            </div>
+
+        </template>
+    </TutorialModal>
+
+
+    <Footer></Footer>
 
 </template>
 

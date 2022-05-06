@@ -1,7 +1,10 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
+
     
     import { computed, onMounted, ref, watch } from 'vue';
 
@@ -9,10 +12,13 @@
     // vars init
     const tagsLim = 6;
     const extraTags = '';
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const emptyCards = ref(0);
     const vacancies = ref([]);
     const cardsPerRow = ref(1);
+    
+    // tutorial values
+    const isNewUser = ref(window.localStorage.getItem('newUserFavourites') == null);
 
     // dropdown values
     const sort = ref('dateDesc');
@@ -160,10 +166,16 @@
         window.location.reload();
     }
 
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserFavourites', false);
+        isNewUser.value = false;
+    }
+
 </script>
 
 <template>
-    <EmployeeNavbar page='favourites' :numNotifs='notifs'></EmployeeNavbar>
+    <!-- <EmployeeNavbar page='favourites' :numNotifs='notifs'></EmployeeNavbar> -->
+    <EmployeeNavbar page='favourites' ></EmployeeNavbar>
 
     <div class='container'>
         <div class='main'>
@@ -205,15 +217,35 @@
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
 
-            <button type='button' class='button arrow-btn' @click='page < numPages ? changePage(page + 1) : page'>
-            <i class="fa-solid fa-circle-arrow-right"></i>
-            </button>
-            <button type='button' class='button arrow-btn' @click='page > 1 ? changePage(page - 1) : page'>
-                <i class="fa-solid fa-circle-arrow-left"></i>
-            </button>
+            <div class='pagination' v-if='numPages > 1'>
+                <div class='pag-block pag-start' @click='page > 1 ? changePage(page - 1) : page'><i class="fa-solid fa-angle-left"></i></div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            
+            </div>
             
         </div>
     </div>
+
+
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Employee Favourites</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    You can review vacancies which are added to your favourites here, and sort them using filters on the top right.
+                </p>
+				<p class='desc'>
+					You can also reject, unfavourite, and accept vacancies by clicking the corresponding buttons on each card.
+                </p>
+            </div>
+        </template>
+    </TutorialModal>
+
+
+    <Footer></Footer>
+
 </template>
 
 
@@ -315,6 +347,43 @@
         font-size: 18px;
         font-style: italic;
     }
+
+    .pagination {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin: 15px 0 30px 0;
+    }
+
+    .pag-active {
+        background: var(--red) !important; /* important removes background color hover change */
+        color: white;
+    }
+
+
+    .pag-block {
+        padding: 3px 6px;
+        border: 1px solid var(--jet);
+        border-left-width: 0;
+        min-width: 20px;
+    }
+
+    .pag-end {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    .pag-block:hover, .pag-block:focus, .pag-block:active {
+        cursor: pointer;
+        background: rgba(85, 85, 85, 0.1);
+    }
+
+    .pag-start {
+        border-width: 1px;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+
 
     .search {
         border-radius: 8px;
