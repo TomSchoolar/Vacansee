@@ -71,7 +71,7 @@
         <section class='bottom'>
             <div class='bottom-container'>
                 <h3 class='title'>In a rush?</h3>
-                <p class='desc'> We provide applicants and employers with tools that allow you to get what they're doing done. Fast. </p>
+                <p class='desc'> We provide applicants and employers with tools that allow you to get what you're doing done. Fast. </p>
                 <router-link :to='`/login`' class='button button-white'>Start Now</router-link>
             </div>
         </section>
