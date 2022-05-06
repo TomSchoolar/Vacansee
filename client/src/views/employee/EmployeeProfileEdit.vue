@@ -23,7 +23,7 @@
 
 	const getProfile = async () => {
 		const response = await api({
-			url: '/account/profile',
+			url: 'v1/accounts/profile/',
 			method: 'get',
 			responseType: 'json'
 		}).catch(apiCatchError);
