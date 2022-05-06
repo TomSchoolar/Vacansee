@@ -96,7 +96,6 @@
 
             <div class='links'>
 			    <router-link to='/login' class='reset-link'>Existing user? Login here</router-link>
-			    <router-link to='/forgot' class='reset-link'>Forgot your password?</router-link>
             </div>
 		</form>
 	</div>
@@ -181,7 +180,7 @@
 
     .links {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         padding: 0 5px;
     }
 
@@ -206,6 +205,7 @@
         color: var(--red);
         font-size: 12px;
         text-decoration: none;
+        
     }
 
     .reset-link:active, .reset-link:focus, .reset-link:hover {
