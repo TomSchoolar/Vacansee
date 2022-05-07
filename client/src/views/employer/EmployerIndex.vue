@@ -566,6 +566,9 @@
         margin-right: 30px;
         width: calc(100% - 230px);
         font-weight: 500;
+        display: flex;
+        gap: 4px;
+
     }
 
     .vacancies {
