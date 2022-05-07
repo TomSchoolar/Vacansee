@@ -16,7 +16,7 @@
         <div class='skills block'>
             <table>
                 <tr v-for='skill in profile.NotableSkills' v-bind:key='skill'>
-                    <th>- {{ skill }}</th>
+                    <th>> {{ skill }}</th>
                 </tr>
             </table>
         </div>
@@ -34,7 +34,7 @@
         <div class='qualifications'>
             <table>
                 <tr v-for='qual in profile.Qualifications' v-bind:key='qual'>
-                    <th>- {{ qual }}</th>
+                    <th>> {{ qual }}</th>
                 </tr>
             </table>
         </div>
@@ -52,19 +52,19 @@
         margin-bottom: 10px;
     }
 
-    .card {
+    div.card {
         font-weight: normal;
-        height: 500px;
-        width: 400px;
+        min-height: 400px;
+        max-height: 600px;
+        overflow-y: hidden;
+        width: 370px;
         border: 2px solid #555;
         border-radius: 15px;
         margin: 12px 0;
         align-items: center;
         text-align: left;
         justify-content: space-between;
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-top: 5px;
+        padding: 20px;
         background: white;
     }
 
@@ -73,9 +73,12 @@
     }
 
     .description p {
-        height: 50px;
+        min-height: 10px;
+        max-height: 60px;
+        text-overflow: ellipsis;
         padding-top: 5px;
         padding-bottom: 5px;
+        margin: 10px auto;
     }
 
     .info p {
@@ -86,7 +89,9 @@
         font-weight: bold;
         font-size: 24px;
         margin: 0px;
-        padding: 10px 0px 0px 0px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .job-title {

@@ -101,7 +101,11 @@
     <FormButtons :back='true' :publish='true' @back='emit("back")' @publish='publish()' />
 </template>
 
-<style>
+<style scoped>
+    *:deep(.card) {
+        width: 42.5%;
+    }    
+    
     .review-container {
         width: 43vw;
         min-width: 700px;
@@ -109,9 +113,5 @@
         align-items: center;
         justify-content: space-between;
         margin: 20px 0;
-    }
-
-    .card {
-        width: 42.5% !important;
     }
 </style>
