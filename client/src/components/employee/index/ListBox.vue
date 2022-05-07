@@ -11,6 +11,11 @@
     const updateSelected = (values) => {
         selectedValues.value = values;
     }
+
+    const sendData = () => {
+        emit('search', selectedValues.value);
+        selectedValues.value = [];
+    }
 </script>
 
 <template>
@@ -32,7 +37,7 @@
 
         <div class='button-row'>
             <button class='button button-grey' @click='emit("close-modal")'>Go Back</button>
-            <button class='button button-blue' @click='emit("search", selectedValues)'>Search</button>
+            <button class='button button-blue' @click='sendData()'>Search</button>
         </div>
     </div>
 
