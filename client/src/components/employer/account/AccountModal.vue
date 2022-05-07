@@ -123,6 +123,7 @@
         flex-direction: column;
         align-items: center;
         gap: 1vh;
+        bottom: 50px;
     }
 
     .modal-body {

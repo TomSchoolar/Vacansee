@@ -174,18 +174,11 @@
                         <button class='button button-red' @click=showDeletion>Delete Account</button>
                         <button class='button button-blue' @click="updateAccount(accountDetails.Email)">Save</button>
                     </div>
-                    <button class ='button button-red' @click='resetTutorial'>Reset tutorial</button>
+                    <button class ='button button-blue' @click='resetTutorial'>Reset tutorial</button>
                     <div class='saved-indicator' v-show='saved'>Saved!</div>
                 </section>
             </div>
-
-
-
-
-
         </div>
-
-
     </main>
 
 	
@@ -291,7 +284,7 @@
     .email-input {
 		border: 1px solid var(--slate);
 		border-radius: 5px;
-		color: var(--slate);
+		color: var(--jet);
 		font-size: 16px;
 		line-height: 24px;
 		padding: 5px 10px;
