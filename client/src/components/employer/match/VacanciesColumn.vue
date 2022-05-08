@@ -213,11 +213,12 @@
         font-style: italic;
     }
 
-
     .vacancy-title {
         text-overflow: ellipsis !important; 
         max-width: calc(100% - 90px);
         overflow: hidden;
         white-space: nowrap;
+        display: flex;
+        gap: 4px;
     }
 </style>
