@@ -97,14 +97,16 @@
         numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        numPages.value = pages;
 
         if(currentVacancy?.value && Object.keys(currentVacancy.value).length === 0 || newCard) {
             // if initial fetch, then update current vacancy
             currentVacancy.value = vacancies.value[0] ?? {};
         }
 
-        emptyCards.value = limit.value - vacancies.value.length;
+        if(numVacancies.value > 0)
+            emptyCards.value = limit.value - vacancies.value.length;
+        else
+            emptyCards.value = 0;
         
         return true;
     }
