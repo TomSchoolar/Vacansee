@@ -1,6 +1,6 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
-    import ProfileCard from '@/components/employee/account/ProfileCard.vue';
+    import ProfileCard from '@/components/employer/match/ProfileCard.vue';
     import ContactCard from '@/components/employee/profile/ContactCard.vue';
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';

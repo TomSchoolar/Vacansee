@@ -73,7 +73,7 @@
         <div class='skills block' >
             <table>
                 <tr v-for='skill in profile.NotableSkills' v-bind:key='skill'>
-                    <th>- {{ skill }}</th>
+                    <th>> {{ skill }}</th>
                 </tr>
             </table>
         </div>
@@ -81,8 +81,8 @@
         <div class='experience block'>
             <table>
                 <tr v-for='xp in profile.Experience' v-bind:key='xp'>
-                    <th class='table-title'>- {{ xp }}</th>
-                    <th><span class='table-date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
+                    <th class='table-title'>> {{ xp.split('&&')[0] }}</th>
+                    <th v-if='xp.split("&&").length > 1'><span class='table-date'>{{ xp.split("&&")[1] }}</span></th>
                 </tr>
             </table>
         </div>
@@ -90,7 +90,7 @@
         <div class='qualifications' v-for='qual in profile.Qualifications' v-bind:key='qual'>
             <table>
                 <tr>
-                    <th>- {{ qual }}</th>
+                    <th>> {{ qual }}</th>
                 </tr>
             </table>
         </div>
@@ -197,6 +197,9 @@
         font-size: 24px;
         margin: 0px;
         padding: 10px 0px 0px 0px;
+        display: flex;
+        gap: 6px;
+        align-items: center;
     }
 
     .job-title {

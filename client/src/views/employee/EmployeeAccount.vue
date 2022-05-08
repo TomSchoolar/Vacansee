@@ -2,7 +2,7 @@
 	import api, { apiCatchError } from '@/assets/js/api';
 	import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
-	import ProfileCard from '@/components/employee/account/ProfileCard.vue';
+	import ProfileCard from '@/components/employer/match/ProfileCard.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
 	import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
 

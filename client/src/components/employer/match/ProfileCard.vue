@@ -1,4 +1,5 @@
 <script setup>  
+
     const props = defineProps(['profile']);
 </script>
 
@@ -26,6 +27,7 @@
                     <!-- <th class='table-title'>- {{ xprofile.Title }}</th> 
                     <th><span class='table-date'>{{ xprofile.StartDate }} - {{ xprofile.EndDate }}</span></th> -->
                     <th class='table-title'>> {{ xp }} </th>
+                    <th v-if='xp.split("&&").length > 1'><span class='table-date'>{{ xp.split("&&")[1] }}</span></th>
                 </tr>
             </table>
         </div>
@@ -72,9 +74,12 @@
     }
 
     .description p {
-        height: 50px;
+        min-height: 10px;
+        max-height: 60px;
+        text-overflow: ellipsis;
         padding-top: 5px;
         padding-bottom: 5px;
+        margin: 10px auto;
     }
 
     .info p {
@@ -85,7 +90,9 @@
         font-weight: bold;
         font-size: 24px;
         margin: 0px;
-        padding: 10px 0px 0px 0px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .job-title {
