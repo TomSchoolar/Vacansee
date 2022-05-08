@@ -99,7 +99,10 @@
         numVacancies.value = total;
         vacancies.value = newVacancies;
 
-        emptyCards.value = numVacancies.value > 0 ? limit.value - vacancies.value.length : 0;
+        if(numVacancies.value > 0)
+            emptyCards.value = numVacancies.value > 0 ? limit.value - vacancies.value.length : 0;
+        else
+            emptyCards.value = 0;
 
         return true;
     }
