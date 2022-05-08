@@ -4,8 +4,8 @@
     
     import { onMounted, ref } from 'vue';
 
-    const props = defineProps(['stats', 'vacancyName', 'vacancy']);
-    const emit = defineEmits(["showApplication", "unmatch"]);
+    const props = defineProps(['stats', 'vacancyName', 'vacancy', 'showingThis']);
+    const emit = defineEmits(['showApplication', 'hideApplication', 'unmatch']);
 
     const details = {};
     const showModal = ref(false);
@@ -104,7 +104,8 @@
         </div>
 
         <div class='application-right'>
-            <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show'>Show Application</button>
+            <button class='application-button application-button-blue' @click='emit("hideApplication", details);' id='show' v-if='showingThis'>Hide Application</button>
+            <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show' v-else>Show Application</button>
             <!-- download button -->
             <!-- <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button> -->
             <button class='application-button application-button-red' @click='showModal = true'>Unmatch</button>
@@ -135,6 +136,15 @@
         font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
         margin: 2px;
     }
+
+    .application-button-blue {
+        background: var(--blue);
+    }
+
+    .application-button-blue:hover, .application-button-blue:focus, .application-button-blue:active {
+        background: var(--blue-focus);
+        cursor: pointer;
+    } 
 
     .application-button-grey {
         background: var(--slate);

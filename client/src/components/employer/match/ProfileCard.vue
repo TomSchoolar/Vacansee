@@ -15,7 +15,7 @@
         <span class='card-section' v-if='profile.NotableSkills'>Notable Skills:</span>
         <div class='skills block'>
             <table>
-                <tr v-for='skill in profile.NotableSkills' v-bind:key='skill'>
+                <tr v-for='(skill, index) in profile.NotableSkills' v-bind:key='`skill-${ index }`'>
                     <th>> {{ skill }}</th>
                 </tr>
             </table>
@@ -23,7 +23,7 @@
         <span class='card-section' v-if='profile.Experience'>Experience:</span>
         <div class='experience block'>
             <table>
-                <tr v-for='xp in profile.Experience' v-bind:key='xp'>
+                <tr v-for='(xp, index) in profile.Experience' v-bind:key='`xp-${ index }`'>
                     <!-- <th class='table-title'>- {{ xprofile.Title }}</th> 
                     <th><span class='table-date'>{{ xprofile.StartDate }} - {{ xprofile.EndDate }}</span></th> -->
                     <th class='table-title'>> {{ xp }} </th>
@@ -34,7 +34,7 @@
         <span class='card-section' v-if='profile.Qualifications'>Qualifications:</span>
         <div class='qualifications'>
             <table>
-                <tr v-for='qual in profile.Qualifications' v-bind:key='qual'>
+                <tr v-for='(qual, index) in profile.Qualifications' v-bind:key='`qual-${ index }`'>
                     <th>> {{ qual }}</th>
                 </tr>
             </table>

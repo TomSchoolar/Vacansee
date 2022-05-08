@@ -4,6 +4,7 @@
     import MatchCard from '@/components/employer/match/MatchCard.vue';
     import EmptyCard from '@/components/employer/review/EmptyCard.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
+    import ProfileCard from '@/components/employer/match/ProfileCard.vue';
     import ApplyProfileCard from '@/components/employer/review/ApplyProfileCard';
     import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
 
@@ -17,6 +18,8 @@
     const notifs = ref(2);
     const matches = ref([]);
     const vacancy = ref({});
+    const showDeck = ref(true);
+    const matchProfile = ref({});
     const currentProfile = ref({});
     const currentApplication = ref({});
     const isNewUser = ref(window.localStorage.getItem('newUserReview') == null);
@@ -48,11 +51,13 @@
         getApplicants();
     });
 
-    const updateProfile = (nextProfile) => {
-        currentProfile.value = nextProfile.value;
+    const showMatchApplication = (nextProfile) => {
+        matchProfile.value = nextProfile.value;
+        showDeck.value = false;
     }
 
     const onUnmatch = async (match) => {
+        showDeck.value = true;
         matches.value = { };
         getApplicants();
     }
@@ -105,11 +110,14 @@
 
             <div class='applications'>
                 <MatchCard v-for='match in matches' 
-                :key='match.id' 
-                :stats='match'
-                :vacancyName='vacancy.VacancyName'
-                @unmatch='onUnmatch(match)'
-                @showApplication='updateProfile' />
+                    :key='match.id' 
+                    :stats='match'
+                    :vacancyName='vacancy.VacancyName'
+                    :showingThis='!showDeck && matchProfile.UserId == match?.profile?.UserId'
+                    @unmatch='onUnmatch(match)'
+                    @showApplication='showMatchApplication'
+                    @hideApplication='showDeck = true'
+                 />
             </div>
         </div>
 
@@ -126,7 +134,7 @@
 
             <main class='card-container'>
                 <ApplyProfileCard 
-                    v-if='Object.keys(currentApplication).length !== 0'
+                    v-if='Object.keys(currentApplication).length !== 0 && showDeck'
                     class='card' 
                     :application='currentApplication' 
                     :profile='currentProfile' 
@@ -134,6 +142,12 @@
                     @match='onMatch'
                     @defer='updateCard'
                     @reject='updateCard'
+                />
+
+                <ProfileCard
+                    v-else-if='!showDeck'
+                    class='card'
+                    :profile='matchProfile'
                 />
 
                 <EmptyCard v-else />
@@ -155,7 +169,7 @@
                     You can either reject the current application, skip it, or match with it by clicking the green (left), yellow (up) or red (right) buttons at the bottom of the card or by using the relevant (arrow keys).
                 </p>
                 <p class='desc'>
-                    A Rejection will prevent the same applicant from appearing again and notify the applicant, while skipping puts them to the bottom of the deck.
+                    A rejection will prevent the same applicant from appearing again and notify the applicant, while skipping puts them to the bottom of the deck.
                 </p>
                 <p class='desc'>
                     Accepting an application will form a match, which will be displayed along with existing matches on the left.
