@@ -2,6 +2,7 @@ import environ
 import jwt as jwtLib
 from django.test import TestCase
 from employer.models import EmployerDetails
+from employee.models import Profile
 from authentication.models import RefreshToken
 
 env = environ.Env()
@@ -11,6 +12,9 @@ class LoginPostTestClass(TestCase):
     password = 'password'
     employeeId = 2
     employeeEmail = 'ajb042@student.bham.ac.uk'
+    # Employee with no profile
+    noProfileId = 8
+    noProfileEmail = "noprofile@student.bham.ac.uk"
     employerId = 4
     employerEmail = 'sxd110@student.bham.ac.uk'
 
@@ -82,6 +86,34 @@ class LoginPostTestClass(TestCase):
         RefreshToken.objects.get(Token__exact = response.data['refreshToken'])
 
 
+    def test_validNoProfileLoginRequest(self):
+
+        response = self.client.post('/login/', { 'email': self.noProfileId, 'password': self.password })
+        
+        expectedUserData = {
+            'IsEmployer': False,
+            'Email': self.noProfileEmail
+        }
+
+        self.assertDictEqual(response.data['userData'], expectedUserData)
+
+        accessToken = jwtLib.decode(response.data['accessToken'], env('JWT_SECRET'), algorithms=['HS256'], verify=True)
+        refreshToken = jwtLib.decode(response.data['refreshToken'], env('JWT_SECRET'), algorithms=['HS256'], verify=True)
+
+        
+        self.assertTrue('exp' in accessToken)
+        self.assertTrue('iat' in accessToken)
+        self.assertEquals(accessToken['id'], self.noProfileId)
+        self.assertEquals(accessToken['typ'], 'access')
+
+        self.assertTrue('exp' in refreshToken)
+        self.assertTrue('iat' in refreshToken)
+        self.assertEquals(refreshToken['id'], self.noProfileId)
+        self.assertEquals(refreshToken['typ'], 'refresh')
+
+        RefreshToken.objects.get(Token__exact = response.data['refreshToken'])
+
+
 
 
     def test_incorrectEmail(self):
@@ -121,3 +153,32 @@ class LoginPostTestClass(TestCase):
         secondTokenFamily = RefreshToken.objects.get(Token__exact = secondRefreshToken).FamilyId
 
         self.assertEquals(secondTokenFamily, 1)
+
+
+class LoginRedirectTestClass(TestCase):
+
+    password = 'password'
+    employeeId = 2
+    employeeEmail = 'ajb042@student.bham.ac.uk'
+    employeeHomePath = '/vacancy/'
+    # Employee with no profile
+    noProfileId = 8
+    noProfileEmail = "noprofile@student.bham.ac.uk"
+    noProfileRedirectPath = '/profile/'
+    employerId = 4
+    employerEmail = 'sxd110@student.bham.ac.uk'
+    employerHomePath = '/e/vacancy/'
+
+    fixtures = ['authentication/fixtures/fixtures.json']
+
+    def test_noRedirectEmployee(self):
+        response = self.client.post('/login/', { 'email': self.employeeEmail, 'password': self.password}, follow=True)
+        self.assertEquals(response.redirect_chain, (self.employeeHomePath, '302'))
+
+    def test_noRedirectEmployer(self):
+        response = self.client.post('/login/', { 'email': self.employerEmail, 'password': self.password}, follow=True)
+        self.assertEquals(response.redirect_chain, (self.employerHomePath, '302'))
+
+    def test_redirectEmployee(self):
+        response = self.client.post('/login/', { 'email': self.noProfileEmail, 'password': self.password}, follow=True)
+        self.assertEquals(response.redirect_chain, (self.noProfileRedirectPath, '302'))
