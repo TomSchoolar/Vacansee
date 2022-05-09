@@ -4,7 +4,7 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh';
 // create shared axios instance with some common defaults
 let api = axios.create({
     baseURL: process.env.VUE_APP_API_ENDPOINT,
-    timeout: 30000
+    timeout: 3000
     //timeout: 3000
 });
 

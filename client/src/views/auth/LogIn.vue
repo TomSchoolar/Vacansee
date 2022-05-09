@@ -42,9 +42,12 @@
         window.localStorage.setItem('accessToken', accessToken)
         window.localStorage.setItem('refreshToken', refreshToken)
 
+
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'
-        else
+        else if(session.profileSetup === 'true')
+			window.location.href = '/profile'
+		else
             window.location.href = '/vacancy'
 	}
 </script>
