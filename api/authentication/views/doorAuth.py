@@ -60,12 +60,10 @@ def postLogin(request):
         else:
             profileSetup = False
 
-    
-    
     try:
         # remove private fields from user object
         userData = copy(user)
-        userData = { **userData, **extraDetails }
+        userData = { **userData, **extraDetails, **profileSetup}
         toRemove = ['UserId', 'Password', 'PasswordResetToken', 'PasswordResetExpiration']
 
         for key in toRemove:
@@ -86,7 +84,6 @@ def postLogin(request):
         'userData': userData,
         'accessToken': accessToken,
         'refreshToken': refreshToken,
-        'profileSetup': profileSetup,
     }
 
     return Response(data=responseData, status=status.HTTP_200_OK)
