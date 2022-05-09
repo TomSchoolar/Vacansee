@@ -17,11 +17,16 @@
     const currentProfile = ref({});
     const currentApplication = ref({});    
 
+    const searchValue = ref("");
+
     const getApplicants = async () => {
         const response = await api({
             url: `/e/review/${ vacancyId }/`,
             method: 'get',
-            responseType: 'json'
+            responseType: 'json',
+            params: {
+                'searchValue': searchValue.value
+            }
         }).catch(apiCatchError);
 
         if(!response?.data)
@@ -66,6 +71,12 @@
     const download_button = () => {
         alert('downloading all applications');
     }
+
+    const searchBarValueUpdated = (value) => {
+        searchValue.value = value;
+
+        getApplicants();
+    }
 </script>
 
 
@@ -81,7 +92,7 @@
                     <button type='button' class='application-button application-button-grey' id= 'download_button' @click= download_button>Download Applications</button>
                     <div class='search-group'>
                         <i class="fas fa-search search-icon"></i>
-                        <input class='search' placeholder='search' type='text'> 
+                        <input class='search' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' placeholder='search' type='text'> 
                     </div>
                 </div>
             </div>

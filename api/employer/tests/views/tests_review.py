@@ -63,6 +63,59 @@ class getReviewTests(TestCase):
         numKeys = 4
 
         self.assertTrue(len(data.keys()) == numKeys)
+
+    def test_validRequestFullDataSearchValue(self):
+        # make request
+        response = self.client.get(f'/e/review/{ self.vacancyId }/', { 'searchValue':'e' } , **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        data = response.data
+
+        userIdList = []
+
+        userSet = Profile.objects.filter(LastName__contains = 'e')
+
+        for user in userSet:
+            userIdList.append(user.UserId)
+
+        # check matches are correct
+        matchesSet = Application.objects.filter(VacancyId__exact = self.vacancyId, ApplicationStatus__exact = 'MATCHED', UserId__in = userIdList)
+        matches = ApplicationSerializer(matchesSet, many=True).data
+
+        expectedMatches = []
+
+        for match in matches:
+            profileSet = Profile.objects.get(UserId__exact = match['UserId'])
+            profile = SummaryProfileSerializer(profileSet).data
+
+            user = User.objects.get(pk = match['UserId'])
+            profile['Email'] = user.Email
+
+            expectedMatches.append({ 'application': match, 'profile': profile })
+
+
+        self.assertListEqual(data['matches'], expectedMatches)
+
+        # check new is correct
+        newSet = Application.objects.filter(VacancyId__exact = self.vacancyId, ApplicationStatus__exact = 'PENDING').order_by('LastUpdated')[:1]
+
+        new = ApplicationSerializer(newSet[0]).data
+
+        profileSet = Profile.objects.get(UserId__exact = new['UserId'])
+        profile = ProfileSerializer(profileSet).data
+
+        expectedNew = { 'application': new, 'profile': profile }
+
+        self.assertDictEqual(data['new'], expectedNew)
+
+        
+        # check vacancy is correct
+        vacancy = Vacancy.objects.get(pk = self.vacancyId)
+        employerDetails = EmployerDetails.objects.get(UserId__exact = self.userId)
+        expectedVacancy = { 'VacancyId': vacancy.VacancyId, 'VacancyName': vacancy.VacancyName, 'CompanyName': employerDetails.CompanyName }
+        self.assertEqual(data['vacancy'], expectedVacancy)
+        
+        numKeys = 4
+
+        self.assertTrue(len(data.keys()) == numKeys)
     
 
     def test_otherUsersVacancy(self):

@@ -19,6 +19,13 @@ def getReview(request, vacancyId):
     if type(jwt) is not dict:
         return jwt
 
+    params = request.query_params
+
+    try:
+        searchValue = params['searchValue']
+    except:
+        return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
         vacancy = reviewHelper.checkUserOwnsVacancy(vacancyId, jwt)
 
@@ -36,7 +43,7 @@ def getReview(request, vacancyId):
     
 
     try:
-        applications = reviewHelper.getApplications(vacancyId, "FirstNameAsc", "")
+        applications = reviewHelper.getApplications(vacancyId, "FirstNameAsc", searchValue)
     except Exception as err:
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': 'Error getting applications' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
