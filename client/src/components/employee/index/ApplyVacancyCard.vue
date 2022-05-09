@@ -74,21 +74,21 @@
         <span class='card-section' v-if='vacancy.SkillsRequired'>Necessary Skills:</span>
         <div class='skills'>
             <table>
-                <tr v-for='skill in vacancy.SkillsRequired' v-bind:key='skill'>
+                <tr v-for='(skill, index) in vacancy.SkillsRequired' :key='`skill-${ index }`'>
                     <th>> {{ skill }}</th>
                 </tr>
             </table>
         </div>
         <span v-if='vacancy?.ExperienceRequired' class='card-section'>Experience:</span>
         <div class='experience'>
-            <div class='exp-container' v-for='xp in vacancy?.ExperienceRequired' v-bind:key='xp'>
+            <div class='exp-container' v-for='(xp, index) in vacancy?.ExperienceRequired' :key='`xp-${ index }`'>
                 <span class='exp-position'>> {{ xp.split('&&')[0] }}</span>
                 <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
             </div>
         </div>
         <span class='card-section' v-if='vacancy.Tags'>Requirements:</span>
         <div v-if='vacancy.Tags'>
-            <i class='tag' v-for='tag in vacancy.Tags.slice(0, tagsLim)' v-bind:key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
+            <i class='tag' v-for='tag in vacancy.Tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
             <th v-if='tags.length > 6' class='tag tags-overflow' :title='extraTags'>
                 <div class='tags-num' ref='extra-tags'>+{{ tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
