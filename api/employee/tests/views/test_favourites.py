@@ -118,6 +118,37 @@ class getFavouritesTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
 
+    def test_validRequestTagSearch(self):
+        response = self.client.get('/favourites/', { 'sort':'titleAsc', 'count':5, 'pageNum':1, 'tagsFilter':'3', 'searchValue':'' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        
+        favouriteSet = Favourite.objects.filter(UserId__exact = self.userId)
+        vacancyIds = []
+        for fav in favouriteSet:
+            vacancyIds.append(int(fav.VacancyId.VacancyId))
+
+        vacanciesSet = Vacancy.objects.filter(VacancyId__in = vacancyIds, Tags__contains = [3]).order_by('VacancyName')[0:5]
+        numVacancies = Vacancy.objects.filter(VacancyId__in = vacancyIds, Tags__contains = [3]).count()
+        vacancies = VacancySerializer(vacanciesSet, many=True).data
+
+        for vacancy in vacancies:
+            employerDetails = EmployerDetails.objects.get(UserId__exact = vacancy['UserId'])
+            vacancy['CompanyName'] = employerDetails.CompanyName
+
+        expectedData = {
+            'numPages': ceil(numVacancies / 5),
+            'vacancies': vacancies,
+            'numVacancies': numVacancies,
+            'triedTags': False
+        }
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(expectedData, response.data)
+
+    def test_validRequestSearchBar(self):
+        response = self.client.get('/favourites/', { 'sort':'titleAsc', 'count':5, 'pageNum':1, 'tagsFilter':'null', 'searchValue':'t' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(response.status_code, 200)
+
     def test_missingParameters(self):
         response = self.client.get('/favourites/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 

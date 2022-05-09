@@ -2,6 +2,7 @@ from venv import create
 from django.test import TestCase
 from django.db.models import Count, Q
 from employee.serializers import ApplicationSerializer, ProfileSerializer
+from authentication.models import User
 from employee.models import Profile, Application
 from employer.serializers import VacancySerializer
 from employer.models import Vacancy
@@ -87,6 +88,22 @@ class getVacanciesTests(TestCase):
         self.assertQuerysetEqual(expectedData['vacancies'], response.data['vacancies'])
         self.assertEqual(expectedData['numVacancies'], response.data['numVacancies'])
 
+    def test_validRequestSearchValue(self):
+        response = self.client.get('/e/match/', { 'sort': 'titleDesc', 'searchValue': 'e' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+
+        vacancies = Vacancy.objects.filter(UserId__exact = 6).annotate(
+        MatchesCount = Count('application', filter = Q(
+            application__ApplicationStatus__exact = 'MATCHED',
+            application__VacancyId__UserId__exact = 6,
+            application__VacancyId__VacancyName__contains = 'e'
+        ))).order_by('-VacancyName').values()
+        numVacancies = vacancies.count()
+
+        expectedData = { 'vacancies': vacancies, 'numVacancies': numVacancies }
+
+        self.assertQuerysetEqual(expectedData['vacancies'], response.data['vacancies'])
+        self.assertEqual(expectedData['numVacancies'], response.data['numVacancies'])
+
     def test_missingParamters(self):
         response = self.client.get('/e/match/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
@@ -118,6 +135,29 @@ class getMatchesTests(TestCase):
         matchesSet = Application.objects.filter(
             VacancyId__exact = self.vacId,
             ApplicationStatus__exact = 'MATCHED'
+        )
+
+        matches = ApplicationSerializer(matchesSet, many=True).data
+        numMatches = matchesSet.count()
+
+        expectedData = { 'matches': matches, 'numMatches': numMatches }
+
+        self.assertDictEqual(expectedData, response.data)
+
+    def test_validRequestSearchValue(self):
+        response = self.client.get('/e/match/matches/', { 'sort': 'dateDesc', 'vID': self.vacId, 'searchValue': 'e' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+
+        userIdList = []
+
+        userSet = User.objects.all(Profile__LastName__contains = 'e')
+
+        for user in userSet:
+            userIdList.append(user.UserId)
+
+        matchesSet = Application.objects.filter(
+            VacancyId__exact = self.vacId,
+            ApplicationStatus__exact = 'MATCHED',
+            UserId__in = userIdList
         )
 
         matches = ApplicationSerializer(matchesSet, many=True).data

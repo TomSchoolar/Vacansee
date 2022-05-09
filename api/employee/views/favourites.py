@@ -61,7 +61,7 @@ def getFavourites(request):
             favouriteSet = Favourite.objects.filter(
                 UserId__exact = jwt['id'],
                 VacancyId__Tags__contains = tagListInt,
-                VacancyName__contains = searchValue
+                VacancyId__VacancyName__contains = searchValue
             )
 
             VacancyIds = []
