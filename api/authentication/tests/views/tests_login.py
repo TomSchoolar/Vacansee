@@ -28,7 +28,8 @@ class LoginPostTestClass(TestCase):
         
         expectedUserData = {
             'IsEmployer': False,
-            'Email': self.employeeEmail
+            'Email': self.employeeEmail,
+            'HasProfileSetup': True
         }
 
         self.assertDictEqual(response.data['userData'], expectedUserData)
@@ -61,7 +62,8 @@ class LoginPostTestClass(TestCase):
             'IsEmployer': True,
             'Email': self.employerEmail,
             'CompanyName': details.CompanyName,
-            'PhoneNumber': details.PhoneNumber
+            'PhoneNumber': details.PhoneNumber,
+            'HasProfileSetup': True
         }
 
         self.assertDictEqual(response.data['userData'], expectedUserData)
