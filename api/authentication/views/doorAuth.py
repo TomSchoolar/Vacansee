@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from django.core.exceptions import ValidationError
 from ..helpers import jwt as jwtHelper, auth as authHelper
 from django.contrib.auth.hashers import make_password, check_password
+from employee.models import Profile
 
 
 
@@ -44,6 +45,23 @@ def postLogin(request):
         print(err)
         return Response(data={'code': 500, 'message': 'Server error while finding user details' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    
+    # check if a user has already set up their profile
+    profileSetup = True
+
+    try:
+        profileObj = Profile.objects.get(UserId__exact = userObj.UserId)
+
+    except Profile.DoesNotExist:
+        # can be an employer or an employee without a profile
+        if(user['IsEmployer']):
+            # no redirection is needed for employer
+            pass
+        else:
+            profileSetup = False
+
+    
+    
     try:
         # remove private fields from user object
         userData = copy(user)
@@ -68,6 +86,7 @@ def postLogin(request):
         'userData': userData,
         'accessToken': accessToken,
         'refreshToken': refreshToken,
+        'profileSetup': profileSetup,
     }
 
     return Response(data=responseData, status=status.HTTP_200_OK)
@@ -175,3 +194,4 @@ def postLogout(request):
         return Response({ 'status': 500, 'message': 'Server error while trying to delete refresh tokens'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(status=status.HTTP_200_OK)
+
