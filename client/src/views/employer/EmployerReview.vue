@@ -252,6 +252,8 @@
         margin: 0;
         font-weight: 500;
         font-size: 21px;
+        display: flex;
+        gap: 6px;
     }
 
     .header-right {

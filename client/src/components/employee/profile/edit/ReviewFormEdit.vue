@@ -1,9 +1,9 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
-    import ProfileCard from '@/components/employee/account/ProfileCard.vue';
+    import ProfileCard from '@/components/employer/match/ProfileCard.vue';
     import ContactCard from '@/components/employee/profile/ContactCard.vue';
-    import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
+    import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
 
     import { ref, computed } from 'vue';
 
@@ -101,7 +101,11 @@
     <FormButtons :back='true' :publish='true' @back='emit("back")' @publish='publish()' />
 </template>
 
-<style>
+<style scoped>
+    *:deep(.card) {
+        width: 42.5% !important;
+    }
+
     .review-container {
         width: 43vw;
         min-width: 700px;
@@ -109,9 +113,5 @@
         align-items: center;
         justify-content: space-between;
         margin: 20px 0;
-    }
-
-    .card {
-        width: 42.5% !important;
     }
 </style>

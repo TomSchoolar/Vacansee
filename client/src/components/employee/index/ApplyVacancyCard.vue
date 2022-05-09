@@ -75,14 +75,14 @@
         <div class='skills'>
             <table>
                 <tr v-for='skill in vacancy.SkillsRequired' v-bind:key='skill'>
-                    <th>- {{ skill }}</th>
+                    <th>> {{ skill }}</th>
                 </tr>
             </table>
         </div>
-        <span class='card-section' v-if='vacancy.ExperienceRequired'>Experience:</span>
+        <span v-if='vacancy?.ExperienceRequired' class='card-section'>Experience:</span>
         <div class='experience'>
             <div class='exp-container' v-for='xp in vacancy?.ExperienceRequired' v-bind:key='xp'>
-                <span class='exp-position'>- {{ xp.split('&&')[0] }}</span>
+                <span class='exp-position'>> {{ xp.split('&&')[0] }}</span>
                 <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
             </div>
         </div>
@@ -202,6 +202,7 @@
 
     .exp-container {
         display: flex;
+        align-items: center;
         justify-content: space-between;
     }
 
@@ -209,6 +210,10 @@
         color: var(--slate);
         font-style: italic;
         font-size: 13px;
+    }
+
+    .experience {
+        width: 100%;
     }
 
     .job-title {

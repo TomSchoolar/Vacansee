@@ -35,9 +35,7 @@
                 <span id='navbar-notif-alert' v-if='notifs'>{{ numNotifs }}</span>
             </a>
             <span class='navbar-divider'></span> -->
-            <router-link to='/account' class='navbar-link' :class='{"navbar-active-link": (page == "account")}'>
-                <i class='fas fa-user' id='navbar-user'></i>
-            </router-link>
+            <router-link to='/account' class='navbar-link' :class='{"navbar-active-link": (page == "account")}'>My Account</router-link>
             <span class='navbar-divider'></span>
             <a href='#' @click='logout' class='navbar-link'>Log out</a>
         </div>
