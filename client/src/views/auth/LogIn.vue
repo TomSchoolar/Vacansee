@@ -45,7 +45,7 @@
 
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'
-        else if(session.profileSetup === 'true')
+        else if(!session.HasProfileSetup)
 			window.location.href = '/profile'
 		else
             window.location.href = '/vacancy'
