@@ -149,7 +149,7 @@ class getMatchesTests(TestCase):
 
         userIdList = []
 
-        userSet = Profile.objects.all(LastName__contains = 'e')
+        userSet = Profile.objects.filter(LastName__contains = 'e')
 
         for user in userSet:
             userIdList.append(user.UserId)
