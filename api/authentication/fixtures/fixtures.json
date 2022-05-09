@@ -161,16 +161,6 @@
     },
 
     {
-        "model" : "authentication.User",
-        "pk" : 8,
-        "fields" : {
-            "IsEmployer" : false,
-            "Email" : "noprofile@student.bham.ac.uk",
-            "Password" : "pbkdf2_sha256$320000$H6huUaH3c2FRZbXySspwgG$R9YiPpDQYPrtAxYcAP4X7JFw+ly1epI2bvsvFbcSW/g="
-        }
-    },
-
-    {
         "model" : "employer.Tag",
         "pk" : 1,
         "fields" : {
