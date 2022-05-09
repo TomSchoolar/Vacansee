@@ -173,11 +173,11 @@ class LoginRedirectTestClass(TestCase):
 
     def test_noRedirectEmployee(self):
         response = self.client.post('/login/', { 'email': self.employeeEmail, 'password': self.password}, follow=True)
-        self.assertEquals(response.redirect_chain, (self.employeeHomePath, '302'))
+        self.assertEquals(response.redirect_chain, (self.employeeHomePath, '200'))
 
     def test_noRedirectEmployer(self):
         response = self.client.post('/login/', { 'email': self.employerEmail, 'password': self.password}, follow=True)
-        self.assertEquals(response.redirect_chain, (self.employerHomePath, '302'))
+        self.assertEquals(response.redirect_chain, (self.employerHomePath, '200'))
 
     def test_redirectEmployee(self):
         response = self.client.post('/login/', { 'email': self.noProfileEmail, 'password': self.password}, follow=True)
