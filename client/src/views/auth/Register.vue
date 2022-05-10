@@ -65,7 +65,7 @@
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'
         else
-            window.location.href = '/vacancy'
+            window.location.href = '/profile'
 	}
 </script>
 
