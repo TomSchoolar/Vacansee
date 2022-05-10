@@ -49,7 +49,7 @@
 
 <template>
     <FormHeader title='Location'>
-        So we can find jobs near you, enter the closest town/city to your home. We're also going to need the timezone where you live.
+        Next, enter the closest town/city to your home. We're also going to need the timezone where you live.
     </FormHeader>
 
     <FormText type='text' label='location' name='Location' :value='props.Location' />
