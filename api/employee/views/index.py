@@ -170,6 +170,7 @@ def getIndex(request):
 
     try:
         # get company name
+        from json import dumps
         for vacancy in vacancies:
             employerDetails = EmployerDetails.objects.get(UserId__exact = vacancy['UserId'])
             vacancy['CompanyName'] = employerDetails.CompanyName
@@ -309,7 +310,7 @@ def getTags(request):
         return jwt
 
     try:
-        tagSet = Tag.objects.all()
+        tagSet = Tag.objects.all().order_by('TagId')
         tagSerializer = TagSerializer(tagSet, many=True)
         tags = tagSerializer.data
 

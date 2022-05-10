@@ -1,14 +1,10 @@
 <script setup>  
     import api, { apiCatchError } from '@/assets/js/api';
 
-    import { computed, ref, watch } from 'vue';    
+    import { computed, ref } from 'vue';    
 
     const props = defineProps(['vacancy', 'tags', 'favourited']);
     const emit = defineEmits(['update']);
-
-    watch(props, () => {
-        console.log(props.vacancy)
-    })
 
     const favourite = async (vID) => {
         await api({
@@ -50,32 +46,25 @@
         emit('update');
     }
 
-
+    
     let tagsLim = ref(6);
     let extraTags = computed(() => {
         let extraTags = '';
-        console.log(1)
-        console.log(vacancy.Tags)
-        console.log(props.tags)
-        if(!vacancy?.Tags || !props?.tags)
+
+        if(!props?.vacancy?.tags || !props?.tags)
             return;
 
-        if(vacancy.Tags.length > tagsLim.value) {
-            tagsLim.value = 5;
+        if(props.vacancy.tags.length > tagsLim.value) {
 
-            vacancy.Tags.slice(5,-1).forEach((tag) => {
-                extraTags += `${ props.tags[tag].title }, `;
+            props.vacancy.tags.slice(tagsLim.value,-1).forEach((tag) => {
+                extraTags += `${ props.tags[tag].text }, `;
             });
 
-            extraTags += props.tags[vacancy.Tags.length - 1].title;
+            extraTags += props.tags[props.vacancy.tags.length - 1].text;
         }   
 
         return (extraTags ? extraTags : false);
     })
-
-    const getTagsForPage = () => {
-        return vacancy.Tags;
-    }
 </script>
 
 <template>
@@ -103,11 +92,11 @@
                 <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
             </div>
         </div>
-        <span class='card-section' v-if='vacancy?.Tags?.length > 0'>Requirements:</span>
-        <div v-if='vacancy?.Tags?.length > 0'>
-            <i class='tag' v-for='tag in vacancy.Tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag].text' :title='tags[tag].title'></i>
+        <span class='card-section' v-if='vacancy?.tags?.length > 0'>Tags:</span>
+        <div v-if='vacancy?.tags?.length > 0'>
+            <i class='tag' v-for='tag in vacancy.tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag-1].icon' :title='tags[tag-1].text'></i>
             <th v-if='extraTags' class='tag tags-overflow' :title='extraTags'>
-                <div class='tags-num' ref='extra-tags'>+{{ vacancy.Tags.length - tagsLim }}</div>
+                <div class='tags-num' ref='extra-tags'>+{{ vacancy.tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
             </th>
         </div>

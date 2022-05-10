@@ -1,6 +1,6 @@
 <script setup>
     import api, { apiCatchError } from '@/assets/js/api';
-    import Footer from '@/components/partials/Footer.vue';
+    import Footer from '@/components/partials/CompactFooter.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import VacancyCard from '@/components/employee/index/VacancyCard.vue';
     import NoCardsModal from '@/components/employee/index/NoCardsModal.vue';
@@ -33,7 +33,7 @@
     const limitMultiplier = ref(1);
     const tagsFilter = ref("null");
 
-    const searchBarValue = ref("");
+    const searchBarValue = ref('');
 
     const limit = computed(() => {
         return limitMultiplier.value * cardsPerRow.value;
@@ -89,20 +89,30 @@
         if(!response?.data)
             return false;
 
-
-        const { 
+        let { 
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
             numVacancies: total = 0,
             triedTags: haveTriedTags = triedTags.value
         } = response.data;
+        
+        if(newVacancies) {
+            newVacancies = newVacancies.map((vacancy) => {
+                let obj = { ...vacancy, tags: vacancy.Tags };
+                delete obj['Tags']
+                return obj;
+            });
+        } else {
+            newVacancies = vacancies.value;
+        }
+
 
         while((page.value - 1) * limit.value >= total && page.value > 1) page.value--;
 
         numPages.value = pages;
         numVacancies.value = total;
         vacancies.value = newVacancies;
-        console.log(newVacancies[0])
+
         if(currentVacancy?.value && Object.keys(currentVacancy.value).length === 0 || newCard) {
             // if initial fetch, then update current vacancy
             currentVacancy.value = vacancies.value[0] ?? {};
@@ -136,8 +146,8 @@
         setTimeout(async () => {
             resizeFunc();
             window.addEventListener("resize", resizeFunc);
-            await getTags();
-            await getVacancies({ });
+            getTags();
+            getVacancies({ });
         }, 50);
     });
 
@@ -247,7 +257,7 @@
             <h1 class='title'>Vacancies</h1>
             <div class='search-group'>
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input name='searchbar' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' class='search' type='text' placeholder='Search..'> 
+                <input name='searchbar' v-model='searchBarValue' @change='searchBarValueUpdated(searchBarValue)' class='search' type='text' placeholder='Search..'> 
             </div>
 
             
@@ -301,6 +311,7 @@
 
             <div class='vacancy-container'>
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>There are no vacancies currently accepting applications</h3>
+                {{ vacancies.length > 0 ? vacancies[0].Tags : '' }}
                 <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :tags='options' />
                 <div v-for='i in emptyCards' :key='i' class='card-placeholder'></div>
             </div>
@@ -425,9 +436,9 @@
     .left {
         height: 100%;
         padding: 10px 50px 0 50px;
-        width: calc(70vw - 120px);  
+        width: 70%;
         border-right: 3px solid black;
-        min-height: calc(100vh - 130px);
+        min-height: calc(100vh - 210px);
         margin-bottom: 30px;
     }
 
@@ -486,7 +497,6 @@
         padding-top: 20px;
         width: 30vw;
         display: flex;
-        height: calc(100vh - 130px);
         flex-direction: column;
         align-items: center;
     }
