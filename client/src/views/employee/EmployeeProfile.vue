@@ -68,7 +68,7 @@
     
     <main class='container'>
         <div class='header'>
-            <h1 class='title'> Edit User Profile </h1>
+            <h1 class='title'>User Profile </h1>
             <hr />
         </div>
     </main>
@@ -107,10 +107,7 @@
         <template #modal-body> 
             <div class='modal-body'>
                 <p class='desc'>
-                    On this page you can edit your personal profile by completing the same form you used to register your account.           
-                </p>
-                <p class='desc'>
-                    Except this time the form is pre-populated with profile data.    
+                    On this page you can set up your profile. This will be shown to employers when you apply for vacancies.        
                 </p>
             </div>
 
