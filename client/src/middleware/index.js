@@ -1,3 +1,5 @@
+import logout from '@/assets/js/jwt.js'
+
 const middleware = {}
 
 middleware.isLoggedIn = ({ next, router }) => {
@@ -49,7 +51,12 @@ middleware.isEmployer = ({ next, router }) => {
 
     session = JSON.parse(session);
 
-    if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === false) {
+    // flag gets deleted somehow
+    if(typeof session.IsEmployer === 'undefined') {
+        logout();
+    }
+
+    if(session.IsEmployer === false) {
         router.push({ name: 'EmployeeIndex' });
     }
 
@@ -65,7 +72,12 @@ middleware.isEmployee = ({ next, router }) => {
 
     session = JSON.parse(session);
 
-    if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === true) {
+    // flag gets deleted somehow
+    if (typeof session.IsEmployer === 'undefined') {
+        logout();        
+    }
+
+    if(session.IsEmployer === true) {
         router.push({ name: 'EmployerIndex' });
     }
 
