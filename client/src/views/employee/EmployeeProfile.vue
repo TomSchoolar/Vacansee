@@ -23,7 +23,7 @@
     const currentPageNum = ref(0);
     const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
 
-
+    document.title = 'Profile | Vacansee'
 
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
@@ -102,7 +102,7 @@
 
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
-            <h3>Edit vacancy</h3>
+            <h3>Set Up Profile</h3>
         </template>
         <template #modal-body> 
             <div class='modal-body'>
@@ -128,7 +128,7 @@
         width: 100%;
         margin: 8px 0 12px 0;
         border: 0;
-        border-top: 2px solid #555;
+        border-top: 1px solid #555;
     } 
 
     .container {
