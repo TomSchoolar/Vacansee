@@ -72,5 +72,21 @@ middleware.isEmployee = ({ next, router }) => {
     return next();
 }
 
+middleware.hasProfile = ({next, router}) => {
+    let session = localStorage.getItem('session');
+
+    if(!session) {
+        router.push({ name: 'LogIn'});
+    }
+
+    session = JSON.parse(session);
+
+    if (typeof session.HasProfileSetup === 'undefined' || session.HasProfileSetup == false) {
+        router.push({ name: 'EmployeeProfile' });
+
+        return next();
+    }
+}
+
 
 module.exports = middleware
