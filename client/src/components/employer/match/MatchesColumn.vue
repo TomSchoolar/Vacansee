@@ -10,6 +10,7 @@
     const matches = ref([]);
     const numMatches = ref(0);
     const selectedProfile = ref();
+    const searchBarValue = ref("");
     const selectedVacancy = ref(0);
     const sort = ref('LastNameAsc');
     const selected = toRef(props, 'selectedVacancy');
@@ -22,14 +23,16 @@
 
     // api request function
     const getMatches = async (options) => {
-        const { sort = 'LastNameAsc', vacancyId = selected.value  } = options;
+        const { sort = 'LastNameAsc', vID = selected.value, searchValue = "" } = options;
 
         const response = await api({
             method: 'get',
             url: `/v1/e/matches/${ vacancyId }/`,
             responseType: 'json',
             params: {
-                sort
+                vID,
+                sort,
+                searchValue
             }
         }).catch(apiCatchError);
 
@@ -54,7 +57,7 @@
 
     // sort vac
     const sortMatches = async (sortParam) => {
-        const result = await getMatches({ sort: sortParam });
+        const result = await getMatches({ sort: sortParam, searchValue: searchBarValue.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -65,7 +68,7 @@
     }
 
     const updateMatches = async (newVac) => {
-        const result = await getMatches({ sort: sort.value, vID: newVac})
+        const result = await getMatches({ sort: sort.value, vID: newVac, searchValue: searchBarValue.value })
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -87,9 +90,22 @@
 
     watch(selected, (value) => {
         selectedVacancy.value = selected.value;
+
+        searchBarValue.value = "";
     });
 
     watch(sort, sortMatches);
+
+    const searchBarValueUpdated = async (value) => {
+        searchBarValue.value = value;
+
+        const result = await getMatches({ sort: sort.value, searchValue: searchBarValue.value })
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+    }
 
 </script>
 
@@ -97,7 +113,7 @@
     <section class='matches-column'>
         <div class='header'>
             <div class='header-row'>
-                <h2 class='header-title'> Matches ({{ matches.length }})</h2>
+                <h2 class='header-title'> Matches ({{ numMatches }})</h2>
                 
                 <!-- download button -->
                 <!-- <button type='button' class='button match-download-button' id='download-button' @click='download'>Download All</button> -->
@@ -106,7 +122,7 @@
             <div class='header-row'>
                 <div class='search-group'>
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input name='searchbar' type='text' placeholder='Search..' class='search' /> 
+                    <input name='searchbar' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' type='text' placeholder='Search..' class='search' /> 
                 </div>
 
                 <div class='select-group'>

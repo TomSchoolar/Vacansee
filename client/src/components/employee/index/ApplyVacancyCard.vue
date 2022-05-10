@@ -1,10 +1,14 @@
 <script setup>  
     import api, { apiCatchError } from '@/assets/js/api';
 
-    import { ref } from 'vue';    
+    import { computed, ref, watch } from 'vue';    
 
-    const { tags = [], vacancy = {}, favourited = false } = defineProps(['vacancy', 'tags', 'favourited']);
+    const props = defineProps(['vacancy', 'tags', 'favourited']);
     const emit = defineEmits(['update']);
+
+    watch(props, () => {
+        console.log(props.vacancy)
+    })
 
     const favourite = async (vID) => {
         await api({
@@ -48,16 +52,29 @@
 
 
     let tagsLim = ref(6);
-    let extraTags = ref('');
+    let extraTags = computed(() => {
+        let extraTags = '';
+        console.log(1)
+        console.log(vacancy.Tags)
+        console.log(props.tags)
+        if(!vacancy?.Tags || !props?.tags)
+            return;
 
-    if(tags.length > 6) {
-        tagsLim.value = 5;
+        if(vacancy.Tags.length > tagsLim.value) {
+            tagsLim.value = 5;
 
-        tags.slice(5,-1).forEach((tag) => {
-            extraTags.value += `${ tag.title }, `;
-        });
+            vacancy.Tags.slice(5,-1).forEach((tag) => {
+                extraTags += `${ props.tags[tag].title }, `;
+            });
 
-        extraTags.value += tags[tags.length - 1].title;
+            extraTags += props.tags[vacancy.Tags.length - 1].title;
+        }   
+
+        return (extraTags ? extraTags : false);
+    })
+
+    const getTagsForPage = () => {
+        return vacancy.Tags;
     }
 </script>
 
@@ -80,17 +97,17 @@
             </table>
         </div>
         <span v-if='vacancy?.ExperienceRequired' class='card-section'>Experience:</span>
-        <div class='experience'>
-            <div class='exp-container' v-for='(xp, index) in vacancy?.ExperienceRequired' :key='`xp-${ index }`'>
+        <div class='experience' v-if='vacancy?.ExperienceRequired'>
+            <div class='exp-container' v-for='(xp, index) in vacancy.ExperienceRequired' :key='`xp-${ index }`'>
                 <span class='exp-position'>> {{ xp.split('&&')[0] }}</span>
                 <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
             </div>
         </div>
-        <span class='card-section' v-if='vacancy.Tags'>Requirements:</span>
-        <div v-if='vacancy.Tags'>
-            <i class='tag' v-for='tag in vacancy.Tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
-            <th v-if='tags.length > 6' class='tag tags-overflow' :title='extraTags'>
-                <div class='tags-num' ref='extra-tags'>+{{ tags.length - tagsLim }}</div>
+        <span class='card-section' v-if='vacancy?.Tags?.length > 0'>Requirements:</span>
+        <div v-if='vacancy?.Tags?.length > 0'>
+            <i class='tag' v-for='tag in vacancy.Tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag].text' :title='tags[tag].title'></i>
+            <th v-if='extraTags' class='tag tags-overflow' :title='extraTags'>
+                <div class='tags-num' ref='extra-tags'>+{{ vacancy.Tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
             </th>
         </div>
