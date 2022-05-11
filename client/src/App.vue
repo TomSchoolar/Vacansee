@@ -1,5 +1,6 @@
 <script setup>
     document.title = 'Vacansee';
+    document.documentElement.setAttribute('lang', 'en');
 </script>
 
 <template>
