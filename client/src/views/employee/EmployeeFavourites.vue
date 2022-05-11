@@ -2,12 +2,15 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import NoCardsModal from '@/components/employee/index/NoCardsModal.vue';
+    import TagSearchModal from '@/components/employee/index/TagSearchModal.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
     import ApplyVacancyCard from '@/components/employee/index/ApplyVacancyCard.vue';
 
-    
     import { computed, onMounted, ref, watch } from 'vue';
 
+    const showModalNoCards = ref(false);
+    const showModal = ref(false);
 
     // vars init
     const tagsLim = 6;
@@ -20,6 +23,8 @@
     // tutorial values
     const isNewUser = ref(window.localStorage.getItem('newUserFavourites') == null);
 
+    const searchBarValue = ref("");
+
     // dropdown values
     const sort = ref('dateDesc');
     const limitMultiplier = ref(1);
@@ -28,43 +33,42 @@
         return limitMultiplier.value * cardsPerRow.value;
     });
 
+    const tagsFilter = ref("null");
+    const tagsFilterRaw = ref([]);
+    const haveTriedTags = ref();
+
     // pagination
     const page = ref(1);
     const numPages = ref(1);
     const numVacancies = ref(1);
 
-    const tags = [
-        {
-            id: 0,
-            icon: 'fa-solid fa-book'
-        },
-        {
-            id: 1,
-            icon: 'fa-solid fa-code'
-        },
-        {
-            id: 2,
-            icon: 'fa-brands fa-python'
-        },
-        {
-            id: 3,
-            icon: 'fa-solid fa-school'
-        },
-        {
-            id: 4,
-            icon: 'fa-solid fa-briefcase'
-        },
-        {
-            id: 5,
-            icon: 'fa-solid fa-database'
-        },
-    ]
+    const getTags = async () => {
+        const response = await api({
+            method: 'get',
+            url: '/v1/vacancies/tags/',
+            responseType: 'json',
+        }).catch(apiCatchError);
+
+        if(!response || !response.data)
+            return false;
+
+        const { data } = response;
+
+        if(!data)
+            return false;
+
+        tags.value = response.data;
+
+        return true;
+    }
+
+    const tags = ref([]);
 
     document.title = 'Favourites | Vacansee';
 
         // api request function
     const getFavourites = async (options) => {
-        const { count = limit.value, pageNum = 1, sort = 'dateDesc' } = options;
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc', tagsFilter = 'null', searchValue = "" } = options;
 
 
         const response = await api({
@@ -74,7 +78,9 @@
             params: {
                 sort,
                 count,
-                pageNum
+                pageNum,
+                tagsFilter,
+                searchValue
             }
         }).catch(apiCatchError);
 
@@ -90,6 +96,7 @@
             vacancies: newVacancies = vacancies.value, 
             numPages: pages = 1, 
             numVacancies: total = 0,
+            triedTags: haveTriedTags = triedTags.value
         } = data;
 
 
@@ -104,6 +111,11 @@
         else
             emptyCards.value = 0;
 
+        if(haveTriedTags){
+            showModalNoCards.value = true;
+            tagSearch([]);
+        }
+
         return true;
     }
 
@@ -116,6 +128,8 @@
         resizeFunc();
         window.addEventListener("resize", resizeFunc);     
 
+        getTags();
+
         const result = await getFavourites({ });
 
         if(!result) {
@@ -126,7 +140,7 @@
 
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
-        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value });
+        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
         
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -138,7 +152,7 @@
 
     // pagination: change page
     const changePage = async (newPage) => {
-        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage });
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -155,13 +169,51 @@
         if(page.value < 0)
             page.value = 0;
 
-        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.value });
+        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
             return;
         }
     });
+
+
+    const tagSearch = async (value) => {
+
+        tagsFilterRaw.value = value;
+
+        let i = 0;
+
+        tagsFilter.value = "";
+
+        for(i = 0; i < value.length; i++){
+            tagsFilter.value = tagsFilter.value + (value[i].toString());
+            if(i != value.length-1){
+                tagsFilter.value = tagsFilter.value + ",";
+            }
+        }
+
+        if(value.length == 0) {
+            tagsFilter.value = "null";
+            tagsFilterRaw.value = [];
+        }
+
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+
+        if(!result) {
+            return;
+        }
+    }
+
+    const searchBarValueUpdated = async (value) => {
+        searchBarValue.value = value;
+
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+
+        if(!result) {
+            return;
+        }
+    }
 
     watch(sort, sortVacancies);
 
@@ -185,7 +237,7 @@
             <h1 class='title'>Favourites</h1>
             <div class='search-group'>
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input name='searchbar' class='search' type='text' placeholder='Search..'/> 
+                <input name='searchbar' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' class='search' type='text' placeholder='Search..'/> 
             </div>
 
             <div class="select-row">
@@ -209,11 +261,24 @@
             </div>
 
             <div class='filter-tags-row'>
-                    <th class='filter-tags-header'> Selected Tags </th>
-                    <div class='filter-tag'>
-                        <i class='fa-solid fa-book tag'></i> 
-                    </div>
+                <button type='button' class='button arrow-btn' @click='showModal = true'>
+                    <th>Select Tags</th>
+                </button>
+                <button type='button' class='button arrow-btn' @click='tagSearch("")'>
+                    <th>Remove Tags</th>
+                </button>
+
+                <div class='selected-tags'>
+                    <h4 class='tags-title'>Selected Tags:</h4>
+                    <span class='no-tags' v-if='tagsFilter == "null"'>None</span>
+                    <i class='tag' v-for='tag in tagsFilterRaw' v-bind:key='tag.id' :class='tags[parseInt(tag-1)]["icon"]' :title='tag.text'></i>
+                </div>
             </div>
+
+            <NoCardsModal v-show='showModalNoCards' @close-modal='showModalNoCards = false' />
+
+            <TagSearchModal v-show='showModal' @search='tagSearch' @close-modal='showModal = false' />
+
             <div class="vacancy-container">
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>You haven't got any favourites atm...</h3>
                 <ApplyVacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' :favourited='true' :tags='tags' @update='updatePage' />
@@ -286,28 +351,19 @@
 
     .button {
         border: 2px solid;
-        border-radius: 15px;
+        border-radius: 7px;
         color: black;
         cursor: pointer;
         display: inline-block;
-        font-size: 35px;
-        margin: 2px;
-        padding-left: 30px;
-        padding-right: 30px;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        font-size: 13px;
+        margin: 2px 4px;
+        padding: 7px 15px;
         text-align: center;
         text-decoration: none;
-        transition-duration: 0.4s;
     }
 
-    .button:active {
-        background-color:#D3D3D3;
-        font-size: 50%;
-    }
-
-    .button:hover {
-        background-color:#D3D3D3;
+    .button:active, .button:focus, .button:hover {
+        background-color:#eee;
     }
 
     .card-placeholder {
@@ -318,10 +374,6 @@
     .container {
         padding: 0 40px;
         width: calc(100vw - 80px);
-    }
-
-    .filter-tag {
-        font-size: 32px;
     }
 
     .filter-tags-header {
@@ -388,6 +440,11 @@
     }
 
 
+    .no-tags {
+        position: relative;
+        top: 1.5px;
+    }
+
     .search {
         border-radius: 8px;
         float: left;
@@ -416,10 +473,27 @@
         padding-right: 2px;
     }
 
+    .selected-tags {
+        display: flex;
+        align-items: center;
+        margin-left: 12px;
+        height: 45px;
+    }
+
+    .selected-tags .tag {
+        font-size: 22px;
+        margin: 0 7px;
+    }
+
     .tags-header {
         border-right: 2px solid; 
         width: 10%; 
         padding-right: 10px; 
+        font-size: 18px;
+    }
+
+    .tags-title {
+        margin: 0 10px 0 0;
         font-size: 18px;
     }
 

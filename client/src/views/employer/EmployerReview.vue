@@ -25,11 +25,16 @@
     const isNewUser = ref(window.localStorage.getItem('newUserReview') == null);
     
 
+    const searchValue = ref("");
+
     const getApplicants = async () => {
         const response = await api({
             url: `/v1/e/vacancies/${ vacancyId }/review/`,
             method: 'get',
-            responseType: 'json'
+            responseType: 'json',
+            params: {
+                'searchValue': searchValue.value
+            }
         }).catch(apiCatchError);
 
         if(!response?.data)
@@ -83,6 +88,12 @@
         window.localStorage.setItem('newUserReview', false);
         isNewUser.value = false;
     }
+
+    const searchBarValueUpdated = (value) => {
+        searchValue.value = value;
+
+        getApplicants();
+    }
 </script>
 
 
@@ -101,7 +112,7 @@
                     
                     <div class='search-group'>
                         <i class="fas fa-search search-icon"></i>
-                        <input class='search' placeholder='search' type='text'> 
+                        <input class='search' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' placeholder='search' type='text'> 
                     </div>
                 </div>
             </div>

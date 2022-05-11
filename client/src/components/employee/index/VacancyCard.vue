@@ -1,20 +1,28 @@
 <script setup>  
-    import { ref } from 'vue';
+    import { computed, ref, watch } from 'vue';
 
     const props = defineProps(['vacancy', 'tags']);
 
+
+
     let tagsLim = ref(6);
-    let extraTags = ref('');
-    
-    if(props.tags.length > 6) {
-        tagsLim.value = 5;
+    let extraTags = computed(() => {
+        let extraTags = '';
 
-        props.tags.slice(5,-1).forEach((tag) => {
-            extraTags.value += `${ tag.title }, `;
-        });
+        if(!props?.vacancy?.tags || !props?.tags)
+            return;
 
-        extraTags.value += tags[props.tags.length - 1].title;
-    }
+        if(props.vacancy.tags.length > tagsLim.value) {
+
+            props.vacancy.tags.slice(tagsLim.value,-1).forEach((tag) => {
+                extraTags += `${ props.tags[tag].text }, `;
+            });
+
+            extraTags += props.tags[props.vacancy.tags.length - 1].text;
+        }   
+
+        return (extraTags ? extraTags : false);
+    })
 </script>
 
 <template>
@@ -44,13 +52,13 @@
                 <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
             </div>
         </div>
-        <span v-if='vacancy?.Tags' class='card-section'>Requirements:</span>
-        <div class='tags-row' v-if='vacancy?.Tags'>
-            <i class='tag' v-for='tag in vacancy?.Tags.slice(0,tagsLim)' :key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
-            <div v-if='vacancy?.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
-                <div class='tags-num' ref='extra-tags'>+{{ vacancy?.Tags.length - tagsLim }}</div>
+        <span class='card-section' v-if='vacancy?.tags?.length > 0'>Tags:</span>
+        <div v-if='vacancy?.tags?.length > 0'>
+            <i class='tag' v-for='tag in vacancy.tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag-1].icon' :title='tags[tag-1].text'></i>
+            <th v-if='extraTags' class='tag tags-overflow' :title='extraTags'>
+                <div class='tags-num' ref='extra-tags'>+{{ vacancy.tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
-            </div>
+            </th>
         </div>
     </div>
 </template>
