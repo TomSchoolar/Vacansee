@@ -282,7 +282,7 @@
         "pk" : 14,
         "fields" : {
             "TagName" : "Radio",
-            "TagStyle" : "fa-solid fa-radio"
+            "TagStyle" : "fa-solid fa-tower-broadcast"
         }
     },
 
