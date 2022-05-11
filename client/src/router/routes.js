@@ -97,7 +97,7 @@ const employeeRoutes = [
         name: 'EmployeeProfileEdit',
         component: EmployeeProfileEdit,
         meta: {
-            middleware: [isLoggedIn, isEmployee]
+            middleware: [isLoggedIn, isEmployee, hasProfile]
         }
     },
     {

@@ -120,4 +120,21 @@ middleware.hasProfile = ({ next, router }) => {
 }
 
 
+middleware.hasProfile = async ({ next, router }) => {
+    let session = localStorage.getItem('session');
+
+    if(!session) {
+        return logout();
+    }
+
+    session = JSON.parse(session);
+
+    if (typeof session.HasProfileSetup === 'undefined' || session.HasProfileSetup == false) {
+        router.push({ name: 'EmployeeProfile' });
+    }
+
+    return next();
+}
+
+
 module.exports = middleware
