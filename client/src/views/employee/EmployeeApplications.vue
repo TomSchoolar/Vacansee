@@ -22,7 +22,7 @@
 
     const showModal = ref(false);
     const currentModalApplication = ref();
-    const isNewUser = ref(window.localStorage.getItem('newUserApplications') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserApplications') === 'true');
 
 
     const page = ref(1);

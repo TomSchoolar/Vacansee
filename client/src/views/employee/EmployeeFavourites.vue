@@ -21,7 +21,7 @@
     const cardsPerRow = ref(1);
     
     // tutorial values
-    const isNewUser = ref(window.localStorage.getItem('newUserFavourites') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserFavourites') === 'true');
 
     const searchBarValue = ref("");
 

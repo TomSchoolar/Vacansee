@@ -21,7 +21,7 @@
     const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') === 'true');
 
 
 
@@ -102,7 +102,7 @@
 
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
-            <h3>Edit vacancy</h3>
+            <h3>Edit Profile</h3>
         </template>
         <template #modal-body> 
             <div class='modal-body'>

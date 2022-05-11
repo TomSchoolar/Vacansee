@@ -22,7 +22,7 @@
     const showModalNoCards = ref(false);
 
     //tutorial values
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeIndex') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployeeIndex') === 'true');
 
     // dropdown values
     const emptyCards = ref(0);
