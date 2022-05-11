@@ -18,8 +18,7 @@ const refreshAuthLogic = async (failedRequest) => {
     }).catch(async (error) => {
         try {
             // error while refreshing access token
-            let data = error.response.data;
-            let { message = error?.message, status = 500 } = data;
+            let { message = error?.message, status = 500 } = error?.response?.data ?? {};
             const refreshToken = localStorage.getItem('refreshToken');
 
             if(status == 401 || status == 403) {
@@ -31,7 +30,7 @@ const refreshAuthLogic = async (failedRequest) => {
                 if(refreshToken != null) {
                     // refresh token available, can make logout request
                     await api({
-                        url: 'v1/logout/',
+                        url: '/v1/logout/',
                         method: 'post',
                         skipAuthRefresh: true,
                     }).catch((err) => { console.error(err) })
@@ -67,7 +66,7 @@ createAuthRefreshInterceptor(api, refreshAuthLogic);
 // custom interceptor to make sure that queued requests use the new access token
 api.interceptors.request.use((request) => {
     // array contains urls of all routes that use refresh token instead of access token
-    if(['v1/logout/', 'v1/refreshtoken/'].includes(request.url)) {
+    if(['/v1/logout/', '/v1/refreshtoken/'].includes(request.url)) {
         request.headers['Authorization'] = `Bearer: ${ localStorage.getItem('refreshToken') }`;
     } else {
         request.headers['Authorization'] = `Bearer: ${ localStorage.getItem('accessToken') }`;

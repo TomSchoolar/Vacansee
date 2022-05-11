@@ -40,7 +40,7 @@
     </FormHeader>
 
     <FormTextArea label='profile description' name='TopicSentence' rows='4' :value='props.Description' />
-    <FormExpandingText label='notable skills' name='NotableSkills' :max='3' :value='props.NotableSkills' />
+    <FormExpandingText label='notable skills' name='NotableSkills' :max='3' :value='props.NotableSkills' :expectValue='true' />
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 

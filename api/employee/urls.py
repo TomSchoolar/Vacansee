@@ -6,6 +6,7 @@ urlpatterns = [
     path('vacancies/<int:vacancyId>/unfavourite/', favourites.deleteFavourite),
     path('vacancies/<int:vacancyId>/apply/', applications.postApplication),
     path('vacancies/<int:vacancyId>/reject/', index.postReject),
+    path('vacancies/tags/', index.getTags),
     path('applications/', applications.getApplications),
     path('applications/stats/', applications.getApplicationStats),
     path('applications/<int:applicationId>/', applications.getApplicationDetails),
@@ -14,5 +15,6 @@ urlpatterns = [
     path('accounts/', account.putAccount),
     path('accounts/', account.deleteAccount),
     path('accounts/profiles/', account.getProfile),
-    path('profiles/', profile.postProfile)
+    path('profiles/', profile.postProfile),
+    path('profiles/edit/', profile.postProfileEdit)
 ]

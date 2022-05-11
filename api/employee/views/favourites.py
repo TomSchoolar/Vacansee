@@ -24,8 +24,22 @@ def getFavourites(request):
         sort = params['sort']
         count = int(params['count'])
         pageNum = int(params['pageNum'])
+        tags = params['tagsFilter']
+        searchValue = params['searchValue']
     except:
         return Response(data={'status': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    tagListInt = []
+
+    if len(tags) < 1:
+        tags = "null"
+
+    if tags != "null":
+        tagList = tags.split(',')
+
+        for tag in tagList:
+            tagListInt.append(int(tag))
 
     # parse sort parameter into django sort parameter
     if sort == 'dateDesc':
@@ -38,15 +52,37 @@ def getFavourites(request):
         # 'titleDesc'
         sortParam = '-VacancyName'
 
+
+    usingTags = False
+    triedTags = False
+
     try:
-        favouriteSet = Favourite.objects.filter(
+        if tags != "null":
+            favouriteSet = Favourite.objects.filter(
+                UserId__exact = jwt['id'],
+                VacancyId__Tags__contains = tagListInt,
+                VacancyId__VacancyName__contains = searchValue
+            )
+
+            VacancyIds = []
+
+            for fav in favouriteSet:
+                VacancyIds.append(int(fav.VacancyId.VacancyId))
+
+            if len(VacancyIds) > 0:
+                usingTags = True
+            else:
+                triedTags = True
+
+        if tags == "null" or usingTags == False:
+            favouriteSet = Favourite.objects.filter(
                 UserId__exact = jwt['id']
-        )
+            )
 
-        VacancyIds = []
+            VacancyIds = []
 
-        for fav in favouriteSet:
-            VacancyIds.append(int(fav.VacancyId.VacancyId))
+            for fav in favouriteSet:
+                VacancyIds.append(int(fav.VacancyId.VacancyId))
 
         # get number of pages
         numVacancies = len(VacancyIds)
@@ -65,9 +101,17 @@ def getFavourites(request):
 
     try:
         # get vacancies
-        vacanciesSet = Vacancy.objects.filter(
-            VacancyId__in = VacancyIds
-        ).order_by(sortParam)[skip:limit]
+        if usingTags == False:
+            # get vacancies
+            vacanciesSet = Vacancy.objects.filter(
+                VacancyId__in = VacancyIds,
+                VacancyName__contains = searchValue
+            ).order_by(sortParam)[skip:limit]
+        else:
+            vacanciesSet = Vacancy.objects.filter(
+                VacancyId__in = VacancyIds,
+                Tags__contains = tagListInt
+            ).order_by(sortParam)[skip:limit]
 
         vacancySerializer = VacancySerializer(vacanciesSet, many=True)
         vacancies = vacancySerializer.data
@@ -95,7 +139,8 @@ def getFavourites(request):
     returnData = {
         'numPages': pages,
         'vacancies': vacancies,
-        'numVacancies': numVacancies
+        'numVacancies': numVacancies,
+        'triedTags': triedTags
     }
 
     return Response(returnData, status=status.HTTP_200_OK)
@@ -144,24 +189,7 @@ def postFavourite(request, vacancyId):
         print(f'uh oh: { err }')
         return Response(data={ 'status': 500, 'message': 'Error while saving favourite' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    
-    try:
-        newVacancySet = Vacancy.objects.filter(IsOpen__exact = True)
-        newVacancy = False
-
-        for vac in newVacancySet:
-            if vac.VacancyId != vacancy.VacancyId:
-                newVacancy = VacancySerializer(vac).data
-                break
-
-        employerDetails = EmployerDetails.objects.get(UserId__exact = newVacancy['UserId'])
-        newVacancy['CompanyName'] = employerDetails.CompanyName
-        
-    except Exception as err:
-        print(f'uh oh: { err }')
-        return Response(data={ 'status': 500, 'message': 'Error getting next vacancy' }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    return Response(newVacancy, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_201_CREATED)
 
 
 

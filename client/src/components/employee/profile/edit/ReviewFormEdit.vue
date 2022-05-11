@@ -2,8 +2,8 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import ProfileCard from '@/components/employer/match/ProfileCard.vue';
     import ContactCard from '@/components/employee/profile/ContactCard.vue';
-    import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
+    import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
 
     import { ref, computed } from 'vue';
 
@@ -68,7 +68,7 @@
         data.Experience = JSON.stringify(data.Experience);
 
         const response = await api({
-            url: '/v1/profiles/',
+            url: '/v1/profiles/edit/',
             method: 'post',
             data,
             contentType: 'json'
@@ -103,9 +103,9 @@
 
 <style scoped>
     *:deep(.card) {
-        width: 42.5%;
-    }    
-    
+        width: 42.5% !important;
+    }
+
     .review-container {
         width: 43vw;
         min-width: 700px;

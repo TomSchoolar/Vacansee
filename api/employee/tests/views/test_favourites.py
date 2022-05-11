@@ -13,8 +13,9 @@ class getFavouritesTests(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
 
+
     def test_validRequestSortDateDesc(self):
-        response = self.client.get('/v1/favourites/', { 'sort':'dateDesc', 'count':5, 'pageNum':1 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get('/v1/favourites/', { 'sort': 'dateDesc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         favouriteSet = Favourite.objects.filter(UserId__exact = self.userId)
         vacancyIds = []
@@ -32,7 +33,8 @@ class getFavouritesTests(TestCase):
         expectedData = {
             'numPages': ceil(numVacancies / 5),
             'vacancies': vacancies,
-            'numVacancies': numVacancies
+            'numVacancies': numVacancies,
+            'triedTags': False
         }
 
         self.assertEqual(response.status_code, 200)
@@ -41,7 +43,7 @@ class getFavouritesTests(TestCase):
 
 
     def test_validRequestSortDateAsc(self):
-        response = self.client.get('/v1/favourites/', { 'sort':'dateAsc', 'count':5, 'pageNum':1 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get('/v1/favourites/', { 'sort': 'dateAsc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         
         favouriteSet = Favourite.objects.filter(UserId__exact = self.userId)
         vacancyIds = []
@@ -59,7 +61,8 @@ class getFavouritesTests(TestCase):
         expectedData = {
             'numPages': ceil(numVacancies / 5),
             'vacancies': vacancies,
-            'numVacancies': numVacancies
+            'numVacancies': numVacancies,
+            'triedTags': False
         }
 
         self.assertEqual(response.status_code, 200)
@@ -68,7 +71,7 @@ class getFavouritesTests(TestCase):
 
 
     def test_validRequestSortTitleAsc(self):
-        response = self.client.get('/v1/favourites/', { 'sort':'titleAsc', 'count':5, 'pageNum':1 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get('/v1/favourites/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
         
         favouriteSet = Favourite.objects.filter(UserId__exact = self.userId)
         vacancyIds = []
@@ -86,7 +89,8 @@ class getFavouritesTests(TestCase):
         expectedData = {
             'numPages': ceil(numVacancies / 5),
             'vacancies': vacancies,
-            'numVacancies': numVacancies
+            'numVacancies': numVacancies,
+            'triedTags': False
         }
 
         self.assertEqual(response.status_code, 200)
@@ -95,7 +99,7 @@ class getFavouritesTests(TestCase):
 
 
     def test_incorrectlyLargePageNumSortTitleDesc(self):
-        response = self.client.get('/v1/favourites/', { 'sort':'titleDesc', 'count':5, 'pageNum':3 }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        response = self.client.get('/v1/favourites/', { 'sort': 'titleDesc', 'count': 5, 'pageNum': 3, 'tagsFilter': 'null', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         favouriteSet = Favourite.objects.filter(UserId__exact = self.userId)
         vacancyIds = []
@@ -113,11 +117,47 @@ class getFavouritesTests(TestCase):
         expectedData = {
             'numPages': ceil(numVacancies / 5),
             'vacancies': vacancies,
-            'numVacancies': numVacancies
+            'numVacancies': numVacancies,
+            'triedTags': False
         }
 
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(expectedData, response.data)
+
+
+
+    def test_validRequestTagSearch(self):
+        response = self.client.get('/v1/favourites/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'tagsFilter': '3', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+        
+        favouriteSet = Favourite.objects.filter(UserId__exact = self.userId)
+        vacancyIds = []
+        for fav in favouriteSet:
+            vacancyIds.append(int(fav.VacancyId.VacancyId))
+
+        vacanciesSet = Vacancy.objects.filter(VacancyId__in = vacancyIds, Tags__contains = [3]).order_by('VacancyName')[0:5]
+        numVacancies = Vacancy.objects.filter(VacancyId__in = vacancyIds, Tags__contains = [3]).count()
+        vacancies = VacancySerializer(vacanciesSet, many=True).data
+
+        for vacancy in vacancies:
+            employerDetails = EmployerDetails.objects.get(UserId__exact = vacancy['UserId'])
+            vacancy['CompanyName'] = employerDetails.CompanyName
+
+        expectedData = {
+            'numPages': ceil(numVacancies / 5),
+            'vacancies': vacancies,
+            'numVacancies': numVacancies,
+            'triedTags': False
+        }
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(expectedData, response.data)
+
+
+
+    def test_validRequestSearchBar(self):
+        response = self.client.get('/v1/favourites/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': 't' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
+
+        self.assertEqual(response.status_code, 200)
 
 
 
@@ -131,7 +171,7 @@ class getFavouritesTests(TestCase):
     def test_expiredJWT(self):
         jwt = createAccessToken(self.userId, 'now')
 
-        response = self.client.get('/v1/favourites/', { 'sort':'titleAsc', 'count':5, 'pageNum':1 }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.get('/v1/favourites/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Expired auth token')
@@ -141,7 +181,7 @@ class getFavouritesTests(TestCase):
     def test_invalidJWT(self):
         jwt = self.jwt[:-1]
 
-        response = self.client.get('/v1/favourites/', { 'sort':'titleAsc', 'count':5, 'pageNum':1 }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
+        response = self.client.get('/v1/favourites/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { jwt }'})
 
         self.assertEqual(response.data['status'], 401)
         self.assertEqual(response.data['message'], 'Invalid auth token')

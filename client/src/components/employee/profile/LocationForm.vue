@@ -3,8 +3,13 @@
     import validateForm from '@/assets/js/formValidator';
     import FormText from '@/components/employer/newVacancy/formComponents/FormText.vue';
     import FormHeader from '@/components/employer/newVacancy/formComponents/FormHeader.vue';
-    import FormButtons from '@/components/employer/newVacancy/formComponents/FormButtons.vue';      const emit = defineEmits(['next', 'back']);
+    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     import FormSelect from '@/components/employer/newVacancy/formComponents/FormSelect.vue';
+
+    const props = defineProps(['Location', 'TimeZone']);
+    const emit = defineEmits(['next', 'back']);
+
+    const tz = 0;
 
     const dropdownOptions = [ ];
 
@@ -47,8 +52,8 @@
         So we can find jobs near you, enter the closest town/city to your home. We're also going to need the timezone where you live.
     </FormHeader>
 
-    <FormText type='text' label='location' name='Location' />
-    <FormSelect label='timezone' name='TimeZone' placeholder='select a timezone' :options='dropdownOptions' />
+    <FormText type='text' label='location' name='Location' :value='props.Location' />
+    <FormSelect label='timezone' name='TimeZone' placeholder='select a timezone' :options='dropdownOptions'  :value='tz' />
 
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 </template>

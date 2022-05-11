@@ -16,18 +16,21 @@
     const vacancies = ref([]);
     const sort = ref('matchesDesc');
 
+    const searchBarValue = ref("");
+
     const numVacancies = ref(0);
 
     // api request function
     const getVacancies = async (options) => {
-        const { sort = 'matchesDesc' } = options;
+        const { sort = 'matchesDesc', searchValue = "" } = options;
 
         const response = await api({
             method: 'get',
             url: '/v1/e/matches/',
             responseType: 'json',
             params: {
-                sort
+                sort,
+                searchValue
             }
         }).catch(apiCatchError);
 
@@ -61,7 +64,7 @@
 
     // sort vac
     const sortVacancies = async (sortParam) => {
-        const result = await getVacancies({ sort: sortParam });
+        const result = await getVacancies({ sort: sortParam, searchValue: searchBarValue.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -76,6 +79,17 @@
     /*const selectVacancy = (vacancy) => {
         $emit('select-vacancy', vacancy);
     }*/
+
+    const searchBarValueUpdated = async (value) => {
+        searchBarValue.value = value;
+
+        const result = await getVacancies({ sort: sort.value, searchValue: searchBarValue.value });
+
+        if(!result) {
+            alert('uh oh! something went wrong :(');
+            return;
+        }
+    }
 
 
 </script>
@@ -93,7 +107,7 @@
             <div class='header-row'>
                 <div class='search-group'>
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input name='searchbar' type='text' placeholder='Search..' class='search' /> 
+                    <input name='searchbar' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' type='text' placeholder='Search..' class='search' /> 
                 </div>
                 
                 <div class='select-group'>
@@ -213,11 +227,12 @@
         font-style: italic;
     }
 
-
     .vacancy-title {
         text-overflow: ellipsis !important; 
         max-width: calc(100% - 90px);
         overflow: hidden;
         white-space: nowrap;
+        display: flex;
+        gap: 4px;
     }
 </style>

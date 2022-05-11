@@ -21,6 +21,7 @@ def getMatchVacancies(request):
 
     try:
         sort = params['sort']
+        searchValue = params['searchValue']
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -38,10 +39,12 @@ def getMatchVacancies(request):
 
     numVacancies = Vacancy.objects.filter(
         UserId__exact = jwt['id'],
+        VacancyName__contains = searchValue
     ).count()
 
     vacancies = Vacancy.objects.filter(
-        UserId__exact = jwt['id']
+        UserId__exact = jwt['id'],
+        VacancyName__contains = searchValue
     ).annotate(
         MatchesCount = Count('application', filter = Q(
             application__ApplicationStatus__exact='MATCHED',
@@ -70,12 +73,13 @@ def getMatches(request, vacancyId):
 
     try:
         sort = params['sort']
+        searchValue = params['searchValue']
     except:
         return Response(data={'code': 400, 'message': 'incomplete request data'}, status=status.HTTP_400_BAD_REQUEST)
 
     # add sorting
 
-    matches = reviewHelper.getApplications(vacancyId, sort)
+    matches = reviewHelper.getApplications(vacancyId, sort, searchValue)
 
     numMatches = Application.objects.filter(
         VacancyId__exact = vacancyId,
@@ -84,7 +88,7 @@ def getMatches(request, vacancyId):
 
     returnData = {
         'matches': matches['matches'],
-        'numMatches': numMatches
+        'numMatches': matches['totalCount']
     }
 
     return Response(returnData)

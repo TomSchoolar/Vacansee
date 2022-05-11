@@ -48,18 +48,18 @@
     <main class='main'>
         <section class='container' v-if='!isSubmitted'>
 			<p class='logo'>Vacansee</p>
-            <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to a reset form</p>
+            <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to reset your password.</p>
 			<form @submit.prevent='postForgot'>
 			    <input v-model='email' type='text' name='email' placeholder='Email' id='email' />
 			    <button class='submit'>Submit</button>
 			</form>
-            <router-link to='/login' class='return-link'>Return to log in page</router-link>
+            <router-link to='/login' class='return-link'>Remembered your password? Login here</router-link>
 		</section>
         <section class='container' v-if='isSubmitted'>
         	<p class='logo'>Vacansee</p>
             <p class='info'>If you have forgotten your password, please enter your account's associated email address and we will send you a link to a reset form</p>
 			<div class='submitted-info'><p>You have been sent an email if an account with the provided email was found. Please check your email inbox.</p></div>
-            <router-link to='/login' class='return-link'>Return to log in page</router-link>
+            <router-link to='/login' class='return-link'>Remembered your password? Login here</router-link>
         </section>
     </main>
 </template>

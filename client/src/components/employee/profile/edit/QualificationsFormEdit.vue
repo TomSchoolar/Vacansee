@@ -37,7 +37,7 @@ import FormButtons from '@/components/employee/profile/formComponents/FormButton
         Enter up to three sets of qualifications below. Include the number and type of the qualifaction.
     </FormHeader>
 
-    <FormExpandingText label='qualifications' name='Qualifications' :max='3' :value='props.Qualifications' />
+    <FormExpandingText label='qualifications' name='Qualifications' :max='3' :value='props.Qualifications' :expectValue='true' />
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 </template>
 
