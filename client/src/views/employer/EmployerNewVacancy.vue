@@ -21,7 +21,7 @@
     const formData = ref([]);
     //const notifs = ref(2);
     const currentPageNum = ref(0);
-    const isNewUser = ref(window.localStorage.getItem('newUserCreateVacancy') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserCreateVacancy') === 'true');
 
 
     // get company name

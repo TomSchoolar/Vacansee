@@ -34,7 +34,7 @@
     const selectedVacancy = ref(0);
 
     //tutorial values
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployerIndex') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployerIndex') === 'true');
 
     // dropdown values
     const limit = ref(5);
