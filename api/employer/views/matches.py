@@ -37,15 +37,14 @@ def getMatchVacancies(request):
     else:
         sortParam = '-VacancyName'
 
-    numVacancies = Vacancy.objects.filter(
+    dbSet = Vacancy.objects.filter(
         UserId__exact = jwt['id'],
         VacancyName__contains = searchValue
-    ).count()
+    )
 
-    vacancies = Vacancy.objects.filter(
-        UserId__exact = jwt['id'],
-        VacancyName__contains = searchValue
-    ).annotate(
+    numVacancies = dbSet.count()
+
+    vacancies = dbSet.annotate(
         MatchesCount = Count('application', filter = Q(
             application__ApplicationStatus__exact='MATCHED',
             application__VacancyId__UserId__exact = jwt['id']

@@ -13,10 +13,6 @@ class getFavouritesTests(TestCase):
     fixtures = ['authentication/fixtures/testseed.json']
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 7346962 (Update data set and fix tests)
     def test_validRequestSortDateDesc(self):
         response = self.client.get('/v1/favourites/', { 'sort': 'dateDesc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': '' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
@@ -136,7 +132,7 @@ class getFavouritesTests(TestCase):
         vacancyIds = []
         for fav in favouriteSet:
             vacancyIds.append(int(fav.VacancyId.VacancyId))
-
+        
         vacanciesSet = Vacancy.objects.filter(VacancyId__in = vacancyIds, Tags__contains = [3]).order_by('VacancyName')[0:5]
         numVacancies = Vacancy.objects.filter(VacancyId__in = vacancyIds, Tags__contains = [3]).count()
         vacancies = VacancySerializer(vacanciesSet, many=True).data
@@ -157,7 +153,6 @@ class getFavouritesTests(TestCase):
 
 
 
-<<<<<<< HEAD
     def test_validRequestSearchBar(self):
         response = self.client.get('/v1/favourites/', { 'sort': 'titleAsc', 'count': 5, 'pageNum': 1, 'tagsFilter': 'null', 'searchValue': 't' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
@@ -165,8 +160,6 @@ class getFavouritesTests(TestCase):
 
 
 
-=======
->>>>>>> 7346962 (Update data set and fix tests)
     def test_missingParameters(self):
         response = self.client.get('/v1/favourites/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
