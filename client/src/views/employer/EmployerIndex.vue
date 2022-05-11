@@ -335,7 +335,13 @@
                     The list of vacancies are shown under the stat bar.
                 </p>
                 <p class='desc'>
-                    You can also close listed vacancies and delete closed ones by clicking the buttons on the vacancy record. Vacancies can be sorted using the filters on the top right.
+                    You can review, edit or close listed vacancies by clicking the buttons on the vacancy record. 
+                </p>>
+                <p class='desc'>
+                    Closed vacancies can also be deleted by clicking delete which is shown only for closed vacancies.
+                </p>>
+                <p class='desc'>    
+                    Vacancies can be sorted using the filters on the top right.
                 </p>
             </div> 
 
