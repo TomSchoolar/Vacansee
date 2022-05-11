@@ -9,6 +9,11 @@ class getFavouritesTests(TestCase):
 
     userId = 2
     jwt = createAccessToken(userId)
+<<<<<<< HEAD
+=======
+
+    fixtures = ['authentication/fixtures/testseed.json']
+>>>>>>> b62fb52695f4f133c95ea0a7f81aa48e44cc993f
 
     fixtures = ['authentication/fixtures/testseed.json']
 
