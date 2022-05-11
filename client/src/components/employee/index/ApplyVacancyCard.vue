@@ -1,9 +1,9 @@
 <script setup>  
     import api, { apiCatchError } from '@/assets/js/api';
 
-    import { computed, ref } from 'vue';    
+    import { computed, onMounted, ref, watch } from 'vue';    
 
-    const props = defineProps(['vacancy', 'tags', 'favourited']);
+    const props = defineProps(['vacancy', 'tags', 'favourited', 'cardAction']);
     const emit = defineEmits(['update']);
 
     const favourite = async (vID) => {
@@ -45,6 +45,21 @@
 
         emit('update');
     }
+
+
+    watch(props, (newProps, oldProps) => {
+        const vacancyId = props?.vacancy?.VacancyId ?? '-1';
+
+        if(props.cardAction == null) {
+            return;
+        } else if(props.cardAction == 'apply') {
+            apply(vacancyId);
+        } else if(props.cardAction == 'favourite') {
+            favourite(vacancyId);
+        } else if(props.cardAction == 'reject') {
+            reject(vacancyId);
+        }
+    });
 
     
     let tagsLim = ref(6);
@@ -94,7 +109,7 @@
         </div>
         <span class='card-section' v-if='vacancy?.tags?.length > 0'>Tags:</span>
         <div v-if='vacancy?.tags?.length > 0'>
-            <i class='tag' v-for='tag in vacancy.tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag-1].icon' :title='tags[tag-1].text'></i>
+            <i class='tag' v-for='tag in vacancy.tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag-1]?.icon' :title='tags[tag-1]?.text'></i>
             <th v-if='extraTags' class='tag tags-overflow' :title='extraTags'>
                 <div class='tags-num' ref='extra-tags'>+{{ vacancy.tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
