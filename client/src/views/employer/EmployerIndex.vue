@@ -339,10 +339,10 @@
                 </p>
                 <p class='desc'>
                     You can review, edit or close listed vacancies by clicking the buttons on the vacancy record. 
-                </p>>
+                </p>
                 <p class='desc'>
                     Closed vacancies can also be deleted by clicking delete which is shown only for closed vacancies.
-                </p>>
+                </p>
                 <p class='desc'>    
                     Vacancies can be sorted using the filters on the top right.
                 </p>
