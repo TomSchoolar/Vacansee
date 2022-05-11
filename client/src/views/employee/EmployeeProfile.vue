@@ -21,7 +21,7 @@
     const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') === 'true');
 
     document.title = 'Profile | Vacansee'
 
