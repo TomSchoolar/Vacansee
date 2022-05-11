@@ -70,7 +70,7 @@
 
     // api request function
     const getVacancies = async (options) => {
-        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active', newCard = false, tagsFilter = 'null', searchValue = "" } = options;
+        const { count = limit.value, pageNum = 1, sort = 'dateDesc', filter = 'active', newCard = false, tagsFilter: tagsFilterParam = 'null', searchValue = "" } = options;
         
         const response = await api({
             method: 'get',
@@ -81,8 +81,8 @@
                 count,
                 filter,
                 pageNum,
-                tagsFilter,
-                searchValue
+                searchValue,
+                tagsFilter: tagsFilterParam
             }
         }).catch(apiCatchError);
 
@@ -124,8 +124,9 @@
             emptyCards.value = 0;
         
         if(haveTriedTags){
+            tagsFilter.value = 'null';
+            tagsFilterRaw.value = [];
             showModalNoCards.value = true;
-            tagSearch([]);
         }
 
         return true;
@@ -190,7 +191,7 @@
         }
 
         if(value.length == 0) {
-            tagsFilter.value = "null";
+            tagsFilter.value = 'null';
             tagsFilterRaw.value = [];
         }
 

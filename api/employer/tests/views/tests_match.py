@@ -101,7 +101,7 @@ class getVacanciesTests(TestCase):
 
 
     def test_validRequestSearchValue(self):
-        response = self.client.get('/v1/e/matches', { 'sort': 'titleDesc', 'searchValue': 'e' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
+        response = self.client.get('/v1/e/matches/', { 'sort': 'titleDesc', 'searchValue': 'e' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
         vacancies = Vacancy.objects.filter(UserId__exact = 6).annotate(
         MatchesCount = Count('application', filter = Q(

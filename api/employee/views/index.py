@@ -30,7 +30,7 @@ def getIndex(request):
             return jwt
 
 
-    # get query params: sort, count, filter, pageNum
+    # get query params: sort, count, filter, pageNum, tags, searchValue
 
     # destructure params and typecast
     try:
@@ -106,13 +106,15 @@ def getIndex(request):
             vacancyList.append(app.VacancyId.VacancyId)
 
         if tags != 'null':
-            numVacancies = Vacancy.objects.filter(
+            dbSet = Vacancy.objects.filter(
                 IsOpen__in = filterParam,
                 Tags__contains = tagListInt,
                 VacancyName__contains = searchValue
             ).exclude(
                 VacancyId__in = vacancyList
-            ).count()
+            )
+
+            numVacancies = dbSet.count()
 
             if numVacancies > 0:
                 usingTags = True
@@ -120,13 +122,14 @@ def getIndex(request):
                 triedTags = True
 
         if tags == 'null' or usingTags == False:
-            numVacancies = Vacancy.objects.filter(
+            dbSet = Vacancy.objects.filter(
                 IsOpen__in = filterParam,
                 VacancyName__contains = searchValue
             ).exclude(
                 VacancyId__in = vacancyList
-            ).count()
+            )
 
+            numVacancies = dbSet.count()
 
         pages = int(ceil(numVacancies / int(params['count'])))
         
@@ -142,23 +145,8 @@ def getIndex(request):
     limit = count * pageNum
 
     try:
-        # get vacancies
-        if usingTags == False:
-            # get vacancies
-            vacanciesSet = Vacancy.objects.filter(
-                IsOpen__in = filterParam,
-                VacancyName__contains = searchValue
-            ).exclude(
-                VacancyId__in = vacancyList
-            ).order_by(sortParam)[skip:limit]
-        else:
-            vacanciesSet = Vacancy.objects.filter(
-                IsOpen__in = filterParam,
-                Tags__contains = tagListInt,
-                VacancyName__contains = searchValue
-            ).exclude(
-                VacancyId__in = vacancyList
-            ).order_by(sortParam)[skip:limit]
+        # order vacancies
+        vacanciesSet = dbSet.order_by(sortParam)[skip:limit]
 
         vacancySerializer = VacancySerializer(vacanciesSet, many=True)
         vacancies = vacancySerializer.data
@@ -170,7 +158,6 @@ def getIndex(request):
 
     try:
         # get company name
-        from json import dumps
         for vacancy in vacancies:
             employerDetails = EmployerDetails.objects.get(UserId__exact = vacancy['UserId'])
             vacancy['CompanyName'] = employerDetails.CompanyName
