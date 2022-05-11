@@ -87,7 +87,7 @@ const employeeRoutes = [
         name: 'EmployeeProfile',
         component: EmployeeProfile,
         meta: {
-            middleware: [isLoggedIn, isEmployee, hasProfile]
+            middleware: [isLoggedIn, isEmployee]
         }
 
     },
