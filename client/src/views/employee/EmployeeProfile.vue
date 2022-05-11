@@ -21,7 +21,7 @@
     const formData = ref([]);
     const notifs = ref(2);
     const currentPageNum = ref(0);
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') === 'true');
 
     document.title = 'Profile | Vacansee'
 
@@ -54,7 +54,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployeeProfile', false);
+        window.localStorage.removeItem('newUserEmployeeProfile');
         isNewUser.value = false;
     }
 
@@ -107,7 +107,13 @@
         <template #modal-body> 
             <div class='modal-body'>
                 <p class='desc'>
-                    On this page you can set up your profile. This will be shown to employers when you apply for vacancies.        
+                    Welcome to Vacansee!
+                </p>
+                <p class='desc'>
+                    Before you get started looking for your next job, you first just need to set up your profile with this quick and easy form.           
+                </p>
+                <p class='desc'>
+                    Your profile is what employers will see when you apply to a vacancy.
                 </p>
             </div>
 

@@ -22,7 +22,7 @@
     const formData = ref([]);
     const vacancyData = ref({});
     const currentPageNum = ref(0);
-    const isNewUser = ref(window.localStorage.getItem('newUserEditVacancy') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEditVacancy') === 'true');
 
 
     // get company name
@@ -74,7 +74,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEditVacancy', false);
+        window.localStorage.removeItem('newUserEditVacancy');
         isNewUser.value = false;
     }
 

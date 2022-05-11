@@ -19,7 +19,7 @@
     const currentProfile = ref();
     const selectedVacancy = ref();
     const selectedVacancyName = ref();
-	const isNewUser = ref(window.localStorage.getItem('newUserEmployerMatch') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployerMatch') === 'true');
 
 
     const updateVacancyId = (vacancy) => {
@@ -32,7 +32,7 @@
     const companyName = ref(cn);
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployerMatch', false);
+        window.localStorage.removeItem('newUserEmployerMatch');
         isNewUser.value = false;
     }
 </script>

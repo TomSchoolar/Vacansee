@@ -34,7 +34,7 @@
     const selectedVacancy = ref(0);
 
     //tutorial values
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployerIndex') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployerIndex') === 'true');
 
     // dropdown values
     const limit = ref(5);
@@ -229,7 +229,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployerIndex', false);
+        window.localStorage.removeItem('newUserEmployerIndex');
         isNewUser.value = false;
     }
 
@@ -331,11 +331,20 @@
         </template>
         <template #modal-body>
             <div class='modal-body'>
-                <p class='desc'>The index page displays general statistics about your company's vacancies. These can be seen in the stat bar, just below the nav bar.
+                <p class='desc'>
+                    Welcome to Vacansee!
+                </p>
+                <p class='desc'>The home page displays general statistics about your company's vacancies. These can be seen in the stat bar, just below the nav bar.
                     The list of vacancies are shown under the stat bar.
                 </p>
                 <p class='desc'>
-                    You can also close listed vacancies and delete closed ones by clicking the buttons on the vacancy record. Vacancies can be sorted using the filters on the top right.
+                    You can review, edit or close listed vacancies by clicking the buttons on the vacancy record. 
+                </p>
+                <p class='desc'>
+                    Closed vacancies can also be deleted by clicking delete which is shown only for closed vacancies.
+                </p>
+                <p class='desc'>    
+                    Vacancies can be sorted using the filters on the top right.
                 </p>
             </div> 
 

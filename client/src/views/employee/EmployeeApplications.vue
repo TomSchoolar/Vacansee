@@ -22,7 +22,7 @@
 
     const showModal = ref(false);
     const currentModalApplication = ref();
-    const isNewUser = ref(window.localStorage.getItem('newUserApplications') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserApplications') === 'true');
 
 
     const page = ref(1);
@@ -228,7 +228,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserApplications', false);
+        window.localStorage.removeItem('newUserApplications');
         isNewUser.value = false;
     }
 </script>

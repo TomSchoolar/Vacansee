@@ -22,7 +22,7 @@
     const matchProfile = ref({});
     const currentProfile = ref({});
     const currentApplication = ref({});
-    const isNewUser = ref(window.localStorage.getItem('newUserReview') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserReview') === 'true');
     
 
     const searchValue = ref("");
@@ -85,7 +85,7 @@
     }*/
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserReview', false);
+        window.localStorage.removeItem('newUserReview');
         isNewUser.value = false;
     }
 

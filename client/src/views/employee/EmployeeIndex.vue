@@ -22,7 +22,7 @@
     const showModalNoCards = ref(false);
 
     //tutorial values
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeIndex') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployeeIndex') === 'true');
 
     // dropdown values
     const emptyCards = ref(0);
@@ -243,7 +243,7 @@
     watch(sort, sortVacancies);
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployeeIndex', false);
+        window.localStorage.removeItem('newUserEmployeeIndex');
         isNewUser.value = false;
     }
 
@@ -341,11 +341,21 @@
         <template #modal-body>
             <div class='modal-body'>
                 <p class='desc'>
-                    The index page displays a list of adverts posted by companies in the first column. These can be seen in the stat bar, just below the nav bar. 
+                    The home page displays a list of adverts posted by companies in the first column on the left of the page, just below the navigation bar.
                     Adverts can be sorted using the filters on the top right.
+
+                </p>>
+                <p class='desc'>
+                    The action card, on the right side of the page, is where you can interact with vacancies.
                 </p>
                 <p class='desc'>
-                    The second column allows you to perform actions to the first advert in the list. You can reject it, add it to your favourites, or accept it by using relevant buttons.
+                    You can ignore a vacancy by clicking the red cross on the vacancy card,
+                </p>
+                <p class='desc'>
+                    add it to your favourite by clicking the star button next to ignore,
+                </p>
+                <p class='desc'>
+                    or send an application for it by clicking the green tick next to unfavourite.
                 </p>
             </div> 
 

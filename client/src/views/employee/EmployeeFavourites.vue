@@ -21,7 +21,7 @@
     const cardsPerRow = ref(1);
     
     // tutorial values
-    const isNewUser = ref(window.localStorage.getItem('newUserFavourites') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserFavourites') === 'true');
 
     const searchBarValue = ref("");
 
@@ -222,7 +222,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserFavourites', false);
+        window.localStorage.removeItem('newUserFavourites');
         isNewUser.value = false;
     }
 
@@ -305,7 +305,13 @@
                     You can review vacancies which are added to your favourites here, and sort them using filters on the top right.
                 </p>
 				<p class='desc'>
-					You can also reject, unfavourite, and accept vacancies by clicking the corresponding buttons on each card.
+					You can ignore a vacancy by clicking the red cross on the vacancy card,
+                </p>
+                <p class='desc'>
+                    unfavourite it by clicking the star button next to ignore,
+                </p>
+                <p class ='desc'>    
+                    or send an application for it by clicking the green tick next to unfavourite.
                 </p>
             </div>
         </template>

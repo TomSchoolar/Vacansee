@@ -1,6 +1,7 @@
 <script setup>
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
@@ -21,7 +22,7 @@
     const notifs = ref(2);
     const currentPageNum = ref(0);
     const profile = ref({})
-    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfileEdit') === 'true');
 
     document.title = 'Edit Profile | Vacansee'
 
@@ -74,9 +75,12 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserFavourites', false);
+        window.localStorage.removeItem('newUserEmployeeProfileEdit');
         isNewUser.value = false;
-    }
+    }    
+
+
+
 
 </script>
 
@@ -124,16 +128,16 @@
         <template #modal-body> 
             <div class='modal-body'>
                 <p class='desc'>
-                    On this page you can edit your personal profile by completing the same form you used to register your account.           
-                </p>
-                <p class='desc'>
-                    Except this time the form is pre-populated with your profile data.    
+                    On this page you can edit your profile by completing the same form you used to register your account, except this time the form is pre-populated with profile data.            
                 </p>
 
             </div>
 
         </template>
     </TutorialModal>
+
+
+    <Footer></Footer>
 
 </template>
 

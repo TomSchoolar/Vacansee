@@ -16,7 +16,7 @@
 	const saved = ref(false);
 	const details = ref({});
 	const displayModal = ref(false);
-	const isNewUser = ref(window.localStorage.getItem('newUserEmployerAccount') == null);
+	const isNewUser = ref(window.localStorage.getItem('newUserEmployerAccount') === 'true');
 
 
 	document.title = 'Account | Vacansee'
@@ -93,18 +93,17 @@
 	}
 
 	const resetTutorial = () => {
-        window.localStorage.removeItem('newUserEmployerAccount');
-		window.localStorage.removeItem('newUserEditVacancy');
-		window.localStorage.removeItem('newUserEmployerIndex');
-		window.localStorage.removeItem('newUserEmployerMatch');
-		window.localStorage.removeItem('newUserCreateVacancy');
-		window.localStorage.removeItem('newUserReview');
-
+        window.localStorage.setItem('newUserEmployerAccount', true);
+		window.localStorage.setItem('newUserEditVacancy', true);
+		window.localStorage.setItem('newUserEmployerIndex', true);
+		window.localStorage.setItem('newUserEmployerMatch', true);
+		window.localStorage.setItem('newUserCreateVacancy', true);
+		window.localStorage.setItem('newUserReview', true);
         isNewUser.value = true;
     }
 
 	const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployerAccount', false);
+        window.localStorage.removeItem('newUserEmployerAccount');
         isNewUser.value = false;
     }
 
