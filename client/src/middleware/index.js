@@ -1,4 +1,4 @@
-import logout from '@/assets/js/jwt.js'
+import { logout } from '@/assets/js/jwt'
 
 const middleware = {}
 
