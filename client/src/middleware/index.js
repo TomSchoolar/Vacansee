@@ -88,17 +88,18 @@ middleware.isNewEmployee = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        console.log(1);
         return logout();
     }
 
     session = JSON.parse(session);
 
+    if(typeof session?.HasProfileSetup === 'undefined') {
+        return logout();
+    }
+
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === true) {
-        console.log(2);
         router.push({ name: 'EmployerIndex' });
-    } else if(typeof session?.HasProfileSetup === 'undefined' || session.HasProfileSetup) {
-        console.log(3);
+    } else if(session.HasProfileSetup) {
         router.push({ name: 'EmployeeProfileEdit' });
     }
 
@@ -110,14 +111,12 @@ middleware.hasProfile = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        console.log(4);
         return logout();
     }
 
     session = JSON.parse(session);
 
     if (typeof session.HasProfileSetup === 'undefined' || session.HasProfileSetup == false) {
-        console.log(5);
         router.push({ name: 'EmployeeProfile' });
     }
 
@@ -129,14 +128,16 @@ middleware.hasProfile = async ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        console.log(6);
         return logout();
     }
 
     session = JSON.parse(session);
 
+    if(typeof session?.HasProfileSetup === 'undefined') {
+        return logout();
+    }
+
     if (session.HasProfileSetup == false) {
-        console.log(7);
         router.push({ name: 'EmployeeProfile' });
     }
 
