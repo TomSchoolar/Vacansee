@@ -68,7 +68,7 @@
         left: 0;
         height: 100vh;
         width: 100vw;
-        background: 00000040;
+        background: #00000080;
         display: flex;
         justify-content: center;
         align-items: center;

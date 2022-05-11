@@ -142,7 +142,7 @@
 	.auth-page-container input:not(#privacy) {
 		border: 1px solid var(--slate);
 		border-radius: 5px;
-		color: var(--slate);
+		color: var(--slate-focus);
 		font-size: 16px;
 		line-height: 24px;
 		display: block;

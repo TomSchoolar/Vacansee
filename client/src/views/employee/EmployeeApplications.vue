@@ -291,11 +291,11 @@
             <div class='applications' v-for='application in applications' :key='application.id'>
                 <div class='application'>
                     <div class='left'>
-                        <h5 class='application-title'>{{ application.VacancyName }}</h5>
-                        <h5 class='company'>{{ application.CompanyName }}</h5>
-                        <h5 class='status' v-if='application.ApplicationStatus == "MATCHED"'>Matched!</h5>
-                        <h5 class='status' v-else-if='application.ApplicationStatus == "REJECTED"'>Rejected</h5>
-                        <h5 class='status' v-else>Application sent!</h5>
+                        <h1 class='application-title'>{{ application.VacancyName }}</h1>
+                        <h1 class='company'>{{ application.CompanyName }}</h1>
+                        <h1 class='status' v-if='application.ApplicationStatus == "MATCHED"'>Matched!</h1>
+                        <h1 class='status' v-else-if='application.ApplicationStatus == "REJECTED"'>Rejected</h1>
+                        <h1 class='status' v-else>Application sent!</h1>
                     </div>
                     <div class='right'>
                         <div class='applied' :title='application.formattedDate'>Updated {{ application.formattedDate }}</div>
@@ -397,8 +397,8 @@
 
     .button-disabled {
         border-color: #999999;
-        background-color: #cccccc;
-        color: #666666;
+        background-color: #bbbbbb;
+        color: #000000;
     }
 
     .button-green {
@@ -528,7 +528,7 @@
     .showing {
         margin-left: 30px;
         font-size: 14px;
-        color: var(--slate);
+        color: var(--slate-focus);
         font-style: italic;
         position: relative;
         top: 4px;

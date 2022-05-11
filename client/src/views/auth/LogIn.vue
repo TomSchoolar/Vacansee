@@ -94,7 +94,7 @@
 	.auth-page-container input {
 		border: 1px solid var(--slate);
 		border-radius: 5px;
-		color: var(--slate);
+		color: var(--slate-focus);
 		font-size: 16px;
 		line-height: 24px;
 		display: block;

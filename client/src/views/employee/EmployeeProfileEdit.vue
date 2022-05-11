@@ -73,8 +73,10 @@
         }
     }
 
-    
-
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserFavourites', false);
+        isNewUser.value = false;
+    }
 
 </script>
 

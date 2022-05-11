@@ -103,10 +103,10 @@
         <div class='spacing-block'></div>
         <div class='apply-buttons'>
             <div class='divider'><hr /></div>
-            <button type='button' class='reject' @click='reject(vacancy.VacancyId)'><i class='fas fa-multiply'></i></button>
-            <button class='favourite' @click='unfavourite(vacancy.VacancyId)' v-if='favourited == true'><i class='fas fa-star'></i></button>
-            <button class='favourite' @click='favourite(vacancy.VacancyId)' v-if="favourited == false"><i class='far fa-star'></i></button>
-            <button class='apply' @click='apply(vacancy.VacancyId)'><i class='fas fa-check'></i></button>
+            <button aria-label='reject' type='button' class='reject' @click='reject(vacancy.VacancyId)'><i class='fas fa-multiply'></i></button>
+            <button aria-label='unfavourite' class='favourite' @click='unfavourite(vacancy.VacancyId)' v-if='favourited == true'><i class='fas fa-star'></i></button>
+            <button aroa-label='favourite' class='favourite' @click='favourite(vacancy.VacancyId)' v-if="favourited == false"><i class='far fa-star'></i></button>
+            <button aria-label='apply' class='apply' @click='apply(vacancy.VacancyId)'><i class='fas fa-check'></i></button>
         </div>
     </div>
 </template>
