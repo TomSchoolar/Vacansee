@@ -228,7 +228,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserApplications', false);
+        window.localStorage.removeItem('newUserApplications');
         isNewUser.value = false;
     }
 </script>

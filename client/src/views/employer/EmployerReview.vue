@@ -85,7 +85,7 @@
     }*/
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserReview', false);
+        window.localStorage.removeItem('newUserReview');
         isNewUser.value = false;
     }
 

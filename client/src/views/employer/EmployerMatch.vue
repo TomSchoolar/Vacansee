@@ -32,7 +32,7 @@
     const companyName = ref(cn);
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployerMatch', false);
+        window.localStorage.removeItem('newUserEmployerMatch');
         isNewUser.value = false;
     }
 </script>

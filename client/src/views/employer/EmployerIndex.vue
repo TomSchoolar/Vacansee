@@ -229,7 +229,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployerIndex', false);
+        window.localStorage.removeItem('newUserEmployerIndex');
         isNewUser.value = false;
     }
 
@@ -331,7 +331,10 @@
         </template>
         <template #modal-body>
             <div class='modal-body'>
-                <p class='desc'>The index page displays general statistics about your company's vacancies. These can be seen in the stat bar, just below the nav bar.
+                <p class='desc'>
+                    Welcome to Vacansee!
+                </p>
+                <p class='desc'>The home page displays general statistics about your company's vacancies. These can be seen in the stat bar, just below the nav bar.
                     The list of vacancies are shown under the stat bar.
                 </p>
                 <p class='desc'>

@@ -122,7 +122,7 @@
     }
 
 	const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployeeAccount', false);
+        window.localStorage.removeItem('newUserEmployeeAccount');
         isNewUser.value = false;
     }
 

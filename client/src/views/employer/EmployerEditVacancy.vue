@@ -74,7 +74,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEditVacancy', false);
+        window.localStorage.removeItem('newUserEditVacancy');
         isNewUser.value = false;
     }
 

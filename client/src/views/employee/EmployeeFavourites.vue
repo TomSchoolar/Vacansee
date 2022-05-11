@@ -222,7 +222,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserFavourites', false);
+        window.localStorage.removeItem('newUserFavourites');
         isNewUser.value = false;
     }
 

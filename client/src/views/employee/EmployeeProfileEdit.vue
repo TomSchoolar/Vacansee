@@ -75,7 +75,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployeeProfileEdit', false);
+        window.localStorage.removeItem('newUserEmployeeProfileEdit');
         isNewUser.value = false;
     }    
 
@@ -128,10 +128,7 @@
         <template #modal-body> 
             <div class='modal-body'>
                 <p class='desc'>
-                    On this page you can edit your personal profile by completing the same form you used to register your account.           
-                </p>
-                <p class='desc'>
-                    Except this time the form is pre-populated with your profile data.    
+                    On this page you can edit your profile by completing the same form you used to register your account, except this time the form is pre-populated with profile data.            
                 </p>
 
             </div>

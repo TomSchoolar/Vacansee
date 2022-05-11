@@ -243,7 +243,7 @@
     watch(sort, sortVacancies);
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserEmployeeIndex', false);
+        window.localStorage.removeItem('newUserEmployeeIndex');
         isNewUser.value = false;
     }
 
@@ -341,12 +341,11 @@
         <template #modal-body>
             <div class='modal-body'>
                 <p class='desc'>
-                    The index page displays a list of adverts posted by companies in the first column on the left of the page, just below the navigation bar.
+                    The home page displays a list of adverts posted by companies in the first column on the left of the page, just below the navigation bar.
                     Adverts can be sorted using the filters on the top right.
-
-                </p>>
+                </p>
                 <p class='desc'>
-                    The second column, to the right, allows you to perform actions to the first vacancy card in adverts.
+                    The action card, on the right side of the page, is where you can interact with vacancies.
                 </p>
                 <p class='desc'>
                     You can ignore a vacancy by clicking the red cross on the vacancy card,

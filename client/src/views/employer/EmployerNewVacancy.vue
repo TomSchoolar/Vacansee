@@ -62,7 +62,7 @@
     }
 
     const finishTutorial = () => {
-        window.localStorage.setItem('newUserCreateVacancy', false);
+        window.localStorage.removeItem('newUserCreateVacancy');
         isNewUser.value = false;
     }
 
