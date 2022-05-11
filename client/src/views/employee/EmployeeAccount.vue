@@ -188,10 +188,10 @@
         <template #modal-body> 
             <div class='modal-body'>
                 <p class='desc'>
-                    On the account page, you can edit your profile by clicking edit profile and complete the forms afterwards.
+                    On the account page, you can edit your profile by clicking edit profile below your profile display.
                 </p>
 				<p class='desc'>
-					You can edit your email by changing it just below the profile section.
+					You can edit your email to the right of the profile section.
 				</p>
                 <p class='desc'>
                     You can also delete your account should you wish so by clicking the delete button.
