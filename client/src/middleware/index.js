@@ -113,7 +113,7 @@ middleware.hasProfile = async ({ next, router }) => {
 
     session = JSON.parse(session);
 
-    if (session?.HasProfileSetup == false) {
+    if (!session?.HasProfileSetup) {
         router.push({ name: 'EmployeeProfile' });
     }
 
