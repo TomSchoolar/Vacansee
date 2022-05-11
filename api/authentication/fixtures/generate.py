@@ -2,7 +2,7 @@ import sys
 import json
 from faker import Faker
 from django.conf import settings
-from random import choice, sample
+from random import choice, sample, randrange
 
 settings.configure()
 
@@ -15,7 +15,7 @@ class Fake():
     vacancyPK = 1000
     favouritePK = 1000
     applicationPK = 1000
-    outpath = './api/authentication/fixtures/'
+    outpath = './authentication/fixtures/'
 
     fake = Faker()
 
@@ -24,9 +24,9 @@ class Fake():
             self.outpath += 'fullseed.json'
 
             self.params = {
-                'employees': 25,
-                'vacanciesLower': 8,
-                'vacanciesUpper': 20,
+                'employees': 34,
+                'vacanciesLower': 14,
+                'vacanciesUpper': 25,
                 'applicantsLower': 8,
                 'applicantsUpper': 20,
                 'favouritesLower': 3,
@@ -37,7 +37,7 @@ class Fake():
             self.outpath += 'testseed.json'
 
             self.params = {
-                'employees': 2,
+                'employees': 8,
                 'vacanciesLower': 3,
                 'vacanciesUpper': 7,
                 'applicantsLower': 3,
@@ -46,52 +46,7 @@ class Fake():
                 'favouritesUpper': 5,
             }
 
-    tags = [
-        {
-            "model" : "employer.Tag",
-            "pk" : 1,
-            "fields" : {
-                "TagName" : "Development",
-                "TagStyle" : "fa-solid fa-database"
-            }
-        },
 
-        {
-            "model" : "employer.Tag",
-            "pk" : 2,
-            "fields" : {
-                "TagName" : "Coding",
-                "TagStyle" : "fa-solid fa-code"
-            }
-        },
-
-        {
-            "model" : "employer.Tag",
-            "pk" : 3,
-            "fields" : {
-                "TagName" : "Python",
-                "TagStyle" : "fa-brands fa-python"
-            }
-        },
-
-        {
-            "model" : "employer.Tag",
-            "pk" : 4,
-            "fields" : {
-                "TagName" : "Entry-Level",
-                "TagStyle" : "fa-solid fa-school"
-            }
-        },
-
-        {
-            "model" : "employer.Tag",
-            "pk" : 5,
-            "fields" : {
-                "TagName" : "Management",
-                "TagStyle" : "fa-solid fa-briefcase"
-            }
-        }
-    ]
 
     def User(self, employer = False):
         user = {
@@ -184,11 +139,11 @@ class Fake():
                 'SkillsRequired': [self.fake.bs() for x in range(choice(range(1,4)))],
                 'ExperienceRequired': [self.fake.sentence(nb_words=3, variable_nb_words=True) for x in range(choice(range(1,4)))],
                 'TimeZone': choice(range(-11,12,1)),
-                'Tags': sample([x for x in range(1,6)], choice(range(1,6))),
-                'IsOpen': choice([True, True, True, False]),
+                'Tags': sample([x for x in range(1,20)], choice(range(2,8))),
+                'IsOpen': choice([True, True, True, True, False]),
                 'PhoneNumber': self.fake.phone_number(),
                 'Email': self.fake.free_email(),
-                'Created': self.fake.date_this_year().strftime('%Y-%m-%d'),
+                'Created': self.fake.date_time_this_year().strftime('%Y-%m-%dT%H:%M:%S+00:00'),
                 'Location': self.fake.location_on_land()[2]
             }
         }
@@ -232,7 +187,7 @@ class Fake():
                 'UserId': user['pk'],
                 'VacancyId': vacancy['pk'],
                 'ApplicationStatus': choice(options),
-                'LastUpdated': self.fake.date_time_this_year().strftime('%Y-%m-%dT%H:%M:%S+0000')
+                'LastUpdated': self.fake.date_time_this_year().strftime('%Y-%m-%dT%H:%M:%S+00:00')
             }
         }
 
@@ -249,8 +204,9 @@ def readFixtures():
     vacancies = []
     favourites = []
     applications = []
+    tags = []
 
-    with open('./api/authentication/fixtures/fixtures.json', 'r') as file:
+    with open('./authentication/fixtures/fixtures.json', 'r') as file:
         data = json.load(file)
 
     for x in data:
@@ -284,7 +240,10 @@ def readFixtures():
             
         if model == 'employee.Application':
             applications.append(x)
-    
+
+        if model == 'employer.Tag':
+            tags.append(x)
+
     return [
         employees,
         employers,
@@ -292,7 +251,8 @@ def readFixtures():
         employerDetails, 
         vacancies, 
         favourites, 
-        applications
+        applications,
+        tags
     ]
 
 
@@ -306,7 +266,7 @@ def generateData(limits):
     vacancies = fixtures[4]
     favourites = fixtures[5]
     applications = fixtures[6]
-    tags = f.tags
+    tags = fixtures[7]
 
 
     for x in range(limits['employees']):  # full: 25, test: 2
@@ -335,11 +295,12 @@ def generateData(limits):
     #         employerDetails.append(details)
 
     for employer in employers:
-        vacs = [f.Vacancy(employer) for x in range(choice(range(limits['vacanciesLower'], limits['vacanciesUpper'])))] # full: 8,20  test: 3,7
+        vacs = [f.Vacancy(employer) for x in range(choice(range(limits['vacanciesLower'], limits['vacanciesUpper'])))] # full: 14,25  test: 3,7
         vacancies += [el for el in vacs if el != None]
 
     for vacancy in vacancies:
-        applicants = sample(employees, choice(range(limits['applicantsLower'], limits['applicantsUpper'])))   # full: 8,20  test: 3,6
+        applicants = [employees.pop(randrange(len(employees))) for _ in range(choice(range(limits['applicantsLower'], limits['applicantsUpper'])))] # full: 8,20  test: 3,6
+        #applicants = sample(employees, choice(range(limits['applicantsLower'], limits['applicantsUpper'])))   # full: 8,20  test: 3,6
         for applicant in applicants:
             app = f.Application(applicant, vacancy)
 
@@ -352,6 +313,8 @@ def generateData(limits):
             fav = f.Favourite(favouriter, vacancy)
             if fav != None:
                 favourites.append(fav)
+
+        employees += applicants
 
     compiledData = employees + employers + profiles + employerDetails + vacancies + favourites + applications + tags + emptyEmployer + emptyEmployerDetails
 

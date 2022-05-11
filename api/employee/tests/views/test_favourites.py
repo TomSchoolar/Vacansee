@@ -9,8 +9,8 @@ class getFavouritesTests(TestCase):
 
     userId = 2
     jwt = createAccessToken(userId)
-    fixtures = ['authentication/fixtures/testseed.json']
 
+    fixtures = ['authentication/fixtures/testseed.json']
 
 
     def test_validRequestSortDateDesc(self):
@@ -132,7 +132,7 @@ class getFavouritesTests(TestCase):
         vacancyIds = []
         for fav in favouriteSet:
             vacancyIds.append(int(fav.VacancyId.VacancyId))
-
+        
         vacanciesSet = Vacancy.objects.filter(VacancyId__in = vacancyIds, Tags__contains = [3]).order_by('VacancyName')[0:5]
         numVacancies = Vacancy.objects.filter(VacancyId__in = vacancyIds, Tags__contains = [3]).count()
         vacancies = VacancySerializer(vacanciesSet, many=True).data
@@ -189,9 +189,10 @@ class getFavouritesTests(TestCase):
 
 class postFavouritesTests(TestCase):
     
-    vacId = 1000
+    vacId = 1002
     userId = 2
     jwt = createAccessToken(userId)
+
     fixtures = ['authentication/fixtures/testseed.json']
 
 
@@ -240,9 +241,10 @@ class postFavouritesTests(TestCase):
 
 class deleteFavouriteTests(TestCase):
 
-    vacId = 1002
+    vacId = 1007
     userId = 1
     jwt = createAccessToken(userId)
+    
     fixtures = ['authentication/fixtures/testseed.json']
 
 

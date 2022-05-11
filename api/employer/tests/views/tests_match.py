@@ -103,7 +103,7 @@ class getVacanciesTests(TestCase):
     def test_validRequestSearchValue(self):
         response = self.client.get('/v1/e/matches/', { 'sort': 'titleDesc', 'searchValue': 'e' }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }' })
 
-        vacancies = Vacancy.objects.filter(UserId__exact = 6).annotate(
+        vacancies = Vacancy.objects.filter(UserId__exact = 6, VacancyName__contains = 'e').annotate(
         MatchesCount = Count('application', filter = Q(
             application__ApplicationStatus__exact = 'MATCHED',
             application__VacancyId__UserId__exact = 6,
@@ -118,7 +118,7 @@ class getVacanciesTests(TestCase):
 
 
 
-    def test_missingParamters(self):
+    def test_missingParameters(self):
         response = self.client.get('/v1/e/matches/', { }, **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response.status_code, 400)
