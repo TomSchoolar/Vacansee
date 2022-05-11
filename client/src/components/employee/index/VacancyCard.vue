@@ -1,21 +1,28 @@
 <script setup>  
-    import { ref } from 'vue';
+    import { computed, ref, watch } from 'vue';
 
     const props = defineProps(['vacancy', 'tags']);
-    const { tags } = props;
+
+
 
     let tagsLim = ref(6);
-    let extraTags = ref('');
+    let extraTags = computed(() => {
+        let extraTags = '';
 
-    if(tags.length > 6) {
-        tagsLim.value = 5;
+        if(!props?.vacancy?.tags || !props?.tags)
+            return;
 
-        tags.slice(5,-1).forEach((tag) => {
-            extraTags.value += `${ tag.title }, `;
-        });
+        if(props.vacancy.tags.length > tagsLim.value) {
 
-        extraTags.value += tags[tags.length - 1].title;
-    }
+            props.vacancy.tags.slice(tagsLim.value,-1).forEach((tag) => {
+                extraTags += `${ props.tags[tag].text }, `;
+            });
+
+            extraTags += props.tags[props.vacancy.tags.length - 1].text;
+        }   
+
+        return (extraTags ? extraTags : false);
+    })
 </script>
 
 <template>
@@ -32,26 +39,26 @@
         <span v-if='vacancy?.SkillsRequired' class='card-section'>Necessary Skills:</span>
         <div class='skills'>
             <div>
-                <div v-for='skill in vacancy?.SkillsRequired' v-bind:key='skill'>
-                    - {{ skill }}
+                <div v-for='(skill, index) in vacancy?.SkillsRequired' :key='`skill-${ index }`'>
+                    > {{ skill }}
                 </div>
             </div>
         </div>
 
         <span v-if='vacancy?.ExperienceRequired' class='card-section'>Experience:</span>
         <div class='experience'>
-            <div class='exp-container' v-for='xp in vacancy?.ExperienceRequired' v-bind:key='xp'>
-                <span class='exp-position'>- {{ xp.split('&&')[0] }}</span>
+            <div class='exp-container' v-for='(xp, index) in vacancy?.ExperienceRequired' :key='`xp-${ index }`'>
+                <span class='exp-position'>> {{ xp.split('&&')[0] }}</span>
                 <span class='exp-time' v-if='xp.split("&&").length > 1'>{{ xp.split('&&')[1] }}</span>
             </div>
         </div>
-        <span v-if='vacancy?.Tags' class='card-section'>Requirements:</span>
-        <div class='tags-row' v-if='vacancy?.Tags'>
-            <i class='tag' v-for='tag in vacancy?.Tags.slice(0,tagsLim)' v-bind:key='tag.id' :class='tags[tag].icon' :title='tags[tag].title'></i>
-            <div v-if='vacancy?.Tags.length > 6' class='tag tags-overflow' :title='extraTags'>
-                <div class='tags-num' ref='extra-tags'>+{{ vacancy?.Tags.length - tagsLim }}</div>
+        <span class='card-section' v-if='vacancy?.tags?.length > 0'>Tags:</span>
+        <div v-if='vacancy?.tags?.length > 0'>
+            <i class='tag' v-for='tag in vacancy.tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag-1].icon' :title='tags[tag-1].text'></i>
+            <th v-if='extraTags' class='tag tags-overflow' :title='extraTags'>
+                <div class='tags-num' ref='extra-tags'>+{{ vacancy.tags.length - tagsLim }}</div>
                 <i class='fa-solid fa-tags'></i>
-            </div>
+            </th>
         </div>
     </div>
 </template>

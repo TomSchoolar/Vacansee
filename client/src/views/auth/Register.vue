@@ -44,7 +44,7 @@
 
         const response = await api({
             method: 'post',
-            url: '/register/',
+            url: '/v1/register/',
             withCredentials: true,
             data: formData
         }).catch(apiCatchError);
@@ -60,12 +60,13 @@
         window.localStorage.setItem('session', JSON.stringify(session))
         window.localStorage.setItem('accessToken', accessToken)
         window.localStorage.setItem('refreshToken', refreshToken)
-        window.localStorage.setItem('newUser', true);
+        window.localStorage.setItem('newUser', true)
+		window.localStorage.setItem('profile', true)
 
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'
-        else
-            window.location.href = '/vacancy'
+        else 
+            window.location.href = '/profile'
 	}
 </script>
 
@@ -96,7 +97,6 @@
 
             <div class='links'>
 			    <router-link to='/login' class='reset-link'>Existing user? Login here</router-link>
-			    <router-link to='/forgot' class='reset-link'>Forgot your password?</router-link>
             </div>
 		</form>
 	</div>
@@ -181,7 +181,7 @@
 
     .links {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         padding: 0 5px;
     }
 
@@ -206,6 +206,7 @@
         color: var(--red);
         font-size: 12px;
         text-decoration: none;
+        
     }
 
     .reset-link:active, .reset-link:focus, .reset-link:hover {

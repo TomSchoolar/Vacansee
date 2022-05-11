@@ -7,6 +7,7 @@
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     import FormExpandingText from '@/components/employer/newVacancy/formComponents/FormExpandingText.vue';
 
+    const props = defineProps(['Experience'])
     const emit = defineEmits(['next', 'back']);
 
     const validate = () => {
@@ -39,7 +40,7 @@
         Include up to three of your most relevant or most recent jobs/placements/internships below
     </FormHeader>
 
-    <FormExpandingText label='experience' name='Experience' :max='3' />
+    <FormExpandingText label='experience' name='Experience' :max='3' :value='props.Experience' />
     
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 </template>

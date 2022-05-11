@@ -8,7 +8,7 @@
 
     const updateStatus = async (newStatus, applicationId) => {
         const response = await api({
-            url: `/e/review/${ vacancyId }/updatestatus/${ applicationId }/`,
+            url: `/v1/e/vacancies/${ vacancyId }/review/${ applicationId }/`,
             method: 'put',
             data: {
                 setStatus: newStatus
@@ -72,25 +72,25 @@
         <span v-if='profile.NotableSkills' class='card-section'>Notable Skills:</span>
         <div class='skills block' >
             <table>
-                <tr v-for='skill in profile.NotableSkills' v-bind:key='skill'>
-                    <th>- {{ skill }}</th>
+                <tr v-for='(skill, index) in profile.NotableSkills' v-bind:key='`skill-${ index }`'>
+                    <th>> {{ skill }}</th>
                 </tr>
             </table>
         </div>
         <span v-if='profile.Experience' class='card-section'>Experience:</span>
         <div class='experience block'>
             <table>
-                <tr v-for='xp in profile.Experience' v-bind:key='xp'>
-                    <th class='table-title'>- {{ xp }}</th>
-                    <th><span class='table-date'>{{ xp.startDate }} - {{ xp.endDate }}</span></th>
+                <tr v-for='(xp, index) in profile.Experience' v-bind:key='`xp-${ index }`'>
+                    <th class='table-title'>> {{ xp.split('&&')[0] }}</th>
+                    <th v-if='xp.split("&&").length > 1'><span class='table-date'>{{ xp.split("&&")[1] }}</span></th>
                 </tr>
             </table>
         </div>
         <span v-if='profile.Qualifications' class='card-section'>Qualifications:</span>
-        <div class='qualifications' v-for='qual in profile.Qualifications' v-bind:key='qual'>
+        <div class='qualifications' v-for='(qual, index) in profile.Qualifications' v-bind:key='`qual-${ index }`'>
             <table>
                 <tr>
-                    <th>- {{ qual }}</th>
+                    <th>> {{ qual }}</th>
                 </tr>
             </table>
         </div>
@@ -197,6 +197,9 @@
         font-size: 24px;
         margin: 0px;
         padding: 10px 0px 0px 0px;
+        display: flex;
+        gap: 6px;
+        align-items: center;
     }
 
     .job-title {

@@ -1,9 +1,10 @@
 <script setup>
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import DefaultNavbar from '@/components/partials/DefaultNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
-    import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
 
     
@@ -23,22 +24,24 @@
     const currentPageNum = ref(0);
     const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
 
-
+    document.title = 'Profile | Vacansee'
 
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
     });
 
     const changePage = (incr) => {
-        const maxPage = pages.length - 1;
+        const maxPage = pages.length;
         const oldPage = currentPageNum.value;
         const newPage = currentPageNum.value + incr;
 
         if(newPage > maxPage || newPage < 0)
             return;
 
-        pages[oldPage].classList.add('form-page-container-hidden');
-        pages[newPage].classList.remove('form-page-container-hidden');
+        if(newPage < maxPage) {
+            pages[oldPage].classList.add('form-page-container-hidden');
+            pages[newPage].classList.remove('form-page-container-hidden');
+        }
 
         currentPageNum.value += incr;
 
@@ -60,12 +63,13 @@
 </script>
 
 <template>
-    <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar>
+    <!-- <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar> -->
+    <DefaultNavbar />
 
     
     <main class='container'>
         <div class='header'>
-            <h1 class='title'> Edit User Profile </h1>
+            <h1 class='title'>User Profile </h1>
             <hr />
         </div>
     </main>
@@ -91,36 +95,41 @@
             <QualificationsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ReviewForm :formData='formData' @back='changePage(-1)' />
+            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' />
         </div>
         
     </form>
 
+
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
-            <h3>Edit vacancy</h3>
+            <h3>Set Up Profile</h3>
         </template>
         <template #modal-body> 
             <div class='modal-body'>
                 <p class='desc'>
-                    On this page you can edit your personal profile by completing the same form you used to register your account.           
-                </p>
-                <p class='desc'>
-                    Except this time the form is pre-populated with profile data.    
+                    On this page you can set up your profile. This will be shown to employers when you apply for vacancies.        
                 </p>
             </div>
 
         </template>
     </TutorialModal>
 
+
+    <Footer></Footer>
+
 </template>
 
 <style scoped>
+    *:deep(.invalid-input) {
+        border: 3px solid var(--red) !important;
+    }
+    
     hr {
         width: 100%;
         margin: 8px 0 12px 0;
         border: 0;
-        border-top: 2px solid #555;
+        border-top: 1px solid #555;
     } 
 
     .container {

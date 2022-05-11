@@ -2,11 +2,13 @@
     import dayjs from 'dayjs';
     import api, { apiCatchError } from '@/assets/js/api';
     import relativeTime from 'dayjs/plugin/relativeTime';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import EmployerStatBar from '@/components/employer/EmployerStatBar.vue';
-    import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
     import DeleteVacancyModal from '../../components/employer/index/DeleteVacancyModal.vue';
-    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+    import CloseApplicationModal from '../../components/employer/index/CloseApplicationsModal.vue';
+
 
     const showModal = ref(false);
     const showDeleteModal = ref(false);
@@ -25,7 +27,7 @@
         rejectedApplications: '...'
     });
 
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const vacancies = ref(null);
     const displayModal = ref(false);
     const modalType = ref(0);
@@ -52,7 +54,7 @@
 
         const response = await api({
             method: 'get',
-            url: '/e/vacancy/',
+            url: '/v1/e/vacancies/',
             responseType: 'json',
             params: {
                 sort,
@@ -107,7 +109,7 @@
         // TODO: fix this spaghetti code and get show application working on matches again
         const response = await api({
             method: 'get',
-            url: '/e/vacancy/stats/',
+            url: '/v1/e/vacancies/stats/',
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -165,16 +167,12 @@
         // change number of vacancies per page
         while((page.value - 1) * limit.value >= numVacancies.value) page.value--;
 
-        if(page.value < 0)
-        {
+        if(page.value < 0) {
             page.value = 0;
         }
 
-        newPage = 1;
-
-        currentFirstVacancy = page.value * limit;
-        newPage = currentFirstVacancy / newLimit;
-
+        let currentFirstVacancy = page.value * newLimit;
+        let newPage = currentFirstVacancy / newLimit;
         page.value = newPage;
 
         const result = await getVacancies({ sort: sort.value, count: newLimit, pageNum: page.value, filter: filter.value });
@@ -183,7 +181,7 @@
             alert('uh oh! something went wrong :(');
             return;
         }
-
+        console.log(newPage)
         limit.value = newLimit;
     });
 
@@ -195,7 +193,7 @@
     const closeVacancy = async () => {
         const response = await api({
             method: 'put',
-            url: `/e/vacancy/close/${ selectedVacancy.value }/`,
+            url: `/v1/e/vacancies/${ selectedVacancy.value }/close/`,
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -212,7 +210,7 @@
     const deleteVacancy = async () => {
         const response = await api({
             method: 'delete',
-            url: `/e/vacancy/delete/${ selectedVacancy.value }/`,
+            url: `/v1/e/vacancies/${ selectedVacancy.value }/`,
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -240,7 +238,8 @@
 
 
 <template>
-    <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar>
+<!-- <EmployerNavbar page='home' :numNotifs='notifs'></EmployerNavbar> -->
+    <EmployerNavbar page='home' ></EmployerNavbar>
 
     <main class='container'>
         <EmployerStatBar :stats='stats' />
@@ -304,10 +303,10 @@
                         <div class='vacancy-listed' :title='vacancy.formattedDate'>Listed {{ vacancy.listedAgo }}</div>
 
                         <div class='vacancy-button-container'>
-                            <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>
                             <router-link :to='`/e/review/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue'>Review</router-link>
-                            <button class='vacancy-button vacancy-button-red' @click='showModal = true; currentModalVacancy = vacancy.VacancyName; selectedVacancy = vacancy.VacancyId' v-if='vacancy.IsOpen'>Close</button>
-                            <button class='vacancy-button vacancy-button-red' @click='showDeleteModal = true; currentModalVacancy = vacancy.VacancyName; selectedVacancy = vacancy.VacancyId' v-else>Delete</button>
+                            <router-link :to='`/e/vacancy/edit/${ vacancy.VacancyId }`' class='vacancy-button vacancy-button-blue' v-if='vacancy.IsOpen'>Edit</router-link>                            
+                            <a class='vacancy-button vacancy-button-red' @click='showModal = true; currentModalVacancy = vacancy.VacancyName; selectedVacancy = vacancy.VacancyId' v-if='vacancy.IsOpen'>Close</a>
+                            <a class='vacancy-button vacancy-button-red' @click='showDeleteModal = true; currentModalVacancy = vacancy.VacancyName; selectedVacancy = vacancy.VacancyId' v-else>Delete</a>
                         </div>
                         <DeleteVacancyModal v-if='showDeleteModal' :vacancyName='currentModalVacancy' @close-modal='showDeleteModal = false' @deleteVacancy='deleteVacancy' />
                         <CloseApplicationModal v-if='showModal' :vacancyName='currentModalVacancy' @close-modal='showModal = false' @closeApplications='closeVacancy' />
@@ -318,12 +317,13 @@
             <div class='pagination' v-if='numPages > 1'>
                 <div class='pag-block pag-start' @click='page > 1 ? changePage(page - 1) : page'><i class="fa-solid fa-angle-left"></i></div>
                 <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
-                <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            </div>
+                <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            
+            </div>
         </section>
     </main>
 
-    <button @click='notifs++'>Add notification</button>
-    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>
+    <!-- <button @click='notifs++'>Add notification</button>
+    <button @click='notifs < 1 ? 0 : notifs--'>Remove Notification</button>-->
     
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
@@ -341,6 +341,10 @@
 
         </template>
     </TutorialModal>
+
+
+    <Footer></Footer>
+
 </template>
 
 
@@ -563,6 +567,9 @@
         margin-right: 30px;
         width: calc(100% - 230px);
         font-weight: 500;
+        display: flex;
+        gap: 4px;
+
     }
 
     .vacancies {

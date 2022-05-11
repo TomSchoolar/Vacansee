@@ -1,9 +1,10 @@
 <script setup>
+    import Footer from '@/components/partials/CompactFooter.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import ProfileCard from '@/components/employer/match/ProfileCard.vue';
     import MatchesColumn from '@/components/employer/match/MatchesColumn.vue';
     import VacanciesColumn from '@/components/employer/match/VacanciesColumn.vue';
-    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
 
     
     import { ref } from 'vue';
@@ -14,7 +15,7 @@
         currentProfile.value = nextProfile;
     }
     
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const currentProfile = ref();
     const selectedVacancy = ref();
     const selectedVacancyName = ref();
@@ -37,7 +38,8 @@
 </script>
 
 <template>
-    <EmployerNavbar page='matches' :numNotifs='notifs'></EmployerNavbar>
+    <!-- <EmployerNavbar page='matches' :numNotifs='notifs'></EmployerNavbar> -->
+    <EmployerNavbar page='matches' ></EmployerNavbar>
 
     <header class='header'>
         <h1 class='title'>{{companyName}} - Matches</h1>
@@ -55,6 +57,7 @@
         </section>
     </main>
 
+
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Employer Match</h3>
@@ -71,6 +74,9 @@
 
         </template>
     </TutorialModal>
+
+    <Footer></Footer>
+
 </template>
 
 <style scoped>

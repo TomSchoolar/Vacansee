@@ -120,5 +120,6 @@
         margin: 0;
         position: relative;
         left: 1px;
+        text-align: left;
     }
 </style>

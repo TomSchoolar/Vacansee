@@ -8,7 +8,7 @@ from employer.helpers import getAccount as accountHelper
 
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def getAccount(request):
     # get jwt
     
@@ -16,6 +16,11 @@ def getAccount(request):
 
     if type(jwt) is not dict:
         return jwt
+
+    if request.method == 'PUT':
+        return putAccount(request, jwt)
+    elif request.method == 'DELETE':
+        return deleteAccount(request, jwt)
 
     try:
         detailsSet = EmployerDetails.objects.get(UserId__exact=jwt['id'])
@@ -42,15 +47,7 @@ def getAccount(request):
 
 
 
-@api_view(['PUT'])
-def putAccount(request):
-    # get jwt
-    
-    jwt = jwtHelper.extractJwt(request)
-
-    if type(jwt) is not dict:
-        return jwt
-
+def putAccount(request, jwt):
     # destructure
     try:
         newCompanyName = request.data['setCompanyName']
@@ -79,15 +76,7 @@ def putAccount(request):
     return Response({ 'status': 200, 'message': 'Account updated.'}, status=status.HTTP_200_OK)
 
 
-
-@api_view(['DELETE'])
-def deleteAccount(request):
-
-    jwt = jwtHelper.extractJwt(request)
-
-    if type(jwt) is not dict:
-        return jwt
-
+def deleteAccount(request, jwt):
     try:
         accountHelper.deleteUser(jwt['id'])
         return Response(status=status.HTTP_200_OK)

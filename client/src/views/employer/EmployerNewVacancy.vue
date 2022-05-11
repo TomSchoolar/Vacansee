@@ -1,11 +1,12 @@
 <script setup>
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
-    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
 
-    
+
     // form pages
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
     import MoreDetailsForm from '@/components/employer/newVacancy/MoreDetailsForm.vue';
@@ -18,7 +19,7 @@
 
     let pages;
     const formData = ref([]);
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const currentPageNum = ref(0);
     const isNewUser = ref(window.localStorage.getItem('newUserCreateVacancy') == null);
 
@@ -68,7 +69,8 @@
 </script>
 
 <template>
-    <EmployerNavbar page='newVacancy' :numNotifs='notifs' />
+    <!-- <EmployerNavbar page='newVacancy' :numNotifs='notifs' /> -->
+    <EmployerNavbar page='newVacancy' />
 
     <main class='container'>
         <div class='header'>
@@ -102,6 +104,8 @@
         </div>
         
     </form>
+
+
 	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Create new vacancy</h3>
@@ -118,6 +122,10 @@
 
         </template>
     </TutorialModal>
+
+
+    <Footer></Footer>
+
 </template>
 
 <style scoped>

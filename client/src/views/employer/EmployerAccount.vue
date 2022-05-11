@@ -1,7 +1,8 @@
 <script setup>
+	import Footer from '@/components/partials/Footer.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
 	import AccountModal from '@/components/employer/account/AccountModal.vue';
-	import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+	import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
 
 
 	import { logout } from '@/assets/js/jwt';
@@ -11,7 +12,7 @@
 
 	const url = window.location.pathname;
 
-	const notifs = ref(2);
+	//const notifs = ref(2);
 	const saved = ref(false);
 	const details = ref({});
 	const displayModal = ref(false);
@@ -27,7 +28,7 @@
 	const getAccount = async () => {
 
 		const response = await api({
-			url: `/e/account/`,
+			url: `/v1/e/accounts/`,
 			method: 'get',
 			responseType: 'json'
 		}).catch(apiCatchError);
@@ -53,7 +54,7 @@
 
 	const updateAccount = async (newCompanyName, newPhoneNumber, newEmail) => {
 		const response = await api({
-			url: '/e/account/update/',
+			url: '/v1/e/accounts/',
 			method: 'put',
 			data: {
 				setCompanyName: newCompanyName,
@@ -76,7 +77,7 @@
 
 	const deleteAccount = async () => {
 		const response = await api({
-			url: '/e/account/delete/',
+			url: '/v1/e/accounts/',
 			method: 'delete',
 			responseType: 'json'
 		}).catch(apiCatchError);
@@ -128,26 +129,42 @@
 
 <template>
     <main class='main'>
-        <EmployerNavbar page='account' :numNotifs='notifs'></EmployerNavbar>
+        <!-- <EmployerNavbar page='account' :numNotifs='notifs'></EmployerNavbar> -->
+		<EmployerNavbar page='account' ></EmployerNavbar>
+
         <section class='container'>
 			<AccountModal :display='displayModal' @close='displayModal = false' @delete='deleteAccount' />
-			<p class='logo'>Account Details</p>
-			<label for='title'>Company Name:</label>
-			<input type='text' placeholder='...' v-model='details.CompanyName' id='title' required/>
-			<label for='phone'>Default Phone Number:</label>
-			<input type='text' placeholder='...' v-model='details.PhoneNumber' id='phone' required/>
-			<label for='email'>Current Email Address:</label>
-			<input type='text' placeholder='...' v-model='details.Email' required/>
-			<div class='button-container'>
-				<button class='button button-red' @click=showDeletion>Delete Account</button>
-				<button class='button button-blue' @click="updateAccount(details.CompanyName, details.PhoneNumber, details.Email)">Save</button>
-			</div>
-            <button class ='button button-blue' @click='resetTutorial'> Reset tutorial</button>
-			<div class='saved-indicator' v-show='saved'>
-				<p>Saved!</p>
-			</div>
+			
+            <h1 class='title'>My Account</h1>
+
+            <div class='col'>
+                <p class='col-title'>Account Details</p>
+
+                <label for='title' class='label'>Company Name:</label>
+                <input type='text' class='input' placeholder='...' v-model='details.CompanyName' id='title' required/>
+                
+                <label for='phone' class='label'>Default Phone Number:</label>
+                <input type='text' class='input' placeholder='...' v-model='details.PhoneNumber' id='phone' required/>
+                
+                <label for='email' class='label'>Current Email Address:</label>
+                <input type='email' class='input' placeholder='...' v-model='details.Email' id='email' required/>
+                
+                <div class='button-container'>
+                    <button class='button button-red' @click='showDeletion'>Delete Account</button>
+                    <button class='button button-blue' @click='updateAccount(details.CompanyName, details.PhoneNumber, details.Email)'>Save</button>
+                </div>
+                
+                <button class ='button button-blue' @click='resetTutorial'> Reset tutorial</button>
+            
+                <div class='saved-indicator' v-show='saved'>
+                    <p>Saved!</p>
+                </div>
+            </div>
 		</section>
+
+		<Footer></Footer>
     </main>
+
 	<TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Employer account</h3>
@@ -185,8 +202,8 @@
 		font-weight: bold;
 		line-height: 24px;
 		padding: 5px 0;
-        flex: 1 1 0;
         margin-top: 15px;
+        height: 50px;
     }
 
     .button-blue {
@@ -210,24 +227,54 @@
         background: var(--red-focus);
     }
 
+    .col {
+        width: 40%;
+        min-width: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 auto;
+    }
+
+    .col * {
+        width: 80%;
+    }
+
+    .col-title {
+		color: var(--blue);
+		font-weight: bold;
+		font-size: 30px;
+		line-height: 1;
+		margin-bottom: 20px;
+	}
+
 	.container {
 		display: flex;
 		flex-direction: column;
 		align-content: center;
-		width: 20vw;
+		max-width: 70vw;
 		margin-right: auto;
 		margin-left: auto;
 	}
 
-	.container input {
+	.input {
 		border: 1px solid var(--slate);
 		border-radius: 5px;
-		color: var(--slate);
+		color: var(--jet);
 		font-size: 16px;
 		line-height: 24px;
 		padding: 5px 10px;
 		margin: 0 0 10px 0;
+        width: calc(80% - 20px);
 	}
+
+    .label {
+        font-size: 13px;
+        font-weight: bold;
+        color: var(--jet);
+        text-align: left;
+        margin-top: 10px;
+    }
 
 	.logo {
 		color: var(--blue);
@@ -238,26 +285,24 @@
 		margin: 0 0 25px 0;
 	}
 
-	.main {
-		width: 100vw;
-		height: 100vh;
-	}
-
 	.saved-indicator {
-		margin: 10px;
+		margin-top: 15px;
 		background: var(--green);
 		border-radius: 5px;
 		color: #ffffff;
+        text-align: center;
+        padding: 5px 0;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
 	}
 
-    .submit:active, .submit:focus, .submit:hover {
-        background: var(--red-focus);
-        cursor: pointer;
-    }
-
-    .submitted-info {
-        background-color: var(--red);
-        padding: 5px;
-        color: white;
+    .title {
+        text-align: left;  
+        margin-top:0; 
+        border-bottom: 1px solid;
+        font-size: 35px;
     }
 </style>

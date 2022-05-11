@@ -1,11 +1,12 @@
 <script setup>
     import dayjs from 'dayjs';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import MatchModal from '@/components/employee/applications/MatchModal.vue';
-    import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
-    import AreYouSureModal from '../../components/employer/match/AreYouSureModal.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
+    import AreYouSureModal from '../../components/employer/match/AreYouSureModal.vue';
+    import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
 
 
     import { ref, watch, onMounted } from 'vue';
@@ -26,7 +27,7 @@
 
     const page = ref(1);
     const limit = ref(5);
-    const notifs = ref(2);
+    //const notifs = ref(2);
     const numPages = ref(1);
     const filter = ref('all');
     const modalStats = ref({});
@@ -43,7 +44,7 @@
 
         const response = await api({
             method: 'get',
-            url: '/applications/',
+            url: '/v1/applications/',
             responseType: 'json',
             params: {
                 sort,
@@ -88,7 +89,7 @@
     onMounted(async () => {
         const response = await api({
             method: 'get',
-            url: '/applications/stats/',
+            url: '/v1/applications/stats/',
             responseType: 'json'
         }).catch(apiCatchError);
 
@@ -136,7 +137,7 @@
 
     const showMatch = async (matchId) => {
         const response = await api({
-            url: `/applications/${ matchId }/`,
+            url: `/v1/applications/${ matchId }/`,
             method: 'get',
             responseType: 'json'
         }).catch(apiCatchError);
@@ -185,7 +186,7 @@
     const deleteApplication = async (applicationId) => {
 
         const response = await api({
-            url: `/applications/delete/${ applicationId }`,
+            url: `/v1/applications/${ applicationId }/`,
             method: 'delete',
             responseType: 'json'
         }).catch(apiCatchError);
@@ -235,7 +236,8 @@
 
 
 <template>
-    <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>
+    <!-- <EmployeeNavbar page='applications' :numNotifs='notifs'></EmployeeNavbar>-->
+    <EmployeeNavbar page='applications' ></EmployeeNavbar>
 
     <main class='container'>
         <EmployeeStatBar :stats='stats' />
@@ -315,6 +317,7 @@
         </section>
     </main>
 
+
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Employee Applications</h3>
@@ -332,6 +335,9 @@
 
         </template>
     </TutorialModal>
+    
+
+    <Footer></Footer>
     
 </template>
 

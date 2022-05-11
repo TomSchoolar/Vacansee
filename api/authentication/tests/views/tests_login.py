@@ -24,7 +24,7 @@ class LoginPostTestClass(TestCase):
 
     def test_validLoginRequest(self):
 
-        response = self.client.post('/login/', { 'email': self.employeeEmail, 'password': self.password })
+        response = self.client.post('/v1/login/', { 'email': self.employeeEmail, 'password': self.password })
         
         expectedUserData = {
             'IsEmployer': False,
@@ -54,7 +54,7 @@ class LoginPostTestClass(TestCase):
     
     def test_validEmployerLoginRequest(self):
 
-        response = self.client.post('/login/', { 'email': self.employerEmail, 'password': self.password })
+        response = self.client.post('/v1/login/', { 'email': self.employerEmail, 'password': self.password })
         
         details = EmployerDetails.objects.get(UserId__exact = self.employerId)
 
@@ -88,21 +88,21 @@ class LoginPostTestClass(TestCase):
 
 
     def test_incorrectEmail(self):
-        response = self.client.post('/login/', { 'email': 'gxvy123@student.bham.ac.uk', 'password': self.password })
+        response = self.client.post('/v1/login/', { 'email': 'gxvy123@student.bham.ac.uk', 'password': self.password })
 
         self.assertEquals(response.status_code, 401)
 
 
     
     def test_incorrectPassword(self):
-        response = self.client.post('/login/', { 'email': self.employeeEmail, 'password': 'potato' })
+        response = self.client.post('/v1/login/', { 'email': self.employeeEmail, 'password': 'potato' })
 
         self.assertEquals(response.status_code, 401)
     
 
 
     def test_missingParameters(self):
-        response = self.client.post('/login/')
+        response = self.client.post('/v1/login/')
 
         self.assertEquals(response.status_code, 400)
     
@@ -111,14 +111,14 @@ class LoginPostTestClass(TestCase):
     def test_loginTwoAccountsCheckRefreshFamily(self):
         # login to two accounts consecutively and make sure the refresh token records have different, and correct family ids
         
-        firstResponse = self.client.post('/login/', { 'email': self.employeeEmail, 'password': self.password })
+        firstResponse = self.client.post('/v1/login/', { 'email': self.employeeEmail, 'password': self.password })
         
         firstRefreshToken = firstResponse.data['refreshToken']
         firstTokenFamily = RefreshToken.objects.get(Token__exact = firstRefreshToken).FamilyId
 
         self.assertEquals(firstTokenFamily, 0)
 
-        secondResponse = self.client.post('/login/', { 'email': self.employerEmail, 'password': self.password })
+        secondResponse = self.client.post('/v1/login/', { 'email': self.employerEmail, 'password': self.password })
         
         secondRefreshToken = secondResponse.data['refreshToken']
         secondTokenFamily = RefreshToken.objects.get(Token__exact = secondRefreshToken).FamilyId

@@ -101,5 +101,7 @@
         justify-content: center;
         align-items: center;
         background-color: #00000040;
+        min-height: 100vh;
+        min-width: 100vw;
     }
 </style>

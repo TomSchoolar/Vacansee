@@ -7,6 +7,7 @@
 
 import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
 
+    const props = defineProps(['Qualifications'])
     const emit = defineEmits(['next', 'back']);
 
     const validate = () => {
@@ -33,10 +34,10 @@ import FormButtons from '@/components/employee/profile/formComponents/FormButton
 
 <template>
     <FormHeader title='Qualifications'>
-        Enter up to three sets of qualifications below. Include the number and type of the qualifaction.
+        Enter up to three sets of qualifications below. Include the number and type of the qualification. E.g. "11 GCSEs (A-C)"
     </FormHeader>
 
-    <FormExpandingText label='qualifications' name='Qualifications' :max='3' />
+    <FormExpandingText label='qualifications' name='Qualifications' :max='3' :value='props.Qualifications' />
     <FormButtons :back='true' :next='true' @back='emit("back")' @next='validate()' />
 </template>
 

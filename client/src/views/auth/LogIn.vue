@@ -25,7 +25,7 @@
         
         const response = await api({
             method: 'post',
-            url: '/login/',
+            url: '/v1/login/',
             withCredentials: true,
             data: formData
         }).catch(apiCatchError);

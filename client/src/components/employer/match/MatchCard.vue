@@ -4,20 +4,22 @@
     
     import { onMounted, ref } from 'vue';
 
-    const props = defineProps(['stats', 'vacancyName']);
-    const emit = defineEmits(["showApplication", "unmatch"]);
+    const props = defineProps(['stats', 'vacancyName', 'vacancy', 'showingThis']);
+    const emit = defineEmits(['showApplication', 'hideApplication', 'unmatch']);
 
     const details = {};
     const showModal = ref(false);
     const { application = {}, profile = {} } = props.stats;
 
+    //download button
+    /*
     const downloadApplication = () => {
         alert('download application');
-    };
+    };*/
 
     const unmatch = async () => {
         const response = await api({
-            url: `/e/review/${ application.VacancyId }/updatestatus/${ application.ApplicationId }/`,
+            url: `/v1/e/vacancies/${ application.VacancyId }/review/${ application.ApplicationId }/`,
             method: 'put',
             data: {
                 setStatus: "reject"
@@ -38,16 +40,12 @@
     };
 
     const getDetails = async (options) => {
-        const { uID = application.UserId } = options;
+        const { applicantId = application.UserId } = options;
 
         const response = await api({
             method: 'get',
-            url: '/e/match/card',
-            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            url: `/v1/e/matches/card/${ applicantId }/`,
             responseType: 'json',
-            params: {
-                'applicantId':uID
-            }
         }).catch((err) => {
             console.log(`oops ${ err }`);
         });
@@ -70,7 +68,7 @@
     };
 
     onMounted(async () => {
-        const result = getDetails({ uID: application.UserId });
+        const result = getDetails({ applicantId: application.UserId });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -106,8 +104,10 @@
         </div>
 
         <div class='application-right'>
-            <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show'>Show Application</button>
-            <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button>
+            <button class='application-button application-button-blue' @click='emit("hideApplication", details);' id='show' v-if='showingThis'>Hide Application</button>
+            <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show' v-else>Show Application</button>
+            <!-- download button -->
+            <!-- <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button> -->
             <button class='application-button application-button-red' @click='showModal = true'>Unmatch</button>
             <AreYouSureModal v-if='showModal' :name='profile.FirstName + " " + profile.LastName' :vacancyName='vacancyName' :employer='true' @close-modal='showModal = false' @unmatch='unmatch' />
         </div>
@@ -132,9 +132,19 @@
         min-width: 150px;
         font-size: 12px;
         text-decoration: none;
-        padding: 2px 4px;
+        padding: 3px 4px;
         font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+        margin: 2px;
     }
+
+    .application-button-blue {
+        background: var(--blue);
+    }
+
+    .application-button-blue:hover, .application-button-blue:focus, .application-button-blue:active {
+        background: var(--blue-focus);
+        cursor: pointer;
+    } 
 
     .application-button-grey {
         background: var(--slate);
@@ -165,8 +175,9 @@
         display: flex;
         flex-direction: column;
         height: calc(100% - 4px);
-        justify-content: space-between;
-        padding: 2px 0;
+        justify-content: center;
+        padding: 2px 0; 
+        gap: 3px;
     }
 
     .contact {
@@ -181,7 +192,18 @@
         font-size: 18px;
     }
 
+    .pronouns {
+        color: var(--slate);
+        font-size: 14px;
+    }
+
     .slim-hr {
         margin: 1px 0;
+    }
+
+    .title {
+        display: flex;
+        gap: 4px;
+        align-items: center;
     }
 </style>

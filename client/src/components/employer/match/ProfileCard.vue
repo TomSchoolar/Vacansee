@@ -1,41 +1,41 @@
 <script setup>  
 
-    const profile = defineProps(['profile']);
-    const p = profile.profile;
+    const props = defineProps(['profile']);
 </script>
 
 <template>
     <div class='card'>
         <div class='info'>
-            <p class='name'>{{ p.FirstName }} <span v-if='p.Pronouns' class='pronouns'>({{ p.Pronouns }})</span></p>
-            <p class='location' v-if='p.Location'>Based in {{ p.Location }}</p>
+            <p class='name'>{{ profile.FirstName }} <span v-if='profile.Pronouns' class='pronouns'>({{ profile.Pronouns }})</span></p>
+            <p class='location' v-if='profile.Location'>Based in {{ profile.Location }}</p>
         </div>
         <div class='description'>
-            <p>{{ p.TopicSentence }}</p>
+            <p>{{ profile.TopicSentence }}</p>
         </div>
-        <span class='card-section' v-if='p.NotableSkills'>Notable Skills:</span>
+        <span class='card-section' v-if='profile.NotableSkills'>Notable Skills:</span>
         <div class='skills block'>
             <table>
-                <tr v-for='skill in p.NotableSkills' v-bind:key='skill'>
-                    <th>- {{ skill }}</th>
+                <tr v-for='(skill, index) in profile.NotableSkills' v-bind:key='`skill-${ index }`'>
+                    <th>> {{ skill }}</th>
                 </tr>
             </table>
         </div>
-        <span class='card-section' v-if='p.Experience'>Experience:</span>
+        <span class='card-section' v-if='profile.Experience'>Experience:</span>
         <div class='experience block'>
             <table>
-                <tr v-for='xp in p.Experience' v-bind:key='xp'>
-                    <!-- <th class='table-title'>- {{ xp.Title }}</th> 
-                    <th><span class='table-date'>{{ xp.StartDate }} - {{ xp.EndDate }}</span></th> -->
+                <tr v-for='(xp, index) in profile.Experience' v-bind:key='`xp-${ index }`'>
+                    <!-- <th class='table-title'>- {{ xprofile.Title }}</th> 
+                    <th><span class='table-date'>{{ xprofile.StartDate }} - {{ xprofile.EndDate }}</span></th> -->
                     <th class='table-title'>> {{ xp }} </th>
+                    <th v-if='xp.split("&&").length > 1'><span class='table-date'>{{ xp.split("&&")[1] }}</span></th>
                 </tr>
             </table>
         </div>
-        <span class='card-section' v-if='p.Qualifications'>Qualifications:</span>
+        <span class='card-section' v-if='profile.Qualifications'>Qualifications:</span>
         <div class='qualifications'>
             <table>
-                <tr v-for='qual in p.Qualifications' v-bind:key='qual'>
-                    <th>- {{ qual }}</th>
+                <tr v-for='(qual, index) in profile.Qualifications' v-bind:key='`qual-${ index }`'>
+                    <th>> {{ qual }}</th>
                 </tr>
             </table>
         </div>
@@ -53,19 +53,19 @@
         margin-bottom: 10px;
     }
 
-    .card {
+    div.card {
         font-weight: normal;
-        height: 500px;
-        width: 400px;
+        min-height: 400px;
+        max-height: 600px;
+        overflow-y: hidden;
+        width: 370px;
         border: 2px solid #555;
         border-radius: 15px;
         margin: 12px 0;
         align-items: center;
         text-align: left;
         justify-content: space-between;
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-top: 5px;
+        padding: 20px;
         background: white;
     }
 
@@ -74,9 +74,12 @@
     }
 
     .description p {
-        height: 50px;
+        min-height: 10px;
+        max-height: 60px;
+        text-overflow: ellipsis;
         padding-top: 5px;
         padding-bottom: 5px;
+        margin: 10px auto;
     }
 
     .info p {
@@ -87,7 +90,9 @@
         font-weight: bold;
         font-size: 24px;
         margin: 0px;
-        padding: 10px 0px 0px 0px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .job-title {

@@ -1,134 +1,107 @@
 <script setup>
+    import axios from 'axios';
     import VacancyCard from '@/components/auth/VacancyCard.vue';
+    import Footer from '@/components/partials/CompactFooter.vue';
 
-    let vacancies = [
-        {
-        jobTitle: 'Newsdancer',
-        position: 'The News',
-        description: 'We are looking for a lot of words and more words here because we need more words to fill up space with words.',
-
-        },
-
-        {
-        jobTitle: 'Reporter',
-        position: 'The News',
-        description: 'We are looking for...',
-
-        },
-
-        {
-        jobTitle: 'Reporter',
-        position: 'The News',
-        description: 'We are looking for...',
-        },
-
-                {
-        jobTitle: 'Reporter',
-        position: 'The News',
-        description: 'We are looking for...',
-        },
+    import { onMounted, ref } from 'vue';
 
 
-         {
-        jobTitle: 'Newsdancer',
-        position: 'The News',
-        description: 'We are looking for a lot of words and more words here because we need more words to fill up space with words.',
+    const vacancies = ref([]);
 
-        },
+    onMounted(async () => {
+        const response = await axios({
+            baseURL: process.env.VUE_APP_API_ENDPOINT,
+            url: '/v1/vacancies/',
+            method: 'get',
+            responseType: 'json',
+            timeout: 3000,
+            params: {
+                count: 10,
+                noAuth: true
+            }
+        }).catch((err) => {
+            console.error(err);
+        });
 
-        {
-        jobTitle: 'Reporter',
-        position: 'The News',
-        description: 'We are looking for...',
+        if(!response?.data?.vacancies)
+            return;
 
-        },
+        if(response.data.message)
+            console.log(response.data.message);
 
-        {
-        jobTitle: 'Reporter',
-        position: 'The News',
-        description: 'We are looking for...',
-        },
+        vacancies.value = response.data.vacancies;
+    });
 
-        {
-        jobTitle: 'Reporter',
-        position: 'The News',
-        description: 'We are looking for...',
-        },
-
-    ];
-    
 
 </script>
 
 <template>
     <main class='container'>
         <section class='top'>
-            <div class='left column'>
-                <h1 class = 'tagline'>Vacansee</h1>
-                <p class = 'tagline'> Making finding soul-sucking jobs a little less naff </p>
-                <div class='login-top'>
-                    <router-link :to='`/login`' class='login-button-top'>Start Now</router-link>
+            <div class='top-col-left'>
+                <div class='top-intro-container'>
+                    <h1 class='top-title'>VACANSEE</h1>
+                    <p class='top-tagline'> Making finding soul-sucking jobs a little less naff </p>
+                    <router-link :to='`/login`' class='button button-red'>Start Now</router-link>
                 </div>
             </div>
 
-            <div class = 'right column'>
-                <img src='@/assets/career-center-carousel-p-500.png' alt='man' height=310 />
+            <div class = 'top-col-right'>
+                <img src='@/assets/career-center-carousel-p-500.v4.png' class='top-img' alt='smiling man in suit punching the air' />
             </div>
         </section>
 
         <section class='mid'>
-            <h3> Feast your eyes, employment gannets </h3>
-            <p style= 'padding:10px 50px 10px 50px;'> Thousands of organisations that we just made up publish advertisements for new vacancies every hour,<br /> so there is something for everyone held by the scruff of the neck by the Student Loans Company </p>
-            <div class='cards'>
-                <VacancyCard v-for='vacancy in vacancies' :vacancy='vacancy' id= 'cards'/>
+            <div class='mid-text'>
+                <h3 class='title'> Feast your eyes, employment gannets </h3>
+                <p class='desc'>
+                    Thousands of organisations that we just made up publish advertisements for new vacancies every hour, so there is something for everyone held by the scruff of the neck by the Student Loans Company. 
+                </p>
+            </div>
+            <div class='mid-cards'>
+                <div class='mid-slider' v-if='vacancies.length != 0'>
+                    <div class='mid-slide-track'>
+                        <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' id= 'cards'/>
+                        <VacancyCard v-for='vacancy in vacancies' :key='vacancy.VacancyId' :vacancy='vacancy' id= 'cards'/>
+                    </div>
+                </div>
             </div>
         </section>
 
         <section class='bottom'>
-            <h3> Feeling a little boujie? </h3>
-            <p style= 'padding:0px 50px 10px 50px;'> We provide employers with tools that allow them to post vacancies and to review and contact applicants. </p>
-            <div class='login'>
-                <router-link :to='`/login`' class='login-button'>Start Now</router-link>
+            <div class='bottom-container'>
+                <h3 class='title'>In a rush?</h3>
+                <p class='desc'> We provide applicants and employers with tools that allow you to get what you're doing done. Fast. </p>
+                <router-link :to='`/login`' class='button button-white'>Start Now</router-link>
             </div>
         </section>
-
     </main>
+
+    <Footer></Footer>
 </template>
 
 <style scoped>
-    @keyframes example {
-        0%   {left:0px;}
-        25%  {left:-50px;}
-        50%  { left:-100px;}
-        75%  { left:-150px;}
-        100% { left:-200px;}
+    body {
+        overflow-x: hidden;
     }
 
     .bottom{
         padding: 20px;
-        height: 20vh;
+        height: 100vh;
         background-color: #08415c;
         color: white;
-    }
-
-    .cards {
         display: flex;
-        justify-content: space-evenly;
-        margin-bottom: 20px;
-        position: relative;
-        animation-name: example;
-        animation-duration: 4s;
-        animation-iteration-count: infinite;
-        animation-delay: 2s;
+        align-items: center;
+        justify-content: center;
     }
 
-    .login {
+    .bottom-container {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
     }
 
-    .login-button {
+    .bottom-login {
         width: 10vw;
         height: 3vh;
         border: 0;
@@ -139,75 +112,213 @@
         line-height: 3vh;
     }
 
-    .login-button:active .login-button:focus .login-button:hover {
+    .bottom-login:active .bottom-login:focus .bottom-login:hover {
         color: var(--blue-focus);
     }
 
-    .login-button-top {
-        width: 10vw;
+    .bottom-title {
+        font-size: calc(18px + 0.8vw);
+        margin: 0;
+        margin-bottom: calc(15px + 1.0%);
+    }
+
+    .button {
         height: 3vh;
         border: 0;
         border-radius: 5px;
-        background-color: var(--red);
         color: white;
         text-decoration: none;
         line-height: 3vh;
+        font-size: calc(12px + 0.3vw);
+        padding: calc(6px + 0.2vh) calc(12px + 0.4vw);
+        margin: calc(5px + 2%) 0;
     }
 
-    .login-button-top:active .login-button-top:hover .login-button-top:focus {
+    .button-red {
+        background-color: var(--red);
+    }
+
+    .button-red:active, .button-red:hover, .button-red:focus {
         background-color: var(--red-focus);
     }
 
-    .login-top {
-        display: flex;
-        flex-direction: column;
-        align-items: left;
-        padding: 0px 120px 0px 120px;
-        text-align: center;
-    }
-
-    .left{
+    .button-white {
+        color: var(--blue);
         background-color: white;
-        float:left;
-        width:40%;
-        height: 300px;
-        padding: 10px;
-
     }
 
+    .button-white:active, .button-white:hover, .button-white:focus {
+        background-color: #ddd;
+    }
 
-    .mid{
-        padding: 50px;
+    .desc {
+        color: #bbb;
+        font-size: calc(18px + 0.25vw)
+    }
+
+    .mid {
+        width: 100vw;
+        padding: calc(25px + 2.0%) 0;
         background-color: #333;
         color: white;
-        height: 40vh;
+        min-height: 400px;
+        height: 75vh;
     }
 
-    .right{
-        background-color: #cc2936;
-        float:right;
-        width:50%;
-        height: 300px;
-        padding:10px;
+    .mid-cards {
+        display: flex;
+        justify-content: space-evenly;
+        margin-bottom: 20px;
+        position: relative;
     }
 
-    
+    .mid-slider {
+        background: var(--jet);
+        min-height: 100px;
+        margin: 3vh auto 1vh auto;
+        overflow:hidden;
+        position: relative;
+        width: 100vw;
+	}
 
-    .tagline{
-        font-size: 24px;
-        padding: 0px 120px 0px 120px;
+    .mid-slider::before, .mid-slider::after {
+        background: linear-gradient(to right,  rgba(51,51,51,1) 0%, rgba(51,51,51,0) 100%);
+        content: "";
+        height: 100%;
+        position: absolute;
+        width: 100px;
+        z-index: 2;
+    }
+	
+	.mid-slider::after {
+		right: 0;
+		top: 0;
+		transform: rotateZ(180deg);
+	}
+
+	.mid-slider::before {
+		left: 0;
+		top: 0;
+	}
+
+	.mid-slide-track {
+		animation: scroll 60s linear infinite;
+		display: flex;
+		width: calc(370px * 20);
+	}
+
+    .mid-text {
+        width: 50%;
+        margin: 0 auto;
         text-align: left;
     }
 
-    .top{
-        color: black;
+    .title {
+        font-size: calc(18px + 1.15vw);
+        margin: 0;
+        margin-bottom: calc(15px + 1.25%);
     }
 
+    .top {
+        color: black;
+        position: relative;
+        min-height: 400px;
+        height: 100vh;
+    }
 
-    .top:after {
+    .top::after {
         content: "";
         display: table;
         clear: both;
     }
 
+    .top-col-left {
+        background-color: white;
+        float: left;
+        width: 42.5%;
+        height: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .top-col-right {
+        float: right;
+        width: 50vw;
+        height: 100%;
+        background-color: white;
+        position: relative;
+        animation: 1.0s ease-in-out 0s 1 slideInFromRight;
+    }
+
+    .top-col-right::before {
+        content: '';
+        position: absolute;
+        top: 0; 
+        right: 0;
+        width: 150%; 
+        height: 100%;
+        background-color: var(--red);
+        animation: 0.75s ease-out 0s 1 angleSlideInFromRight;
+
+        -webkit-transform: skewX(-15deg) translateX(33%);
+        -ms-transform: skewX(-15deg) translateX(33%);
+        transform: skewX(-15deg) translateX(33%);
+    }
+
+    .top-img {
+        position: absolute;
+        max-height: 100%;
+        max-width: 100%;
+        bottom: 0;
+        left: 0;
+    }
+
+    .top-intro-container {
+        width: 40%;
+        min-width: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        margin: 30px 0;
+    }
+
+    .top-tagline {
+        color: var(--jet);
+        font-size: calc(16px + 0.7vw);
+        font-weight: 500;
+        margin: calc(5px + 2%) 0;
+    }
+
+    .top-title {
+        font-size: calc(25px + 1.5vw);
+        color: var(--blue);
+        margin: calc(5px + 2%) 0;
+    }
+
+    @keyframes slideInFromRight {
+        0% {
+            transform: translateX(200%);
+        }
+
+        100% {
+            transform: translateX(0%);
+        }
+    }
+
+    @keyframes angleSlideInFromRight {
+        0% {
+            transform: skewX(-15deg) translateX(133%);
+        }
+
+        100% {
+            transform: skewX(-15deg) translateX(33%);
+        }
+    }
+
+    @keyframes scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(calc(-370px * 10 - 40px))}
+    }
 </style>

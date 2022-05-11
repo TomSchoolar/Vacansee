@@ -1,9 +1,11 @@
 <script setup>
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployerNavbar from '@/components/employer/EmployerNavbar.vue';
     import FormStepper from '@/components/employer/newVacancy/FormStepper.vue';
-    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue'
+    import TutorialModal from '../../components/employer/tutorial/TutorialModal.vue';
+
 
     // form pages
     import BasicDetailsForm from '@/components/employer/newVacancy/BasicDetailsForm.vue';
@@ -34,7 +36,7 @@
         let id = window.location.pathname.split('/').pop()
 
         const vacancy = await api({
-            url: `/e/vacancy/edit/${ id }`,
+            url: `/v1/e/vacancies/${ id }/edit/`,
             method: 'get',
             responseType: 'json'
         }).catch(apiCatchError);
@@ -116,6 +118,7 @@
         
     </form>
 
+
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
             <h3>Edit vacancy</h3>
@@ -132,6 +135,8 @@
 
         </template>
     </TutorialModal>
+
+    <Footer></Footer>
 
 </template>
 

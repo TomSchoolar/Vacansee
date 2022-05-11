@@ -1,20 +1,20 @@
 from django.urls import path
 from .views import applications, favourites, index, account, profile
-
 urlpatterns = [
-    path('vacancy/', index.getIndex),
-    path('vacancy/fav/', favourites.postFavourite),
-    path('vacancy/unfav/', favourites.deleteFavourite),
-    path('vacancy/apply/', applications.postApplication),
-    path('vacancy/reject/', index.postReject),
+    path('vacancies/', index.getIndex),
+    path('vacancies/<int:vacancyId>/favourite/', favourites.postFavourite),
+    path('vacancies/<int:vacancyId>/unfavourite/', favourites.deleteFavourite),
+    path('vacancies/<int:vacancyId>/apply/', applications.postApplication),
+    path('vacancies/<int:vacancyId>/reject/', index.postReject),
+    path('vacancies/tags/', index.getTags),
     path('applications/', applications.getApplications),
     path('applications/stats/', applications.getApplicationStats),
-    path('applications/delete/<int:applicationId>/', applications.deleteApplication),
     path('applications/<int:applicationId>/', applications.getApplicationDetails),
     path('favourites/', favourites.getFavourites),
-    path('account/', account.getAccount),
-    path('account/update/', account.putAccount),
-    path('account/delete/', account.deleteAccount),
-    path('account/profile/', account.getProfile),
-    path('profile/', profile.postProfile)
+    path('accounts/', account.getAccount),
+    path('accounts/', account.putAccount),
+    path('accounts/', account.deleteAccount),
+    path('accounts/profiles/', account.getProfile),
+    path('profiles/', profile.postProfile),
+    path('profiles/edit/', profile.postProfileEdit)
 ]
