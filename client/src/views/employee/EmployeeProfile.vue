@@ -69,7 +69,7 @@
     
     <main class='container'>
         <div class='header'>
-            <h1 class='title'>User Profile </h1>
+            <h1 class='title'>User Profile Setup</h1>
             <hr />
         </div>
     </main>

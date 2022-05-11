@@ -1,3 +1,5 @@
+const { logout } = require('@/assets/js/jwt');
+
 const middleware = {}
 
 middleware.isLoggedIn = ({ next, router }) => {
@@ -44,12 +46,17 @@ middleware.isEmployer = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        router.push({ name: 'LogIn' });
+        return logout();
     }
 
     session = JSON.parse(session);
 
-    if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === false) {
+    // flag gets deleted somehow
+    if(typeof session.IsEmployer === 'undefined') {
+        return logout();
+    }
+
+    if(session.IsEmployer === false) {
         router.push({ name: 'EmployeeIndex' });
     }
 
@@ -60,12 +67,17 @@ middleware.isEmployee = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        router.push({ name: 'LogIn' });
+        return logout();
     }
 
     session = JSON.parse(session);
 
-    if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === true) {
+    // flag gets deleted somehow
+    if (typeof session.IsEmployer === 'undefined') {
+        return logout();        
+    }
+
+    if(session.IsEmployer === true) {
         router.push({ name: 'EmployerIndex' });
     }
 
@@ -76,24 +88,52 @@ middleware.isNewEmployee = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        router.push({ name: 'LogIn' });
+        return logout();
     }
 
     session = JSON.parse(session);
 
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === true) {
         router.push({ name: 'EmployerIndex' });
-    }
-
-    if(!(localStorage.getItem('profile'))) {
+    } else if(typeof session?.HasProfileSetup === 'undefined' || session.HasProfileSetup) {
         router.push({ name: 'EmployeeProfileEdit' });
-    }
-    else{
-        localStorage.removeItem('profile');
     }
 
     return next();
     
+}
+
+middleware.hasProfile = ({ next, router }) => {
+    let session = localStorage.getItem('session');
+
+    if(!session) {
+        return logout();
+    }
+
+    session = JSON.parse(session);
+
+    if (typeof session.HasProfileSetup === 'undefined' || session.HasProfileSetup == false) {
+        router.push({ name: 'EmployeeProfile' });
+    }
+
+    return next();
+}
+
+
+middleware.hasProfile = async ({ next, router }) => {
+    let session = localStorage.getItem('session');
+
+    if(!session) {
+        return logout();
+    }
+
+    session = JSON.parse(session);
+
+    if (typeof session.HasProfileSetup === 'undefined' || session.HasProfileSetup == false) {
+        router.push({ name: 'EmployeeProfile' });
+    }
+
+    return next();
 }
 
 

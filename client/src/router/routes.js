@@ -1,4 +1,4 @@
-import { isLoggedIn, isNotLoggedIn, isEmployer, isEmployee, isNewEmployee } from '@/middleware';
+import { isLoggedIn, isNotLoggedIn, isEmployer, isEmployee, isNewEmployee, hasProfile } from '@/middleware';
 import Landing from '@/views/Landing.vue';
 
 const landingRoute = {
@@ -64,7 +64,7 @@ const employeeRoutes = [
         name: 'EmployeeIndex',
         component: EmployeeIndex,
         meta: {
-            middleware: [isLoggedIn, isEmployee]
+            middleware: [isLoggedIn, isEmployee, hasProfile]
         }
     },
     {
@@ -72,7 +72,7 @@ const employeeRoutes = [
         name: 'EmployeeApplications',
         component: EmployeeApplications,
         meta: {
-            middleware: [isLoggedIn, isEmployee]
+            middleware: [isLoggedIn, isEmployee, hasProfile]
         }
     },
     {
@@ -80,7 +80,7 @@ const employeeRoutes = [
         name: 'EmployeeFavourites',
         component: EmployeeFavourites,
         meta: {
-            middleware: [isLoggedIn, isEmployee]
+            middleware: [isLoggedIn, isEmployee, hasProfile]
         }
     },
     {
@@ -97,7 +97,7 @@ const employeeRoutes = [
         name: 'EmployeeProfileEdit',
         component: EmployeeProfileEdit,
         meta: {
-            middleware: [isLoggedIn, isEmployee]
+            middleware: [isLoggedIn, isEmployee, hasProfile]
         }
     },
     {
@@ -105,7 +105,7 @@ const employeeRoutes = [
         name: 'EmployeeAccount',
         component: EmployeeAccount,
         meta: {
-            middleware: [isLoggedIn, isEmployee]
+            middleware: [isLoggedIn, isEmployee, hasProfile]
         }
     }
 ];
