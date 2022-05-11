@@ -3,6 +3,7 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import DefaultNavbar from '@/components/partials/DefaultNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
 
@@ -63,7 +64,7 @@
 
 <template>
     <!-- <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar> -->
-    <EmployeeNavbar page='home'> </EmployeeNavbar>
+    <DefaultNavbar />
 
     
     <main class='container'>

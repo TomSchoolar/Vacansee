@@ -82,7 +82,7 @@
 
         await new Promise(r => setTimeout(r, 1000));
 
-        window.location.href = '/account/';
+        window.location.href = '/';
     }
 
 
