@@ -14,7 +14,7 @@
             'FirstName': Joi.string().alphanum().max(50).required().label('first name'),
             'LastName': Joi.string().alphanum().max(50).required().label('last name'),
             'Pronouns': Joi.string().max(50).required().label('pronouns'),
-            'PhoneNumber': Joi.string().min(8).max(30).required().label('phone number'),
+            'PhoneNumber': Joi.string().min(11).max(11).required().label('phone number'),
         });
 
         // get input data

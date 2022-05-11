@@ -4,6 +4,7 @@
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
+    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
     
     // form pages
     import PersonalDetailsForm from '@/components/employee/profile/edit/PersonalDetailsFormEdit.vue';
@@ -20,6 +21,9 @@
     const notifs = ref(2);
     const currentPageNum = ref(0);
     const profile = ref({})
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
+
+    document.title = 'Edit Profile | Vacansee'
 
 	const getProfile = async () => {
 		const response = await api({
@@ -111,6 +115,24 @@
         
     </form>
 
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Edit Profile</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On this page you can edit your personal profile by completing the same form you used to register your account.           
+                </p>
+                <p class='desc'>
+                    Except this time the form is pre-populated with your profile data.    
+                </p>
+
+            </div>
+
+        </template>
+    </TutorialModal>
+
 </template>
 
 <style scoped>
@@ -122,7 +144,7 @@
         width: 100%;
         margin: 8px 0 12px 0;
         border: 0;
-        border-top: 2px solid #555;
+        border-top: 1px solid #555;
     } 
 
     .container {

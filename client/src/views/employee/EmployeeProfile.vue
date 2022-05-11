@@ -3,6 +3,7 @@
     import api, { apiCatchError } from '@/assets/js/api';
     import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
+    import DefaultNavbar from '@/components/partials/DefaultNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
     import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
 
@@ -23,7 +24,7 @@
     const currentPageNum = ref(0);
     const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfile') == null);
 
-
+    document.title = 'Profile | Vacansee'
 
     onMounted(() => {
         pages = document.querySelectorAll('.form-page-container');
@@ -63,12 +64,12 @@
 
 <template>
     <!-- <EmployeeNavbar page='home' :numNotifs='notifs'> </EmployeeNavbar> -->
-    <EmployeeNavbar page='home'> </EmployeeNavbar>
+    <DefaultNavbar />
 
     
     <main class='container'>
         <div class='header'>
-            <h1 class='title'> Edit User Profile </h1>
+            <h1 class='title'>User Profile </h1>
             <hr />
         </div>
     </main>
@@ -102,15 +103,12 @@
 
     <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
         <template #modal-header>
-            <h3>Edit vacancy</h3>
+            <h3>Set Up Profile</h3>
         </template>
         <template #modal-body> 
             <div class='modal-body'>
                 <p class='desc'>
-                    On this page you can edit your personal profile by completing the same form you used to register your account.           
-                </p>
-                <p class='desc'>
-                    Except this time the form is pre-populated with profile data.    
+                    On this page you can set up your profile. This will be shown to employers when you apply for vacancies.        
                 </p>
             </div>
 
@@ -131,7 +129,7 @@
         width: 100%;
         margin: 8px 0 12px 0;
         border: 0;
-        border-top: 2px solid #555;
+        border-top: 1px solid #555;
     } 
 
     .container {

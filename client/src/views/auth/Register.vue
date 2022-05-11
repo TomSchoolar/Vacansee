@@ -60,12 +60,13 @@
         window.localStorage.setItem('session', JSON.stringify(session))
         window.localStorage.setItem('accessToken', accessToken)
         window.localStorage.setItem('refreshToken', refreshToken)
-        window.localStorage.setItem('newUser', true);
+        window.localStorage.setItem('newUser', true)
+		window.localStorage.setItem('profile', true)
 
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'
-        else
-            window.location.href = '/vacancy'
+        else 
+            window.location.href = '/profile'
 	}
 </script>
 
