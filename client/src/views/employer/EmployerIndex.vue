@@ -291,11 +291,11 @@
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>No vacancies to display</h3>
                 <div class='vacancy' v-for='vacancy in vacancies' :key='vacancy.id'>
                     <div class='vacancy-left'>
-                        <h5 class='vacancy-title' :title='vacancy.title'>
+                        <h1 class='vacancy-title' :title='vacancy.title'>
                             <span v-if='!vacancy.IsOpen' class='vacancy-closed'>(closed)</span>
                             {{ vacancy.VacancyName }}
-                        </h5>
-                        <h5 class='vacancy-new' v-if='vacancy.NewApplications'>{{ vacancy.NewApplications }} New Applications!</h5>
+                        </h1>
+                        <h1 class='vacancy-new' v-if='vacancy.NewApplications'>{{ vacancy.NewApplications }} New Applications!</h1>
                         <p class='vacancy-new' v-else>No New Applications</p>
                     </div>
                     <div class='vacancy-right'>
@@ -422,7 +422,7 @@
     .showing {
         margin-left: 30px;
         font-size: 14px;
-        color: var(--slate);
+        color: var(--slate-focus);
         font-style: italic;
         position: relative;
         top: 4px;

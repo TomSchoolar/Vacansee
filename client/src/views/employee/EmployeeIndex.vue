@@ -300,7 +300,7 @@
                 </button>
 
                 <div class='selected-tags'>
-                    <h4 class='tags-title'>Selected Tags:</h4>
+                    <h1 class='tags-title'>Selected Tags:</h1>
                     <span class='no-tags' v-if='tagsFilter == "null"'>None</span>
                     <i class='tag' v-for='tag in tagsFilterRaw' v-bind:key='tag.id' :class='options[tag-1]["icon"]' :title='tag.text'></i>
                 </div>
