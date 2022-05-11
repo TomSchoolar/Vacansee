@@ -49,6 +49,8 @@ In order to replicate the pipeline that we have in operation in this repository,
 4. create a directory ~/code/client
 5. assuming you are using the same .gitlab-ci file as is in this repository, you should be good to go
 
+n.b. The above instructions require an Ubuntu 20.04 server with a public IPv4 address.
+
 
 ## Making requests to the api
 
