@@ -60,7 +60,22 @@
         window.localStorage.setItem('session', JSON.stringify(session))
         window.localStorage.setItem('accessToken', accessToken)
         window.localStorage.setItem('refreshToken', refreshToken)
-        window.localStorage.setItem('newUser', true);
+        // tutorial flags
+		if (session.isEmployer) {
+        	window.localStorage.setItem('newUserEmployerAccount', true);
+		    window.localStorage.setItem('newUserEditVacancy', true);
+		    window.localStorage.setItem('newUserEmployerIndex', true);
+		    window.localStorage.setItem('newUserEmployerMatch', true);
+			window.localStorage.setItem('newUserCreateVacancy', true);
+			window.localStorage.setItem('newUserReview', true);
+		} else {
+        	window.localStorage.setItem('newUserEmployeeAccount', true);
+			window.localStorage.setItem('newUserApplications', true);
+		    window.localStorage.setItem('newUserFavourites', true);
+			window.localStorage.setItem('newUserEmployeeIndex', true);
+			window.localStorage.setItem('newUserEmployeeProfile', true);
+			window.localStorage.setItem('newUserEmployeeProfileEdit', true);
+		}
 
         if(session.IsEmployer)
             window.location.href = '/e/vacancy'
