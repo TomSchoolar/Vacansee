@@ -1,9 +1,12 @@
 <script setup>
     import Joi from 'joi';
     import api, { apiCatchError } from '@/assets/js/api';
+    import Footer from '@/components/partials/Footer.vue';
     import EmployeeNavbar from '@/components/employee/EmployeeNavbar.vue';
     import FormStepper from '@/components/employee/profile/FormStepper.vue';
     import FormButtons from '@/components/employee/profile/formComponents/FormButtons.vue';
+    import TutorialModal from '@/components/employee/tutorial/TutorialModal.vue';
+
     
     // form pages
     import PersonalDetailsForm from '@/components/employee/profile/edit/PersonalDetailsFormEdit.vue';
@@ -20,6 +23,8 @@
     const notifs = ref(2);
     const currentPageNum = ref(0);
     const profile = ref({})
+    const isNewUser = ref(window.localStorage.getItem('newUserEmployeeProfileEdit') === 'true');
+
 
 	const getProfile = async () => {
 		const response = await api({
@@ -69,7 +74,12 @@
         }
     }
 
-    
+    const finishTutorial = () => {
+        window.localStorage.setItem('newUserEmployeeProfileEdit', false);
+        isNewUser.value = false;
+    }    
+
+
 
 
 </script>
@@ -110,6 +120,27 @@
         </div>
         
     </form>
+
+
+    <TutorialModal v-if='isNewUser' @close-modal='finishTutorial' >
+        <template #modal-header>
+            <h3>Edit Profile</h3>
+        </template>
+        <template #modal-body> 
+            <div class='modal-body'>
+                <p class='desc'>
+                    On this page you can edit your personal profile by completing the same form you used to register your account.           
+                </p>
+                <p class='desc'>
+                    Except this time the form is pre-populated with profile data.    
+                </p>
+            </div>
+
+        </template>
+    </TutorialModal>
+
+
+    <Footer></Footer>
 
 </template>
 
