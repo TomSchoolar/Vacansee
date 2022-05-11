@@ -1,4 +1,4 @@
-import { logout } from '@/assets/js/jwt'
+const { logout } = require('@/assets/js/jwt');
 
 const middleware = {}
 
@@ -46,14 +46,14 @@ middleware.isEmployer = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        router.push({ name: 'LogIn' });
+        return logout();
     }
 
     session = JSON.parse(session);
 
     // flag gets deleted somehow
     if(typeof session.IsEmployer === 'undefined') {
-        logout();
+        return logout();
     }
 
     if(session.IsEmployer === false) {
@@ -67,14 +67,14 @@ middleware.isEmployee = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        router.push({ name: 'LogIn' });
+        return logout();
     }
 
     session = JSON.parse(session);
 
     // flag gets deleted somehow
     if (typeof session.IsEmployer === 'undefined') {
-        logout();        
+        return logout();        
     }
 
     if(session.IsEmployer === true) {
@@ -108,20 +108,20 @@ middleware.isNewEmployee = ({ next, router }) => {
     
 }
 
-middleware.hasProfile = ({next, router}) => {
+middleware.hasProfile = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        router.push({ name: 'LogIn'});
+        return logout();
     }
 
     session = JSON.parse(session);
 
     if (typeof session.HasProfileSetup === 'undefined' || session.HasProfileSetup == false) {
         router.push({ name: 'EmployeeProfile' });
-
-        return next();
     }
+
+    return next();
 }
 
 
