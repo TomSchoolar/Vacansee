@@ -88,20 +88,15 @@ middleware.isNewEmployee = ({ next, router }) => {
     let session = localStorage.getItem('session');
 
     if(!session) {
-        router.push({ name: 'LogIn' });
+        return logout();
     }
 
     session = JSON.parse(session);
 
     if(typeof session.IsEmployer === 'undefined' || session.IsEmployer === true) {
         router.push({ name: 'EmployerIndex' });
-    }
-
-    if(!(localStorage.getItem('profile'))) {
+    } else if(typeof session?.HasProfileSetup === 'undefined' || session.HasProfileSetup) {
         router.push({ name: 'EmployeeProfileEdit' });
-    }
-    else{
-        localStorage.removeItem('profile');
     }
 
     return next();

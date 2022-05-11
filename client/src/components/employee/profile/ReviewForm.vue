@@ -79,10 +79,16 @@
         }
 
         emit('next')
+        
+        let session = localStorage.getItem('session');
+        session = JSON.parse(session);
+        session.HasProfileSetup = true;
+        session = JSON.stringify(session);
+        localStorage.setItem('session', session);
 
         await new Promise(r => setTimeout(r, 1000));
 
-        window.location.href = '/';
+        window.location.href = '/vacancy';
     }
 
 
