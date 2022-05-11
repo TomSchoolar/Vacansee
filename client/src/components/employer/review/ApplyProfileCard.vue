@@ -214,7 +214,7 @@
         font-weight: normal;
         font-size: 16px;
         font-style: italic;
-        color: var(--slate);
+        color: var(--slate-focus);
     }
 
     .skills {

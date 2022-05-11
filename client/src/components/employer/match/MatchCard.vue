@@ -104,7 +104,7 @@
         </div>
 
         <div class='application-right'>
-            <button class='application-button application-button-blue' @click='emit("hideApplication", details);' id='show' v-if='showingThis'>Hide Application</button>
+            <button class='application-button application-button-blue' @click='emit("hideApplication", details);' id='hide' v-if='showingThis'>Hide Application</button>
             <button class='application-button application-button-grey' @click='emit("showApplication", details)' id='show' v-else>Show Application</button>
             <!-- download button -->
             <!-- <button class='application-button application-button-grey' @click='downloadApplication'>Download Application</button> -->
@@ -147,11 +147,11 @@
     } 
 
     .application-button-grey {
-        background: var(--slate);
+        background: var(--slate-focus);
     }
 
     .application-button-grey:hover, .application-button-grey:focus, .application-button-grey:active {
-        background: var(--slate-focus);
+        background: #4e626c;
         cursor: pointer;
     } 
 
@@ -193,7 +193,7 @@
     }
 
     .pronouns {
-        color: var(--slate);
+        color: var(--slate-focus);
         font-size: 14px;
     }
 

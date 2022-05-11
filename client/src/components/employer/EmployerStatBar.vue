@@ -25,7 +25,7 @@
         <hr />
         <div class='stat-boxes'>
             <div class='stat-box' v-for='[key, value] of Object.entries(stats)' :key='key'>
-                <h4 class='stat-title'>{{ labels[key] }}:</h4>
+                <h1 class='stat-title'>{{ labels[key] }}:</h1>
                 <h1 class='stat'>{{ value }}</h1>
             </div>
         </div>

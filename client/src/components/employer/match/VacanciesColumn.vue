@@ -223,7 +223,7 @@
     .vacancy-matches {
         font-size: 14px;
         width: 90px;
-        color: var(--slate);
+        color: var(--slate-focus);
         font-style: italic;
     }
 
