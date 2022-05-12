@@ -326,7 +326,7 @@
             </div>
 
             <NoCardsModal v-show='showModalNoCards' @close-modal='showModalNoCards = false' />
-            <TagSearchModal v-show='showModal' @search='tagSearch' @close-modal='showModal = false' />
+            <TagSearchModal v-show='showModal' :value='tagsFilterRaw' @search='tagSearch' @close-modal='showModal = false' />
 
             <div class='vacancy-container'>
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>There are no vacancies currently accepting applications</h3>

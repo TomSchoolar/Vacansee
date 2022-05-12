@@ -4,6 +4,7 @@
     
     import { ref, onMounted } from 'vue';
 
+    const props = defineProps(['value']);
     const emit = defineEmits(['search', 'close-modal']);
 
     const search = (values) => {
@@ -39,7 +40,15 @@
             <i class="fas fa-times close-icon" @click='emit("close-modal")'></i>
 
             <div class="modal-body">
-                <ListBox label='tags' name='tagsInput' :multiple='true' :multipleValue='true' :options='options' @search='search' @close-modal='emit("close-modal")' />
+                <ListBox 
+                    label='tags' 
+                    name='tagsInput' 
+                    :multiple='true' 
+                    :value='value' 
+                    :options='options' 
+                    @search='search' 
+                    @close-modal='emit("close-modal")'
+                />
             </div>
         </div>
     </div>
