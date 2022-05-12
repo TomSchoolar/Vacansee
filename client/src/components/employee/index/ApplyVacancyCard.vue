@@ -47,7 +47,7 @@
     }
 
 
-    watch(props, (newProps, oldProps) => {
+    watch(props, () => {
         const vacancyId = props?.vacancy?.VacancyId ?? '-1';
 
         if(props.cardAction == null) {
