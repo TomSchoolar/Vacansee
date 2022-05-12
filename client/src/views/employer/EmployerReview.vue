@@ -19,13 +19,14 @@
     const matches = ref([]);
     const vacancy = ref({});
     const showDeck = ref(true);
+    const cardAction = ref(null);
     const matchProfile = ref({});
     const currentProfile = ref({});
     const currentApplication = ref({});
 	const isNewUser = ref(window.localStorage.getItem('newUserReview') === 'true');
     
 
-    const searchValue = ref("");
+    const searchbar = ref('');
 
     const getApplicants = async () => {
         const response = await api({
@@ -33,7 +34,7 @@
             method: 'get',
             responseType: 'json',
             params: {
-                'searchValue': searchValue.value
+                'searchValue': searchbar.value
             }
         }).catch(apiCatchError);
 
@@ -54,6 +55,16 @@
 
     onMounted(async () => {
         getApplicants();
+
+        window.addEventListener('keyup', (event) => {
+            if(event.key == 'ArrowLeft') {
+                cardAction.value = 'reject';
+            } else if(event.key == 'ArrowRight') {
+                cardAction.value = 'accept';
+            } else if(event.key == 'ArrowUp') {
+                cardAction.value = 'defer';
+            }
+        });
     });
 
     const showMatchApplication = (nextProfile) => {
@@ -69,13 +80,13 @@
 
     const onMatch = (application, nextApplication, nextProfile) => {
         matches.value.push(application);
-        currentProfile.value = nextProfile;
-        currentApplication.value = nextApplication;
+        updateCard(nextApplication, nextProfile);
     }
 
     const updateCard = (nextApplication, nextProfile) => {
         currentProfile.value = nextProfile;
         currentApplication.value = nextApplication;
+        cardAction.value = null;
     }
 
     //download button
@@ -89,9 +100,7 @@
         isNewUser.value = false;
     }
 
-    const searchBarValueUpdated = (value) => {
-        searchValue.value = value;
-
+    const searchBarValueUpdated = () => {
         getApplicants();
     }
 </script>
@@ -112,7 +121,7 @@
                     
                     <div class='search-group'>
                         <i class="fas fa-search search-icon"></i>
-                        <input class='search' v-model='searchbar' @change='searchBarValueUpdated(searchbar)' placeholder='search' type='text'> 
+                        <input class='search' v-model='searchbar' @change='searchBarValueUpdated' placeholder='search' type='text'> 
                     </div>
                 </div>
             </div>
@@ -150,6 +159,7 @@
                     :application='currentApplication' 
                     :profile='currentProfile' 
                     :vacancyId='vacancyId' 
+                    :cardAction='cardAction'
                     @match='onMatch'
                     @defer='updateCard'
                     @reject='updateCard'
