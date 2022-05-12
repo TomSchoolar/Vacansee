@@ -1,9 +1,9 @@
 <script setup>  
     import api, { apiCatchError } from '@/assets/js/api';
 
-    import { computed, ref } from 'vue';    
+    import { computed, onMounted, ref, watch } from 'vue';    
 
-    const props = defineProps(['vacancy', 'tags', 'favourited']);
+    const props = defineProps(['vacancy', 'tags', 'favourited', 'cardAction']);
     const emit = defineEmits(['update']);
 
     const favourite = async (vID) => {
@@ -45,6 +45,21 @@
 
         emit('update');
     }
+
+
+    watch(props, () => {
+        const vacancyId = props?.vacancy?.VacancyId ?? '-1';
+
+        if(props.cardAction == null) {
+            return;
+        } else if(props.cardAction == 'apply') {
+            apply(vacancyId);
+        } else if(props.cardAction == 'favourite') {
+            favourite(vacancyId);
+        } else if(props.cardAction == 'reject') {
+            reject(vacancyId);
+        }
+    });
 
     
     let tagsLim = ref(6);

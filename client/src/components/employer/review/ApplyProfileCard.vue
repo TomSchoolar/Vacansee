@@ -1,14 +1,15 @@
 <script setup> 
 
     import api, { apiCatchError } from '@/assets/js/api';
+    import { watch } from 'vue';
 
     const emit = defineEmits(['match', 'defer', 'reject'])
 
-    const { application, profile, vacancyId } = defineProps(['application', 'profile', 'vacancyId']);
+    const props = defineProps(['application', 'profile', 'vacancyId', 'cardAction']);
 
     const updateStatus = async (newStatus, applicationId) => {
         const response = await api({
-            url: `/v1/e/vacancies/${ vacancyId }/review/${ applicationId }/`,
+            url: `/v1/e/vacancies/${ props.vacancyId }/review/${ applicationId }/`,
             method: 'put',
             data: {
                 setStatus: newStatus
@@ -58,6 +59,21 @@
 
         emit('reject', nextApplication, nextProfile);
     }
+
+
+    watch(props, () => {
+        const applicationId = props?.application?.ApplicationId ?? '-1';
+
+        if(props.cardAction == null) {
+            return;
+        } else if(props.cardAction == 'accept') {
+            accept(applicationId);
+        } else if(props.cardAction == 'defer') {
+            defer(applicationId);
+        } else if(props.cardAction == 'reject') {
+            reject(applicationId);
+        }
+    });
 </script>
 
 <template>

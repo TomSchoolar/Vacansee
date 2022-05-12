@@ -23,7 +23,7 @@
     // tutorial values
 	const isNewUser = ref(window.localStorage.getItem('newUserFavourites') === 'true');
 
-    const searchBarValue = ref("");
+    const searchbar = ref('');
 
     // dropdown values
     const sort = ref('dateDesc');
@@ -160,7 +160,7 @@
 
     // get vacancies in new order
     const sortVacancies = async (sortParam) => {
-        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+        const result = await getFavourites({ sort: sortParam, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchbar.value });
         
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -172,7 +172,7 @@
 
     // pagination: change page
     const changePage = async (newPage) => {
-        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: newPage, tagsFilter: tagsFilter.value, searchValue: searchbar.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -189,7 +189,7 @@
         if(page.value < 0)
             page.value = 0;
 
-        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+        const result = await getFavourites({ sort: sort.value, count: newLimit, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchbar.value });
 
         if(!result) {
             alert('uh oh! something went wrong :(');
@@ -218,7 +218,7 @@
             tagsFilterRaw.value = [];
         }
 
-        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchbar.value });
 
         if(!result) {
             return;
@@ -226,9 +226,7 @@
     }
 
     const searchBarValueUpdated = async (value) => {
-        searchBarValue.value = value;
-
-        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchBarValue.value });
+        const result = await getFavourites({ sort: sort.value, count: limit.value, pageNum: page.value, tagsFilter: tagsFilter.value, searchValue: searchbar.value });
 
         if(!result) {
             return;
