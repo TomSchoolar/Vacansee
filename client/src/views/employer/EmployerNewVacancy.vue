@@ -18,6 +18,7 @@
     import { onMounted, ref } from 'vue';
 
     let pages;
+    const options = ref([]);
     const formData = ref([]);
     //const notifs = ref(2);
     const currentPageNum = ref(0);
@@ -31,8 +32,16 @@
     const companyName = ref(cn);
     const phoneNumber = ref(phone);
 
-    onMounted(() => {
+    onMounted(async () => {
         pages = document.querySelectorAll('.form-page-container');
+
+        const response = await api({
+            method: 'get',
+            url: '/v1/vacancies/tags',
+            responseType: 'json',
+        }).catch(apiCatchError);
+
+        options.value = response?.data ?? options.value;
     });
 
     const changePage = (incr) => {
@@ -97,10 +106,10 @@
             <LogisticsForm @next='changePage(1)' @back='changePage(-1)' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <TagsForm @next='changePage(1)' @back='changePage(-1)' />
+            <TagsForm :options='options' @next='changePage(1)' @back='changePage(-1)' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' />
+            <ReviewForm :formData='formData' :options='options' @next='changePage(1)' @back='changePage(-1)' />
         </div>
         
     </form>

@@ -63,6 +63,7 @@
 
     
     let tagsLim = ref(6);
+    let effectiveLim = ref(tagsLim.value);
     let extraTags = computed(() => {
         let extraTags = '';
 
@@ -70,8 +71,9 @@
             return;
 
         if(props.vacancy.tags.length > tagsLim.value) {
+            effectiveLim.value = tagsLim.value - 1;
 
-            props.vacancy.tags.slice(tagsLim.value,-1).forEach((tag) => {
+            props.vacancy.tags.slice(effectiveLim.value,-1).forEach((tag) => {
                 extraTags += `${ props.tags[tag].text }, `;
             });
 
@@ -109,9 +111,9 @@
         </div>
         <span class='card-section' v-if='vacancy?.tags?.length > 0'>Tags:</span>
         <div v-if='vacancy?.tags?.length > 0'>
-            <i class='tag' v-for='tag in vacancy.tags.slice(0, tagsLim)' :key='tag.id' :class='tags[tag-1]?.icon' :title='tags[tag-1]?.text'></i>
+            <i class='tag' v-for='tag in vacancy.tags.slice(0, effectiveLim)' :key='tag?.id' :class='tags[tag-1]?.icon' :title='tags[tag-1]?.text'></i>
             <th v-if='extraTags' class='tag tags-overflow' :title='extraTags'>
-                <div class='tags-num' ref='extra-tags'>+{{ vacancy.tags.length - tagsLim }}</div>
+                <div class='tags-num' ref='extra-tags'>+{{ vacancy.tags.length - effectiveLim }}</div>
                 <i class='fa-solid fa-tags'></i>
             </th>
         </div>
@@ -273,6 +275,7 @@
 
     .tags-overflow {
         position: relative;
+        cursor: help;
     }
 
     #favourite {

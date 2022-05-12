@@ -26,7 +26,7 @@
         });
 
         parseExpandingList(object, 'NotableSkills', 1);
-        parseExpandingList(object, 'Experience', 1);
+        parseExpandingList(object, 'Experience', 2);
         parseExpandingList(object, 'Qualifications', 1);
 
         return object;

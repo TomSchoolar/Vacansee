@@ -13,16 +13,12 @@
     const dropdownOptions = [ ];
 
     for(let i = -11; i < 12; i++) {
-        let symbol = "";
+        let symbol = '';
 
-        if(i <= 0)
-        {
-            symbol = "+";
-        }
 
         dropdownOptions.push({
-            value: i,
-            text: "GMT " + symbol + i,
+            id: i,
+            text: `GMT ${ (i > 0 ? '+': '') }${ (i !== 0 ? i : '') }`
         });
     }
 

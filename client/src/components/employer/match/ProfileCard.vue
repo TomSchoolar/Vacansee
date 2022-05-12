@@ -26,8 +26,8 @@
                 <tr v-for='(xp, index) in profile.Experience' v-bind:key='`xp-${ index }`'>
                     <!-- <th class='table-title'>- {{ xprofile.Title }}</th> 
                     <th><span class='table-date'>{{ xprofile.StartDate }} - {{ xprofile.EndDate }}</span></th> -->
-                    <th class='table-title'>> {{ xp }} </th>
-                    <th v-if='xp.split("&&").length > 1'><span class='table-date'>{{ xp.split("&&")[1] }}</span></th>
+                    <th class='table-title'>> {{ xp.split('&&')[0] }} </th>
+                    <th v-if='xp.split("&&").length > 1'><span class='table-date'>{{ xp.split('&&')[1] }}</span></th>
                 </tr>
             </table>
         </div>

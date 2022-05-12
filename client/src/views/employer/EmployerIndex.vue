@@ -14,7 +14,7 @@
     const showDeleteModal = ref(false);
     const currentModalVacancy = ref('');
 
-    import { ref, watch, onMounted } from 'vue';
+    import { computed, onMounted, ref, watch } from 'vue';
 
     dayjs.extend(relativeTime);
 
@@ -45,6 +45,25 @@
     const page = ref(1);
     const numPages = ref(1);
     const numVacancies = ref(0);
+    const pages = computed(() => {
+        const pages = [];
+        let start, end;
+
+        if(page.value < 3) {
+            start = 1;
+            end = Math.min(numPages.value, 5);
+        } else if(page.value > numPages.value - 2) {
+            start = Math.max(1, numPages.value - 4);
+            end = numPages.value;
+        } else {
+            start = page.value - 2;
+            end = Math.min(numPages.value, page.value + 2);
+        }
+
+        for(let i = start; i <= end; i++) { pages.push(i); }
+
+        return pages;
+    });
 
     document.title = 'Home | Vacansee';
 

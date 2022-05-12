@@ -12,8 +12,6 @@ urlpatterns = [
     path('applications/<int:applicationId>/', applications.getApplicationDetails),
     path('favourites/', favourites.getFavourites),
     path('accounts/', account.getAccount),
-    path('accounts/', account.putAccount),
-    path('accounts/', account.deleteAccount),
     path('accounts/profiles/', account.getProfile),
     path('profiles/', profile.postProfile),
     path('profiles/edit/', profile.postProfileEdit)

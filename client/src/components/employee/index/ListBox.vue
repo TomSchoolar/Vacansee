@@ -1,20 +1,22 @@
 <script setup>
-    const props = defineProps(['name', 'label', 'multiple', 'options', 'placeholder', 'multipleValue', 'value']);
+    const props = defineProps(['name', 'label', 'multiple', 'options', 'placeholder', 'value']);
     const emit = defineEmits(['search', 'close-modal']);
 
-    import { ref } from 'vue';
+    import { computed, ref, watch } from 'vue';
 
     const tagSelection = ref([]);
-    let selectedValues = ref([]);
 
+    watch(props, () => {
+        tagSelection.value = props.value;
+    });
 
     const updateSelected = (values) => {
-        selectedValues.value = values;
+        tagSelection.value = values;
     }
 
     const sendData = () => {
-        emit('search', selectedValues.value);
-        selectedValues.value = [];
+        emit('search', tagSelection.value);
+        tagSelection.value = [];
     }
 </script>
 
@@ -29,10 +31,11 @@
             :id='name' 
             required
             :multiple='(multiple ? multiple : false)'
-            :style='(multiple ? "height: 150px;" : "")'
+            :style='(multiple ? "height: 200px;" : "")'
         >
             <option value='' :selected='!value ? true : false' hidden disabled>{{ placeholder }}</option>
-            <option v-for='option in options' :key='parseInt(option.id)' :value='parseInt(option.id)' :selected='value && ( multipleValue && value.includes(option.id) || option.id == value) ? true : false'>{{ (option.text) }}</option>
+            
+            <option v-for='option in options' :key='parseInt(option.id)' :value='parseInt(option.id)' :selected='true ? true : false'>{{ (option.text) }}</option>
         </select>
 
         <div class='button-row'>

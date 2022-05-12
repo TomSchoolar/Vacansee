@@ -36,6 +36,8 @@ def postProfile(request):
         print(f'uh oh: { err }')
         return Response({ 'status': 500, 'message': str(err) }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
 @api_view(['POST'])
 def postProfileEdit(request):
     jwt = jwtHelper.extractJwt(request)
@@ -64,7 +66,7 @@ def postProfileEdit(request):
             updatedProfile.save()
             return Response({ 'status': 200 }, status=status.HTTP_200_OK)
         else:
-            return Response({ 'status': 400, 'message': 'Invalid profile data' }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({ 'status': 400, 'message': f'Invalid profile data: { updatedProfile.errors }' }, status=status.HTTP_400_BAD_REQUEST)
 
     except Exception as err:
         print(f'uh oh: { err }')

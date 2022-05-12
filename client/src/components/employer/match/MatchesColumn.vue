@@ -27,7 +27,7 @@
 
         const response = await api({
             method: 'get',
-            url: `/v1/e/matches/${ vacancyId }/`,
+            url: `/v1/e/matches/${ vID }/`,
             responseType: 'json',
             params: {
                 vID,

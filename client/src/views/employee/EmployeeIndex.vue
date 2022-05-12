@@ -44,6 +44,25 @@
     const page = ref(1);
     const numPages = ref(1);
     const numVacancies = ref(1);
+    const pages = computed(() => {
+        const pages = [];
+        let start, end;
+
+        if(page.value < 3) {
+            start = 1;
+            end = Math.min(numPages.value, 5);
+        } else if(page.value > numPages.value - 2) {
+            start = Math.max(1, numPages.value - 4);
+            end = numPages.value;
+        } else {
+            start = page.value - 2;
+            end = Math.min(numPages.value, page.value + 2);
+        }
+
+        for(let i = start; i <= end; i++) { pages.push(i); }
+
+        return pages;
+    });
 
     // tags
     const options = ref([]);
@@ -194,7 +213,7 @@
 
         let i = 0;
 
-        tagsFilter.value = "";
+        tagsFilter.value = '';
 
         for(i = 0; i < value.length; i++){
             tagsFilter.value = tagsFilter.value + (value[i].toString());
@@ -302,7 +321,6 @@
                 </select>
             </div>
 
-
             <div class='filter-tags-row'>
                 <button type='button' class='button arrow-btn' @click='showModal = true'>
                     <th>Select Tags</th>
@@ -320,7 +338,7 @@
             </div>
 
             <NoCardsModal v-show='showModalNoCards' @close-modal='showModalNoCards = false' />
-            <TagSearchModal v-show='showModal' @search='tagSearch' @close-modal='showModal = false' />
+            <TagSearchModal v-show='showModal' :value='tagsFilterRaw' @search='tagSearch' @close-modal='showModal = false' />
 
             <div class='vacancy-container'>
                 <h3 class='no-vacancies' v-if='numVacancies == 0'>There are no vacancies currently accepting applications</h3>
@@ -332,7 +350,7 @@
                   
             <div class='pagination' v-if='numPages > 1'>
                 <div class='pag-block pag-start' @click='page > 1 ? changePage(page - 1) : page'><i class="fa-solid fa-angle-left"></i></div>
-                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in pages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
                 <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            
             </div>
             
@@ -356,7 +374,7 @@
                     The home page displays a list of adverts posted by companies in the first column on the left of the page, just below the navigation bar.
                     Adverts can be sorted using the filters on the top right.
 
-                </p>>
+                </p>
                 <p class='desc'>
                     The action card, on the right side of the page, is where you can interact with vacancies. You can use the controls on the bottom of the card or the (arrow keys) on your keyboard.
                 </p>
