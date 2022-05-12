@@ -370,7 +370,7 @@
     .applied {
         width: 200px;
         text-align: center;
-        margin-right: 20px;
+        margin-right: 40px;
     }
 
     .button {

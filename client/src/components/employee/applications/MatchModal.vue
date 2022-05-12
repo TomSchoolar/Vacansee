@@ -26,13 +26,57 @@
 
             <div class='contact'>
                 <i class="fa-solid fa-clock"></i>
-                {{ stats.TimeZone }}
+                GMT <span v-if='parseInt(stats.TimeZone) > 0'>+</span>{{ (parseInt(stats.TimeZone) == 0 ? '' : ` ${ stats.TimeZone }`) }}
+            </div>
+
+            <div class="button-row">
+                <button class='button button-grey' @click='emit("close")'>Go Back</button>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+    .button {
+        color: white;
+        width: 100%;
+        font-weight: 500; /* required for some reason */
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        text-decoration: none;
+        padding: 14px 4px;
+        font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+        cursor: pointer;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+    }
+
+    .button:first-of-type {
+        border-bottom-left-radius: 20px;
+    }
+
+    .button:last-of-type {
+        border-bottom-right-radius: 20px;
+    }
+
+    .button-grey {
+        background: var(--slate);
+    }
+
+    .button-grey:active, .button-grey:focus, .button-grey:hover  {
+        background: var(--slate-focus);
+    } 
+
+    .button-row {
+        position: absolute;
+        display: flex;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+    }
+
     .close {
         color: var(--jet);
         position: absolute;
@@ -55,6 +99,8 @@
 
     .contact {
         font-size: 17px;
+        display: flex;
+        align-items: center;
     }
 
     .contact i {
@@ -89,6 +135,7 @@
     .role-container {
         font-size: 25px;
         text-align: left;
+        display: flex;
     }
 
     .match {
@@ -98,11 +145,10 @@
 
     .modal {
         background: white;
-        border-radius: 8px;
-        width: 30vw;
-        min-width: 450px;
+        border-radius: 20px;
+        width: 450px;
         position: relative;
-        padding: 25px;
+        padding: 30px 35px 65px 35px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
