@@ -74,20 +74,14 @@
 	}
 
 	const deleteAccount = async () => {
-		const response = await api({
+		await api({
 			url: '/v1/accounts/',
 			method: 'delete',
 			responseType: 'json'
 		}).catch(apiCatchError);
 
-		if (!response) {
-			return false;
-		}
-
-		const { data = {} } = response;
-
 		displayModal.value = false;
-		logout();
+		return logout();
 	}
 
 	const getProfile = async () => {
@@ -101,11 +95,9 @@
 			return false;
 		}
 
-		const { data } = response;
-
 		const {
 			details: newDetails = accountDetails.value,
-		} = data;
+		} = response?.data ?? {};
 
 		profile.value = newDetails;
 		return true;
@@ -170,7 +162,7 @@
                     <label for='email' class='label'>Current Email Address:</label>
                     <input type='text' class='email-input' placeholder='...' v-model='accountDetails.Email' required/>
                     <div class='button-row'>
-                        <button class='button button-red' @click=showDeletion>Delete Account</button>
+                        <button class='button button-red' @click='showDeletion'>Delete Account</button>
                         <button class='button button-blue' @click="updateAccount(accountDetails.Email)">Save</button>
                     </div>
                     <button class ='button button-blue' @click='resetTutorial'>Reset tutorial</button>

@@ -33,6 +33,8 @@ def getAccount(request):
 
     return Response(returnData, status=status.HTTP_200_OK)
 
+
+
 def putAccount(request, jwt):
     if type(jwt) is not dict:
         return jwt
@@ -53,6 +55,7 @@ def putAccount(request, jwt):
     return Response(data={ 'status': 200, 'message': 'Account updated.'}, status=status.HTTP_200_OK)
 
 
+
 def deleteAccount(request, jwt):
     try:
         accountHelper.deleteUser(jwt['id'])
@@ -61,6 +64,8 @@ def deleteAccount(request, jwt):
     except Exception as err:
         print(f'uh oh: { err }')
         return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 @api_view(['GET'])
 def getProfile(request):
@@ -78,4 +83,4 @@ def getProfile(request):
         return Response(data=returnData, status=status.HTTP_200_OK)
     except Exception as err:
         print(f'uh oh: { err }')
-        return Response(data={'status':500, 'message':'Server error while finding and deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+        return Response(data={'status':500, 'message':'Server error while finding account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 

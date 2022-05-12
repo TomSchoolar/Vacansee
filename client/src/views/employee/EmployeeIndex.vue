@@ -362,7 +362,7 @@
                     The home page displays a list of adverts posted by companies in the first column on the left of the page, just below the navigation bar.
                     Adverts can be sorted using the filters on the top right.
 
-                </p>>
+                </p>
                 <p class='desc'>
                     The action card, on the right side of the page, is where you can interact with vacancies.
                 </p>

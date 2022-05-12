@@ -1,5 +1,5 @@
 <script setup>
-    const emit = defineEmits(['close'])
+    const emit = defineEmits(['close', 'delete'])
     const { display = false } = defineProps(['display']);
 
 </script>
@@ -7,7 +7,7 @@
 <template>
     <div class='modal-overlay' v-if='display'>
         <div class='modal'>
-            <form @submit='$emit("delete")'>
+            <form @submit.prevent='emit("delete")'>
                 <i class="fa-solid fa-xmark close" @click='emit("close")'></i>
 
                 <div class="warning-circle">!</div>
