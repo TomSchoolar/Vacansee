@@ -181,7 +181,7 @@
 
         let i = 0;
 
-        tagsFilter.value = "";
+        tagsFilter.value = '';
 
         for(i = 0; i < value.length; i++){
             tagsFilter.value = tagsFilter.value + (value[i].toString());

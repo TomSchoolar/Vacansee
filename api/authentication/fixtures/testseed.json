@@ -2057,7 +2057,7 @@
         "pk": 7,
         "fields": {
             "TagName": "Education",
-            "TagStyle": "fa-solid fa-person-chalkboard"
+            "TagStyle": "fa-solid fa-chalkboard-user"
         }
     },
     {
@@ -2129,7 +2129,7 @@
         "pk": 16,
         "fields": {
             "TagName": "Research",
-            "TagStyle": "fa-solid fa-book-bookmark"
+            "TagStyle": "fa-solid fa-bookmark"
         }
     },
     {
@@ -2137,7 +2137,7 @@
         "pk": 17,
         "fields": {
             "TagName": "IT",
-            "TagStyle": "fa-solid fa-computer"
+            "TagStyle": "fa-solid fa-laptop"
         }
     },
     {
