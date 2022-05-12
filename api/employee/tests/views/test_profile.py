@@ -122,7 +122,7 @@ class postProfileEditTests(TestCase):
         response = self.client.post(f'/v1/profiles/edit/', data=modifiedProfile, content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer: { self.jwt }'})
 
         self.assertEquals(response.data['status'], 400)
-        self.assertEquals(response.data['message'], 'Invalid profile data')
+        self.assertEquals(response.data['message'], 'Invalid profile data: <ul class="errorlist"><li>NotableSkills<ul class="errorlist"><li>List contains 4 items, it should contain no more than 3.</li></ul></li></ul>')
 
         newProfileSet = Profile.objects.get(UserId__exact = self.userId)
         newProfile = ProfileSerializer(newProfileSet).data
