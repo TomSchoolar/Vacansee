@@ -41,6 +41,26 @@
     const page = ref(1);
     const numPages = ref(1);
     const numVacancies = ref(1);
+    const pages = computed(() => {
+        const pages = [];
+        let start, end;
+
+        if(page.value < 3) {
+            start = 1;
+            end = Math.min(numPages.value, 5);
+        } else if(page.value > numPages.value - 2) {
+            start = Math.max(1, numPages.value - 4);
+            end = numPages.value;
+        } else {
+            start = page.value - 2;
+            end = Math.min(numPages.value, page.value + 2);
+        }
+
+        for(let i = start; i <= end; i++) { pages.push(i); }
+
+        return pages;
+    });
+
 
     const getTags = async () => {
         const response = await api({
@@ -287,7 +307,7 @@
 
             <div class='pagination' v-if='numPages > 1'>
                 <div class='pag-block pag-start' @click='page > 1 ? changePage(page - 1) : page'><i class="fa-solid fa-angle-left"></i></div>
-                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in pages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
                 <div class='pag-block pag-end' @click='page < numPages ? changePage(page + 1) : page'><i class="fa-solid fa-angle-right"></i></div>            
             </div>
             

@@ -9,7 +9,7 @@
     import EmployeeStatBar from '@/components/employee/applications/EmployeeStatBar.vue';
 
 
-    import { ref, watch, onMounted } from 'vue';
+    import { computed, onMounted, ref, watch } from 'vue';
     
 
    // vars init
@@ -25,16 +25,40 @@
 	const isNewUser = ref(window.localStorage.getItem('newUserApplications') === 'true');
 
 
-    const page = ref(1);
+    // filter vars
     const limit = ref(5);
+    const numApps = ref(1);
     //const notifs = ref(2);
-    const numPages = ref(1);
     const filter = ref('all');
     const modalStats = ref({});
     const applications = ref([]);
-    const numApps = ref(1);
     const sort = ref('dateDesc');
     const displayModal = ref(false);
+
+
+    // pagination
+    const page = ref(1);
+    const numPages = ref(1);
+    const pages = computed(() => {
+        const pages = [];
+        let start, end;
+
+        if(page.value < 3) {
+            start = 1;
+            end = Math.min(numPages.value, 5);
+        } else if(page.value > numPages.value - 2) {
+            start = Math.max(1, numPages.value - 4);
+            end = numPages.value;
+        } else {
+            start = page.value - 2;
+            end = Math.min(numPages.value, page.value + 2);
+        }
+
+        for(let i = start; i <= end; i++) { pages.push(i); }
+
+        return pages;
+    });
+
 
     document.title = 'Applications | Vacansee'
 
@@ -311,7 +335,7 @@
 
             <div class='pagination' v-if='numPages > 1'>
                 <div class='pag-block pag-start' @click='page > 1 ? changePage(--page) : page'><i class="fa-solid fa-angle-left"></i></div>
-                <div class='pag-block' @click='changePage(i)' v-for='i in numPages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
+                <div class='pag-block' @click='changePage(i)' v-for='i in pages' :key='i' :class='i == page ? "pag-active" : ""'>{{ i }}</div>
                 <div class='pag-block pag-end' @click='page < numPages ? changePage(++page) : page'><i class="fa-solid fa-angle-right"></i></div>
             </div>
         </section>
