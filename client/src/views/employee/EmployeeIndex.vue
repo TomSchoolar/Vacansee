@@ -309,7 +309,6 @@
                 </select>
             </div>
 
-
             <div class='filter-tags-row'>
                 <button type='button' class='button arrow-btn' @click='showModal = true'>
                     <th>Select Tags</th>

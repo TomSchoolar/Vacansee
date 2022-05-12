@@ -7,39 +7,12 @@
 
     import { computed } from 'vue';
 
-    const props = defineProps(['formData', 'edit']);
+    const props = defineProps(['formData', 'edit', 'options']);
     const emit = defineEmits(['back', 'next', 'publish']);
-
-    const tags = [
-        {
-            id: 0,
-            icon: 'fa-solid fa-book'
-        },
-        {
-            id: 1,
-            icon: 'fa-solid fa-code'
-        },
-        {
-            id: 2,
-            icon: 'fa-brands fa-python'
-        },
-        {
-            id: 3,
-            icon: 'fa-solid fa-school'
-        },
-        {
-            id: 4,
-            icon: 'fa-solid fa-briefcase'
-        },
-        {
-            id: 5,
-            icon: 'fa-solid fa-database'
-        },
-    ]
 
     const formDataProp = computed(() => {
         const object = {};
-        object.Tags = [];
+        object.tags = [];
 
         if(!props.formData) {
             return;
@@ -47,7 +20,7 @@
 
         props.formData.forEach((value, key) =>  {
             if(key == 'tagsInput')
-                object.Tags.push(value);
+                object.tags.push(parseInt(value));
             else
                 object[key] = value;
         });
@@ -88,7 +61,8 @@
         const data = { ...formDataProp.value };
         delete data['CompanyName'];
         
-        data.Tags = data.Tags.map((tag) => parseInt(tag) );
+        data.Tags = data.tags;
+        delete data.tags;
         data.TimeZone = parseInt(data.TimeZone)
 
         data.Tags = JSON.stringify(data.Tags);
@@ -117,7 +91,6 @@
 
         window.location.href = '/e/vacancy/';
     }
-
 </script>
 
 <template>
@@ -126,7 +99,7 @@
     </FormHeader>
 
     <div class="review-container">
-        <VacancyCard :vacancy='formDataProp' :tags='tags' />
+        <VacancyCard :vacancy='formDataProp' :tags='options' />
         <ContactCard :PhoneNumber='formDataProp?.PhoneNumber' :Email='formDataProp?.Email' :TimeZone='formDataProp?.TimeZone' />
     </div>
 

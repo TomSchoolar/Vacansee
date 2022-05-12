@@ -19,6 +19,7 @@
 
     let pages;
     const notifs = ref(2);
+    const options = ref([]);
     const formData = ref([]);
     const vacancyData = ref({});
     const currentPageNum = ref(0);
@@ -45,6 +46,14 @@
             window.location.href = '/e/vacancy';
 
         vacancyData.value = vacancy.data;
+
+        const response = await api({
+            method: 'get',
+            url: '/v1/vacancies/tags',
+            responseType: 'json',
+        }).catch(apiCatchError);
+
+        options.value = response?.data ?? options.value;
     });
 
     const changePage = (incr) => {
@@ -110,10 +119,10 @@
             <LogisticsForm @next='changePage(1)' @back='changePage(-1)' :expectExperienceValue='true' :experience='vacancyData.ExperienceRequired' :city='vacancyData.Location' :timezone='vacancyData.TimeZone' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <TagsForm @next='changePage(1)' @back='changePage(-1)' :tags='vacancyData.Tags' />
+            <TagsForm @next='changePage(1)' @back='changePage(-1)' :tags='vacancyData.Tags' :options='options' />
         </div>
         <div class='form-page-container form-page-container-hidden'>
-            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' :edit='true' />
+            <ReviewForm :formData='formData' @next='changePage(1)' @back='changePage(-1)' :edit='true' :options='options' />
         </div>
         
     </form>
