@@ -358,16 +358,16 @@
 
                 </p>>
                 <p class='desc'>
-                    The action card, on the right side of the page, is where you can interact with vacancies.
+                    The action card, on the right side of the page, is where you can interact with vacancies. You can use the controls on the bottom of the card or the (arrow keys) on your keyboard.
                 </p>
                 <p class='desc'>
-                    You can ignore a vacancy by clicking the red cross on the vacancy card,
+                    You can ignore a vacancy by clicking the red cross (or the left arrow) on the vacancy card,
                 </p>
                 <p class='desc'>
-                    add it to your favourite by clicking the star button next to ignore,
+                    add it to your favourite by clicking the star button (or the up arrow),
                 </p>
                 <p class='desc'>
-                    or send an application for it by clicking the green tick next to unfavourite.
+                    or send an application for it by clicking the green tick (or the right arrow).
                 </p>
             </div> 
 
